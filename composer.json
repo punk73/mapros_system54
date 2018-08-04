@@ -17,7 +17,8 @@
         "barryvdh/laravel-cors": "^0.8.2",
         "league/flysystem": "^1.0",
         "tcg/voyager": "^1.1",
-        "orangehill/iseed": "^2.5"
+        "orangehill/iseed": "^2.5",
+        "spatie/activitylog": "^2.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

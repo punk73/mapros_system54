@@ -172,6 +172,7 @@ return [
         Barryvdh\Cors\ServiceProvider::class,
         TCG\Voyager\VoyagerServiceProvider::class, //for auto crud features
         Orangehill\Iseed\IseedServiceProvider::class, //for get seeder from table
+        Spatie\Activitylog\ActivitylogServiceProvider::class, //class for log activity
         /*
          * Application Service Providers...
          */
@@ -228,7 +229,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Activity' => Spatie\Activitylog\ActivitylogFacade::class, //logger
         /*
          * Package Facades...
          */
