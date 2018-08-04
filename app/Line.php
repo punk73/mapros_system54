@@ -8,9 +8,9 @@ use Spatie\Activitylog\LogsActivity;
 
 class Line extends Model implements LogsActivityInterface
 {
-	use LogsActivity; //use Logs traits
-
     protected $table = 'lines';
+
+	use LogsActivity; //use Logs traits
 
     public function getActivityDescriptionForEvent($eventName)
 	{
