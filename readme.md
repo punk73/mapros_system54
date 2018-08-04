@@ -17,4 +17,9 @@
 10. acctually this is private project,
 
 ## NOTES
-Don't forget to run `php artisan voyager:install` everytime you run `php artisan migrate:refresh`
+Don't forget to run `php artisan voyager:install` everytime you run `php artisan migrate:refresh`.
+and do step 7 again also. 
+
+## Test
+run `vendor\bin\phpunit` to run test on this parent directory;
+don't forget to changes `<env name="DB_DATABASE" value="your-test-db"/>` on phpunit.xml to refer to your db 
