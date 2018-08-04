@@ -16,7 +16,8 @@
         "dingo/api": "1.0.x@dev",
         "barryvdh/laravel-cors": "^0.8.2",
         "league/flysystem": "^1.0",
-        "tcg/voyager": "^1.1"
+        "tcg/voyager": "^1.1",
+        "orangehill/iseed": "^2.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

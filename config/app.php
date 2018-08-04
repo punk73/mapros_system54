@@ -170,7 +170,8 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
-        TCG\Voyager\VoyagerServiceProvider::class,
+        TCG\Voyager\VoyagerServiceProvider::class, //for auto crud features
+        Orangehill\Iseed\IseedServiceProvider::class, //for get seeder from table
         /*
          * Application Service Providers...
          */
