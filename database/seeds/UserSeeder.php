@@ -12,11 +12,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $user = new User;
+        // we already have another user seeder;
+        /*$user = new User;
         $user->email = 'punk73@email.com';
         $user->password = '123456';
         $user->name = 'punk73';
         $user->nik = '39598';
-        $user->save();
+        $user->save();*/
     }
 }
