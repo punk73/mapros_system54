@@ -347,53 +347,13 @@ class PermissionsTableSeeder extends Seeder
             ),
             41 => 
             array (
-                'id' => 52,
-                'key' => 'browse_endpoints',
-                'table_name' => 'endpoints',
-                'created_at' => '2018-08-04 03:17:02',
-                'updated_at' => '2018-08-04 03:17:02',
-            ),
-            42 => 
-            array (
-                'id' => 53,
-                'key' => 'read_endpoints',
-                'table_name' => 'endpoints',
-                'created_at' => '2018-08-04 03:17:02',
-                'updated_at' => '2018-08-04 03:17:02',
-            ),
-            43 => 
-            array (
-                'id' => 54,
-                'key' => 'edit_endpoints',
-                'table_name' => 'endpoints',
-                'created_at' => '2018-08-04 03:17:02',
-                'updated_at' => '2018-08-04 03:17:02',
-            ),
-            44 => 
-            array (
-                'id' => 55,
-                'key' => 'add_endpoints',
-                'table_name' => 'endpoints',
-                'created_at' => '2018-08-04 03:17:02',
-                'updated_at' => '2018-08-04 03:17:02',
-            ),
-            45 => 
-            array (
-                'id' => 56,
-                'key' => 'delete_endpoints',
-                'table_name' => 'endpoints',
-                'created_at' => '2018-08-04 03:17:02',
-                'updated_at' => '2018-08-04 03:17:02',
-            ),
-            46 => 
-            array (
                 'id' => 57,
                 'key' => 'browse_lineprocesses',
                 'table_name' => 'lineprocesses',
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            47 => 
+            42 => 
             array (
                 'id' => 58,
                 'key' => 'read_lineprocesses',
@@ -401,7 +361,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            48 => 
+            43 => 
             array (
                 'id' => 59,
                 'key' => 'edit_lineprocesses',
@@ -409,7 +369,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            49 => 
+            44 => 
             array (
                 'id' => 60,
                 'key' => 'add_lineprocesses',
@@ -417,7 +377,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            50 => 
+            45 => 
             array (
                 'id' => 61,
                 'key' => 'delete_lineprocesses',
@@ -425,7 +385,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            51 => 
+            46 => 
             array (
                 'id' => 62,
                 'key' => 'browse_linetypes',
@@ -433,7 +393,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            52 => 
+            47 => 
             array (
                 'id' => 63,
                 'key' => 'read_linetypes',
@@ -441,7 +401,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            53 => 
+            48 => 
             array (
                 'id' => 64,
                 'key' => 'edit_linetypes',
@@ -449,7 +409,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            54 => 
+            49 => 
             array (
                 'id' => 65,
                 'key' => 'add_linetypes',
@@ -457,7 +417,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            55 => 
+            50 => 
             array (
                 'id' => 66,
                 'key' => 'delete_linetypes',
@@ -465,7 +425,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            56 => 
+            51 => 
             array (
                 'id' => 67,
                 'key' => 'browse_sequences',
@@ -473,7 +433,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            57 => 
+            52 => 
             array (
                 'id' => 68,
                 'key' => 'read_sequences',
@@ -481,7 +441,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            58 => 
+            53 => 
             array (
                 'id' => 69,
                 'key' => 'edit_sequences',
@@ -489,7 +449,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            59 => 
+            54 => 
             array (
                 'id' => 70,
                 'key' => 'add_sequences',
@@ -497,13 +457,53 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            60 => 
+            55 => 
             array (
                 'id' => 71,
                 'key' => 'delete_sequences',
                 'table_name' => 'sequences',
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
+            ),
+            56 => 
+            array (
+                'id' => 72,
+                'key' => 'browse_endpoints',
+                'table_name' => 'endpoints',
+                'created_at' => '2018-08-04 07:39:35',
+                'updated_at' => '2018-08-04 07:39:35',
+            ),
+            57 => 
+            array (
+                'id' => 73,
+                'key' => 'read_endpoints',
+                'table_name' => 'endpoints',
+                'created_at' => '2018-08-04 07:39:35',
+                'updated_at' => '2018-08-04 07:39:35',
+            ),
+            58 => 
+            array (
+                'id' => 74,
+                'key' => 'edit_endpoints',
+                'table_name' => 'endpoints',
+                'created_at' => '2018-08-04 07:39:35',
+                'updated_at' => '2018-08-04 07:39:35',
+            ),
+            59 => 
+            array (
+                'id' => 75,
+                'key' => 'add_endpoints',
+                'table_name' => 'endpoints',
+                'created_at' => '2018-08-04 07:39:35',
+                'updated_at' => '2018-08-04 07:39:35',
+            ),
+            60 => 
+            array (
+                'id' => 76,
+                'key' => 'delete_endpoints',
+                'table_name' => 'endpoints',
+                'created_at' => '2018-08-04 07:39:35',
+                'updated_at' => '2018-08-04 07:39:35',
             ),
         ));
         

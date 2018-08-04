@@ -105,7 +105,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 02:29:14',
-                'updated_at' => '2018-08-04 03:02:56',
+                'updated_at' => '2018-08-04 07:30:18',
             ),
             5 => 
             array (
@@ -127,24 +127,6 @@ class DataTypesTableSeeder extends Seeder
             ),
             6 => 
             array (
-                'id' => 9,
-                'name' => 'endpoints',
-                'slug' => 'endpoints',
-                'display_name_singular' => 'Endpoint',
-                'display_name_plural' => 'Endpoints',
-                'icon' => '',
-                'model_name' => 'App\\Endpoint',
-                'policy_name' => '',
-                'controller' => '',
-                'description' => '',
-                'generate_permissions' => 1,
-                'server_side' => 1,
-                'details' => '{"order_column":"","order_display_column":""}',
-                'created_at' => '2018-08-04 03:17:02',
-                'updated_at' => '2018-08-04 03:18:22',
-            ),
-            7 => 
-            array (
                 'id' => 10,
                 'name' => 'lineprocesses',
                 'slug' => 'lineprocesses',
@@ -159,9 +141,9 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 03:31:01',
-                'updated_at' => '2018-08-04 03:32:25',
+                'updated_at' => '2018-08-04 07:51:57',
             ),
-            8 => 
+            7 => 
             array (
                 'id' => 11,
                 'name' => 'linetypes',
@@ -179,7 +161,7 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:15',
                 'updated_at' => '2018-08-04 03:35:32',
             ),
-            9 => 
+            8 => 
             array (
                 'id' => 12,
                 'name' => 'sequences',
@@ -196,6 +178,24 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:40:29',
+            ),
+            9 => 
+            array (
+                'id' => 13,
+                'name' => 'endpoints',
+                'slug' => 'endpoints',
+                'display_name_singular' => 'Endpoint',
+                'display_name_plural' => 'Endpoints',
+                'icon' => '',
+                'model_name' => 'App\\Endpoint',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-04 07:39:35',
+                'updated_at' => '2018-08-04 07:42:41',
             ),
         ));
         
