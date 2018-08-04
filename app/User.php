@@ -38,4 +38,8 @@ class User extends \TCG\Voyager\Models\User
     {
         $this->attributes['password'] = Hash::make($value);
     }
+
+    public function department(){
+        return $this->belongsTo('App\Department');
+    }
 }
