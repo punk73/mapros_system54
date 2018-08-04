@@ -19,5 +19,9 @@ class DatabaseSeeder extends Seeder
         $this->call(EndpointSeeder::class);
         $this->call(LineSeeder::class);
         $this->call(LinetypeSeeder::class);
+        $this->call(DataRowsTableSeeder::class);
+        $this->call(DataTypesTableSeeder::class);
+        $this->call(MenuItemsTableSeeder::class);
+        $this->call(SettingsTableSeeder::class);
     }
 }
