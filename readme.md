@@ -1,5 +1,8 @@
 ## MAPROS
 
+## Description
+
+
 ## Installation
 
 1. run `composer intsall`
@@ -13,4 +16,5 @@
 9. run `php artisan voyager:admin youremail@email.com` to get admin access.
 10. acctually this is private project,
 
-## Description
+## NOTES
+Don't forget to run `php artisan voyager:install` everytime you run `php artisan migrate:refresh`
