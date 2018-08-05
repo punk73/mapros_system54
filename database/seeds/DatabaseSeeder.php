@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         // user seeder should be in the last
         $this->call(UsersTableSeeder::class);
         $this->call(DepartmentsTableSeeder::class);
+        $this->call(GradesTableSeeder::class);
     }
 }
