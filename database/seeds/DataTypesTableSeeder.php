@@ -66,10 +66,10 @@ class DataTypesTableSeeder extends Seeder
                 'controller' => '',
                 'description' => '',
                 'generate_permissions' => 1,
-                'server_side' => 0,
+                'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 01:47:24',
-                'updated_at' => '2018-08-04 03:00:10',
+                'updated_at' => '2018-08-05 09:43:58',
             ),
             3 => 
             array (
@@ -213,7 +213,25 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-05 07:21:52',
-                'updated_at' => '2018-08-05 07:23:20',
+                'updated_at' => '2018-08-05 09:47:08',
+            ),
+            11 => 
+            array (
+                'id' => 17,
+                'name' => 'grades',
+                'slug' => 'grades',
+                'display_name_singular' => 'Grade',
+                'display_name_plural' => 'Grades',
+                'icon' => '',
+                'model_name' => 'App\\Grade',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-05 09:40:51',
+                'updated_at' => '2018-08-05 09:41:42',
             ),
         ));
         

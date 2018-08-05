@@ -47,7 +47,7 @@
 
                             <div class="form-group">
                                 <label for="name">{{ __('voyager::generic.name') }}</label>
-                                <input type="text" class="form-control" id="name" name="name" placeholder="{{ __('voyager::generic.name') }}"
+                                <input type="text"  class="form-control" id="name" name="name" placeholder="{{ __('voyager::generic.name') }}"
                                        value="@if(isset($dataTypeContent->name)){{ $dataTypeContent->name }}@endif">
                             </div>
 

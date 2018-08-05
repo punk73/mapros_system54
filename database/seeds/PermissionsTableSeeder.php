@@ -545,6 +545,46 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 07:21:52',
                 'updated_at' => '2018-08-05 07:21:52',
             ),
+            66 => 
+            array (
+                'id' => 87,
+                'key' => 'browse_grades',
+                'table_name' => 'grades',
+                'created_at' => '2018-08-05 09:40:51',
+                'updated_at' => '2018-08-05 09:40:51',
+            ),
+            67 => 
+            array (
+                'id' => 88,
+                'key' => 'read_grades',
+                'table_name' => 'grades',
+                'created_at' => '2018-08-05 09:40:51',
+                'updated_at' => '2018-08-05 09:40:51',
+            ),
+            68 => 
+            array (
+                'id' => 89,
+                'key' => 'edit_grades',
+                'table_name' => 'grades',
+                'created_at' => '2018-08-05 09:40:51',
+                'updated_at' => '2018-08-05 09:40:51',
+            ),
+            69 => 
+            array (
+                'id' => 90,
+                'key' => 'add_grades',
+                'table_name' => 'grades',
+                'created_at' => '2018-08-05 09:40:51',
+                'updated_at' => '2018-08-05 09:40:51',
+            ),
+            70 => 
+            array (
+                'id' => 91,
+                'key' => 'delete_grades',
+                'table_name' => 'grades',
+                'created_at' => '2018-08-05 09:40:51',
+                'updated_at' => '2018-08-05 09:40:51',
+            ),
         ));
         
         
