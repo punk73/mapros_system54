@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
         $this->call(EndpointSeeder::class);
         $this->call(LineSeeder::class);
         $this->call(LinetypeSeeder::class);
-        $this->call(VoyagerDatabaseSeeder::class);
-        // user seeder should be in the last
-        $this->call(UsersTableSeeder::class);
         $this->call(DepartmentsTableSeeder::class);
         $this->call(GradesTableSeeder::class);
+        // $this->call(VoyagerDatabaseSeeder::class);
+        // user seeder should be in the last
+        // $this->call(UsersTableSeeder::class);
     }
 }
