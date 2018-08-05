@@ -17,8 +17,10 @@
 10. acctually this is private project,
 
 ## NOTES
-Don't forget to run `php artisan voyager:install` everytime you run `php artisan migrate:refresh`.
+1. Don't forget to run `php artisan voyager:install` everytime you run `php artisan migrate:refresh`.
 and do step 7 again also. 
+
+2. run `php artisan voyager:save` to save your progress in voyager;
 
 ## Test
 run `vendor\bin\phpunit` to run test on this parent directory;

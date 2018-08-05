@@ -305,6 +305,22 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'voyager.sequences.index',
                 'parameters' => NULL,
             ),
+            18 => 
+            array (
+                'id' => 19,
+                'menu_id' => 1,
+                'title' => 'Activity Logs',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => '',
+                'color' => NULL,
+                'parent_id' => NULL,
+                'order' => 22,
+                'created_at' => '2018-08-04 23:49:00',
+                'updated_at' => '2018-08-04 23:49:00',
+                'route' => 'voyager.activity-log.index',
+                'parameters' => NULL,
+            ),
         ));
         
         

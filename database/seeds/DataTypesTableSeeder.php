@@ -73,24 +73,6 @@ class DataTypesTableSeeder extends Seeder
             ),
             3 => 
             array (
-                'id' => 5,
-                'name' => 'users',
-                'slug' => 'users',
-                'display_name_singular' => 'User',
-                'display_name_plural' => 'Users',
-                'icon' => 'voyager-person',
-                'model_name' => 'App\\User',
-                'policy_name' => '',
-                'controller' => '',
-                'description' => '',
-                'generate_permissions' => 1,
-                'server_side' => 1,
-                'details' => '{"order_column":"","order_display_column":""}',
-                'created_at' => '2018-08-04 02:11:11',
-                'updated_at' => '2018-08-04 02:16:17',
-            ),
-            4 => 
-            array (
                 'id' => 7,
                 'name' => 'lines',
                 'slug' => 'lines',
@@ -107,7 +89,7 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:29:14',
                 'updated_at' => '2018-08-04 07:30:18',
             ),
-            5 => 
+            4 => 
             array (
                 'id' => 8,
                 'name' => 'scanners',
@@ -125,7 +107,7 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:38:11',
                 'updated_at' => '2018-08-04 02:57:25',
             ),
-            6 => 
+            5 => 
             array (
                 'id' => 10,
                 'name' => 'lineprocesses',
@@ -143,7 +125,7 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 07:51:57',
             ),
-            7 => 
+            6 => 
             array (
                 'id' => 11,
                 'name' => 'linetypes',
@@ -161,7 +143,7 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:15',
                 'updated_at' => '2018-08-04 03:35:32',
             ),
-            8 => 
+            7 => 
             array (
                 'id' => 12,
                 'name' => 'sequences',
@@ -179,7 +161,7 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:40:29',
             ),
-            9 => 
+            8 => 
             array (
                 'id' => 13,
                 'name' => 'endpoints',
@@ -196,6 +178,42 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 07:39:35',
                 'updated_at' => '2018-08-04 07:42:41',
+            ),
+            9 => 
+            array (
+                'id' => 15,
+                'name' => 'activity_log',
+                'slug' => 'activity-log',
+                'display_name_singular' => 'Activity Log',
+                'display_name_plural' => 'Activity Logs',
+                'icon' => '',
+                'model_name' => 'App\\ActivityLog',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-04 23:49:00',
+                'updated_at' => '2018-08-04 23:51:31',
+            ),
+            10 => 
+            array (
+                'id' => 16,
+                'name' => 'users',
+                'slug' => 'users',
+                'display_name_singular' => 'User',
+                'display_name_plural' => 'Users',
+                'icon' => '',
+                'model_name' => 'App\\User',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-05 07:21:52',
+                'updated_at' => '2018-08-05 07:23:20',
             ),
         ));
         

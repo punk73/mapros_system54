@@ -227,53 +227,13 @@ class PermissionsTableSeeder extends Seeder
             ),
             26 => 
             array (
-                'id' => 32,
-                'key' => 'browse_users',
-                'table_name' => 'users',
-                'created_at' => '2018-08-04 02:11:11',
-                'updated_at' => '2018-08-04 02:11:11',
-            ),
-            27 => 
-            array (
-                'id' => 33,
-                'key' => 'read_users',
-                'table_name' => 'users',
-                'created_at' => '2018-08-04 02:11:11',
-                'updated_at' => '2018-08-04 02:11:11',
-            ),
-            28 => 
-            array (
-                'id' => 34,
-                'key' => 'edit_users',
-                'table_name' => 'users',
-                'created_at' => '2018-08-04 02:11:11',
-                'updated_at' => '2018-08-04 02:11:11',
-            ),
-            29 => 
-            array (
-                'id' => 35,
-                'key' => 'add_users',
-                'table_name' => 'users',
-                'created_at' => '2018-08-04 02:11:11',
-                'updated_at' => '2018-08-04 02:11:11',
-            ),
-            30 => 
-            array (
-                'id' => 36,
-                'key' => 'delete_users',
-                'table_name' => 'users',
-                'created_at' => '2018-08-04 02:11:11',
-                'updated_at' => '2018-08-04 02:11:11',
-            ),
-            31 => 
-            array (
                 'id' => 42,
                 'key' => 'browse_lines',
                 'table_name' => 'lines',
                 'created_at' => '2018-08-04 02:29:14',
                 'updated_at' => '2018-08-04 02:29:14',
             ),
-            32 => 
+            27 => 
             array (
                 'id' => 43,
                 'key' => 'read_lines',
@@ -281,7 +241,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:29:14',
                 'updated_at' => '2018-08-04 02:29:14',
             ),
-            33 => 
+            28 => 
             array (
                 'id' => 44,
                 'key' => 'edit_lines',
@@ -289,7 +249,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:29:14',
                 'updated_at' => '2018-08-04 02:29:14',
             ),
-            34 => 
+            29 => 
             array (
                 'id' => 45,
                 'key' => 'add_lines',
@@ -297,7 +257,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:29:14',
                 'updated_at' => '2018-08-04 02:29:14',
             ),
-            35 => 
+            30 => 
             array (
                 'id' => 46,
                 'key' => 'delete_lines',
@@ -305,7 +265,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:29:14',
                 'updated_at' => '2018-08-04 02:29:14',
             ),
-            36 => 
+            31 => 
             array (
                 'id' => 47,
                 'key' => 'browse_scanners',
@@ -313,7 +273,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:38:11',
                 'updated_at' => '2018-08-04 02:38:11',
             ),
-            37 => 
+            32 => 
             array (
                 'id' => 48,
                 'key' => 'read_scanners',
@@ -321,7 +281,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:38:11',
                 'updated_at' => '2018-08-04 02:38:11',
             ),
-            38 => 
+            33 => 
             array (
                 'id' => 49,
                 'key' => 'edit_scanners',
@@ -329,7 +289,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:38:11',
                 'updated_at' => '2018-08-04 02:38:11',
             ),
-            39 => 
+            34 => 
             array (
                 'id' => 50,
                 'key' => 'add_scanners',
@@ -337,7 +297,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:38:11',
                 'updated_at' => '2018-08-04 02:38:11',
             ),
-            40 => 
+            35 => 
             array (
                 'id' => 51,
                 'key' => 'delete_scanners',
@@ -345,7 +305,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 02:38:11',
                 'updated_at' => '2018-08-04 02:38:11',
             ),
-            41 => 
+            36 => 
             array (
                 'id' => 57,
                 'key' => 'browse_lineprocesses',
@@ -353,7 +313,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            42 => 
+            37 => 
             array (
                 'id' => 58,
                 'key' => 'read_lineprocesses',
@@ -361,7 +321,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            43 => 
+            38 => 
             array (
                 'id' => 59,
                 'key' => 'edit_lineprocesses',
@@ -369,7 +329,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            44 => 
+            39 => 
             array (
                 'id' => 60,
                 'key' => 'add_lineprocesses',
@@ -377,7 +337,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            45 => 
+            40 => 
             array (
                 'id' => 61,
                 'key' => 'delete_lineprocesses',
@@ -385,7 +345,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:31:01',
                 'updated_at' => '2018-08-04 03:31:01',
             ),
-            46 => 
+            41 => 
             array (
                 'id' => 62,
                 'key' => 'browse_linetypes',
@@ -393,7 +353,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            47 => 
+            42 => 
             array (
                 'id' => 63,
                 'key' => 'read_linetypes',
@@ -401,7 +361,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            48 => 
+            43 => 
             array (
                 'id' => 64,
                 'key' => 'edit_linetypes',
@@ -409,7 +369,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            49 => 
+            44 => 
             array (
                 'id' => 65,
                 'key' => 'add_linetypes',
@@ -417,7 +377,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            50 => 
+            45 => 
             array (
                 'id' => 66,
                 'key' => 'delete_linetypes',
@@ -425,7 +385,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:34:16',
                 'updated_at' => '2018-08-04 03:34:16',
             ),
-            51 => 
+            46 => 
             array (
                 'id' => 67,
                 'key' => 'browse_sequences',
@@ -433,7 +393,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            52 => 
+            47 => 
             array (
                 'id' => 68,
                 'key' => 'read_sequences',
@@ -441,7 +401,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            53 => 
+            48 => 
             array (
                 'id' => 69,
                 'key' => 'edit_sequences',
@@ -449,7 +409,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            54 => 
+            49 => 
             array (
                 'id' => 70,
                 'key' => 'add_sequences',
@@ -457,7 +417,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            55 => 
+            50 => 
             array (
                 'id' => 71,
                 'key' => 'delete_sequences',
@@ -465,7 +425,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 03:38:49',
                 'updated_at' => '2018-08-04 03:38:49',
             ),
-            56 => 
+            51 => 
             array (
                 'id' => 72,
                 'key' => 'browse_endpoints',
@@ -473,7 +433,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 07:39:35',
                 'updated_at' => '2018-08-04 07:39:35',
             ),
-            57 => 
+            52 => 
             array (
                 'id' => 73,
                 'key' => 'read_endpoints',
@@ -481,7 +441,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 07:39:35',
                 'updated_at' => '2018-08-04 07:39:35',
             ),
-            58 => 
+            53 => 
             array (
                 'id' => 74,
                 'key' => 'edit_endpoints',
@@ -489,7 +449,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 07:39:35',
                 'updated_at' => '2018-08-04 07:39:35',
             ),
-            59 => 
+            54 => 
             array (
                 'id' => 75,
                 'key' => 'add_endpoints',
@@ -497,13 +457,93 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-04 07:39:35',
                 'updated_at' => '2018-08-04 07:39:35',
             ),
-            60 => 
+            55 => 
             array (
                 'id' => 76,
                 'key' => 'delete_endpoints',
                 'table_name' => 'endpoints',
                 'created_at' => '2018-08-04 07:39:35',
                 'updated_at' => '2018-08-04 07:39:35',
+            ),
+            56 => 
+            array (
+                'id' => 77,
+                'key' => 'browse_activity_log',
+                'table_name' => 'activity_log',
+                'created_at' => '2018-08-04 23:49:00',
+                'updated_at' => '2018-08-04 23:49:00',
+            ),
+            57 => 
+            array (
+                'id' => 78,
+                'key' => 'read_activity_log',
+                'table_name' => 'activity_log',
+                'created_at' => '2018-08-04 23:49:00',
+                'updated_at' => '2018-08-04 23:49:00',
+            ),
+            58 => 
+            array (
+                'id' => 79,
+                'key' => 'edit_activity_log',
+                'table_name' => 'activity_log',
+                'created_at' => '2018-08-04 23:49:00',
+                'updated_at' => '2018-08-04 23:49:00',
+            ),
+            59 => 
+            array (
+                'id' => 80,
+                'key' => 'add_activity_log',
+                'table_name' => 'activity_log',
+                'created_at' => '2018-08-04 23:49:00',
+                'updated_at' => '2018-08-04 23:49:00',
+            ),
+            60 => 
+            array (
+                'id' => 81,
+                'key' => 'delete_activity_log',
+                'table_name' => 'activity_log',
+                'created_at' => '2018-08-04 23:49:00',
+                'updated_at' => '2018-08-04 23:49:00',
+            ),
+            61 => 
+            array (
+                'id' => 82,
+                'key' => 'browse_users',
+                'table_name' => 'users',
+                'created_at' => '2018-08-05 07:21:52',
+                'updated_at' => '2018-08-05 07:21:52',
+            ),
+            62 => 
+            array (
+                'id' => 83,
+                'key' => 'read_users',
+                'table_name' => 'users',
+                'created_at' => '2018-08-05 07:21:52',
+                'updated_at' => '2018-08-05 07:21:52',
+            ),
+            63 => 
+            array (
+                'id' => 84,
+                'key' => 'edit_users',
+                'table_name' => 'users',
+                'created_at' => '2018-08-05 07:21:52',
+                'updated_at' => '2018-08-05 07:21:52',
+            ),
+            64 => 
+            array (
+                'id' => 85,
+                'key' => 'add_users',
+                'table_name' => 'users',
+                'created_at' => '2018-08-05 07:21:52',
+                'updated_at' => '2018-08-05 07:21:52',
+            ),
+            65 => 
+            array (
+                'id' => 86,
+                'key' => 'delete_users',
+                'table_name' => 'users',
+                'created_at' => '2018-08-05 07:21:52',
+                'updated_at' => '2018-08-05 07:21:52',
             ),
         ));
         
