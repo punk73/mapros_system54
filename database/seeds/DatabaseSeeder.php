@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(VoyagerDatabaseSeeder::class);
         // user seeder should be in the last
         $this->call(UsersTableSeeder::class);
+        $this->call(DepartmentsTableSeeder::class);
     }
 }
