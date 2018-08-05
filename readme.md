@@ -22,6 +22,8 @@ and do step 7 again also.
 
 2. run `php artisan voyager:save` to save your progress in voyager;
 
+3. you need to specify your env `APP_URL` into sub dir if develop using xampp. example: `APP_URL=http://localhost/mapros_system54`
+
 ## Test
 run `vendor\bin\phpunit` to run test on this parent directory;
 don't forget to changes `<env name="DB_DATABASE" value="your-test-db"/>` on phpunit.xml to refer to your db 
