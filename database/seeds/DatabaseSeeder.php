@@ -23,5 +23,12 @@ class DatabaseSeeder extends Seeder
         // $this->call(VoyagerDatabaseSeeder::class);
         // user seeder should be in the last
         // $this->call(UsersTableSeeder::class);
+        $this->call(DataTypesTableSeeder::class);
+        $this->call(DataRowsTableSeeder::class);
+        $this->call(MenusTableSeeder::class);
+        $this->call(MenuItemsTableSeeder::class);
+        $this->call(PermissionsTableSeeder::class);
+        $this->call(PermissionRoleTableSeeder::class);
+        $this->call(SettingsTableSeeder::class);
     }
 }
