@@ -40,10 +40,9 @@ class MainController extends Controller
 
     public function store(BoardRequest $request ){
     	$parameter = $this->getParameter($request);
-
         // cek apakah board id atau ticket;
         $node = new Node($parameter);
-        $result = $node->getBoardType();
+        $result = $node->getBoardType(); //$node->getBoardType();
         // var_dump($result);
         return $result;
         // jika board id, kita kerja di table boards;

@@ -8,6 +8,7 @@ use App\Model;
 use App\Board;
 use App\Ticket;
 use App\Scanner;
+use App\Mastermodel;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Node
@@ -31,6 +32,10 @@ class Node
 	public $status;
 	public $judge = 'OK';
 	public $nik;
+	public $board = [
+		'name' => null,
+		'pwbname' => null,
+	];
 	protected $dummy_column;
 
 	function __construct($parameter)
@@ -55,6 +60,7 @@ class Node
 			'status' 		=> $this->status,
 			'judge' 		=> $this->judge,
 			'nik' 			=> $this->nik,
+			'board'			=> $this->board,
 		]);
 	}
 
@@ -98,7 +104,7 @@ class Node
 
 	protected $big_url = 'http://136.198.117.48/big/public/api/models';
 
-	public function getBoardType($board_id = null, $url=null){
+	public function getBoardTypeCurl($board_id = null, $url=null){
 		// what if board id morethan 5 character ??
 		// what if board id null ??
 		if (is_null( $board_id)) {
@@ -150,6 +156,34 @@ class Node
 		}else{
 			throw new HttpException(422);	
 		}
+	}
+
+	public function getBoardType($board_id = null){
+		if (is_null($board_id)) {
+			$board_id = $this->dummy_id;
+			// get first 5 digit of char
+
+			// it'll need to be changed due to changes in big system
+			$board_id = substr($board_id, 0, 5);
+		}
+
+		$model = Mastermodel::select([
+			'name',
+			'pwbname',
+		])->where('code', $board_id )
+		->first();
+
+		if ($model) {
+			$this->board['name'] = $model['name'];
+			$this->board['pwbname'] = $model['pwbname'];
+		}
+
+		return $this;
+
+	}
+
+	public function getSequence(){
+
 	}
 
 	public function prev(){

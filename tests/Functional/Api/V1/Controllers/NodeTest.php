@@ -76,7 +76,16 @@ class NodeTest extends TestCase
     }
 
     public function testGetBoardTypeSuccess(){
+        $parameter = $this->parameter;
+        $node = new Node($parameter);
         
+        $boardType = $node->getBoardType();
+        $boardType = (array) $boardType;
+
+        $this->assertArrayHasKey('name', $boardType['board']);
+        $this->assertArrayHasKey('pwbname', $boardType['board']);
+        $this->assertNotNull($boardType['board']['name']);
+        $this->assertNotNull($boardType['board']['pwbname']);
     }
 
     public function testGetBoardTypeFailedDataNotFound(){
@@ -84,8 +93,13 @@ class NodeTest extends TestCase
         $parameter['board_id'] = 'FFFFFIA01001007'; // --> it's set to be not found!
         $node = new Node($parameter);
         
-        $this->expectException(HttpException::class);
         $boardType = $node->getBoardType();
+        $boardType = (array) $boardType;
+        
+        $this->assertArrayHasKey('name', $boardType['board']);
+        $this->assertArrayHasKey('pwbname', $boardType['board']);
+        $this->assertNull($boardType['board']['name']);
+        $this->assertNull($boardType['board']['pwbname']);   
     }    
 
     public function testPrevMethod(){
