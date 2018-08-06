@@ -52,8 +52,9 @@ class MainController extends Controller
 
         // cek current is null;
         if(!$node->isExists()){
-            // $node->prev()->isExists();
-            return $node->prev();
+            // cek kondisi sebelumnya 
+            return $node->prev()->prev();
+            
         }
         // if is_solder == true, maka cek data di table boards based on boad id & scanner_id
 

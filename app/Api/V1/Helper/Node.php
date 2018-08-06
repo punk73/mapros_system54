@@ -10,6 +10,7 @@ use App\Ticket;
 use App\Scanner;
 use App\Sequence;
 use App\Mastermodel;
+use App\Lineprocess;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 
@@ -39,6 +40,7 @@ class Node
 		'name' => null,
 		'pwbname' => null,
 	];
+	public $lineprocess;
 	public $process;
 	protected $dummy_column;
 
@@ -69,7 +71,8 @@ class Node
 			'judge' 		=> $this->judge,
 			'nik' 			=> $this->nik,
 			'board'			=> $this->board,
-			'process'		=> $this->process
+			'process'		=> $this->process,
+			'lineprocess'	=> $this->lineprocess
 		]);
 	}
 
@@ -248,7 +251,11 @@ class Node
 		return $this->process;
 	}
 
-	public function prev(){
+	public function setProcessType(Lineprocess $lineprocess){
+		$this->lineprocess = $lineprocess;
+	}
+
+	public function move($step = 1){
 		if( is_null($this->process) ){
 			throw new StoreResourceFailedException("Process Not found", [
                 'message' => 'Process not found'
@@ -275,7 +282,64 @@ class Node
             ]);	
 		}
 
-		// return [$this->scanner['lineprocess_id'], $process];
+		// kalau 0, maka ga ada prev;
+		if(!$key == 0 ){
+			$newIndex = $key + $step;
+			// cek new index key ada di array $process as key. prevent index not found error 
+			if(array_key_exists($newIndex, $process )){
+			
+				$newLineProcessId = $process[$newIndex];
 
+				// cek status internal atau external
+				$lineprocess = Lineprocess::select([
+					'id',
+					'name',
+					'type',
+					'std_time',
+					'endpoint_id',
+				])->find($newLineProcessId);
+
+				if(!$lineprocess->exists){
+					throw new StoreResourceFailedException("lineprocess not found", [
+		                'current_step' 	=> $this->scanner['lineprocess_id'],
+		                'process'		=> $process,
+		            ]);			
+				}
+
+				// setup lineprocess;
+				$this->setProcessType($lineprocess);
+
+				$scanner = Scanner::select([
+					'id',
+					'line_id',
+					'lineprocess_id',
+					'name',
+					'mac_address',
+					'ip_address',
+				])->where('lineprocess_id', $newLineProcessId )
+				->first();
+	
+				if(!$scanner){ //kalau scanner tidak ketemu
+					throw new StoreResourceFailedException("scanner not registered yet", [
+		                'message' => 'scanner not registered yet'
+		            ]);
+				}
+				// setup new scanner id value;
+				$this->scanner_id = $scanner['id'];
+				$this->scanner = $scanner;
+			}
+
+		}
+
+		return $this;
+
+	}
+
+	public function prev(){
+		return $this->move(-1);
+	}
+
+	public function next(){
+		return $this->move(1);
 	}
 }
