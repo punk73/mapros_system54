@@ -8,8 +8,10 @@ use App\Model;
 use App\Board;
 use App\Ticket;
 use App\Scanner;
+use App\Sequence;
 use App\Mastermodel;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Dingo\Api\Exception\StoreResourceFailedException;
 
 class Node
 {
@@ -26,6 +28,7 @@ class Node
 	];
 
 	public $scanner_id;
+	public $scanner;
 	public $dummy_id; //it could be ticket_no, board_id, ticket_no_master based on the model
 	public $guid_master;
 	public $guid_ticket;
@@ -36,10 +39,10 @@ class Node
 		'name' => null,
 		'pwbname' => null,
 	];
+	public $process;
 	protected $dummy_column;
 
-	function __construct($parameter)
-	{	
+	function __construct($parameter){	
 		// setup model
 		$this->setModel($parameter);
 		// setup scanner_id;
@@ -49,11 +52,16 @@ class Node
 		$this->nik = $parameter['nik'];
 		// setup board_id
 		$this->dummy_id = $parameter['board_id'];
+
+		$this->getBoardType();
+		// run to get sequence and set to process attribute
+		$this->getSequence();
 	}
 
 	public function __toString(){
 		return json_encode([
 			'scanner_id' 	=> $this->scanner_id,
+			'scanner'		=> $this->scanner,
 			'dummy_id' 		=> $this->dummy_id,
 			'guid_master' 	=> $this->guid_master,
 			'guid_ticket' 	=> $this->guid_ticket,
@@ -61,14 +69,25 @@ class Node
 			'judge' 		=> $this->judge,
 			'nik' 			=> $this->nik,
 			'board'			=> $this->board,
+			'process'		=> $this->process
 		]);
 	}
 
+	// automaticly triggered on instantiate
 	public function setScannerId($scanner_ip){
-		$scanner = (Scanner::where('ip_address', $scanner_ip )->exists()) ? Scanner::where('ip_address', $scanner_ip )->first() : null ;
+		$scanner = (Scanner::where('ip_address', $scanner_ip )->exists()) ? Scanner::select([
+			'id',
+			'line_id',
+			'lineprocess_id',
+			'name',
+			'mac_address',
+			'ip_address',
+		])->where('ip_address', $scanner_ip )->first() : null ;
+		$this->scanner = $scanner;
 		$this->scanner_id = $scanner['id'];
 	}
 
+	//triggered on instantiate 
 	private function setModel($parameter){
 		$code = substr($parameter['board_id'], 0, 3);
 		// setup which model to work with
@@ -101,9 +120,10 @@ class Node
 			->count() > 0 
 		);
 	}
-
+	
+	// no longer use due to huge latency
 	protected $big_url = 'http://136.198.117.48/big/public/api/models';
-
+	// no longer use due to huge latency
 	public function getBoardTypeCurl($board_id = null, $url=null){
 		// what if board id morethan 5 character ??
 		// what if board id null ??
@@ -174,19 +194,88 @@ class Node
 		->first();
 
 		if ($model) {
-			$this->board['name'] = $model['name'];
-			$this->board['pwbname'] = $model['pwbname'];
+			$this->setBoard($model);
 		}
 
 		return $this;
 
 	}
 
+	public function setBoard($model=['name'=>null, 'pwbname'=>null ]){
+		$this->board['name'] = $model['name'];
+		$this->board['pwbname'] = $model['pwbname'];
+	}
+
+	public function getBoard(){
+		return $this->board;
+	}
+
+	public function getScanner(){
+		return $this->scanner;
+	}
+
+	// it used to set process
 	public function getSequence(){
+		$board   = $this->getBoard();
+		$scanner = $this->getScanner();
+
+
+		if (!is_null($board['name'])) {
+			# code...
+
+			$sequence = Sequence::select(['process'])->where('modelname', $board['name'] )
+			->where('pwbname', $board['pwbname'])
+			->where('line_id', $scanner['line_id'] )
+			->first();
+
+			if($sequence){
+				$this->setProcess($sequence['process']);
+			}
+		}
+
+		return $this;
 
 	}
 
+	public function setProcess($process){
+		$this->process = $process;
+	}
+
+	public function getProcess(){
+		if (is_null( $this->process) ) {
+			$this->getSequence();
+		}
+		return $this->process;
+	}
+
 	public function prev(){
+		if( is_null($this->process) ){
+			throw new StoreResourceFailedException("Process Not found", [
+                'message' => 'Process not found'
+            ]);
+		}
+
+		if(is_null($this->scanner)){
+			throw new StoreResourceFailedException("scanner not registered yet", [
+                'message' => 'scanner not registered yet'
+            ]);
+		}
+
+		// set process into array
+		$process = explode(',', $this->process);
 		
+		// get current process index;
+		$key = array_search($this->scanner['lineprocess_id'], $process );
+		
+		// $lineprocess_id tidak ditemukan di $process
+		if (!$key) {
+			throw new StoreResourceFailedException("this step shouldn't belong to the process", [
+                'current_step' 	=> $this->scanner['lineprocess_id'],
+                'process'		=> $process,
+            ]);	
+		}
+
+		// return [$this->scanner['lineprocess_id'], $process];
+
 	}
 }

@@ -15,7 +15,7 @@ class NodeTest extends TestCase
     use DatabaseMigrations;
 
     protected $parameter = [
-        'board_id'=> '00055IA01001007',
+        'board_id'=> '00001IA01001007', //KW-R710H3A9N
         'nik' => '39596',
         'ip' => '::1', //localhost scanner
         'is_solder' => false,
@@ -29,8 +29,19 @@ class NodeTest extends TestCase
     */
 
     public function testInstanstiateNodeClassSuccess(){
+        $this->seedDb();
+
         $node = new Node($this->parameter);
+
         $this->assertInstanceOf('App\Board', $node->getModel() );
+        $this->assertNotNull($node->scanner_id);
+        $this->assertNotNull($node->dummy_id);
+        $this->assertNotNull($node->nik);
+        // $this->assertNotNull($node->process);
+    }
+
+    public function testGetSequence(){
+
     }
 
     private function addModel(){
@@ -100,7 +111,11 @@ class NodeTest extends TestCase
         $this->assertArrayHasKey('pwbname', $boardType['board']);
         $this->assertNull($boardType['board']['name']);
         $this->assertNull($boardType['board']['pwbname']);   
-    }    
+    } 
+
+    public function testGetSequenceSuccess(){
+
+    }
 
     public function testPrevMethod(){
         

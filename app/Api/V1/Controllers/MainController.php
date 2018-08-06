@@ -11,6 +11,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Http\Request;
 use App\Api\V1\Traits\LoggerHelper;
 use App\Api\V1\Helper\Node;
+use Dingo\Api\Exception\StoreResourceFailedException;
 
 class MainController extends Controller
 {
@@ -42,13 +43,18 @@ class MainController extends Controller
     	$parameter = $this->getParameter($request);
         // cek apakah board id atau ticket;
         $node = new Node($parameter);
-        $result = $node->getBoardType(); //$node->getBoardType();
-        // var_dump($result);
-        return $result;
-        // jika board id, kita kerja di table boards;
 
-        // cek data scanner, yaitu scanner yang memiliki ip yg dikirim client ( $request->ip() )
-    	
+        if(is_null($node->scanner_id)){
+            throw new StoreResourceFailedException("scanner not registered yet", [
+                'message' => 'scanner not registered yet'
+            ]);
+        }
+
+        // cek current is null;
+        if(!$node->isExists()){
+            // $node->prev()->isExists();
+            return $node->prev();
+        }
         // if is_solder == true, maka cek data di table boards based on boad id & scanner_id
 
     }
