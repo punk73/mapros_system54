@@ -16,6 +16,8 @@ class CreateTableSequences extends Migration
         Schema::create('sequences', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('modelname');
+            $table->string('pwbname');
             $table->integer('line_id');
             $table->string('process'); //collection of line process  
             $table->integer('update_by')->nullable();
