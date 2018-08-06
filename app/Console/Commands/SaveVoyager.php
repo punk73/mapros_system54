@@ -42,7 +42,7 @@ class SaveVoyager extends Command
             'data_rows',
             'menus',
             'menu_items',
-            'roles',
+            // 'roles', // we don't need to save roles, since it is only contain admin and users; we don't need it 
             'permissions',
             'permission_role',
             'settings',
