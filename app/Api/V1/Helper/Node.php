@@ -58,6 +58,9 @@ class Node
 		$this->getBoardType();
 		// run to get sequence and set to process attribute
 		$this->getSequence();
+
+		// set lineprocess
+		$this->setLineprocess($this->scanner['lineprocess_id']);
 	}
 
 	public function __toString(){
@@ -116,12 +119,22 @@ class Node
 	}
 
 	public function isExists(){
-		return (
-			$this->model
-			->where( 'scanner_id' , $this->scanner_id  )
-			->where( $this->dummy_column, $this->dummy_id )
-			->count() > 0 
-		);
+		if(is_null($this->lineprocess)){
+			throw new StoreResourceFailedException("this lineprocess is not set", [
+				'message' => $this->lineprocess
+			]);	
+		}
+
+		if($this->lineprocess['type'] == 1 ){
+			return (
+				$this->model
+				->where( 'scanner_id' , $this->scanner_id  )
+				->where( $this->dummy_column, $this->dummy_id )
+				->count() > 0 
+			);
+		}else{
+			// send cURL here;
+		}
 	}
 	
 	// no longer use due to huge latency
@@ -251,7 +264,24 @@ class Node
 		return $this->process;
 	}
 
-	public function setProcessType(Lineprocess $lineprocess){
+	public function setLineprocess($lineprocess_id){
+
+		// cek status internal atau external
+		$lineprocess = Lineprocess::select([
+			'id',
+			'name',
+			'type',
+			'std_time',
+			'endpoint_id',
+		])->find($lineprocess_id);
+
+		if(!$lineprocess->exists){
+			throw new StoreResourceFailedException("lineprocess not found", [
+                'current_step' 	=> $this->scanner['lineprocess_id'],
+                'process'		=> $process,
+            ]);			
+		}
+
 		$this->lineprocess = $lineprocess;
 	}
 
@@ -290,24 +320,8 @@ class Node
 			
 				$newLineProcessId = $process[$newIndex];
 
-				// cek status internal atau external
-				$lineprocess = Lineprocess::select([
-					'id',
-					'name',
-					'type',
-					'std_time',
-					'endpoint_id',
-				])->find($newLineProcessId);
-
-				if(!$lineprocess->exists){
-					throw new StoreResourceFailedException("lineprocess not found", [
-		                'current_step' 	=> $this->scanner['lineprocess_id'],
-		                'process'		=> $process,
-		            ]);			
-				}
-
 				// setup lineprocess;
-				$this->setProcessType($lineprocess);
+				$this->setLineprocess($newLineProcessId);
 
 				$scanner = Scanner::select([
 					'id',
