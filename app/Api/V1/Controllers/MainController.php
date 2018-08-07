@@ -17,10 +17,6 @@ class MainController extends Controller
 {
     use LoggerHelper;
 
-    public function __construct (){
-        $this->model = new Board;
-    }
-
     protected $allowedParameter = [
         'board_id',
         'nik',
@@ -44,16 +40,15 @@ class MainController extends Controller
         // cek apakah board id atau ticket;
         $node = new Node($parameter);
 
-        if(is_null($node->scanner_id)){
-            throw new StoreResourceFailedException("scanner not registered yet", [
-                'message' => 'scanner not registered yet'
-            ]);
-        }
-
         // cek current is null;
         if(!$node->isExists()){
-            // cek kondisi sebelumnya 
-            return $node->prev()->prev();
+            // cek kondisi sebelumnya is null
+            if (!$node->prev()->isExists()){
+                // ga ada,
+                throw new Exception("Error Processing Request", 1);
+            };
+                  
+
             
         }
         // if is_solder == true, maka cek data di table boards based on boad id & scanner_id

@@ -49,6 +49,8 @@ class NodeTest extends TestCase
 
     }
 
+
+
     private function addModel(){
         $board = new Board;
         $board->scanner_id = 11; //scanner_id untuk ip ::1
@@ -68,6 +70,8 @@ class NodeTest extends TestCase
     public function testIsExistsReturnFalse(){
         $board = Board::all();
         $this->assertEquals(count($board), 0, 'this model should empty for testing it' );
+
+        $this->seedDb();
 
         $node = new Node($this->parameter);
         $this->assertEquals( false, $node->isExists() );
@@ -93,6 +97,8 @@ class NodeTest extends TestCase
     }
 
     public function testGetBoardTypeSuccess(){
+        $this->seedDb();
+
         $parameter = $this->parameter;
         $node = new Node($parameter);
         
@@ -123,7 +129,6 @@ class NodeTest extends TestCase
     }
 
     public function testPrevMethod(){
-        
     }
 
     private function addLineprocess(){
@@ -149,7 +154,6 @@ class NodeTest extends TestCase
         $node = new Node($this->parameter);
 
         $this->assertInstanceOf('App\Lineprocess', $node->lineprocess);
-
     }
 
     public function testSetLineprocessFailedNotFound(){

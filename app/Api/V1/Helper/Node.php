@@ -124,7 +124,7 @@ class Node
 		return $this->model;
 	}
 
-	public function isExists(){
+	public function isExists($status=null, $judge=null){
 		if(is_null($this->lineprocess)){
 			throw new StoreResourceFailedException("this lineprocess is not set", [
 				'message' => $this->lineprocess
@@ -132,16 +132,46 @@ class Node
 		}
 
 		if($this->lineprocess['type'] == 1 ){
-			return (
-				$this->model
-				->where( 'scanner_id' , $this->scanner_id  )
-				->where( $this->dummy_column, $this->dummy_id )
-				->count() > 0 
-			);
+			// masuk kesini jika internal;
+			$model = $this->model
+			->where( 'scanner_id' , $this->scanner_id  )
+			->where( $this->dummy_column, $this->dummy_id );
+			
+			if (!is_null($status)) {
+				$model = $model->where('status', 'like', $status.'%' );
+			}
+
+			if (!is_null($judge)) {
+				$model = $model->where('judge', 'like', $judge.'%' );
+			}
+			
+			return $model = $model->count() > 0; 
+			
 		}else{
 			// send cURL here;
 		}
 	}
+
+	public function isIn(){
+		return $this->isExists('IN');
+	}
+
+	public function isOut(){
+		return $this->isExists('OUT');
+	}
+
+	public function isOk(){
+		return $this->isExists(null, 'OK');
+	}
+
+	public function isInOk(){
+		return $this->isExists('IN', 'OK');
+	}
+
+	public function isOutOK(){
+		return $this->isExists('OUT', 'OK');
+	}
+
 	
 	// no longer use due to huge latency
 	protected $big_url = 'http://136.198.117.48/big/public/api/models';
