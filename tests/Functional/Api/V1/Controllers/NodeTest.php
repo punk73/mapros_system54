@@ -7,8 +7,10 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Api\V1\Helper\Node;
 use App\Board;
 use App\Scanner;
+use App\Lineprocess;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Dingo\Api\Exception\StoreResourceFailedException;
 
 class NodeTest extends TestCase
 {
@@ -29,14 +31,17 @@ class NodeTest extends TestCase
     */
 
     public function testInstanstiateNodeClassSuccess(){
-        $this->seedDb();
+        $this->seedDb(); //seed the table
 
         $node = new Node($this->parameter);
 
         $this->assertInstanceOf('App\Board', $node->getModel() );
+        $this->assertInstanceOf('App\Scanner', $node->getScanner() );
+        $this->assertInstanceOf('App\Lineprocess', $node->getLineprocess() );
         $this->assertNotNull($node->scanner_id);
         $this->assertNotNull($node->dummy_id);
         $this->assertNotNull($node->nik);
+
         // $this->assertNotNull($node->process);
     }
 
@@ -56,7 +61,8 @@ class NodeTest extends TestCase
     public function seedDb(){
         // it's mean to seed the db for testing purpose;
         // Artisan::call('migrate:refresh');
-        Artisan::call('db:seed', ['--class'=>'ScannerSeeder'] );
+        // Artisan::call('db:seed', ['--class'=>'ScannerSeeder'] );
+        Artisan::call('db:seed');
     }
 
     public function testIsExistsReturnFalse(){
@@ -114,12 +120,45 @@ class NodeTest extends TestCase
     } 
 
     public function testGetSequenceSuccess(){
-
     }
 
     public function testPrevMethod(){
         
+    }
 
+    private function addLineprocess(){
+        $lineprocess = new Lineprocess([
+            'name' => 'test process',
+            'type' => 1, //internal
+            'std_time' => 30, //30 seconds
+        ]);
+    }
+
+    public function setScannerFailed(){
+        // set expected exception
+        // below exception throw when scanner ip not found;
+        $this->expectException(StoreResourceFailedException::class);
+        
+        $node = new Node($this->parameter);
+    }
+
+    public function testSetLineprocessSuccess(){
+        // add lineprocess into
+        $this->seedDb();
+        // $node->setLineprocess($id) is triggered in constructor;
+        $node = new Node($this->parameter);
+
+        $this->assertInstanceOf('App\Lineprocess', $node->lineprocess);
+
+    }
+
+    public function testSetLineprocessFailedNotFound(){
+        // set expected exception
+        $this->expectException(StoreResourceFailedException::class);
+        // run method that triggered the exception due to model not found;
+        
+        // $node->setLineprocess($lineprocessId) is triggered in constructor;
+        $node = new Node($this->parameter);
     }
 
 }

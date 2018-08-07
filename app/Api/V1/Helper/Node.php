@@ -27,7 +27,6 @@ class Node
         'ip',
         'is_solder'
 	];
-
 	public $scanner_id;
 	public $scanner;
 	public $dummy_id; //it could be ticket_no, board_id, ticket_no_master based on the model
@@ -81,14 +80,21 @@ class Node
 
 	// automaticly triggered on instantiate
 	public function setScannerId($scanner_ip){
-		$scanner = (Scanner::where('ip_address', $scanner_ip )->exists()) ? Scanner::select([
+		$scanner = Scanner::select([
 			'id',
 			'line_id',
 			'lineprocess_id',
 			'name',
 			'mac_address',
 			'ip_address',
-		])->where('ip_address', $scanner_ip )->first() : null ;
+		])->where('ip_address', $scanner_ip )->first();
+
+		if (is_null($scanner)) {
+			throw new StoreResourceFailedException("Scanner with ip=".$scanner_ip." not found", [
+				'ip_address' => $scanner_ip,
+			]);
+		}
+
 		$this->scanner = $scanner;
 		$this->scanner_id = $scanner['id'];
 	}
@@ -214,7 +220,6 @@ class Node
 		}
 
 		return $this;
-
 	}
 
 	public function setBoard($model=['name'=>null, 'pwbname'=>null ]){
@@ -250,7 +255,6 @@ class Node
 		}
 
 		return $this;
-
 	}
 
 	public function setProcess($process){
@@ -275,14 +279,18 @@ class Node
 			'endpoint_id',
 		])->find($lineprocess_id);
 
-		if(!$lineprocess->exists){
-			throw new StoreResourceFailedException("lineprocess not found", [
+		if($lineprocess == null){
+			throw new StoreResourceFailedException("lineprocess with id=".$lineprocess_id." not found", [
                 'current_step' 	=> $this->scanner['lineprocess_id'],
-                'process'		=> $process,
+                'process'		=> $this->process,
             ]);			
 		}
 
 		$this->lineprocess = $lineprocess;
+	}
+
+	public function getLineprocess(){
+		return $this->lineprocess;
 	}
 
 	public function move($step = 1){
@@ -320,7 +328,7 @@ class Node
 			
 				$newLineProcessId = $process[$newIndex];
 
-				// setup lineprocess;
+				// setup $this->lineprocess to prev step;
 				$this->setLineprocess($newLineProcessId);
 
 				$scanner = Scanner::select([
@@ -346,7 +354,6 @@ class Node
 		}
 
 		return $this;
-
 	}
 
 	public function prev(){

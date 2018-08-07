@@ -10,6 +10,10 @@ class Lineprocess extends Model implements LogsActivityInterface
 {
     protected $table = 'lineprocesses';
 
+    protected $fillable = [
+    	'name','type','std_time',
+    ];
+
     use LogsActivity; //use Logs traits
 
     public function getActivityDescriptionForEvent($eventName)
