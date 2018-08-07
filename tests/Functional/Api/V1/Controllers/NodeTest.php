@@ -33,6 +33,11 @@ class NodeTest extends TestCase
     public function testInstanstiateNodeClassSuccess(){
         $this->seedDb(); //seed the table
 
+        $this->addBoard();
+
+        // assert that board has already setup
+        $this->assertGreaterThan(0, count(Board::all()));
+
         $node = new Node($this->parameter);
 
         $this->assertInstanceOf('App\Board', $node->getModel() );
@@ -41,6 +46,11 @@ class NodeTest extends TestCase
         $this->assertNotNull($node->scanner_id);
         $this->assertNotNull($node->dummy_id);
         $this->assertNotNull($node->nik);
+        
+        // assert method loadStep run properly
+        $this->assertNotNull($node->getStatus());
+        $this->assertNotNull($node->getJudge());
+
 
         // $this->assertNotNull($node->process);
     }
@@ -109,6 +119,40 @@ class NodeTest extends TestCase
         $this->assertArrayHasKey('pwbname', $boardType['board']);
         $this->assertNotNull($boardType['board']['name']);
         $this->assertNotNull($boardType['board']['pwbname']);
+    }
+
+    private function addBoard(){
+        $board = new Board([
+            'board_id' => $this->parameter['board_id'],
+            'scanner_id' => 11, //scanner id of 
+            'status' => 'IN',
+            'judge' => 'OK',
+            'scan_nik' => '39597',
+        ]);
+        $board->save();
+    }
+
+    public function testLoadStepSuccess(){
+        $this->seedDb();
+        $this->addBoard();
+
+        $this->assertGreaterThan(0, count(Board::all()) );
+
+        $node = New Node($this->parameter);
+        $node->loadStep();
+
+        $this->assertNotNull($node->getStatus());
+        $this->assertNotNull($node->getJudge());
+
+    }
+
+    public function testLoadStepFailed(){
+        $node = New Node($this->parameter);
+        $node->loadStep();
+
+        $this->assertNull($node->getStatus());
+        $this->assertNull($node->getJudge());
+
     }
 
     public function testGetBoardTypeFailedDataNotFound(){

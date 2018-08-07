@@ -40,26 +40,35 @@ class Node
 		'pwbname' => null,
 	];
 	public $lineprocess;
+	public $is_solder;
 	public $process;
 	protected $dummy_column;
+	protected $model_type;
+	protected $step;
 
 	function __construct($parameter){	
-		// setup model
+		// setup model (board, ticket, or master)
 		$this->setModel($parameter);
 		// setup scanner_id;
 		$ip = $parameter['ip'];
 		$this->setScannerId($ip);
+
+		// setup is_solder
+		$this->is_solder = $parameter['is_solder'];
 		// setup nik
 		$this->nik = $parameter['nik'];
 		// setup board_id
 		$this->dummy_id = $parameter['board_id'];
-
+		// get board type from big & set into board properties
 		$this->getBoardType();
 		// run to get sequence and set to process attribute
 		$this->getSequence();
 
 		// set lineprocess
 		$this->setLineprocess($this->scanner['lineprocess_id']);
+
+		// set status & judge
+		$this->loadStep();
 	}
 
 	public function __toString(){
@@ -90,8 +99,9 @@ class Node
 		])->where('ip_address', $scanner_ip )->first();
 
 		if (is_null($scanner)) {
-			throw new StoreResourceFailedException("Scanner with ip=".$scanner_ip." not found", [
+			throw new StoreResourceFailedException("Scanner with ip=".$scanner_ip." not found. Perhaps scanner not registered yet", [
 				'ip_address' => $scanner_ip,
+				'message' => 'scanner not registered yet'
 			]);
 		}
 
@@ -108,20 +118,27 @@ class Node
 			if($code == 'MST'){
 				$this->model = new Master;
 				$this->dummy_column = 'ticket_no_master';
+				$this->model_type = 'master';
 			}else {
 				$this->model = new Ticket;
 				$this->dummy_column = 'ticket_no';
+				$this->model_type = 'ticket';
 			}
 		}else {
 			// it is a board, we working with board;
 			$this->model = new Board;
 			$this->dummy_column = 'board_id';
+			$this->model_type = 'board';
 
 		}
 	}
 
 	public function getModel(){
 		return $this->model;
+	}
+
+	public function getModelType(){
+		return $this->model_type;
 	}
 
 	public function isExists($status=null, $judge=null){
@@ -143,6 +160,10 @@ class Node
 
 			if (!is_null($judge)) {
 				$model = $model->where('judge', 'like', $judge.'%' );
+			}
+
+			if($this->is_solder){
+				$model = $model->where('judge', 'like', 'solder%');
 			}
 			
 			return $model = $model->count() > 0; 
@@ -170,6 +191,19 @@ class Node
 
 	public function isOutOK(){
 		return $this->isExists('OUT', 'OK');
+	}
+
+	public function save(){
+		$model = $this->model;
+		$model[$this->dummy_column] = $this->dummy_id;
+		$model->guid_master = $this->guid_master;
+		$model->guid_ticket = $this->guid_ticket;
+		$model->scanner_id = $this->scanner_id;
+		$model->status = $this->status;
+		$model->judge = $this->judge;
+		$model->scan_nik = $this->nik;
+		return $model->save();
+
 	}
 
 	
@@ -230,6 +264,10 @@ class Node
 		}
 	}
 
+	/*
+	* it's search board id type from table in big system 
+	* based on code = board_id;
+	*/
 	public function getBoardType($board_id = null){
 		if (is_null($board_id)) {
 			$board_id = $this->dummy_id;
@@ -245,7 +283,7 @@ class Node
 		])->where('code', $board_id )
 		->first();
 
-		if ($model) {
+		if ($model !== null) {
 			$this->setBoard($model);
 		}
 
@@ -263,6 +301,63 @@ class Node
 
 	public function getScanner(){
 		return $this->scanner;
+	}
+
+	/*
+	* @loadStep is method to init current step;
+	* step == current status & current judge;
+	* we need to becarefull here since we had more than lineprocess type;
+	*/
+	public function loadStep(){
+
+		$lineprocess = $this->getLineprocess();
+
+		if(is_null($lineprocess)){
+			throw new StoreResourceFailedException("Lineprocess is null", [
+				'node' => $this,
+			]);
+		}
+
+		if($lineprocess['type'] == 1) {//internal
+	
+			$model = $this->model
+				->where( 'scanner_id' , $this->scanner_id  )
+				->where( $this->dummy_column, $this->dummy_id )
+				->orderBy('id', 'desc') //order menurun
+				->first();
+	
+			if($model !== null){
+				$this->setStatus($model->status );
+				$this->setJudge($model->judge );
+				$this->setStep($model);
+			}
+		}
+
+	}
+
+	// this method triggered by loadStep();
+	private function setStep($model){
+		$this->step = $model;
+	}
+
+	public function getStep(){
+		return $this->step;
+	}
+
+	public function getJudge(){
+		return $this->judge;
+	}
+
+	public function setJudge($judge){
+		$this->judge = $judge;
+	}
+
+	public function getStatus(){
+		return $this->status;
+	}
+
+	public function setStatus($status){
+		$this->status = $status;
 	}
 
 	// it used to set process
@@ -379,6 +474,9 @@ class Node
 				// setup new scanner id value;
 				$this->scanner_id = $scanner['id'];
 				$this->scanner = $scanner;
+
+				// run load step to changes status & judge
+				$this->loadStep();
 			}
 
 		}
