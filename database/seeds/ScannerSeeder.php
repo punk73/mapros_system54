@@ -16,7 +16,7 @@ class ScannerSeeder extends Seeder
 
         $scanner = new Scanner;
         $scanner->line_id = 1;
-        $scanner->lineprocess_id = 2;        
+        $scanner->lineprocess_id = 4;        
         $scanner->name = 'Scanner 02';
         $scanner->mac_address = '65:C7:85:L9';
         $scanner->ip_address = '::1'; //localhost in ipv6
