@@ -181,24 +181,6 @@ class DataTypesTableSeeder extends Seeder
             ),
             9 => 
             array (
-                'id' => 15,
-                'name' => 'activity_log',
-                'slug' => 'activity-log',
-                'display_name_singular' => 'Activity Log',
-                'display_name_plural' => 'Activity Logs',
-                'icon' => '',
-                'model_name' => 'App\\ActivityLog',
-                'policy_name' => '',
-                'controller' => '',
-                'description' => '',
-                'generate_permissions' => 1,
-                'server_side' => 1,
-                'details' => '{"order_column":"","order_display_column":""}',
-                'created_at' => '2018-08-04 23:49:00',
-                'updated_at' => '2018-08-04 23:51:31',
-            ),
-            10 => 
-            array (
                 'id' => 16,
                 'name' => 'users',
                 'slug' => 'users',
@@ -215,7 +197,7 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-05 07:21:52',
                 'updated_at' => '2018-08-06 15:12:24',
             ),
-            11 => 
+            10 => 
             array (
                 'id' => 17,
                 'name' => 'grades',
@@ -232,6 +214,24 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-05 09:40:51',
                 'updated_at' => '2018-08-05 09:41:42',
+            ),
+            11 => 
+            array (
+                'id' => 18,
+                'name' => 'boards',
+                'slug' => 'boards',
+                'display_name_singular' => 'Board',
+                'display_name_plural' => 'Boards',
+                'icon' => '',
+                'model_name' => 'App\\Board',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 0,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-08 09:50:17',
+                'updated_at' => '2018-08-08 09:50:17',
             ),
         ));
         

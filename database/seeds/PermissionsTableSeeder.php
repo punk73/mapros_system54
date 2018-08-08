@@ -467,53 +467,13 @@ class PermissionsTableSeeder extends Seeder
             ),
             56 => 
             array (
-                'id' => 77,
-                'key' => 'browse_activity_log',
-                'table_name' => 'activity_log',
-                'created_at' => '2018-08-04 23:49:00',
-                'updated_at' => '2018-08-04 23:49:00',
-            ),
-            57 => 
-            array (
-                'id' => 78,
-                'key' => 'read_activity_log',
-                'table_name' => 'activity_log',
-                'created_at' => '2018-08-04 23:49:00',
-                'updated_at' => '2018-08-04 23:49:00',
-            ),
-            58 => 
-            array (
-                'id' => 79,
-                'key' => 'edit_activity_log',
-                'table_name' => 'activity_log',
-                'created_at' => '2018-08-04 23:49:00',
-                'updated_at' => '2018-08-04 23:49:00',
-            ),
-            59 => 
-            array (
-                'id' => 80,
-                'key' => 'add_activity_log',
-                'table_name' => 'activity_log',
-                'created_at' => '2018-08-04 23:49:00',
-                'updated_at' => '2018-08-04 23:49:00',
-            ),
-            60 => 
-            array (
-                'id' => 81,
-                'key' => 'delete_activity_log',
-                'table_name' => 'activity_log',
-                'created_at' => '2018-08-04 23:49:00',
-                'updated_at' => '2018-08-04 23:49:00',
-            ),
-            61 => 
-            array (
                 'id' => 82,
                 'key' => 'browse_users',
                 'table_name' => 'users',
                 'created_at' => '2018-08-05 07:21:52',
                 'updated_at' => '2018-08-05 07:21:52',
             ),
-            62 => 
+            57 => 
             array (
                 'id' => 83,
                 'key' => 'read_users',
@@ -521,7 +481,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 07:21:52',
                 'updated_at' => '2018-08-05 07:21:52',
             ),
-            63 => 
+            58 => 
             array (
                 'id' => 84,
                 'key' => 'edit_users',
@@ -529,7 +489,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 07:21:52',
                 'updated_at' => '2018-08-05 07:21:52',
             ),
-            64 => 
+            59 => 
             array (
                 'id' => 85,
                 'key' => 'add_users',
@@ -537,7 +497,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 07:21:52',
                 'updated_at' => '2018-08-05 07:21:52',
             ),
-            65 => 
+            60 => 
             array (
                 'id' => 86,
                 'key' => 'delete_users',
@@ -545,7 +505,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 07:21:52',
                 'updated_at' => '2018-08-05 07:21:52',
             ),
-            66 => 
+            61 => 
             array (
                 'id' => 87,
                 'key' => 'browse_grades',
@@ -553,7 +513,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 09:40:51',
                 'updated_at' => '2018-08-05 09:40:51',
             ),
-            67 => 
+            62 => 
             array (
                 'id' => 88,
                 'key' => 'read_grades',
@@ -561,7 +521,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 09:40:51',
                 'updated_at' => '2018-08-05 09:40:51',
             ),
-            68 => 
+            63 => 
             array (
                 'id' => 89,
                 'key' => 'edit_grades',
@@ -569,7 +529,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 09:40:51',
                 'updated_at' => '2018-08-05 09:40:51',
             ),
-            69 => 
+            64 => 
             array (
                 'id' => 90,
                 'key' => 'add_grades',
@@ -577,13 +537,53 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-05 09:40:51',
                 'updated_at' => '2018-08-05 09:40:51',
             ),
-            70 => 
+            65 => 
             array (
                 'id' => 91,
                 'key' => 'delete_grades',
                 'table_name' => 'grades',
                 'created_at' => '2018-08-05 09:40:51',
                 'updated_at' => '2018-08-05 09:40:51',
+            ),
+            66 => 
+            array (
+                'id' => 92,
+                'key' => 'browse_boards',
+                'table_name' => 'boards',
+                'created_at' => '2018-08-08 09:50:17',
+                'updated_at' => '2018-08-08 09:50:17',
+            ),
+            67 => 
+            array (
+                'id' => 93,
+                'key' => 'read_boards',
+                'table_name' => 'boards',
+                'created_at' => '2018-08-08 09:50:17',
+                'updated_at' => '2018-08-08 09:50:17',
+            ),
+            68 => 
+            array (
+                'id' => 94,
+                'key' => 'edit_boards',
+                'table_name' => 'boards',
+                'created_at' => '2018-08-08 09:50:17',
+                'updated_at' => '2018-08-08 09:50:17',
+            ),
+            69 => 
+            array (
+                'id' => 95,
+                'key' => 'add_boards',
+                'table_name' => 'boards',
+                'created_at' => '2018-08-08 09:50:17',
+                'updated_at' => '2018-08-08 09:50:17',
+            ),
+            70 => 
+            array (
+                'id' => 96,
+                'key' => 'delete_boards',
+                'table_name' => 'boards',
+                'created_at' => '2018-08-08 09:50:17',
+                'updated_at' => '2018-08-08 09:50:17',
             ),
         ));
         
