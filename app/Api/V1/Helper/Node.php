@@ -85,6 +85,7 @@ class Node
 			'process'		=> $this->process,
 			'lineprocess'	=> $this->lineprocess,
 			'step'			=> $this->step,
+			'model'			=> $this->model,
 		]);
 	}
 
@@ -167,8 +168,8 @@ class Node
 				$model = $model->where('judge', 'like', 'solder%');
 			}
 			
-			return $model = $model->count() > 0; 
-			
+			$model = $model->exists(); 
+			return $model;
 		}else{
 			// send cURL here;
 		}
@@ -465,6 +466,7 @@ class Node
 					'mac_address',
 					'ip_address',
 				])->where('lineprocess_id', $newLineProcessId )
+				->where('line_id', $this->scanner['line_id'] )
 				->first();
 	
 				if(!$scanner){ //kalau scanner tidak ketemu
