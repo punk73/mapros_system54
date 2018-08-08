@@ -62,8 +62,11 @@ class MainController extends Controller
                     $node->setStatus('IN');
                     $node->setJudge('OK');
                     if(!$node->save()){
-                        return $this->returnValue;
+                        throw new StoreResourceFailedException("Error Saving Progress", [
+                            'message' => 'something went wrong with save method on model! ask your IT member'
+                        ]);
                     };
+                    return $this->returnValue;
                 }
             }
 
@@ -71,23 +74,23 @@ class MainController extends Controller
                 // error handler
                 if($prevNode->getModelType() !== 'board'){
                     throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
-                        'message' => '',
-                        'note' => $prevNode
+                        'message' => 'bukan board',
+                        'note' => json_decode( $prevNode, true )
                     ]);
                 }
 
                 // cek apakah solder atau bukan
                 if (!$parameter['is_solder']) { //jika solder tidak diceklis, maka
                     throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
-                        'message' => '',
-                        'note' => $prevNode
+                        'message' => 'bukan solder',
+                        'note' => json_decode( $prevNode, true )
                     ]);    
                 }
                 
                 if($prevNode->isExists()){
                     throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
                         'message' => '',
-                        'note' => $prevNode
+                        'note' => json_decode( $prevNode, true )
                     ]);    
                 };
 
@@ -95,8 +98,12 @@ class MainController extends Controller
                 $node->setStatus('OUT');
                 $node->setJudge('SOLDER');
                 if(!$node->save()){
-                    return $this->returnValue;
+                    throw new StoreResourceFailedException("Error Saving Progress", [
+                        'message' => 'something went wrong with save method on model! ask your IT member'
+                    ]);
+                    
                 };
+                return $this->returnValue;
             }
 
             // jika get status bukan in atau out maka throw error

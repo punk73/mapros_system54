@@ -83,7 +83,8 @@ class Node
 			'nik' 			=> $this->nik,
 			'board'			=> $this->board,
 			'process'		=> $this->process,
-			'lineprocess'	=> $this->lineprocess
+			'lineprocess'	=> $this->lineprocess,
+			'step'			=> $this->step,
 		]);
 	}
 
