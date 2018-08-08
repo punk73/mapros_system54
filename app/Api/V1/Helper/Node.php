@@ -146,7 +146,7 @@ class Node
 		return $this->model_type;
 	}
 
-	public function isExists($status=null, $judge=null){
+	public function isExists($status=null, $judge=null, $is_solder = null ){
 		if(is_null($this->lineprocess)){
 			throw new StoreResourceFailedException("this lineprocess is not set", [
 				'message' => $this->lineprocess
@@ -167,9 +167,10 @@ class Node
 				$model = $model->where('judge', 'like', $judge.'%' );
 			}
 
-			/*if($this->is_solder){
+			// $is_solder is parameter, if it refer to $this->is_solder, it broke the logic in mainController;
+			if(!is_null($is_solder)){
 				$model = $model->where('judge', 'like', 'SOLDER%');
-			}*/
+			}
 			
 			return [
 				'query'=>$model->toSql(),

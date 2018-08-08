@@ -62,7 +62,7 @@ class MainController extends Controller
         if ($node->getModelType() == 'board') {
             return $this->processBoard($node);
         }
-        
+
     }
 
     private function processBoard(Node $node){
@@ -158,8 +158,15 @@ class MainController extends Controller
 
         // return $node->getStatus();
         if($node->getStatus() == 'IN'){
-            // cek $node->
+
             $currentStep = $node->getStep();
+            if($node->is_solder){
+                throw new StoreResourceFailedException("DATA ALREADY SCAN IN!", [
+                    'message' => 'you already scan solder with this scanner!'
+                ]);
+
+            }
+
             // we need to count how long it is between now and step->created_at
             if( !$this->isMoreThanStdTime($currentStep)){
                 // belum mencapai std time
