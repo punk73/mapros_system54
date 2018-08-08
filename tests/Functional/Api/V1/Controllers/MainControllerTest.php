@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 
-class NodeTest extends TestCase
+class MainControllerTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -23,15 +23,35 @@ class NodeTest extends TestCase
         'is_solder' => false,
     ];
 
-    protected $endpoint = 'api/main';
+    protected $endpoint = 'api/main/';
 
-    protected $parameter = [
-        'board_id'  => '00001IA01001005',
-        'nik'       =>  '39597',
-        'ip'        => '::1', //localhost
-    ];
+    private function seedDb(){
+        Artisan::call('db:seed');
+    }
+
+    private function addBoard(){
+        $board = new Board([
+            'board_id' => $this->parameter['board_id'],
+            'scanner_id' => 1,
+            'status' => 'IN',
+            'judge' => 'OK',
+            'scan_nik'=> '39597',
+        ]);
+
+        $board->save();
+    }
 
     public function testScanSuccess(){
+        $this->seedDb();
+        $this->addBoard();
+
+        $board = Board::all();
+        fwrite(STDOUT, var_dump($board[0]));
+
+        $scanners = Scanner::all();
+        fwrite(STDOUT, var_dump($scanner[0]));
+
+
         $this->post($this->endpoint, $this->parameter )
         ->assertJsonStructure([
             'success',
@@ -39,7 +59,7 @@ class NodeTest extends TestCase
         ])->assertJson([
             'success' => true,
             'message' => "data saved!"
-        ])
+        ]);
 
     }
 
