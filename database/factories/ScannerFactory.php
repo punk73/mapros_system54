@@ -15,6 +15,10 @@ $factory->define(App\Scanner::class, function (Faker\Generator $faker) {
     
     static $autoIncrement = 3;
 
+    if($autoIncrement == 4){
+    	$autoIncrement++;
+    }
+    
     return [
     	'line_id' => 1,
     	'lineprocess_id' => $autoIncrement++,

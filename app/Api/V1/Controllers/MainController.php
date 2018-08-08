@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Api\V1\Traits\LoggerHelper;
 use App\Api\V1\Helper\Node;
 use Dingo\Api\Exception\StoreResourceFailedException;
+use Carbon\Carbon;
 
 class MainController extends Controller
 {
@@ -40,6 +41,19 @@ class MainController extends Controller
         return $result;
     }
 
+    /*
+    *
+    * $currentStep must contains created_at && std_time
+    *
+    */
+    private function isMoreThanStdTime($currentStep){
+        $now = Carbon::now();
+        $lastScanned = Carbon::parse($currentStep['created_at']);
+
+        // it'll return true if timeDiff is greater than std_time;
+        return ( $now->diffInSeconds($lastScanned) > $currentStep['std_time'] );
+    }
+
     public function store(BoardRequest $request ){
     	$parameter = $this->getParameter($request);
         // cek apakah board id atau ticket;
@@ -48,6 +62,7 @@ class MainController extends Controller
         // cek current is null;
         if(!$node->isExists()){ //board null
             // cek kondisi sebelumnya is null
+
             $prevNode = $node->prev();
             if( $prevNode->getStatus() == 'OUT' ){
                 
@@ -117,28 +132,47 @@ class MainController extends Controller
         if($node->getStatus() == 'OUT'){
             if($parameter['is_solder'] == false){
                 throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
-                    'node' => json_decode( $prevNode, true )
+                    'node' => json_decode( $node, true )
                 ]);    
             }
 
             //isExists already implement is solder, so we dont need to check it again.
             //if the code goes here, we save to immediately save the node;
 
-            $node->setStatus('OK');
+            $node->setStatus('IN');
             $node->setJudge('SOLDER');
             if(!$node->save()){
-                return $this->returnValue;
+                throw new StoreResourceFailedException("Error Saving Progress", [
+                    'message' => 'something went wrong with save method on model! ask your IT member'
+                ]);
             } 
+            
+            return $this->returnValue;
         }
 
+
+        // return $node->getStatus();
         if($node->getStatus() == 'IN'){
             // cek $node->
             $currentStep = $node->getStep();
             // we need to count how long it is between now and step->created_at
+            if( !$this->isMoreThanStdTime($currentStep)){
+                // belum mencapai std time
+                throw new StoreResourceFailedException("DATA ALREADY Scan IN", [
+                    'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
+                ]);
+            }
             
-            //if it > $currentStep['std_time'], then save it; 
-            // $currentStep['created_at'] 
-
+            // save
+            $node->setStatus('OUT');
+            $node->setJudge('OK');
+            if(!$node->save()){
+                throw new StoreResourceFailedException("Error Saving Progress", [
+                    'message' => 'something went wrong with save method on model! ask your IT member'
+                ]);
+            } 
+            
+            return $this->returnValue;
         }
         
 

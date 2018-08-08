@@ -173,6 +173,7 @@ return [
         TCG\Voyager\VoyagerServiceProvider::class, //for auto crud features
         Orangehill\Iseed\IseedServiceProvider::class, //for get seeder from table
         Spatie\Activitylog\ActivitylogServiceProvider::class, //class for log activity
+        Carbon\Laravel\ServiceProvider::class, //carbon for working with time
         /*
          * Application Service Providers...
          */

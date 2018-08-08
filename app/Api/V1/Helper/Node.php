@@ -17,7 +17,10 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 class Node
 {
 	protected $model;
-
+	protected $allowedStatus = [
+		'IN',
+		'OUT'
+	];
 	protected $ticketCriteria = [
 		'MST', 'PNL', 'MCH'
 	];
@@ -164,10 +167,17 @@ class Node
 				$model = $model->where('judge', 'like', $judge.'%' );
 			}
 
-			if($this->is_solder){
-				$model = $model->where('judge', 'like', 'solder%');
-			}
+			/*if($this->is_solder){
+				$model = $model->where('judge', 'like', 'SOLDER%');
+			}*/
 			
+			return [
+				'query'=>$model->toSql(),
+				'scanner_id' => $this->scanner_id,
+				'dummy_column' => $this->dummy_column,
+				'dummy_id' => $this->dummy_id,
+			];
+
 			$model = $model->exists(); 
 			return $model;
 		}else{
@@ -359,6 +369,13 @@ class Node
 	}
 
 	public function setStatus($status){
+		if(!in_array($status, $this->allowedStatus )){
+			throw new StoreResourceFailedException("Status ".$status. " not allowed ", [
+				'allowed status' => $this->allowedStatus
+			]);
+			
+		}
+
 		$this->status = $status;
 	}
 

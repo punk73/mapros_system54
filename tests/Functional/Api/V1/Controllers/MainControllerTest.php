@@ -46,14 +46,15 @@ class MainControllerTest extends TestCase
         $this->addBoard();
 
         $board = Board::all();
-        fwrite(STDOUT, var_dump($board[0]));
-
         $scanners = Scanner::all();
-        fwrite(STDOUT, var_dump($scanner[0]));
 
+        $this->assertGreaterThan(0, count($board));
+        $this->assertGreaterThan(0, count($scanners));
 
-        $this->post($this->endpoint, $this->parameter )
-        ->assertJsonStructure([
+        $response = $this->post($this->endpoint, $this->parameter );
+        fwrite(STDOUT, var_dump($response->getContent()));
+
+        $response->assertJsonStructure([
             'success',
             'message'
         ])->assertJson([
@@ -61,6 +62,30 @@ class MainControllerTest extends TestCase
             'message' => "data saved!"
         ]);
 
+    }
+
+    public function testScanFailed(){
+
+    }
+
+    public function testScanPrevNotOut(){
+
+    }
+
+    public function testScanScannerNotFound(){
+
+    }
+
+    public function testScanCurrentStepIsIn(){
+
+    }
+
+    public function testScanCurrentStepIsOut(){
+
+    }
+
+    public function testScanCurrentStepIsOUtButIsSolder(){
+        
     }
 
 }
