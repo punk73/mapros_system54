@@ -19,6 +19,16 @@
                 font-weight: 100;
                 height: 100vh;
                 margin: 0;
+                /* The image used */
+                background-image: url({{url("/storage/wellcome.jpg")}});
+
+                /* Full height */
+                height: 100%; 
+
+                /* Center and scale the image nicely */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
             }
 
             .full-height {
@@ -45,8 +55,17 @@
                 text-align: center;
             }
 
+            .panel {
+                background-color: rgba(100, 80, 60, 0.5);/* #64503C;*/
+                
+            }
+
             .title {
                 font-size: 84px;
+                opacity: 1;
+                color: white;
+                font-weight: bold;
+
             }
 
             .links > a {
@@ -62,6 +81,20 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+
+            .backimage {
+                /* The image used */
+                background-image: url({{url("/storage/wellcome.jpg")}});
+
+                /* Full height */
+                height: 100%; 
+
+                /* Center and scale the image nicely */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+            
         </style>
     </head>
     <body>
@@ -70,24 +103,19 @@
                 <div class="top-right links">
                     @if (Auth::check())
                         <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/admin') }}">Admin</a>
+
                     @else
                         <a href="{{ url('/login') }}">Login</a>
                         <a href="{{ url('/register') }}">Register</a>
                     @endif
                 </div>
             @endif
-
             <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                <div class="panel">
+                    <div class="title">
+                        WELCOME TO MA PROCESS SYSTEM
+                    </div>
                 </div>
             </div>
         </div>
