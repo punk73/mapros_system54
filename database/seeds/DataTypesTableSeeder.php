@@ -233,6 +233,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-08 09:50:17',
                 'updated_at' => '2018-08-08 09:50:17',
             ),
+            12 => 
+            array (
+                'id' => 20,
+                'name' => 'master_criticals',
+                'slug' => 'master-criticals',
+                'display_name_singular' => 'Master Critical',
+                'display_name_plural' => 'Master Criticals',
+                'icon' => '',
+                'model_name' => 'App\\MasterCritical',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-09 13:55:02',
+                'updated_at' => '2018-08-09 13:56:05',
+            ),
         ));
         
         

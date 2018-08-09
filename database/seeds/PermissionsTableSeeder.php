@@ -585,6 +585,46 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-08 09:50:17',
                 'updated_at' => '2018-08-08 09:50:17',
             ),
+            71 => 
+            array (
+                'id' => 97,
+                'key' => 'browse_master_criticals',
+                'table_name' => 'master_criticals',
+                'created_at' => '2018-08-09 13:55:03',
+                'updated_at' => '2018-08-09 13:55:03',
+            ),
+            72 => 
+            array (
+                'id' => 98,
+                'key' => 'read_master_criticals',
+                'table_name' => 'master_criticals',
+                'created_at' => '2018-08-09 13:55:03',
+                'updated_at' => '2018-08-09 13:55:03',
+            ),
+            73 => 
+            array (
+                'id' => 99,
+                'key' => 'edit_master_criticals',
+                'table_name' => 'master_criticals',
+                'created_at' => '2018-08-09 13:55:03',
+                'updated_at' => '2018-08-09 13:55:03',
+            ),
+            74 => 
+            array (
+                'id' => 100,
+                'key' => 'add_master_criticals',
+                'table_name' => 'master_criticals',
+                'created_at' => '2018-08-09 13:55:03',
+                'updated_at' => '2018-08-09 13:55:03',
+            ),
+            75 => 
+            array (
+                'id' => 101,
+                'key' => 'delete_master_criticals',
+                'table_name' => 'master_criticals',
+                'created_at' => '2018-08-09 13:55:03',
+                'updated_at' => '2018-08-09 13:55:03',
+            ),
         ));
         
         
