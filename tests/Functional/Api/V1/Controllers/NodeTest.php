@@ -81,9 +81,11 @@ class NodeTest extends TestCase
         $board = Board::all();
         $this->assertEquals(count($board), 0, 'this model should empty for testing it' );
 
+        // seedDb to seed data scanner;
         $this->seedDb();
 
         $node = new Node($this->parameter);
+        fwrite(STDOUT, print_r( $node->isExists()) );
         $this->assertEquals( false, $node->isExists() );
     }
 

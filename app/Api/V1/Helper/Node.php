@@ -172,12 +172,12 @@ class Node
 				$model = $model->where('judge', 'like', 'SOLDER%');
 			}
 			
-			return [
+			/*return [
 				'query'=>$model->toSql(),
 				'scanner_id' => $this->scanner_id,
 				'dummy_column' => $this->dummy_column,
 				'dummy_id' => $this->dummy_id,
-			];
+			];*/
 
 			$model = $model->exists(); 
 			return $model;
