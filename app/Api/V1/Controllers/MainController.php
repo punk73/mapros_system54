@@ -63,6 +63,10 @@ class MainController extends Controller
             return $this->processBoard($node);
         }
 
+        if($node->getModelType() == 'board'){
+            return 'critical';
+        }
+
     }
 
     private function processBoard(Node $node){

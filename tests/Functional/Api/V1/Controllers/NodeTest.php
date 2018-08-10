@@ -60,7 +60,6 @@ class NodeTest extends TestCase
     }
 
 
-
     private function addModel(){
         $board = new Board;
         $board->scanner_id = 11; //scanner_id untuk ip ::1

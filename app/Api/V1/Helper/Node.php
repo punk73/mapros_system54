@@ -7,6 +7,7 @@ namespace App\Api\V1\Helper;
 use App\Model;
 use App\Board;
 use App\Ticket;
+use App\Critical;
 use App\Scanner;
 use App\Sequence;
 use App\Mastermodel;
@@ -338,7 +339,7 @@ class Node
 				->where( $this->dummy_column, $this->dummy_id )
 				->orderBy('id', 'desc') //order menurun
 				->first();
-	
+
 			if($model !== null){
 				$this->setStatus($model->status );
 				$this->setJudge($model->judge );
@@ -370,6 +371,9 @@ class Node
 	}
 
 	public function setStatus($status){
+		// make $status uppercase
+		$status = strtoupper($status);
+
 		if(!in_array($status, $this->allowedStatus )){
 			throw new StoreResourceFailedException("Status ".$status. " not allowed ", [
 				'allowed status' => $this->allowedStatus
