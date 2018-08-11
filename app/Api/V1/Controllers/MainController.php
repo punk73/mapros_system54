@@ -58,6 +58,8 @@ class MainController extends Controller
     	$parameter = $this->getParameter($request);
         // cek apakah board id atau ticket;
         $node = new Node($parameter);
+        
+        // return $node->getModelType();
 
         if ($node->getModelType() == 'board') {
             return $this->processBoard($node);
@@ -65,6 +67,10 @@ class MainController extends Controller
 
         if($node->getModelType() == 'board'){
             return 'critical';
+        }
+
+        if($node->getModelType() == 'ticket'){
+            return $this->runProcedureTicket($node);
         }
 
     }
@@ -190,6 +196,12 @@ class MainController extends Controller
             
             return $this->returnValue;
         }
+    }
+
+    private function runProcedureTicket(Node $node){
+        if( !$node->isTicketGuidGenerated()){
+            return $node->generateGuid();
+        };
     }
     
     

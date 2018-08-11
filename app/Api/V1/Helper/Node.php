@@ -23,7 +23,7 @@ class Node
 		'OUT'
 	];
 	protected $ticketCriteria = [
-		'MST', 'PNL', 'MCH'
+		'__MST', '__PNL', '__MCH'
 	];
 	protected $allowedParameter = [
 		'board_id',
@@ -50,29 +50,33 @@ class Node
 	protected $model_type;
 	protected $step;
 
-	function __construct($parameter){	
-		// setup model (board, ticket, or master)
-		$this->setModel($parameter);
-		// setup scanner_id;
-		$ip = $parameter['ip'];
-		$this->setScannerId($ip);
-
-		// setup is_solder
-		$this->is_solder = $parameter['is_solder'];
-		// setup nik
-		$this->nik = $parameter['nik'];
-		// setup board_id
-		$this->dummy_id = $parameter['board_id'];
-		// get board type from big & set into board properties
-		$this->getBoardType();
-		// run to get sequence and set to process attribute
-		$this->getSequence();
-
-		// set lineprocess
-		$this->setLineprocess($this->scanner['lineprocess_id']);
-
-		// set status & judge
-		$this->loadStep();
+	function __construct($parameter, $debug = false ){	
+		// kalau sedang debugging, maka gausah run construct
+		if (!$debug)
+		{
+				// setup model (board, ticket, or master)
+			$this->setModel($parameter);
+			// setup scanner_id;
+			$ip = $parameter['ip'];
+			$this->setScannerId($ip);
+	
+			// setup is_solder
+			$this->is_solder = $parameter['is_solder'];
+			// setup nik
+			$this->nik = $parameter['nik'];
+			// setup board_id
+			$this->dummy_id = $parameter['board_id'];
+			// get board type from big & set into board properties
+			$this->getBoardType();
+			// run to get sequence and set to process attribute
+			$this->getSequence();
+	
+			// set lineprocess
+			$this->setLineprocess($this->scanner['lineprocess_id']);
+	
+			// set status & judge
+			$this->loadStep();
+		}
 	}
 
 	public function __toString(){
@@ -116,12 +120,12 @@ class Node
 	}
 
 	//triggered on instantiate 
-	private function setModel($parameter){
-		$code = substr($parameter['board_id'], 0, 3);
+	public function setModel($parameter){
+		$code = substr($parameter['board_id'], 0, 5);
 		// setup which model to work with
 		if (in_array($code, $this->ticketCriteria )) {
 			// it is ticket, so we work with ticket
-			if($code == 'MST'){
+			if($code == '_MST'){
 				$this->model = new Master;
 				$this->dummy_column = 'ticket_no_master';
 				$this->model_type = 'master';
@@ -137,6 +141,24 @@ class Node
 			$this->model_type = 'board';
 
 		}
+	}
+
+	public function isTicketGuidGenerated(){
+		return $this->model
+			->where( 'scanner_id' , $this->scanner_id  )
+			->where( $this->dummy_column, $this->dummy_id )
+			->where('guid_master', null )
+			->exists();
+	}
+
+	public function generateGuid(){
+		// cek apakah php punya com_create_guid
+		if (function_exists('com_create_guid') === true){
+	        return trim(com_create_guid(), '{}');
+	    }
+
+	    return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+
 	}
 
 	public function getModel(){
