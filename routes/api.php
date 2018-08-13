@@ -50,7 +50,7 @@ $api->version('v1', function (Router $api) {
     });
 
     $api->group(['prefix' => 'main'], function (Router $api) {
-        $api->post('/', 'App\\Api\\V1\\Controllers\\MainController@store' );
+        $api->post('/', 'App\\Api\\V1\\Controllers\\MainController@store' )->name('api-main');
     });    
 
     $api->get('/test', 'App\\Api\\V1\\Controllers\\TestController@index' );
