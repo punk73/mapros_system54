@@ -625,6 +625,46 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-09 13:55:03',
                 'updated_at' => '2018-08-09 13:55:03',
             ),
+            76 => 
+            array (
+                'id' => 102,
+                'key' => 'browse_column_settings',
+                'table_name' => 'column_settings',
+                'created_at' => '2018-08-13 13:42:52',
+                'updated_at' => '2018-08-13 13:42:52',
+            ),
+            77 => 
+            array (
+                'id' => 103,
+                'key' => 'read_column_settings',
+                'table_name' => 'column_settings',
+                'created_at' => '2018-08-13 13:42:52',
+                'updated_at' => '2018-08-13 13:42:52',
+            ),
+            78 => 
+            array (
+                'id' => 104,
+                'key' => 'edit_column_settings',
+                'table_name' => 'column_settings',
+                'created_at' => '2018-08-13 13:42:52',
+                'updated_at' => '2018-08-13 13:42:52',
+            ),
+            79 => 
+            array (
+                'id' => 105,
+                'key' => 'add_column_settings',
+                'table_name' => 'column_settings',
+                'created_at' => '2018-08-13 13:42:52',
+                'updated_at' => '2018-08-13 13:42:52',
+            ),
+            80 => 
+            array (
+                'id' => 106,
+                'key' => 'delete_column_settings',
+                'table_name' => 'column_settings',
+                'created_at' => '2018-08-13 13:42:52',
+                'updated_at' => '2018-08-13 13:42:52',
+            ),
         ));
         
         

@@ -60,7 +60,7 @@ class DataTypesTableSeeder extends Seeder
                 'slug' => 'departments',
                 'display_name_singular' => 'Department',
                 'display_name_plural' => 'Departments',
-                'icon' => '',
+                'icon' => 'voyager-company',
                 'model_name' => 'App\\Department',
                 'policy_name' => '',
                 'controller' => '',
@@ -69,7 +69,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 01:47:24',
-                'updated_at' => '2018-08-05 09:43:58',
+                'updated_at' => '2018-08-09 15:16:00',
             ),
             3 => 
             array (
@@ -123,7 +123,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 03:31:01',
-                'updated_at' => '2018-08-04 07:51:57',
+                'updated_at' => '2018-08-13 13:56:24',
             ),
             6 => 
             array (
@@ -250,6 +250,24 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-09 13:55:02',
                 'updated_at' => '2018-08-09 13:56:05',
+            ),
+            13 => 
+            array (
+                'id' => 21,
+                'name' => 'column_settings',
+                'slug' => 'column-settings',
+                'display_name_singular' => 'Column Setting',
+                'display_name_plural' => 'Column Settings',
+                'icon' => '',
+                'model_name' => 'App\\ColumnSetting',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-13 13:42:52',
+                'updated_at' => '2018-08-13 13:57:04',
             ),
         ));
         

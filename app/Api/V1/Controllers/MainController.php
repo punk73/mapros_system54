@@ -65,9 +65,9 @@ class MainController extends Controller
             return $this->processBoard($node);
         }
 
-        if($node->getModelType() == 'board'){
+        /*if($node->getModelType() == 'board'){
             return 'critical';
-        }
+        }*/
 
         if($node->getModelType() == 'ticket'){
             return $this->runProcedureTicket($node);
@@ -200,7 +200,10 @@ class MainController extends Controller
 
     private function runProcedureTicket(Node $node){
         if( !$node->isTicketGuidGenerated()){
-            return $node->generateGuid();
+            // return $node->generateGuid();
+
+            // return view lagi, kali ini lebih dari satu textfield;
+            // satu untuk boad id, satu untuk panel;
         };
     }
     

@@ -369,6 +369,22 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'voyager.master-criticals.index',
                 'parameters' => NULL,
             ),
+            22 => 
+            array (
+                'id' => 23,
+                'menu_id' => 1,
+                'title' => 'Column Settings',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => '',
+                'color' => NULL,
+                'parent_id' => NULL,
+                'order' => 26,
+                'created_at' => '2018-08-13 13:42:52',
+                'updated_at' => '2018-08-13 13:42:52',
+                'route' => 'voyager.column-settings.index',
+                'parameters' => NULL,
+            ),
         ));
         
         
