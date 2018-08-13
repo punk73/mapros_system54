@@ -14,6 +14,7 @@ use App\Mastermodel;
 use App\Lineprocess;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
+use App\Guid;
 
 class Node
 {
@@ -154,11 +155,14 @@ class Node
 	public function generateGuid(){
 		// cek apakah php punya com_create_guid
 		if (function_exists('com_create_guid') === true){
-	        return trim(com_create_guid(), '{}');
-	    }
+	        $guid = trim(com_create_guid(), '{}');
+	    }else{
+    	    $guid = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+    	}
 
-	    return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
-
+    	$newGuid = new Guid(['guid'=> $guid]);
+        $newGuid->save();
+	
 	}
 
 	public function getModel(){
