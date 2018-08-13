@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Api\V1\Helper\Node;
 use App\Board;
 use App\Scanner;
+use App\ColumnSetting;
 use App\Lineprocess;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -69,11 +70,11 @@ class NodeTest extends TestCase
         $board->save();
     }
 
-    public function seedDb(){
+    public function seedDb(array $params = null){
         // it's mean to seed the db for testing purpose;
         // Artisan::call('migrate:refresh');
         // Artisan::call('db:seed', ['--class'=>'ScannerSeeder'] );
-        Artisan::call('db:seed');
+        Artisan::call('db:seed', $params );
     }
 
     public function testIsExistsReturnFalse(){
@@ -208,6 +209,18 @@ class NodeTest extends TestCase
         
         // $node->setLineprocess($lineprocessId) is triggered in constructor;
         $node = new Node($this->parameter);
+    }
+
+    public function testSetModelSuccess(){
+        $this->seedDb(['--class'=>'ColumnSettingsTableSeeder']);
+        $settings = ColumnSetting::all();
+        $this->assertGreaterThan(0, count( $settings) );
+
+        // skip construct with second parameter set to true;
+        $node = new Node($this->parameter, true );
+        $node->setModel($this->parameter);
+
+        $this->assertInstanceOf('App\Board', $node->getModel());
     }
 
 }

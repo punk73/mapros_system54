@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LinetypeSeeder::class);
         $this->call(DepartmentsTableSeeder::class);
         $this->call(GradesTableSeeder::class);
+        $this->call(ColumnSettingsTableSeeder::class);
         
     }
 }

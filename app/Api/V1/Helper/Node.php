@@ -12,6 +12,7 @@ use App\Scanner;
 use App\Sequence;
 use App\Mastermodel;
 use App\Lineprocess;
+use App\ColumnSetting;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Guid;
@@ -124,7 +125,7 @@ class Node
 	public function setModel($parameter){
 		$code = substr($parameter['board_id'], 0, 5);
 		// setup which model to work with
-		if (in_array($code, $this->ticketCriteria )) {
+		/*if (in_array($code, $this->ticketCriteria )) {
 			// it is ticket, so we work with ticket
 			if($code == '_MST'){
 				$this->model = new Master;
@@ -140,8 +141,28 @@ class Node
 			$this->model = new Board;
 			$this->dummy_column = 'board_id';
 			$this->model_type = 'board';
+		}*/
 
+		$setting = ColumnSetting::where('code_prefix', $code )->first();
+		if(!is_null($setting)){
+			$className = 'App\\' . studly_case(str_singular($setting->table_name));
+
+			if(class_exists($className)) {
+			    $model = new $className;
+			}
+
+		}else{
+			$setting = ColumnSetting::where('code_prefix', null )->first();
+			// fwrite(STDOUT, print_r($setting));
+			$model = new Board;
+			$dummy_column = 'board_id';
+			$name = 'board';
 		}
+
+		$this->model = $model;
+		$this->dummy_column = $dummy_column;
+		$this->model_type = $name;
+
 	}
 
 	public function isTicketGuidGenerated(){
@@ -316,7 +337,7 @@ class Node
 			// it'll need to be changed due to changes in big system
 			$board_id = substr($board_id, 0, 5);
 		}
-
+		// this is from bigs db
 		$model = Mastermodel::select([
 			'name',
 			'pwbname',
