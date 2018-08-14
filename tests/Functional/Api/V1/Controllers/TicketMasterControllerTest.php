@@ -3,7 +3,7 @@
 namespace App\Functional\Api\V1\Controllers;
 
 use App\TestCase;
-use App\Ticket_masters;
+use App\TicketMaster;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Functional\Api\V1\Traits\testHelper;
 
@@ -14,7 +14,7 @@ class TicketMasterControllerTest extends TestCase
     protected $endpoint = 'api/ticket_masters/';
 
     public function __construct(){
-        $this->model = new Ticket_masters;
+        $this->model = new TicketMaster;
     }
 
     protected $expectedJsonStructure = [
@@ -22,7 +22,7 @@ class TicketMasterControllerTest extends TestCase
     ];
 
     protected $inputParameter = [
-        'code' => 'PLN',
+        'code' => '__PLN',
         'line_id' => 1,
         'count' => 1
     ];
@@ -45,7 +45,7 @@ class TicketMasterControllerTest extends TestCase
         $this->inputParameter['count'] = 5;
         $result = $this->post($this->endpoint, $this->inputParameter );
         $returnValue = $result->original;
-        $generatedCode = 'PLN00100001';
+        $generatedCode = '__PLN00100001';
         // fwrite(STDOUT, var_dump( $returnValue ) );
         $this->assertEquals(count($returnValue['data']), ($this->inputParameter['count']+1) );
         $this->assertEquals( $returnValue['data'][0], $generatedCode );
