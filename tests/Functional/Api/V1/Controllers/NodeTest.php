@@ -70,7 +70,7 @@ class NodeTest extends TestCase
         $board->save();
     }
 
-    public function seedDb(array $params = null){
+    public function seedDb(array $params = []){
         // it's mean to seed the db for testing purpose;
         // Artisan::call('migrate:refresh');
         // Artisan::call('db:seed', ['--class'=>'ScannerSeeder'] );
@@ -149,7 +149,7 @@ class NodeTest extends TestCase
     }
 
     public function testLoadStepFailed(){
-        $node = New Node($this->parameter);
+        $node = New Node($this->parameter, true );
         $node->loadStep();
 
         $this->assertNull($node->getStatus());
