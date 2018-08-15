@@ -23,9 +23,9 @@
                     <!-- form start -->
                     <form id="myform" action="{{url('/ticket_masters')}}" method="post" >
                         <!-- PUT Method if we are editing -->
-                        @if(!is_null($dataTypeContent->getKey()))
+                        {{-- @if(!is_null($dataTypeContent->getKey()))
                             {{ method_field("PUT") }}
-                        @endif
+                        @endif --}}
 
                         <!-- CSRF TOKEN -->
                         {{ csrf_field() }}
