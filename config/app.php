@@ -174,6 +174,7 @@ return [
         Orangehill\Iseed\IseedServiceProvider::class, //for get seeder from table
         Spatie\Activitylog\ActivitylogServiceProvider::class, //class for log activity
         Carbon\Laravel\ServiceProvider::class, //carbon for working with time
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class, //for working with qr
         /*
          * Application Service Providers...
          */
@@ -182,6 +183,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
 
     ],
 
@@ -231,6 +233,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Activity' => Spatie\Activitylog\ActivitylogFacade::class, //logger
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class, //for working with qr
         /*
          * Package Facades...
          */

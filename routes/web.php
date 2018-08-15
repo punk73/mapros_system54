@@ -29,3 +29,7 @@ Route::group(['prefix' => 'admin'], function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
+
+Route::group(['prefix' => 'ticket_masters'], function($route){
+	$route->post('/', 'MasterTicketController@post' );
+});

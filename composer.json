@@ -19,7 +19,8 @@
         "tcg/voyager": "^1.1",
         "orangehill/iseed": "^2.5",
         "spatie/activitylog": "^2.4",
-        "nesbot/carbon": "^1.33"
+        "nesbot/carbon": "^1.33",
+        "simplesoftwareio/simple-qrcode": "^1.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
