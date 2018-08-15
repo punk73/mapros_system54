@@ -22,7 +22,9 @@
             <div class="panel panel-default">
                 <div class="panel-heading">MAIN</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="#">
+                    @include('voyager::alerts')
+
+                    <form class="form-horizontal" role="form" method="POST" action="{{ url('main') }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('nik') ? ' has-error' : '' }}">
@@ -66,8 +68,10 @@
                                 @endif
                             </div>
                         </div>
-
                         
+                        @if(isset($response))
+                            <div class="well">{{ $response }}</div>
+                        @endif
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
@@ -76,8 +80,9 @@
                                 </button>
                             </div>
                         </div>
-
                     </form>
+
+
                 </div>
             </div>
         </div>

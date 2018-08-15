@@ -33,3 +33,7 @@ Route::get('/home', 'HomeController@index');
 Route::group(['prefix' => 'ticket_masters'], function($route){
 	$route->post('/', 'MasterTicketController@post' );
 });
+
+Route::group(['prefix' => 'main'], function($route){
+	$route->post('/', 'MainController@post' );
+});

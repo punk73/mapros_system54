@@ -22,6 +22,7 @@ class MainController extends Controller
         'board_id',
         'nik',
         'ip',
+        'guid',
         'is_solder'
     ];
 
@@ -58,8 +59,8 @@ class MainController extends Controller
     	$parameter = $this->getParameter($request);
         // cek apakah board id atau ticket;
         $node = new Node($parameter);
-        
-        // return $node->getModelType();
+
+        // return $node->getGuidTicket();
 
         if ($node->getModelType() == 'board') {
             return $this->processBoard($node);
@@ -67,8 +68,7 @@ class MainController extends Controller
 
         /*if($node->getModelType() == 'board'){
             return 'critical';
-        }*/
-
+        }*/ 
         if($node->getModelType() == 'ticket'){
             return $this->runProcedureTicket($node);
         }
@@ -199,12 +199,25 @@ class MainController extends Controller
     }
 
     private function runProcedureTicket(Node $node){
-        if( !$node->isTicketGuidGenerated()){
-            // return $node->generateGuid();
-
-            // return view lagi, kali ini lebih dari satu textfield;
-            // satu untuk boad id, satu untuk panel;
+        if( (!$node->isTicketGuidGenerated()) && ($node->getGuidTicket() == null) ){
+            throw new StoreResourceFailedException("view", [
+                'dummy_id' => $node->dummy_id, 
+                'guid'=>    $node->generateGuid()
+            ]);
         };
+
+        // return $this->processBoard($node);
+
+        $node->setStatus('IN');
+        $node->setJudge('OK');
+        if(!$node->save()){
+            throw new StoreResourceFailedException("Error Saving Progress", [
+                'message' => 'something went wrong with save method on model! ask your IT member'
+            ]);
+        } 
+        
+        return $this->returnValue;
+
     }
     
     

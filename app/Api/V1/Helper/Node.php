@@ -31,7 +31,8 @@ class Node
 		'board_id',
         'nik',
         'ip',
-        'is_solder'
+        'is_solder',
+        'guid'
 	];
 	public $scanner_id;
 	public $scanner;
@@ -78,6 +79,8 @@ class Node
 	
 			// set status & judge
 			$this->loadStep();
+			// get prev guid id;
+			$this->initGuid($parameter['guid']);
 		}
 	}
 
@@ -149,6 +152,8 @@ class Node
 
 			if(class_exists($className)) {
 			    $model = new $className;
+			    $dummy_column = $setting->dummy_column;
+			    $name = str_singular($setting->table_name);
 			}
 
 		}else{
@@ -162,7 +167,36 @@ class Node
 		$this->model = $model;
 		$this->dummy_column = $dummy_column;
 		$this->model_type = $name;
+	}
 
+	private function initGuid($guid){
+		if ($this->getModelType() == 'ticket') {
+
+			if ($this->isTicketGuidGenerated() ) {
+				$guid = $this->model
+				->select([
+					'guid_ticket'
+				])
+				->where( 'scanner_id' , $this->scanner_id  )
+				->where( $this->dummy_column, $this->dummy_id )
+				->where('guid_master', null )
+				->where('guid_ticket','!=', null )
+				->orderBy('id', 'desc')
+				->first();
+
+				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
+			}
+
+			$this->setGuidTicket($guid);
+		}
+	}
+
+	public function getGuidTicket(){
+		return $this->guid_ticket;
+	}
+
+	public function setGuidTicket($guid){
+		$this->guid_ticket = $guid;
 	}
 
 	public function isTicketGuidGenerated(){
@@ -181,8 +215,9 @@ class Node
     	    $guid = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     	}
 
-    	$newGuid = new Guid(['guid'=> $guid]);
-        $newGuid->save();
+    	/*$newGuid = new Guid(['guid'=> $guid]);
+        $newGuid->save();*/
+        return $guid;
 	
 	}
 
@@ -492,7 +527,8 @@ class Node
 	public function move($step = 1){
 		if( is_null($this->process) ){
 			throw new StoreResourceFailedException("Process Not found", [
-                'message' => 'Process not found'
+                'message' => 'Process not found',
+                'node'	  => json_decode( $this, true ),
             ]);
 		}
 
