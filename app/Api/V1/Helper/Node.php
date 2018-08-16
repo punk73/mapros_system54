@@ -99,6 +99,7 @@ class Node
 			'lineprocess'	=> $this->lineprocess,
 			'step'			=> $this->step,
 			'model'			=> $this->model,
+			'column_setting'=> $this->column_setting,
 		]);
 	}
 
