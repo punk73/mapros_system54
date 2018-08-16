@@ -128,6 +128,25 @@ class Node
 		$this->scanner_id = $scanner['id'];
 	}
 
+	public function initColumnSetting(){
+		if ($this->lineprocess == null ) {
+			throw new StoreResourceFailedException("Lineprocess is not found", [
+				'node' => $this
+			]);
+		}
+
+		$this->setColumnSetting( $this->lineprocess->columnSettings );
+
+	}
+
+	public function getColumnSetting(){
+		return $this->column_setting;
+	}
+
+	public function setColumnSetting( $columnSetting){
+		$this->column_setting = $columnSetting;
+	}
+
 	//triggered on instantiate 
 	public function setModel($parameter){
 		$code = substr($parameter['board_id'], 0, 5);

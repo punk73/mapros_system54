@@ -35,4 +35,8 @@ class Lineprocess extends Model implements LogsActivityInterface
 
 	    return '';
 	}
+
+	public function columnSettings(){
+		return $this->belongsToMany('App\ColumnSetting');
+	}
 }

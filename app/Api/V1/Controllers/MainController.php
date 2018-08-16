@@ -208,7 +208,7 @@ class MainController extends Controller
             ]);
         };
 
-        // return $this->processBoard($node);
+        return $this->processBoard($node);
 
         $node->setStatus('IN');
         $node->setJudge('OK');

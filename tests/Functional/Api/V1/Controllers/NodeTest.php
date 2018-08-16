@@ -223,4 +223,28 @@ class NodeTest extends TestCase
         $this->assertInstanceOf('App\Board', $node->getModel());
     }
 
+    public function testSetColumnSettingSuccess(){
+        $this->seedDb([
+            '--class'=>'ScannerSeeder'
+        ]);
+
+        $this->seedDb([
+            '--class'=>'LineprocessSeeder'
+        ]);
+
+        $this->seedDb([
+            '--class'=>'ColumnSettingsTableSeeder'
+        ]);
+
+        $node = new Node($this->parameter, true );
+        $node->setScannerId('::1');
+        $node->setLineprocess($node->scanner['lineprocess_id']);
+        $node->initColumnSetting();
+
+        $this->assertNotNull($node->getColumnSetting());
+        
+        fwrite(STDOUT, var_dump($node->getColumnSetting()));
+
+    }
+
 }
