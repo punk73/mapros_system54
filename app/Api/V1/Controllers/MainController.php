@@ -201,8 +201,10 @@ class MainController extends Controller
     private function runProcedureTicket(Node $node){
         if( (!$node->isTicketGuidGenerated()) && ($node->getGuidTicket() == null) ){
             throw new StoreResourceFailedException("view", [
+                'nik' => $node->getNik(),
+                'ip' => $node->getScanner()['ip_address'],
                 'dummy_id' => $node->dummy_id, 
-                'guid'=>    $node->generateGuid()
+                'guid'=>    $node->generateGuid(),
             ]);
         };
 

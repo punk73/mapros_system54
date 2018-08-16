@@ -21,6 +21,12 @@ Route::get('/', function () {
     return view('main');
 });
 
+Route::group(['prefix' => 'main'], function($route){
+	$route->post('/', 'MainController@post' );
+	/*$route->get('/', function(){
+		return view('main');
+	});*/
+});
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
@@ -34,6 +40,3 @@ Route::group(['prefix' => 'ticket_masters'], function($route){
 	$route->post('/', 'MasterTicketController@post' );
 });
 
-Route::group(['prefix' => 'main'], function($route){
-	$route->post('/', 'MainController@post' );
-});

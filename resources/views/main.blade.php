@@ -6,14 +6,6 @@
     body{
         background-image: url({{url("/storage/wellcome.jpg")}});
     }
-
-    .panel {
-        /*background-color: #ddd;        */
-    }
-
-    .panel-heading{
-        /*background-color: #*/
-    }
 </style>
 
 <div class="container">
@@ -69,8 +61,14 @@
                             </div>
                         </div>
                         
-                        @if(isset($response))
-                            <div class="well">{{ $response }}</div>
+                        @if(isset($error))
+                        <div class="well">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">{{ $error['message'] }}</div>
+                                <div class="panel-body">{{ $error['errors'] }}</div>
+                                
+                            </div>
+                        </div>
                         @endif
 
                         <div class="form-group">

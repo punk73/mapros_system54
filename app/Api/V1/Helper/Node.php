@@ -102,6 +102,10 @@ class Node
 		]);
 	}
 
+	public function getNik(){
+		return $this->nik;
+	}
+
 	// automaticly triggered on instantiate
 	public function setScannerId($scanner_ip){
 		$scanner = Scanner::select([
