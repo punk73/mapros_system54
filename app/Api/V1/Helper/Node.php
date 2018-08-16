@@ -99,7 +99,7 @@ class Node
 			'lineprocess'	=> $this->lineprocess,
 			'step'			=> $this->step,
 			'model'			=> $this->model,
-			'column_setting'=> $this->column_setting,
+			// 'column_setting'=> $this->column_setting,
 		]);
 	}
 
@@ -398,8 +398,14 @@ class Node
 		}
 		// this is from bigs db
 		$model = Mastermodel::select([
+			'id',
 			'name',
+			'pwbno',
 			'pwbname',
+			'process',
+			'cavity',
+			'code',
+			'side',
 		])->where('code', $board_id )
 		->first();
 
@@ -410,9 +416,10 @@ class Node
 		return $this;
 	}
 
-	public function setBoard($model=['name'=>null, 'pwbname'=>null ]){
-		$this->board['name'] = $model['name'];
-		$this->board['pwbname'] = $model['pwbname'];
+	public function setBoard($model = null){
+		// $this->board['name'] = $model['name'];
+		// $this->board['pwbname'] = $model['pwbname'];
+		$this->board = $model;
 	}
 
 	public function getBoard(){
@@ -573,6 +580,7 @@ class Node
 			throw new StoreResourceFailedException("this step shouldn't belong to the process", [
                 'current_step' 	=> $this->scanner['lineprocess_id'],
                 'process'		=> $process,
+                'node'			=> json_decode($this,true) ,
             ]);	
 		}
 
