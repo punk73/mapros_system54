@@ -8,8 +8,21 @@
     }
 </style>
 
+
+
 <div class="container">
     <div class="row">
+        @if (isset($error) && $error != null )        
+            <div class="col-md-8 col-md-offset-2">
+                <div class="alert alert-danger alert-dismissible show" role="alert">
+                  {{ $error['message'] }}
+                  <button class="close" data-dismiss="alert" aria-label="close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            </div>
+        @endif
+
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">MAIN</div>
@@ -60,16 +73,6 @@
                                 @endif
                             </div>
                         </div>
-                        
-                        @if(isset($error))
-                        <div class="well">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">{{ $error['message'] }}</div>
-                                <div class="panel-body">{{ $error['errors'] }}</div>
-                                
-                            </div>
-                        </div>
-                        @endif
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
@@ -86,4 +89,5 @@
         </div>
     </div>
 </div>
+
 @endsection

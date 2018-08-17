@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use App\Api\V1\Controllers\MainController as Api;
 use App\Api\V1\Requests\BoardRequest;
 use Dingo\Api\Exception\StoreResourceFailedException;
+use Session;
 
 class MainController extends Controller
-{
+{   
+    public function index(){
+        $error = Session::get('error');
+
+        return view('main', ['error'=>$error]);
+    }
+
     public function post(BoardRequest $request ){
     	
     	$api = new Api;
@@ -49,10 +56,7 @@ class MainController extends Controller
     		'errors'  => $errors->getErrors()
     	];
 
-    	return redirect('/')->with('error', $error);
+    	return redirect('/')->with(['error' => $error]);
 
-    	return view('main', [
-    		'error' => $error
-    	]);
     }
 }

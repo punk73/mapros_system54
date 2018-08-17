@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">MAIN</div>
+                <div class="panel-heading">JOIN</div>
                 <div class="panel-body">
                     @include('voyager::alerts')
 
@@ -26,7 +26,7 @@
                                 <div class="col-md-6">
                                     <input id="{{$key}}" type="hidden" class="form-control" name="{{$key}}" value="{{ $response->get($key)[0] }}"  required>
 
-                                    @if ($errors->has('board_id'))
+                                    @if ($errors->has($key))
                                         <span class="help-block">
                                             <strong>{{ $errors->first($key) }}</strong>
                                         </span>
@@ -39,7 +39,7 @@
                             <label for="board_id" class="col-md-4 control-label">Board Id</label>
 
                             <div class="col-md-6">
-                                <input id="board_id" type="board_id" class="form-control" name="board_id" value="{{ old('email') }}" required>
+                                <input id="board_id" type="board_id" class="form-control" name="board_id" value="{{ old('board_id') }}" required>
 
                                 @if ($errors->has('board_id'))
                                     <span class="help-block">

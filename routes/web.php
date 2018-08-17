@@ -16,10 +16,7 @@ Route::get('reset_password/{token}', ['as' => 'password.reset', function($token)
     // implement your reset password route here!
 }]);
 
-Route::get('/', function () {
-    // return view('welcome');
-    return view('main');
-});
+Route::get('/', 'MainController@index' );
 
 Route::group(['prefix' => 'main'], function($route){
 	$route->post('/', 'MainController@post' );

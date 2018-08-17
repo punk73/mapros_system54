@@ -42,10 +42,7 @@ class Node
 	public $status;
 	public $judge = 'OK';
 	public $nik;
-	public $board = [
-		'name' => null,
-		'pwbname' => null,
-	];
+	public $board;
 	public $lineprocess;
 	public $is_solder;
 	public $process;
@@ -69,6 +66,8 @@ class Node
 			$this->nik = $parameter['nik'];
 			// setup board_id
 			$this->dummy_id = $parameter['board_id'];
+			// get prev guid id;
+			$this->initGuid($parameter['guid']);
 			// get board type from big & set into board properties
 			$this->getBoardType();
 			// run to get sequence and set to process attribute
@@ -79,8 +78,6 @@ class Node
 	
 			// set status & judge
 			$this->loadStep();
-			// get prev guid id;
-			$this->initGuid($parameter['guid']);
 		}
 	}
 
@@ -193,9 +190,29 @@ class Node
 		$this->model_type = $name;
 	}
 
+	// method init guid di triggere dari main Controller;
 	private function initGuid($guid){
+		// it can triggered after scanner & model has been set; 
 		if ($this->getModelType() == 'ticket') {
+			if (is_null($this->scanner_id)) {
+				throw new StoreResourceFailedException("scanner id is null", [
+					'node' => json_decode($this, true),
+				]);
+			}
 
+			if (is_null($this->dummy_column)) {
+				throw new StoreResourceFailedException("dummy_column id is null", [
+					'node' => json_decode($this, true),
+				]);
+			}
+
+			if (is_null($this->dummy_id)) {
+				throw new StoreResourceFailedException("dummy_id id is null", [
+					'node' => json_decode($this, true),
+				]);
+			}
+
+			// cek apakah ticket guid sudah di generate sebelumnya;
 			if ($this->isTicketGuidGenerated() ) {
 				$guid = $this->model
 				->select([
@@ -209,6 +226,8 @@ class Node
 				->first();
 
 				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
+			}else {
+				$guid = $this->generateGuid();
 			}
 
 			$this->setGuidTicket($guid);
@@ -224,6 +243,24 @@ class Node
 	}
 
 	public function isTicketGuidGenerated(){
+		if (is_null($this->model)) {
+			throw new StoreResourceFailedException("node model is null", [
+				'node' => json_decode($this, true ),
+			]);
+		}
+
+		if (is_null($this->dummy_column)) {
+			throw new StoreResourceFailedException("node dummy_column is null", [
+				'node' => json_decode($this, true ),
+			]);
+		}
+
+		if (is_null($this->dummy_id)) {
+			throw new StoreResourceFailedException("node dummy_id is null", [
+				'node' => json_decode($this, true ),
+			]);
+		}
+
 		return $this->model
 			->where( 'scanner_id' , $this->scanner_id  )
 			->where( $this->dummy_column, $this->dummy_id )
@@ -389,6 +426,13 @@ class Node
 	* based on code = board_id;
 	*/
 	public function getBoardType($board_id = null){
+		// it's can be triggered if model & guid has been set;
+		if (is_null($this->model)) {
+			throw new StoreResourceFailedException("model is not found", [
+				'node' => json_decode($this, true),
+			]);
+		}
+
 		if (is_null($board_id)) {
 			$board_id = $this->dummy_id;
 			// get first 5 digit of char
@@ -396,7 +440,7 @@ class Node
 			// it'll need to be changed due to changes in big system
 			$board_id = substr($board_id, 0, 5);
 		}
-		// this is from bigs db
+
 		$model = Mastermodel::select([
 			'id',
 			'name',
@@ -406,8 +450,43 @@ class Node
 			'cavity',
 			'code',
 			'side',
-		])->where('code', $board_id )
-		->first();
+		]);
+
+		if($this->getModelType() == 'ticket'){
+			if (is_null($this->guid_ticket)) {
+				throw new StoreResourceFailedException("guid ticket is null", [
+					'node' => json_decode($this, true),
+				]);
+			}
+
+			// kalau sudah generated, baru masuk sini;
+			if ($this->isTicketGuidGenerated()) {
+				// ambil dulu modelnya dari table board, kemudian pass hasilnya kesini;
+				$boardPanel = Board::select([
+					'board_id'
+				])->where('guid_ticket', $this->guid_ticket )
+				->orderBy('id', 'desc')
+				->first();
+
+				if (is_null($boardPanel)) {
+					throw new StoreResourceFailedException("board with guid_ticket ".$this->guid_ticket." not found", [
+						'node' => json_decode($this, true ),
+					]);
+				}
+
+				$board_id = substr($boardPanel['board_id'], 0,5 );
+				# code...
+				$model = $model->where('code', $board_id );
+			}
+			
+		}
+
+		else{
+			// this is from bigs db
+			$model = $model->where('code', $board_id );
+		}
+			
+		$model = $model->first();
 
 		if ($model !== null) {
 			$this->setBoard($model);
@@ -506,7 +585,8 @@ class Node
 		if (!is_null($board['name'])) {
 			# code...
 
-			$sequence = Sequence::select(['process'])->where('modelname', $board['name'] )
+			$sequence = Sequence::select(['process'])
+			->where('modelname', $board['name'] )
 			->where('pwbname', $board['pwbname'])
 			->where('line_id', $scanner['line_id'] )
 			->first();

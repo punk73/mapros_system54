@@ -199,7 +199,16 @@ class MainController extends Controller
     }
 
     private function runProcedureTicket(Node $node){
-        if( (!$node->isTicketGuidGenerated()) && ($node->getGuidTicket() == null) ){
+        if( !$node->isTicketGuidGenerated() ){
+
+            $node->setStatus('IN');
+            $node->setJudge('OK');
+            if(!$node->save()){
+                throw new StoreResourceFailedException("Error Saving Progress", [
+                    'message' => 'something went wrong with save method on model! ask your IT member'
+                ]);
+            }    
+
             throw new StoreResourceFailedException("view", [
                 'nik' => $node->getNik(),
                 'ip' => $node->getScanner()['ip_address'],
@@ -210,13 +219,7 @@ class MainController extends Controller
 
         return $this->processBoard($node);
 
-        $node->setStatus('IN');
-        $node->setJudge('OK');
-        if(!$node->save()){
-            throw new StoreResourceFailedException("Error Saving Progress", [
-                'message' => 'something went wrong with save method on model! ask your IT member'
-            ]);
-        } 
+         
         
         return $this->returnValue;
 
