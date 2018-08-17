@@ -8,8 +8,6 @@
     }
 </style>
 
-
-
 <div class="container">
     <div class="row">
         @if (isset($error) && $error != null )        

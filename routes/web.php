@@ -20,9 +20,11 @@ Route::get('/', 'MainController@index' );
 
 Route::group(['prefix' => 'main'], function($route){
 	$route->post('/', 'MainController@post' );
-	/*$route->get('/', function(){
-		return view('main');
-	});*/
+});
+
+Route::group(['prefix' => 'join'], function($route){
+	$route->get('/', 'JoinController@index' );
+	$route->post('/', 'JoinController@post' );
 });
 
 Route::group(['prefix' => 'admin'], function () {

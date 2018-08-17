@@ -45,9 +45,9 @@ class MainController extends Controller
     }
 
     public function viewJoin($response){
-    	return view('join-view', [
-    		'response' => $response
-    	]);
+    	return redirect('join')->with([
+            'response' => $response
+        ]);
     }
 
     public function handleError($errors){
@@ -57,6 +57,5 @@ class MainController extends Controller
     	];
 
     	return redirect('/')->with(['error' => $error]);
-
     }
 }

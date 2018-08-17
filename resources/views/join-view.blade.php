@@ -16,7 +16,7 @@
                 <div class="panel-body">
                     @include('voyager::alerts')
 
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('main') }}">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ url('join') }}">
                         {{ csrf_field() }}
 
                         @foreach ($response->keys() as $key)
