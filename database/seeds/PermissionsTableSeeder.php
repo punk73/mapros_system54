@@ -665,6 +665,46 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-13 13:42:52',
                 'updated_at' => '2018-08-13 13:42:52',
             ),
+            81 => 
+            array (
+                'id' => 107,
+                'key' => 'browse_ticket_masters',
+                'table_name' => 'ticket_masters',
+                'created_at' => '2018-08-14 12:22:11',
+                'updated_at' => '2018-08-14 12:22:11',
+            ),
+            82 => 
+            array (
+                'id' => 108,
+                'key' => 'read_ticket_masters',
+                'table_name' => 'ticket_masters',
+                'created_at' => '2018-08-14 12:22:11',
+                'updated_at' => '2018-08-14 12:22:11',
+            ),
+            83 => 
+            array (
+                'id' => 109,
+                'key' => 'edit_ticket_masters',
+                'table_name' => 'ticket_masters',
+                'created_at' => '2018-08-14 12:22:11',
+                'updated_at' => '2018-08-14 12:22:11',
+            ),
+            84 => 
+            array (
+                'id' => 110,
+                'key' => 'add_ticket_masters',
+                'table_name' => 'ticket_masters',
+                'created_at' => '2018-08-14 12:22:11',
+                'updated_at' => '2018-08-14 12:22:11',
+            ),
+            85 => 
+            array (
+                'id' => 111,
+                'key' => 'delete_ticket_masters',
+                'table_name' => 'ticket_masters',
+                'created_at' => '2018-08-14 12:22:11',
+                'updated_at' => '2018-08-14 12:22:11',
+            ),
         ));
         
         

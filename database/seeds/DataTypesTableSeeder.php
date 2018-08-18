@@ -96,7 +96,7 @@ class DataTypesTableSeeder extends Seeder
                 'slug' => 'scanners',
                 'display_name_singular' => 'Scanner',
                 'display_name_plural' => 'Scanners',
-                'icon' => '',
+                'icon' => 'voyager-tools',
                 'model_name' => 'App\\Scanner',
                 'policy_name' => '',
                 'controller' => '',
@@ -105,7 +105,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 02:38:11',
-                'updated_at' => '2018-08-06 14:53:22',
+                'updated_at' => '2018-08-16 12:01:51',
             ),
             5 => 
             array (
@@ -123,7 +123,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 03:31:01',
-                'updated_at' => '2018-08-13 13:56:24',
+                'updated_at' => '2018-08-17 09:55:31',
             ),
             6 => 
             array (
@@ -157,9 +157,9 @@ class DataTypesTableSeeder extends Seeder
                 'description' => '',
                 'generate_permissions' => 1,
                 'server_side' => 1,
-                'details' => '{"order_column":"","order_display_column":""}',
+                'details' => '{"order_column":"id","order_display_column":"id"}',
                 'created_at' => '2018-08-04 03:38:49',
-                'updated_at' => '2018-08-06 11:55:16',
+                'updated_at' => '2018-08-16 16:23:06',
             ),
             8 => 
             array (
@@ -204,7 +204,7 @@ class DataTypesTableSeeder extends Seeder
                 'slug' => 'grades',
                 'display_name_singular' => 'Grade',
                 'display_name_plural' => 'Grades',
-                'icon' => '',
+                'icon' => 'voyager-browser',
                 'model_name' => 'App\\Grade',
                 'policy_name' => '',
                 'controller' => '',
@@ -222,7 +222,7 @@ class DataTypesTableSeeder extends Seeder
                 'slug' => 'boards',
                 'display_name_singular' => 'Board',
                 'display_name_plural' => 'Boards',
-                'icon' => '',
+                'icon' => 'voyager-browser',
                 'model_name' => 'App\\Board',
                 'policy_name' => '',
                 'controller' => '',
@@ -231,7 +231,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-08 09:50:17',
-                'updated_at' => '2018-08-08 09:50:17',
+                'updated_at' => '2018-08-14 11:10:08',
             ),
             12 => 
             array (
@@ -258,7 +258,7 @@ class DataTypesTableSeeder extends Seeder
                 'slug' => 'column-settings',
                 'display_name_singular' => 'Column Setting',
                 'display_name_plural' => 'Column Settings',
-                'icon' => '',
+                'icon' => 'voyager-list',
                 'model_name' => 'App\\ColumnSetting',
                 'policy_name' => '',
                 'controller' => '',
@@ -267,7 +267,25 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-13 13:42:52',
-                'updated_at' => '2018-08-13 13:57:04',
+                'updated_at' => '2018-08-14 11:12:31',
+            ),
+            14 => 
+            array (
+                'id' => 23,
+                'name' => 'ticket_masters',
+                'slug' => 'ticket-masters',
+                'display_name_singular' => 'Ticket Master',
+                'display_name_plural' => 'Ticket Masters',
+                'icon' => '',
+                'model_name' => 'App\\TicketMaster',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-14 12:22:10',
+                'updated_at' => '2018-08-14 13:59:30',
             ),
         ));
         
