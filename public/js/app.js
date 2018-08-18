@@ -12012,7 +12012,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
 
 
 
-var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_2__components_Main_vue___default.a }, { path: '/join', component: __WEBPACK_IMPORTED_MODULE_3__components_Join_vue___default.a }];
+var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_2__components_Main_vue___default.a }, { path: '/join', component: __WEBPACK_IMPORTED_MODULE_3__components_Join_vue___default.a, props: true }];
 
 var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
   routes: routes // short for `routes: routes`
@@ -12990,10 +12990,10 @@ var axios = __webpack_require__(13);
             // show modal containing the error 
             console.log(this.detailError);
         },
-        returnJoin: function returnJoin(params) {
+        returnJoin: function returnJoin(errors) {
             this.$router.push({
                 path: '/join',
-                params: params
+                params: errors
             });
         }
     }
@@ -47643,7 +47643,7 @@ module.exports = __webpack_require__(12);
 
 var Component = __webpack_require__(9)(
   /* script */
-  null,
+  __webpack_require__(58),
   /* template */
   __webpack_require__(57),
   /* scopeId */
@@ -47676,8 +47676,6 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _vm._m(0)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "container"
   }, [_c('div', {
@@ -47686,11 +47684,56 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "col-md-8 col-md-offset-2"
   }, [_c('div', {
     staticClass: "panel panel-default"
+  }, [_vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "panel-body"
+  }, [_c('form', {
+    staticClass: "form-horizontal",
+    attrs: {
+      "role": "form"
+    },
+    on: {
+      "submit": function($event) {
+        $event.preventDefault();
+        return _vm.onSubmit($event)
+      }
+    }
   }, [_c('div', {
-    staticClass: "panel-header"
-  }, [_c('h1', [_vm._v("Join")])]), _vm._v(" "), _c('div', {
-    staticClass: "panel-bod"
-  }, [_vm._v("\n\t\t\t\t\tLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\n\t\t\t\t\ttempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\n\t\t\t\t\tquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\n\t\t\t\t\tconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\n\t\t\t\t\tcillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\n\t\t\t\t\tproident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\t\t\t\t")])])])])])
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-4 control-label",
+    attrs: {
+      "for": "board_id"
+    }
+  }, [_vm._v("Board Id")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.form.board_id),
+      expression: "form.board_id"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "id": "board_id",
+      "type": "board_id",
+      "name": "board_id",
+      "required": ""
+    },
+    domProps: {
+      "value": (_vm.form.board_id)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.form, "board_id", $event.target.value)
+      }
+    }
+  })])])])])])])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "panel-heading"
+  }, [_c('h1', [_vm._v("Join")])])
 }]}
 module.exports.render._withStripped = true
 if (false) {
@@ -47699,6 +47742,54 @@ if (false) {
      require("vue-hot-reload-api").rerender("data-v-abeec8f6", module.exports)
   }
 }
+
+/***/ }),
+/* 58 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['errors'],
+	mounted: function mounted() {
+		console.log(this.props);
+	}
+});
 
 /***/ })
 /******/ ]);

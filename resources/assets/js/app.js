@@ -22,7 +22,7 @@ import join from './components/Join.vue';
 
 const routes = [
   { path: '/', component: mymain },
-  { path: '/join', component: join },
+  { path: '/join', component: join, props: true },
 
 ]
 

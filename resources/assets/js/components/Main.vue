@@ -107,10 +107,10 @@
                 console.log(this.detailError )
             },
 
-            returnJoin(params){
+            returnJoin(errors){
                 this.$router.push({
                     path: '/join',
-                    params: params
+                    params: errors
                 });
             }
         }
