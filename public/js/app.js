@@ -11988,8 +11988,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_router__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Main_vue__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Main_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_Main_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Join_vue__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Join_vue__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Join_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Join_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Config_vue__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Config_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Config_vue__);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -12012,7 +12014,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
 
 
 
-var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_2__components_Main_vue___default.a }, { path: '/join', component: __WEBPACK_IMPORTED_MODULE_3__components_Join_vue___default.a, props: true }];
+
+var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_2__components_Main_vue___default.a }, { path: '/join', component: __WEBPACK_IMPORTED_MODULE_3__components_Join_vue___default.a, props: true }, { path: '/config', component: __WEBPACK_IMPORTED_MODULE_4__components_Config_vue___default.a, props: true }];
 
 var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
   routes: routes // short for `routes: routes`
@@ -12876,7 +12879,54 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 31 */,
+/* 31 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['errors'],
+	mounted: function mounted() {
+		console.log(this.props);
+	}
+});
+
+/***/ }),
 /* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -43180,7 +43230,40 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 39 */,
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(9)(
+  /* script */
+  __webpack_require__(31),
+  /* template */
+  __webpack_require__(42),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Join.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Join.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-abeec8f6", Component.options)
+  } else {
+    hotAPI.reload("data-v-abeec8f6", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -43194,7 +43277,7 @@ var Component = __webpack_require__(9)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Main.vue"
+Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Main.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Main.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -43390,7 +43473,78 @@ if (false) {
 }
 
 /***/ }),
-/* 42 */,
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "container"
+  }, [_c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-md-8 col-md-offset-2"
+  }, [_c('div', {
+    staticClass: "panel panel-default"
+  }, [_vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "panel-body"
+  }, [_c('form', {
+    staticClass: "form-horizontal",
+    attrs: {
+      "role": "form"
+    },
+    on: {
+      "submit": function($event) {
+        $event.preventDefault();
+        return _vm.onSubmit($event)
+      }
+    }
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-4 control-label",
+    attrs: {
+      "for": "board_id"
+    }
+  }, [_vm._v("Board Id")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.form.board_id),
+      expression: "form.board_id"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "id": "board_id",
+      "type": "board_id",
+      "name": "board_id",
+      "required": ""
+    },
+    domProps: {
+      "value": (_vm.form.board_id)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.form, "board_id", $event.target.value)
+      }
+    }
+  })])])])])])])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "panel-heading"
+  }, [_c('h1', [_vm._v("Join")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-abeec8f6", module.exports)
+  }
+}
+
+/***/ }),
 /* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -47651,9 +47805,9 @@ var Component = __webpack_require__(9)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Join.vue"
+Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Config.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] Join.vue: functional components are not supported with templates, they should use render functions.")}
+if (Component.options.functional) {console.error("[vue-loader] Config.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -47662,9 +47816,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-abeec8f6", Component.options)
+    hotAPI.createRecord("data-v-603c50dd", Component.options)
   } else {
-    hotAPI.reload("data-v-abeec8f6", Component.options)
+    hotAPI.reload("data-v-603c50dd", Component.options)
   }
 })()}
 
@@ -47686,60 +47840,39 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "panel panel-default"
   }, [_vm._m(0), _vm._v(" "), _c('div', {
     staticClass: "panel-body"
-  }, [_c('form', {
-    staticClass: "form-horizontal",
-    attrs: {
-      "role": "form"
-    },
-    on: {
-      "submit": function($event) {
-        $event.preventDefault();
-        return _vm.onSubmit($event)
-      }
-    }
-  }, [_c('div', {
+  }, [_c('form', {}, [_c('div', {
     staticClass: "form-group"
   }, [_c('label', {
-    staticClass: "col-md-4 control-label",
+    staticClass: "col-md-3 control-label",
     attrs: {
-      "for": "board_id"
+      "for": "nik"
     }
-  }, [_vm._v("Board Id")]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-6"
+  }, [_vm._v("Current Model")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
   }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.form.board_id),
-      expression: "form.board_id"
-    }],
     staticClass: "form-control",
     attrs: {
-      "id": "board_id",
-      "type": "board_id",
-      "name": "board_id",
-      "required": ""
-    },
-    domProps: {
-      "value": (_vm.form.board_id)
+      "type": "text",
+      "v-model": _vm.model,
+      "required": "",
+      "autofocus": ""
     },
     on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.$set(_vm.form, "board_id", $event.target.value)
-      }
+      "change": _vm.handleOnChange
     }
   })])])])])])])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "panel-heading"
-  }, [_c('h1', [_vm._v("Join")])])
+    staticClass: "bg-info panel-heading custom-heading"
+  }, [_c('i', {
+    staticClass: "fa fa-cogs"
+  }), _vm._v(" Config\n\t\t\t\t\t")])
 }]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-abeec8f6", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-603c50dd", module.exports)
   }
 }
 
@@ -47773,21 +47906,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['errors'],
-	mounted: function mounted() {
-		console.log(this.props);
+	data: function data() {
+		return {
+			model: ''
+		};
+	},
+
+
+	methods: {
+		handleOnChange: function handleOnChange() {
+			console.log(this.model);
+		}
 	}
 });
 

@@ -19,10 +19,12 @@ Vue.use(VueRouter)
 
 import mymain from './components/Main.vue';
 import join from './components/Join.vue';
+import config from './components/Config.vue';
 
 const routes = [
   { path: '/', component: mymain },
   { path: '/join', component: join, props: true },
+  { path: '/config', component: config, props: true },
 
 ]
 
