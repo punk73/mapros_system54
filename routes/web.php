@@ -39,3 +39,15 @@ Route::group(['prefix' => 'ticket_masters'], function($route){
 	$route->post('/', 'MasterTicketController@post' );
 });
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
