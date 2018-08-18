@@ -8,7 +8,7 @@
     }
 </style>
 
-<div class="container">
+{{-- <div class="container">
     <div class="row">
         @if (isset($error) && $error != null )        
             <div class="col-md-8 col-md-offset-2">
@@ -86,6 +86,10 @@
             </div>
         </div>
     </div>
+</div> --}}
+
+<div id="app">
+    
 </div>
 
 @endsection
