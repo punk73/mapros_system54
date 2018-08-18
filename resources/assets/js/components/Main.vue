@@ -1,6 +1,16 @@
 <template>
     <div class="container">
         <div class="row">
+
+            <div v-if="showAlert" class="col-md-8 col-md-offset-2">
+                <div class="alert alert-danger alert-dismissible show" role="alert">
+                  {{ error + "." }} <a class="alert-link" @click.prevent='showDetailError' >detail</a>
+                  <button class="close" data-dismiss="alert" aria-label="close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            </div>
+
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">MAIN</div>
@@ -57,6 +67,11 @@
                     nik: '',
                 },
 
+                error: '',
+
+                detailError: '',
+
+                showAlert : false,
             }
         },
         methods : {
@@ -69,10 +84,34 @@
                     })
                     .catch( (error) => {
                         let data = error.response.data;
-                        let message = data.message;
                         console.log(data)
-                        alert(message)
+                        let message = data.message;
+                        
+                        if(message == 'view'){
+                            this.returnJoin(data.errors);
+                            return;
+                        }
+
+                        this.handleError(message, data.errors );
                     })
+            },
+
+            handleError(message, detailError = '' ){
+                this.error = message;
+                this.detailError = detailError;
+                this.showAlert = !this.showAlert;
+            },
+
+            showDetailError(){
+                // show modal containing the error 
+                console.log(this.detailError )
+            },
+
+            returnJoin(params){
+                this.$router.push({
+                    path: '/join',
+                    params: params
+                });
             }
         }
     }

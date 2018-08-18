@@ -9,7 +9,8 @@
 </style>
 
 <div id="app">
-    <mymain></mymain>
+    {{-- <mymain></mymain> --}}
+    <router-view></router-view>
 </div>
 
 

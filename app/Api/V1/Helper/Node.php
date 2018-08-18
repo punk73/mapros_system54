@@ -686,7 +686,7 @@ class Node
 		$key = array_search($this->scanner['lineprocess_id'], $process );
 		
 		// $lineprocess_id tidak ditemukan di $process
-		if (!$key) {
+		if ($key === false ) { // === is required since 0 is false if its using == (two sama dengan)
 			throw new StoreResourceFailedException("this step shouldn't belong to the process", [
                 'current_step' 	=> $this->scanner['lineprocess_id'],
                 'process'		=> $process,

@@ -12,16 +12,29 @@ require('./bootstrap');
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 
-Vue.component('example', require('./components/Example.vue'));
-// Vue.component('main', require('./components/Main.vue'));
-let mymain = require('./components/Main.vue');
+Vue.use(VueRouter)
+
+import mymain from './components/Main.vue';
+import join from './components/Join.vue';
+
+const routes = [
+  { path: '/', component: mymain },
+  { path: '/join', component: join },
+
+]
+
+const router = new VueRouter({
+  routes // short for `routes: routes`
+})
 
 const app = new Vue({
     el: '#app',
-    created(){
-    	console.log('im new')
-    },
+
+    router,
+    
     components: {
     	mymain,
     }
