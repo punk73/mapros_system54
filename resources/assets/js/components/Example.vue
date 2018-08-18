@@ -16,8 +16,8 @@
 
 <script>
     export default {
-            console.log('Component ready.')
         mounted() {
+            console.log('Component ready.')
         }
     }
 </script>

@@ -14,7 +14,15 @@ require('./bootstrap');
  */
 
 Vue.component('example', require('./components/Example.vue'));
+// Vue.component('main', require('./components/Main.vue'));
+let mymain = require('./components/Main.vue');
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    created(){
+    	console.log('im new')
+    },
+    components: {
+    	mymain,
+    }
 });
