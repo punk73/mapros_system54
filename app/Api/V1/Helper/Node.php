@@ -48,6 +48,7 @@ class Node
 	public $process;
 	protected $dummy_column;
 	protected $model_type;
+	protected $id_type; //board, panel, master or mecha;
 	protected $step;
 
 	function __construct($parameter, $debug = false ){	
@@ -75,7 +76,8 @@ class Node
 	
 			// set lineprocess
 			$this->setLineprocess($this->scanner['lineprocess_id']);
-	
+			// set column setting;
+			$this->initColumnSetting();
 			// set status & judge
 			$this->loadStep();
 		}
@@ -85,6 +87,7 @@ class Node
 		return json_encode([
 			'scanner_id' 	=> $this->scanner_id,
 			'scanner'		=> $this->scanner,
+			'id_type'		=> $this->id_type,
 			'dummy_id' 		=> $this->dummy_id,
 			'guid_master' 	=> $this->guid_master,
 			'guid_ticket' 	=> $this->guid_ticket,
@@ -96,7 +99,7 @@ class Node
 			'lineprocess'	=> $this->lineprocess,
 			'step'			=> $this->step,
 			'model'			=> $this->model,
-			// 'column_setting'=> $this->column_setting,
+			'column_setting'=> $this->column_setting,
 		]);
 	}
 
@@ -126,6 +129,14 @@ class Node
 		$this->scanner_id = $scanner['id'];
 	}
 
+	public function isJoin(){
+		if ($this->column_setting == null ) {
+			$this->column_setting = [];	
+		}
+
+		return (count($this->column_setting) > 1 );
+	}
+
 	public function initColumnSetting(){
 		if ($this->lineprocess == null ) {
 			throw new StoreResourceFailedException("Lineprocess is not found", [
@@ -143,6 +154,15 @@ class Node
 
 	public function setColumnSetting( $columnSetting){
 		$this->column_setting = $columnSetting;
+	}
+
+	// dipanggil di setmodel
+	public function setIdType($type){
+		$this->id_type = $type;
+	}
+	// dipanggil di getSequence untuk determine ini id type apa;
+	public function getIdType(){
+		return $this->id_type;
 	}
 
 	//triggered on instantiate 
@@ -175,6 +195,7 @@ class Node
 			    $model = new $className;
 			    $dummy_column = $setting->dummy_column;
 			    $name = str_singular($setting->table_name);
+			    $idType = $setting->name;
 			}
 
 		}else{
@@ -183,55 +204,57 @@ class Node
 			$model = new Board;
 			$dummy_column = 'board_id';
 			$name = 'board';
+			$idType = 'board';
 		}
 
 		$this->model = $model;
 		$this->dummy_column = $dummy_column;
 		$this->model_type = $name;
+		$this->setIdType($idType);
 	}
 
 	// method init guid di triggere dari main Controller;
 	private function initGuid($guid){
 		// it can triggered after scanner & model has been set; 
 		if ($this->getModelType() == 'ticket') {
-			if (is_null($this->scanner_id)) {
-				throw new StoreResourceFailedException("scanner id is null", [
-					'node' => json_decode($this, true),
-				]);
-			}
-
-			if (is_null($this->dummy_column)) {
-				throw new StoreResourceFailedException("dummy_column id is null", [
-					'node' => json_decode($this, true),
-				]);
-			}
-
-			if (is_null($this->dummy_id)) {
-				throw new StoreResourceFailedException("dummy_id id is null", [
-					'node' => json_decode($this, true),
-				]);
-			}
-
+			
 			// cek apakah ticket guid sudah di generate sebelumnya;
 			if ($this->isTicketGuidGenerated() ) {
-				$guid = $this->model
-				->select([
-					'guid_ticket'
-				])
-				->where( 'scanner_id' , $this->scanner_id  )
-				->where( $this->dummy_column, $this->dummy_id )
-				->where('guid_master', null )
-				->where('guid_ticket','!=', null )
-				->orderBy('id', 'desc')
-				->first();
+				$guid = $this->getLastGuid();
 
 				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
 			}else {
-				$guid = $this->generateGuid();
+
+				$guid = ($guid == null )?  $this->generateGuid() : $guid;
 			}
 
-			$this->setGuidTicket($guid);
 		}
+		
+		$this->setGuidTicket($guid);
+	}
+
+	private function getLastGuid(){
+		if (is_null($this->dummy_column)) {
+			throw new StoreResourceFailedException("dummy_column id is null", [
+				'node' => json_decode($this, true),
+			]);
+		}
+
+		if (is_null($this->dummy_id)) {
+			throw new StoreResourceFailedException("dummy_id id is null", [
+				'node' => json_decode($this, true),
+			]);
+		}
+
+		return $this->model
+		->select([
+			'guid_ticket'
+		])
+		->where( $this->dummy_column, $this->dummy_id )
+		->where('guid_master', null )
+		->where('guid_ticket','!=', null )
+		->orderBy('id', 'desc')
+		->first();
 	}
 
 	public function getGuidTicket(){
@@ -262,7 +285,7 @@ class Node
 		}
 
 		return $this->model
-			->where( 'scanner_id' , $this->scanner_id  )
+			// ->where( 'scanner_id' , $this->scanner_id  )
 			->where( $this->dummy_column, $this->dummy_id )
 			->where('guid_master', null )
 			->exists();
@@ -479,9 +502,7 @@ class Node
 				$model = $model->where('code', $board_id );
 			}
 			
-		}
-
-		else{
+		}else{
 			// this is from bigs db
 			$model = $model->where('code', $board_id );
 		}
@@ -587,9 +608,18 @@ class Node
 
 			$sequence = Sequence::select(['process'])
 			->where('modelname', $board['name'] )
-			->where('pwbname', $board['pwbname'])
-			->where('line_id', $scanner['line_id'] )
-			->first();
+			->where('line_id', $scanner['line_id'] );
+
+			if ($this->getModelType() == 'board' ) {
+				$sequence =	$sequence->where('pwbname', $board['pwbname']);
+			}
+
+			if ($this->getModelType() == 'ticket' ) {
+				// disini kita harus determine wheter it is panel or mecha;
+				$sequence =	$sequence->where('pwbname', $this->getIdType()  ); 
+			}
+			
+			$sequence = $sequence->first();
 
 			if($sequence){
 				$this->setProcess($sequence['process']);
@@ -604,9 +634,9 @@ class Node
 	}
 
 	public function getProcess(){
-		if (is_null( $this->process) ) {
+		/*if (is_null( $this->process) ) {
 			$this->getSequence();
-		}
+		}*/
 		return $this->process;
 	}
 

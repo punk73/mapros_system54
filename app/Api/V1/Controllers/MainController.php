@@ -199,7 +199,7 @@ class MainController extends Controller
     }
 
     private function runProcedureTicket(Node $node){
-        if( !$node->isTicketGuidGenerated() ){
+        if( (!$node->isTicketGuidGenerated()) && ($node->isJoin()) ){
 
             $node->setStatus('IN');
             $node->setJudge('OK');
