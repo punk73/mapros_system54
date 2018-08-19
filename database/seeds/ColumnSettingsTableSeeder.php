@@ -19,7 +19,7 @@ class ColumnSettingsTableSeeder extends Seeder
         \DB::table('column_settings')->insert(array (
             0 => 
             array (
-                'id' => 1,
+                //'id' => 1,
                 'name' => 'board',
                 'dummy_column' => 'board_id',
                 'table_name' => 'boards',
@@ -29,7 +29,7 @@ class ColumnSettingsTableSeeder extends Seeder
             ),
             1 => 
             array (
-                'id' => 2,
+                //'id' => 2,
                 'name' => 'panel',
                 'dummy_column' => 'ticket_no',
                 'table_name' => 'tickets',
@@ -39,7 +39,7 @@ class ColumnSettingsTableSeeder extends Seeder
             ),
             2 => 
             array (
-                'id' => 3,
+                //'id' => 3,
                 'name' => 'mecha',
                 'dummy_column' => 'ticket_no',
                 'table_name' => 'tickets',
@@ -49,7 +49,7 @@ class ColumnSettingsTableSeeder extends Seeder
             ),
             3 => 
             array (
-                'id' => 4,
+                //'id' => 4,
                 'name' => 'master',
                 'dummy_column' => 'ticket_no_master',
                 'table_name' => 'masters',
