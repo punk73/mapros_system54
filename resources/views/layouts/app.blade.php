@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Scripts -->
     <script>
@@ -21,7 +22,7 @@
     </script>
 </head>
 <body>
-    <div id="app">
+    <div id="app1">
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
@@ -50,8 +51,9 @@
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
                         @if (Auth::guest())
-                            <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
+                            <li><a href="{{ route('login') }}"><span class="fa door-open"></span> Login</a></li>
+                            <li><a href="{{ route('register') }}"><span class="fa fa-user"></span> Register</a></li>
+                            <li><a href="#/config"><span class="fa fa-cogs"> Config </span></a></li>
                         @else
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
