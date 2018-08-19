@@ -1,62 +1,88 @@
 <template>
-    <div class="container">
-        <div class="row">
+    <div>
+        <div class="container">
+            <div class="row">
 
-            <div v-if="showAlert" class="col-md-8 col-md-offset-2">
-                <div class="alert alert-danger alert-dismissible show" role="alert">
-                  {{ error + "." }} <a class="alert-link" @click.prevent='showDetailError' >detail</a>
-                  <button class="close" data-dismiss="alert" aria-label="close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
+                <div v-if="showAlert" class="col-md-8 col-md-offset-2">
+                    <div class="alert alert-danger alert-dismissible show" role="alert">
+                      {{ error + "." }} <a class="alert-link" @click.prevent='showDetailError' >detail</a>
+                      <button class="close" data-dismiss="alert" aria-label="close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">MAIN</div>
-                    <div class="panel-body">
-                        <form class="form-horizontal" role="form" @submit.prevent="onSubmit" >
-                            <div class="form-group">
-                                <label for="nik" class="col-md-4 control-label">NIK</label>
-
-                                <div class="col-md-6">
-                                    <input id="nik" type="text" maxlength="6" class="form-control" name="nik" v-model='form.nik' required autofocus>
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="panel panel-default">
+                        <div class="panel-heading custom-color">
+                            <div class="row">
+                               <div class="col-md-4 col-sm-4">
+                                LINE : {{ info.line }}
+                               </div>
+                               <div class="col-md-4 col-md-offset-4">
+                                   TYPE : {{ info.type }}
+                               </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-sm-3">
+                                    PROCESS: {{info.process}}
                                 </div>
                             </div>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" @submit.prevent="onSubmit" >
+                                <div class="form-group">
+                                    <label for="nik" class="col-md-4 control-label">NIK</label>
 
-                            <div class="form-group">
-                                <label for="name" class="col-md-4 control-label">IP Address</label>
-
-                                <div class="col-md-6">
-                                    <input v-model='form.ip' id="ip_address" type="text" class="form-control" name="ip_address" required autofocus>
+                                    <div class="col-md-6">
+                                        <input id="nik" type="text" maxlength="6" class="form-control" name="nik" v-model='form.nik' required autofocus>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label for="board_id" class="col-md-4 control-label">Board Id</label>
+                                <div class="form-group">
+                                    <label for="name" class="col-md-4 control-label">IP Address</label>
 
-                                <div class="col-md-6">
-                                    <input id="board_id" v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
+                                    <div class="col-md-6">
+                                        <input v-model='form.ip' id="ip_address" type="text" class="form-control" name="ip_address" required autofocus>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        Submit
-                                    </button>
+                                <div class="form-group">
+                                    <label for="board_id" class="col-md-4 control-label">Board Id</label>
+
+                                    <div class="col-md-6">
+                                        <input id="board_id" v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+
+                                <div class="form-group">
+                                    <div class="col-md-6 col-md-offset-4">
+                                        <button type="submit" class="btn btn-primary">
+                                            Submit
+                                        </button>
+
+                                        <button @click='toggleModal'  type="button" class="btn btn-primary">
+                                            show modal
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <modal 
+            v-if="showModal" 
+            @toggleModal='toggleModal'
+             
+        ></modal>
     </div>
 </template>
 
 <script>
     const axios = require('axios');
+    import modal from './Modal';
 
     export default {
         data: () => {
@@ -72,8 +98,25 @@
                 detailError: '',
 
                 showAlert : false,
+
+                info : {
+                    line    : '',
+                    proces  : '',
+                    type    : '',
+                },
+
+                showModal: false,
             }
         },
+
+        mounted(){
+            console.log('mounted')
+        },
+
+        components: {
+            modal
+        },
+
         methods : {
             onSubmit(){
                 let data = this.form
@@ -112,8 +155,19 @@
                     path: '/join',
                     params: errors
                 });
+            },
+
+            toggleModal(){
+                this.showModal = !this.showModal
             }
         }
     }
 
 </script>
+
+<style>
+    .custom-color{
+        background-image: none!important;
+        background-color: white !important;
+    }
+</style>

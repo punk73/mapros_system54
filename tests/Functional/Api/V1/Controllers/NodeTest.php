@@ -223,6 +223,7 @@ class NodeTest extends TestCase
         $this->assertInstanceOf('App\Board', $node->getModel());
     }
 
+    // initColumnSetting
     public function testSetColumnSettingSuccess(){
         $this->seedDb([
             '--class'=>'ScannerSeeder'

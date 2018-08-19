@@ -50,6 +50,7 @@ class Node
 	protected $model_type;
 	protected $id_type; //board, panel, master or mecha;
 	protected $step;
+	protected $column_setting;
 
 	function __construct($parameter, $debug = false ){	
 		// kalau sedang debugging, maka gausah run construct
@@ -68,7 +69,8 @@ class Node
 			// setup board_id
 			$this->dummy_id = $parameter['board_id'];
 			// get prev guid id;
-			$this->initGuid($parameter['guid']);
+			$guidId = (isset($parameter['guid'])) ? $parameter['guid'] : null;
+			$this->initGuid($guidId);
 			// get board type from big & set into board properties
 			$this->getBoardType();
 			// run to get sequence and set to process attribute
@@ -84,6 +86,12 @@ class Node
 	}
 
 	public function __toString(){
+		/*
+		* for every properties that return here, need to be define earlier, not define in method,
+		* so even when error occures, those attributes still exists as null;
+		* Exp : you add $this->age properties in method, but doesn't declare those var in class, 
+		* it'll show error without proper info what is the error; 
+		*/
 		return json_encode([
 			'scanner_id' 	=> $this->scanner_id,
 			'scanner'		=> $this->scanner,

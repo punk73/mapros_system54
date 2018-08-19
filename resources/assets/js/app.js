@@ -20,6 +20,7 @@ Vue.use(VueRouter)
 import mymain from './components/Main.vue';
 import join from './components/Join.vue';
 import config from './components/Config.vue';
+import modal from './components/Modal.vue';
 
 const routes = [
   { path: '/', component: mymain },
@@ -38,6 +39,19 @@ const app = new Vue({
     router,
     
     components: {
-    	mymain,
+    	mymain
+    },
+
+    data(){
+    	return {
+    		showModal: false,
+    	}
+    },
+
+    methods : {
+    	toggleModal(){
+        console.log('im app js toggleModal ')
+    		this.showModal = !this.showModal;
+    	}
     }
 });
