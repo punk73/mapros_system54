@@ -19,7 +19,7 @@ class MenuItemsTableSeeder extends Seeder
         \DB::table('menu_items')->insert(array (
             0 => 
             array (
-                //'id' => 1,
+                'id' => 1,
                 'menu_id' => 1,
                 'title' => 'Dashboard',
                 'url' => '',
@@ -35,7 +35,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             1 => 
             array (
-                //'id' => 2,
+                'id' => 2,
                 'menu_id' => 1,
                 'title' => 'Media',
                 'url' => '',
@@ -51,7 +51,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             2 => 
             array (
-                //'id' => 3,
+                'id' => 3,
                 'menu_id' => 1,
                 'title' => 'Users',
                 'url' => '',
@@ -67,7 +67,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             3 => 
             array (
-                //'id' => 4,
+                'id' => 4,
                 'menu_id' => 1,
                 'title' => 'Roles',
                 'url' => '',
@@ -83,7 +83,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             4 => 
             array (
-                //'id' => 5,
+                'id' => 5,
                 'menu_id' => 1,
                 'title' => 'Tools',
                 'url' => '',
@@ -99,7 +99,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             5 => 
             array (
-                //'id' => 6,
+                'id' => 6,
                 'menu_id' => 1,
                 'title' => 'Menu Builder',
                 'url' => '',
@@ -115,7 +115,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             6 => 
             array (
-                //'id' => 7,
+                'id' => 7,
                 'menu_id' => 1,
                 'title' => 'Database',
                 'url' => '',
@@ -131,7 +131,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             7 => 
             array (
-                //'id' => 8,
+                'id' => 8,
                 'menu_id' => 1,
                 'title' => 'Compass',
                 'url' => '',
@@ -147,7 +147,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             8 => 
             array (
-                //'id' => 9,
+                'id' => 9,
                 'menu_id' => 1,
                 'title' => 'BREAD',
                 'url' => '',
@@ -163,7 +163,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             9 => 
             array (
-                //'id' => 10,
+                'id' => 10,
                 'menu_id' => 1,
                 'title' => 'Settings',
                 'url' => '',
@@ -179,7 +179,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             10 => 
             array (
-                //'id' => 11,
+                'id' => 11,
                 'menu_id' => 1,
                 'title' => 'Hooks',
                 'url' => '',
@@ -195,7 +195,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             11 => 
             array (
-                //'id' => 12,
+                'id' => 12,
                 'menu_id' => 1,
                 'title' => 'Departments',
                 'url' => '',
@@ -211,7 +211,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             12 => 
             array (
-                //'id' => 13,
+                'id' => 13,
                 'menu_id' => 1,
                 'title' => 'Scanners',
                 'url' => '',
@@ -227,7 +227,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             13 => 
             array (
-                //'id' => 14,
+                'id' => 14,
                 'menu_id' => 1,
                 'title' => 'Lines',
                 'url' => '',
@@ -243,7 +243,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             14 => 
             array (
-                //'id' => 15,
+                'id' => 15,
                 'menu_id' => 1,
                 'title' => 'Endpoints',
                 'url' => '',
@@ -259,7 +259,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             15 => 
             array (
-                //'id' => 16,
+                'id' => 16,
                 'menu_id' => 1,
                 'title' => 'Lineprocesses',
                 'url' => '',
@@ -275,7 +275,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             16 => 
             array (
-                //'id' => 17,
+                'id' => 17,
                 'menu_id' => 1,
                 'title' => 'Linetypes',
                 'url' => '',
@@ -291,7 +291,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             17 => 
             array (
-                //'id' => 18,
+                'id' => 18,
                 'menu_id' => 1,
                 'title' => 'Sequences',
                 'url' => '',
@@ -307,7 +307,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             18 => 
             array (
-                //'id' => 19,
+                'id' => 19,
                 'menu_id' => 1,
                 'title' => 'Activity Logs',
                 'url' => '',
@@ -323,7 +323,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             19 => 
             array (
-                //'id' => 20,
+                'id' => 20,
                 'menu_id' => 1,
                 'title' => 'Grades',
                 'url' => '',
@@ -339,7 +339,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             20 => 
             array (
-                //'id' => 21,
+                'id' => 21,
                 'menu_id' => 1,
                 'title' => 'Boards',
                 'url' => '',
@@ -355,7 +355,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             21 => 
             array (
-                //'id' => 22,
+                'id' => 22,
                 'menu_id' => 1,
                 'title' => 'Master Criticals',
                 'url' => '',
@@ -371,7 +371,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             22 => 
             array (
-                //'id' => 23,
+                'id' => 23,
                 'menu_id' => 1,
                 'title' => 'Column Settings',
                 'url' => '',
@@ -387,7 +387,7 @@ class MenuItemsTableSeeder extends Seeder
             ),
             23 => 
             array (
-                //'id' => 24,
+                'id' => 24,
                 'menu_id' => 1,
                 'title' => 'Ticket Masters',
                 'url' => '',

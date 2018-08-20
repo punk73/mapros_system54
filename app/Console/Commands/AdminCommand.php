@@ -141,7 +141,7 @@ class AdminCommand extends Command
                 'nik'      => $nik,
                 'name'     => $name,
                 'email'    => $email,
-                'password' => Hash::make($password),
+                'password' => $password,
             ]);
         }
 

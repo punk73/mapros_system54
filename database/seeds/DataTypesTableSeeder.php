@@ -19,7 +19,7 @@ class DataTypesTableSeeder extends Seeder
         \DB::table('data_types')->insert(array (
             0 => 
             array (
-                //'id' => 2,
+                'id' => 2,
                 'name' => 'menus',
                 'slug' => 'menus',
                 'display_name_singular' => 'Menu',
@@ -37,7 +37,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             1 => 
             array (
-                //'id' => 3,
+                'id' => 3,
                 'name' => 'roles',
                 'slug' => 'roles',
                 'display_name_singular' => 'Role',
@@ -55,7 +55,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             2 => 
             array (
-                //'id' => 4,
+                'id' => 4,
                 'name' => 'departments',
                 'slug' => 'departments',
                 'display_name_singular' => 'Department',
@@ -73,7 +73,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             3 => 
             array (
-                //'id' => 7,
+                'id' => 7,
                 'name' => 'lines',
                 'slug' => 'lines',
                 'display_name_singular' => 'Line',
@@ -91,7 +91,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             4 => 
             array (
-                //'id' => 8,
+                'id' => 8,
                 'name' => 'scanners',
                 'slug' => 'scanners',
                 'display_name_singular' => 'Scanner',
@@ -109,7 +109,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             5 => 
             array (
-                //'id' => 10,
+                'id' => 10,
                 'name' => 'lineprocesses',
                 'slug' => 'lineprocesses',
                 'display_name_singular' => 'Lineprocess',
@@ -127,7 +127,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             6 => 
             array (
-                //'id' => 11,
+                'id' => 11,
                 'name' => 'linetypes',
                 'slug' => 'linetypes',
                 'display_name_singular' => 'Linetype',
@@ -145,7 +145,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             7 => 
             array (
-                //'id' => 12,
+                'id' => 12,
                 'name' => 'sequences',
                 'slug' => 'sequences',
                 'display_name_singular' => 'Sequence',
@@ -163,7 +163,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             8 => 
             array (
-                //'id' => 13,
+                'id' => 13,
                 'name' => 'endpoints',
                 'slug' => 'endpoints',
                 'display_name_singular' => 'Endpoint',
@@ -181,7 +181,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             9 => 
             array (
-                //'id' => 16,
+                'id' => 16,
                 'name' => 'users',
                 'slug' => 'users',
                 'display_name_singular' => 'User',
@@ -199,7 +199,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             10 => 
             array (
-                //'id' => 17,
+                'id' => 17,
                 'name' => 'grades',
                 'slug' => 'grades',
                 'display_name_singular' => 'Grade',
@@ -217,7 +217,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             11 => 
             array (
-                //'id' => 18,
+                'id' => 18,
                 'name' => 'boards',
                 'slug' => 'boards',
                 'display_name_singular' => 'Board',
@@ -235,7 +235,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             12 => 
             array (
-                //'id' => 20,
+                'id' => 20,
                 'name' => 'master_criticals',
                 'slug' => 'master-criticals',
                 'display_name_singular' => 'Master Critical',
@@ -253,7 +253,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             13 => 
             array (
-                //'id' => 21,
+                'id' => 21,
                 'name' => 'column_settings',
                 'slug' => 'column-settings',
                 'display_name_singular' => 'Column Setting',
@@ -271,7 +271,7 @@ class DataTypesTableSeeder extends Seeder
             ),
             14 => 
             array (
-                //'id' => 23,
+                'id' => 23,
                 'name' => 'ticket_masters',
                 'slug' => 'ticket-masters',
                 'display_name_singular' => 'Ticket Master',

@@ -19,7 +19,7 @@ class SettingsTableSeeder extends Seeder
         \DB::table('settings')->insert(array (
             0 => 
             array (
-                //'id' => 1,
+                'id' => 1,
                 'key' => 'site.title',
                 'display_name' => 'Site Title',
                 'value' => 'MAPROS',
@@ -30,7 +30,7 @@ class SettingsTableSeeder extends Seeder
             ),
             1 => 
             array (
-                //'id' => 2,
+                'id' => 2,
                 'key' => 'site.description',
                 'display_name' => 'Site Description',
                 'value' => 'Site Description',
@@ -41,7 +41,7 @@ class SettingsTableSeeder extends Seeder
             ),
             2 => 
             array (
-                //'id' => 3,
+                'id' => 3,
                 'key' => 'site.logo',
                 'display_name' => 'Site Logo',
                 'value' => '',
@@ -52,7 +52,7 @@ class SettingsTableSeeder extends Seeder
             ),
             3 => 
             array (
-                //'id' => 4,
+                'id' => 4,
                 'key' => 'site.google_analytics_tracking_id',
                 'display_name' => 'Google Analytics Tracking ID',
                 'value' => '',
@@ -63,7 +63,7 @@ class SettingsTableSeeder extends Seeder
             ),
             4 => 
             array (
-                //'id' => 5,
+                'id' => 5,
                 'key' => 'admin.bg_image',
                 'display_name' => 'Admin Background Image',
                 'value' => 'settings\\August2018\\Bh5UJpZ4UvM8N7i0EQPB.jpg',
@@ -74,7 +74,7 @@ class SettingsTableSeeder extends Seeder
             ),
             5 => 
             array (
-                //'id' => 6,
+                'id' => 6,
                 'key' => 'admin.title',
                 'display_name' => 'Admin Title',
                 'value' => 'MAPROS',
@@ -85,7 +85,7 @@ class SettingsTableSeeder extends Seeder
             ),
             6 => 
             array (
-                //'id' => 7,
+                'id' => 7,
                 'key' => 'admin.description',
                 'display_name' => 'Admin Description',
                 'value' => 'Welcome to Mapros. MA Production Process System',
@@ -96,7 +96,7 @@ class SettingsTableSeeder extends Seeder
             ),
             7 => 
             array (
-                //'id' => 8,
+                'id' => 8,
                 'key' => 'admin.loader',
                 'display_name' => 'Admin Loader',
                 'value' => '',
@@ -107,7 +107,7 @@ class SettingsTableSeeder extends Seeder
             ),
             8 => 
             array (
-                //'id' => 9,
+                'id' => 9,
                 'key' => 'admin.icon_image',
                 'display_name' => 'Admin Icon Image',
                 'value' => '',
@@ -118,7 +118,7 @@ class SettingsTableSeeder extends Seeder
             ),
             9 => 
             array (
-                //'id' => 10,
+                'id' => 10,
                 'key' => 'admin.google_analytics_client_id',
             'display_name' => 'Google Analytics Client ID (used for admin dashboard)',
                 'value' => '',

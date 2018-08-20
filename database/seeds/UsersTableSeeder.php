@@ -19,7 +19,7 @@ class UsersTableSeeder extends Seeder
         \DB::table('users')->insert(array (
             0 => 
             array (
-                //'id' => 2,
+                'id' => 2,
                 'role_id' => 1,
                 'name' => 'admin',
                 'email' => 'admin@admin.com',
@@ -38,7 +38,7 @@ class UsersTableSeeder extends Seeder
             ),
             1 => 
             array (
-                //'id' => 3,
+                'id' => 3,
                 'role_id' => 2,
                 'name' => 'punk73',
                 'email' => 'punk73@email.com',
