@@ -23,11 +23,10 @@
                             </div>
 
                             <div class="form-group row">
-                                <div class="col-md-1 col-md-offset-3">
+                                <div class="col-md-3 col-md-offset-3">
                                     <a href="#/" class="btn btn-primary"><i class="fa fa-arrow-circle-left float-right"></i></a>
                                     <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i></a>
                                 </div>
-
                             </div>
 						</form>
 					</div>
@@ -51,6 +50,7 @@
 		methods: {
 			save(){
 				localStorage.setItem('config', JSON.stringify(this.config) )
+				this.$router.push('/');
 			}
 		}
 	}
