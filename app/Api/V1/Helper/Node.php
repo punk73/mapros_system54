@@ -391,9 +391,7 @@ class Node
 		$model->judge = $this->judge;
 		$model->scan_nik = $this->nik;
 		return $model->save();
-
 	}
-
 	
 	// no longer use due to huge latency
 	protected $big_url = 'http://136.198.117.48/big/public/api/models';
