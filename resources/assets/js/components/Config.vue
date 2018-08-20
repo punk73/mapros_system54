@@ -47,10 +47,23 @@
 				},
 			}
 		},
+
+		mounted(){
+			this.getConfig();
+		},
 		methods: {
 			save(){
 				localStorage.setItem('config', JSON.stringify(this.config) )
 				this.$router.push('/');
+			},
+
+			getConfig(){
+				let currentConfig = localStorage.getItem('config')
+				if(currentConfig != null){
+					currentConfig = JSON.parse(currentConfig);
+					this.config = currentConfig; 
+					
+				}
 			}
 		}
 	}

@@ -55,6 +55,8 @@
                                 </div>
                             </div>
 
+                            <loading v-if='isLoading' />
+                            
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <button type="submit" class="btn btn-primary">
@@ -64,8 +66,10 @@
                                     <button @click='toggleModal'  type="button" class="btn btn-primary">
                                         show modal
                                     </button>
+
                                 </div>
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -84,6 +88,7 @@
 <script>
     const axios = require('axios');
     import modal from './Modal';
+    import loading from './Loading';
 
     export default {
         data: () => {
@@ -92,6 +97,7 @@
                     ip: '',
                     board_id: '',
                     nik: '',
+                    modal:'',
                 },
 
                 error: '',
@@ -106,12 +112,13 @@
                     type    : '',
                 },
 
+                isLoading:false,
                 showModal: false,
 
                 modal: {
                     header: 'Header',
                     message: 'message'
-                }
+                },
             }
         },
 
@@ -121,7 +128,7 @@
         },
 
         components: {
-            modal
+            modal, loading
         },
 
         methods : {
@@ -176,6 +183,15 @@
                   path: '/config'
                 })
               }
+
+              this.form.model = config.model;
+              this.form.ip = config.ip_address;
+            },
+
+            getInfo(){
+              // axios.get('api/steps', {
+              //   ip_address: this.form.ip
+              // })
             }
         }
     }
