@@ -41,17 +41,4 @@ const app = new Vue({
     components: {
     	mymain
     },
-
-    data(){
-    	return {
-    		showModal: false,
-    	}
-    },
-
-    methods : {
-    	toggleModal(){
-        console.log('im app js toggleModal ')
-    		this.showModal = !this.showModal;
-    	}
-    }
 });
