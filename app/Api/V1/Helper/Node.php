@@ -43,6 +43,8 @@ class Node
 	public $judge = 'OK';
 	public $nik;
 	public $board;
+	public $modelname;
+	public $lotno;
 	public $lineprocess;
 	public $is_solder;
 	public $process;
@@ -51,12 +53,16 @@ class Node
 	protected $id_type; //board, panel, master or mecha;
 	protected $step;
 	protected $column_setting;
+	protected $parameter;
+	// for conditional error view;
+	protected $confirmation_view_error = 'confirmation-view';
 
 	function __construct($parameter, $debug = false ){	
 		// kalau sedang debugging, maka gausah run construct
 		if (!$debug)
-		{
-				// setup model (board, ticket, or master)
+		{	
+			$this->parameter = $parameter;
+			// setup model (board, ticket, or master)
 			$this->setModel($parameter);
 			// setup scanner_id;
 			$ip = $parameter['ip'];
@@ -108,6 +114,9 @@ class Node
 			'step'			=> $this->step,
 			'model'			=> $this->model,
 			'column_setting'=> $this->column_setting,
+			// 'modelname'		=> $this->modelname,
+			// 'lotno'			=> $this->lotno,
+			'parameter'		=> $this->parameter,
 		]);
 	}
 
@@ -175,8 +184,12 @@ class Node
 
 	//triggered on instantiate 
 	public function setModel($parameter){
-		$code = substr($parameter['board_id'], 0, 5);
-		// setup which model to work with
+		if (count($parameter['board_id']) >= 24 ) {
+			$code = substr($parameter['board_id'], 0, 10);
+		}else{
+			$code = substr($parameter['board_id'], 0, 5);
+		}// setup which model to work with
+
 		/*if (in_array($code, $this->ticketCriteria )) {
 			// it is ticket, so we work with ticket
 			if($code == '_MST'){
@@ -610,7 +623,12 @@ class Node
 
 
 		if (!is_null($board['name'])) {
-			# code...
+			if($board['name'] != $this->parameter['modelname'] ){
+				throw new StoreResourceFailedException($this->confirmation_view_error, [
+					'node' => json_decode($this, true )
+				]);
+				
+			}
 
 			$sequence = Sequence::select(['process'])
 			->where('modelname', $board['name'] )

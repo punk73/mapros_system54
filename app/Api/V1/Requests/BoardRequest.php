@@ -11,7 +11,8 @@ class BoardRequest extends FormRequest
     {
         return [
             'board_id' => 'required',
-            'nik' => 'required'
+            'nik' => 'required',
+            'modelname' => 'required',
             
         ];
     }

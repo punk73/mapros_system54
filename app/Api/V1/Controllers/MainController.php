@@ -23,7 +23,8 @@ class MainController extends Controller
         'nik',
         'ip',
         'guid',
-        'is_solder'
+        'is_solder',
+        'modelname',
     ];
 
     protected $returnValue = [
