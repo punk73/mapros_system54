@@ -11,6 +11,7 @@ use App\Critical;
 use App\Scanner;
 use App\Sequence;
 use App\Mastermodel;
+use App\Repair;
 use App\Lineprocess;
 use App\ColumnSetting;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -34,8 +35,8 @@ class Node
         'is_solder',
         'guid'
 	];
-	public $scanner_id;
-	public $scanner;
+	public $scanner_id; //contain scanner id;
+	public $scanner; //contain scanner object (App\Scanner)
 	public $dummy_id; //it could be ticket_no, board_id, ticket_no_master based on the model
 	public $guid_master;
 	public $guid_ticket;
@@ -45,14 +46,16 @@ class Node
 	public $board;
 	public $modelname;
 	public $lotno;
-	public $lineprocess;
-	public $is_solder;
-	public $process;
-	protected $dummy_column;
-	protected $model_type;
+	public $lineprocess; 
+	public $is_solder; // is solder is flag to determine wheter it is solder process or not;
+	public $process; // process is contain data from lineprocess.process exp : 1, 2, 3, 5, 4 dst
+	protected $dummy_column; // it's board_id, ticket_no, or ticket_no_master based on model_type
+	protected $model_type; // it's board, ticket, or master
 	protected $id_type; //board, panel, master or mecha;
-	protected $step;
+	protected $step; // step is contain data in table boads, tickets, or master based on modeltype
 	protected $column_setting;
+	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
+	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type
 	protected $parameter;
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
@@ -102,6 +105,9 @@ class Node
 			'scanner_id' 	=> $this->scanner_id,
 			'scanner'		=> $this->scanner,
 			'id_type'		=> $this->id_type,
+			'unique_column'	=> $this->unique_column,
+			'unique_id'		=> $this->unique_id,
+			'dummy_column'	=> $this->dummy_column,
 			'dummy_id' 		=> $this->dummy_id,
 			'guid_master' 	=> $this->guid_master,
 			'guid_ticket' 	=> $this->guid_ticket,
@@ -217,6 +223,7 @@ class Node
 			    $dummy_column = $setting->dummy_column;
 			    $name = str_singular($setting->table_name);
 			    $idType = $setting->name;
+			    $unique_column = 'guid_' . $name; //guid_ticket or guid_master
 			}
 
 		}else{
@@ -226,11 +233,13 @@ class Node
 			$dummy_column = 'board_id';
 			$name = 'board';
 			$idType = 'board';
+			$unique_column = 'board_id';
 		}
 
 		$this->model = $model;
 		$this->dummy_column = $dummy_column;
 		$this->model_type = $name;
+		$this->unique_column = $unique_column;
 		$this->setIdType($idType);
 	}
 
@@ -252,6 +261,15 @@ class Node
 		}
 		
 		$this->setGuidTicket($guid);
+		$this->setUniqueId($guid);
+	}
+
+	private function setUniqueId($guid){
+		$this->unique_id = $guid;
+	}
+
+	public function getUniqueId(){
+		return $this->unique_id;
 	}
 
 	private function getLastGuid(){
@@ -328,6 +346,15 @@ class Node
 
 	public function getModel(){
 		return $this->model;
+	}
+
+	/*
+	* isRepaired is function to check data in table repair;
+	* the return value is boolean;
+	*/
+	public function isRepaired(){
+		return Repair::where('unique_id', $this->unique_id )
+		->exists();
 	}
 
 	public function getModelType(){
@@ -577,7 +604,17 @@ class Node
 				$this->setJudge($model->judge );
 				$this->setStep($model);
 			}
+		}else {
+			$this->procedureGetStepExternal();
 		}
+
+	}
+
+	// called in loadStep
+	public function procedureGetStepExternal(){
+		// send ajax into end point;
+
+		// end point should always contain status and judge;
 
 	}
 

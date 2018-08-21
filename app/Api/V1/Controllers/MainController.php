@@ -85,22 +85,27 @@ class MainController extends Controller
             if( $prevNode->getStatus() == 'OUT' ){
                 
                 // we not sure if it calling prev() twice or not, hopefully it's not;
-                if($prevNode->getJudge() !== 'NG'){
-                    // cek repair 
-                    // $prevNode->existsInRepair(); //not implement yet
-                    /*if($prevNode->existsInRepair()){
-
-                    }*/
-                    $node = $prevNode->next();
-                    $node->setStatus('IN');
-                    $node->setJudge('OK');
-                    if(!$node->save()){
-                        throw new StoreResourceFailedException("Error Saving Progress", [
-                            'message' => 'something went wrong with save method on model! ask your IT member'
+                if($prevNode->getJudge() == 'NG'){                    
+                    // kalau dia NG
+                    // cek di table repair, ada engga datanya.
+                    if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
+                        // kalau ga ada, maka throw error data is NG in prev stages! repair it first!
+                        throw new StoreResourceFailedException("Data is error in previous step, repair it first!", [
+                            'prevnode' => $prevNode,
+                            'node'     => $prevNode->next() 
                         ]);
-                    };
-                    return $this->returnValue;
+                    }
                 }
+
+                $node = $prevNode->next();
+                $node->setStatus('IN');
+                $node->setJudge('OK');
+                if(!$node->save()){
+                    throw new StoreResourceFailedException("Error Saving Progress", [
+                        'message' => 'something went wrong with save method on model! ask your IT member'
+                    ]);
+                };
+                return $this->returnValue;
             }
 
             if( $prevNode->getStatus() == 'IN' ){
@@ -112,8 +117,13 @@ class MainController extends Controller
                     ]);
                 }
 
+                /*
+                * cek logic below, I think we don't record the is solder in db;
+                * it's mean it will always return false;
+                */
+
                 // cek apakah solder atau bukan
-                if (!$node->is_solder) { //jika solder tidak diceklis, maka
+                if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
                     throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
                         'message' => 'bukan solder',
                         'note' => json_decode( $prevNode, true )

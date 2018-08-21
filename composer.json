@@ -20,7 +20,8 @@
         "orangehill/iseed": "^2.5",
         "spatie/activitylog": "^2.4",
         "nesbot/carbon": "^1.33",
-        "simplesoftwareio/simple-qrcode": "^1.5"
+        "simplesoftwareio/simple-qrcode": "^1.5",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
