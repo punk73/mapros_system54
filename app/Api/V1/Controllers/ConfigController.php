@@ -27,6 +27,9 @@ class ConfigController extends Controller
     		]);
     	};
 
-    	return $scanner;
+    	return [
+    		'success' => true,
+    		'data' => $scanner
+    	];
     }
 }

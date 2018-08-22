@@ -13548,7 +13548,8 @@ var axios = __webpack_require__(16);
                     ip: this.form.ip
                 }
             }).then(function (response) {
-                return console.log(response);
+                console.log(response);
+                self.info = response.data.data;
             }).catch(function (error) {
 
                 modal.header = 'ERROR';
@@ -13566,6 +13567,16 @@ var axios = __webpack_require__(16);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -16083,7 +16094,7 @@ exports.push([module.i, "\n.custom-color{\n    background-image: none!important;
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(9)();
-exports.push([module.i, "\n.modal-mask {\n  position: fixed;\n  z-index: 9998;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, .5);\n  display: table;\n  transition: opacity .3s ease;\n}\n.modal-wrapper {\n  display: table-cell;\n  vertical-align: middle;\n}\n.modal-container {\n  width: 300px;\n  margin: 0px auto;\n  padding: 20px 30px;\n  background-color: #fff;\n  border-radius: 2px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n  transition: all .3s ease;\n  font-family: Helvetica, Arial, sans-serif;\n}\n.modal-header h3 {\n  margin-top: 0;\n  color: #42b983;\n}\n.modal-body {\n  margin: 20px 0;\n}\n.modal-default-button {\n  float: right;\n}\n\n/*\n * The following styles are auto-applied to elements with\n * transition=\"modal\" when their visibility is toggled\n * by Vue.js.\n *\n * You can easily play with the modal transition by editing\n * these styles.\n */\n.modal-enter {\n  opacity: 0;\n}\n.modal-leave-active {\n  opacity: 0;\n}\n", ""]);
+exports.push([module.i, "\n.modal-mask {\n  position: fixed;\n  z-index: 9998;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, .5);\n  display: table;\n  transition: opacity .3s ease;\n}\n\n/*.modal-wrapper {\n  display: table-cell;\n  vertical-align: middle;\n}\n\n.modal-container {\n  width: 300px;\n  margin: 0px auto;\n  padding: 20px 30px;\n  background-color: #fff;\n  border-radius: 2px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n  transition: all .3s ease;\n  font-family: Helvetica, Arial, sans-serif;\n}\n\n.modal-header h3 {\n  margin-top: 0;\n  color: #42b983;\n}\n\n.modal-body {\n  margin: 20px 0;\n}*/\n\n/*.modal-default-button {\n  float: right;\n}*/\n\n/*\n * The following styles are auto-applied to elements with\n * transition=\"modal\" when their visibility is toggled\n * by Vue.js.\n *\n * You can easily play with the modal transition by editing\n * these styles.\n */\n\n/*.modal-enter {\n  opacity: 0;\n}\n\n.modal-leave-active {\n  opacity: 0;\n}*/\n", ""]);
 
 /***/ }),
 /* 43 */
@@ -44203,12 +44214,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-content"
   }, [_c('div', {
     staticClass: "modal-header"
-  }, [_c('h5', {
-    staticClass: "modal-title",
-    attrs: {
-      "id": "exampleModalLongTitle"
-    }
-  }, [_vm._v(_vm._s(_vm.header))]), _vm._v(" "), _c('button', {
+  }, [_vm._t("header", [_c('h3', {
+    staticClass: "modal-title"
+  }, [_vm._v(_vm._s(_vm.header))])]), _vm._v(" "), _c('button', {
     staticClass: "close btn btn-danger",
     attrs: {
       "type": "button",
@@ -44224,27 +44232,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "aria-hidden": "true"
     }
-  }, [_vm._v("×")])])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("×")])])], 2), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
-  }, [_vm._v("\n\t        " + _vm._s(_vm.message) + "\n\t      ")]), _vm._v(" "), _c('div', {
+  }, [_vm._t("body", [_c('p', [_vm._v(_vm._s(_vm.message))])])], 2), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
-  }, [_c('button', {
-    staticClass: "btn btn-secondary",
-    attrs: {
-      "type": "button",
-      "data-dismiss": "modal"
-    },
+  }, [_vm._t("footer", [_c('button', {
+    staticClass: "btn btn-success",
     on: {
       "click": function($event) {
         _vm.$emit('toggleModal')
       }
     }
-  }, [_vm._v("Close")]), _vm._v(" "), _c('button', {
-    staticClass: "btn btn-primary",
-    attrs: {
-      "type": "button"
-    }
-  }, [_vm._v("Save changes")])])])])])])
+  }, [_vm._v("\n                Close\n              ")])])], 2)])])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

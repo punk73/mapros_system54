@@ -37,17 +37,27 @@
 	  <div class="modal-dialog modal-dialog-centered" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h5 class="modal-title" id="exampleModalLongTitle">{{header}}</h5>
+	        <!-- <h5 class="modal-title" id="exampleModalLongTitle">{{header}}</h5> -->
+	        <slot name="header">
+	          <h3 class="modal-title">{{header}}</h3>
+	        </slot>
 	        <button @click="$emit('toggleModal')" type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	        {{message}}
+	        <slot name="body">
+              <p>{{message}}</p> 
+            </slot>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" @click="$emit('toggleModal')" data-dismiss="modal">Close</button>
-	        <button type="button" class="btn btn-primary">Save changes</button>
+	        <!-- <button type="button" class="btn btn-secondary" @click="$emit('toggleModal')" data-dismiss="modal">Close</button> -->
+	        <slot name="footer">
+              <button class="btn btn-success" @click="$emit('toggleModal')">
+                Close
+              </button>
+            </slot>
+	        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
 	      </div>
 	    </div>
 	  </div>
@@ -86,7 +96,7 @@
 	  transition: opacity .3s ease;
 	}
 
-	.modal-wrapper {
+	/*.modal-wrapper {
 	  display: table-cell;
 	  vertical-align: middle;
 	}
@@ -109,11 +119,11 @@
 
 	.modal-body {
 	  margin: 20px 0;
-	}
+	}*/
 
-	.modal-default-button {
+	/*.modal-default-button {
 	  float: right;
-	}
+	}*/
 
 	/*
 	 * The following styles are auto-applied to elements with
@@ -124,11 +134,11 @@
 	 * these styles.
 	 */
 
-	.modal-enter {
+	/*.modal-enter {
 	  opacity: 0;
 	}
 
 	.modal-leave-active {
 	  opacity: 0;
-	}
+	}*/
 </style>

@@ -201,7 +201,10 @@
                 params:{
                   ip: this.form.ip
                 }
-              }).then((response) => console.log(response) )
+              }).then((response) => {
+                console.log(response)
+                self.info = response.data.data;
+              })
               .catch((error)=> {
 
                 modal.header = 'ERROR';
