@@ -129,6 +129,7 @@
         mounted(){
             // console.log('mounted')
             this.getConfig();
+            this.getInfo();
         },
 
         components: {
@@ -176,8 +177,8 @@
             },
 
             toggleModal(){
-                // this.showModal = !this.showModal
-                this.isLoading = !this.isLoading;
+                this.showModal = !this.showModal
+                // this.isLoading = !this.isLoading;
             },
 
             getConfig(){
@@ -194,9 +195,20 @@
             },
 
             getInfo(){
-              // axios.get('api/steps', {
-              //   ip_address: this.form.ip
-              // })
+              let modal = this.modal;
+              let self= this;
+              axios.get('api/configs', {
+                params:{
+                  ip: this.form.ip
+                }
+              }).then((response) => console.log(response) )
+              .catch((error)=> {
+
+                modal.header = 'ERROR';
+                console.log(error.response)
+                modal.message = error.response.data.message;
+                self.showModal = !self.showModal;
+              })
             }
         }
     }

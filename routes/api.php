@@ -55,6 +55,11 @@ $api->version('v1', function (Router $api) {
 
     $api->get('/test', 'App\\Api\\V1\\Controllers\\TestController@index' );
 
+    $api->group(['prefix' => 'configs'], function (Router $api) {
+        $api->get('/', 'App\\Api\\V1\\Controllers\\ConfigController@index' );
+    });
+
+
         $api->group(['prefix' => 'grades'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\GradeController@index' );
             $api->post('/', 'App\\Api\\V1\\Controllers\\GradeController@store' );

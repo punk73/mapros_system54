@@ -13478,6 +13478,7 @@ var axios = __webpack_require__(16);
     mounted: function mounted() {
         // console.log('mounted')
         this.getConfig();
+        this.getInfo();
     },
 
 
@@ -13524,8 +13525,8 @@ var axios = __webpack_require__(16);
             });
         },
         toggleModal: function toggleModal() {
-            // this.showModal = !this.showModal
-            this.isLoading = !this.isLoading;
+            this.showModal = !this.showModal;
+            // this.isLoading = !this.isLoading;
         },
         getConfig: function getConfig() {
             var config = localStorage.getItem('config');
@@ -13540,9 +13541,21 @@ var axios = __webpack_require__(16);
             this.form.ip = config.ip_address;
         },
         getInfo: function getInfo() {
-            // axios.get('api/steps', {
-            //   ip_address: this.form.ip
-            // })
+            var modal = this.modal;
+            var self = this;
+            axios.get('api/configs', {
+                params: {
+                    ip: this.form.ip
+                }
+            }).then(function (response) {
+                return console.log(response);
+            }).catch(function (error) {
+
+                modal.header = 'ERROR';
+                console.log(error.response);
+                modal.message = error.response.data.message;
+                self.showModal = !self.showModal;
+            });
         }
     }
 });
@@ -13553,6 +13566,30 @@ var axios = __webpack_require__(16);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -44146,34 +44183,68 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('transition', {
-    attrs: {
-      "name": "modal"
-    }
-  }, [_c('div', {
+  return _c('div', {
     staticClass: "modal-mask"
   }, [_c('div', {
-    staticClass: "modal-wrapper"
+    staticClass: "modal show",
+    attrs: {
+      "id": "exampleModalCenter",
+      "tabindex": "-1",
+      "role": "dialog",
+      "aria-labelledby": "exampleModalCenterTitle",
+      "aria-hidden": "true"
+    }
   }, [_c('div', {
-    staticClass: "modal-dialog"
+    staticClass: "modal-dialog modal-dialog-centered",
+    attrs: {
+      "role": "document"
+    }
   }, [_c('div', {
     staticClass: "modal-content"
   }, [_c('div', {
     staticClass: "modal-header"
-  }, [_vm._t("header", [_c('h3', {
-    staticClass: "modal-title"
-  }, [_vm._v(_vm._s(_vm.header))])])], 2), _vm._v(" "), _c('div', {
-    staticClass: "modal-body"
-  }, [_vm._t("body", [_c('p', [_vm._v(_vm._s(_vm.message))])])], 2), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
-  }, [_vm._t("footer", [_c('button', {
-    staticClass: "btn btn-success",
+  }, [_c('h5', {
+    staticClass: "modal-title",
+    attrs: {
+      "id": "exampleModalLongTitle"
+    }
+  }, [_vm._v(_vm._s(_vm.header))]), _vm._v(" "), _c('button', {
+    staticClass: "close btn btn-danger",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal",
+      "aria-label": "Close"
+    },
     on: {
       "click": function($event) {
         _vm.$emit('toggleModal')
       }
     }
-  }, [_vm._v("\n\t                OK\n\t              ")])])], 2)])])])])])
+  }, [_c('span', {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("×")])])]), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, [_vm._v("\n\t        " + _vm._s(_vm.message) + "\n\t      ")]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', {
+    staticClass: "btn btn-secondary",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal"
+    },
+    on: {
+      "click": function($event) {
+        _vm.$emit('toggleModal')
+      }
+    }
+  }, [_vm._v("Close")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "button"
+    }
+  }, [_vm._v("Save changes")])])])])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

@@ -37,4 +37,8 @@ class Scanner extends Model implements LogsActivityInterface
 		return $this->hasOne('App\Lineprocess');
 	}
 
+	public function line(){
+		return $this->hasOne('App\Line');
+	}
+
 }
