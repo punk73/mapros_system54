@@ -24,7 +24,7 @@
                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 col-sm-3">
+                            <div class="col-md-4 col-sm-4">
                                 PROCESS: {{info.process}}
                             </div>
                         </div>
@@ -86,6 +86,12 @@
        v-bind:message="modal.message"
        v-bind:header="modal.header"  
     ></modal>
+    <confirm 
+        v-if='showConfirm'
+        @toggleModal='toggleModal'
+        v-bind:config_modelname='form.modelname'
+        v-bind:server_modelname='server.modelname'
+    ></confirm>
   </div>
 </template>
 
@@ -93,6 +99,7 @@
     const axios = require('axios');
     import modal from './Modal';
     import loading from './Loading';
+    import confirm from './Confirm';
 
     export default {
         data: () => {
@@ -102,6 +109,10 @@
                     board_id: '',
                     nik: '',
                     modelname:'',
+                },
+
+                server:{
+                    modelname:''
                 },
 
                 error: '',
@@ -118,6 +129,7 @@
 
                 isLoading:false,
                 showModal: false,
+                showConfirm:false,
 
                 modal: {
                     header: 'Header',
@@ -133,14 +145,14 @@
         },
 
         components: {
-            modal, loading
+            modal, loading, confirm
         },
 
         methods : {
             onSubmit(){
                 let data = this.form
                 console.log(data)
-                return;
+                // return;
                 axios.post('api/main', data )
                     .then((response) => {
                         console.log(response)
@@ -160,7 +172,7 @@
                             return;
                         }
 
-                        this.handleError(message, data.errors );
+                        this.handleError(message, data );
                     })
             },
 
@@ -172,6 +184,7 @@
 
             returnViewConfirmation(){
                 console.log('view-confirmation')
+                this.showConfirm = !this.showConfirm;
             },
 
             showDetailError(){
@@ -188,6 +201,7 @@
 
             toggleModal(){
                 this.showModal = !this.showModal
+                // this.showConfirm = !this.showConfirm;
                 // this.isLoading = !this.isLoading;
             },
 

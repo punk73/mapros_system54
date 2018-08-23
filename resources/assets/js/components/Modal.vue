@@ -1,35 +1,4 @@
 <template>
-	<!-- <transition name="modal">
-	    <div class="modal-mask">
-	      <div class="modal-wrapper">
-	      	<div class="modal-dialog ">
-		        <div class="modal-content">
-
-		          <div class="modal-header">
-		            <slot name="header">
-		              <h3 class="modal-title">{{header}}</h3>
-		            </slot>
-		          </div>
-
-		          <div class="modal-body">
-		            <slot name="body">
-		              <p>{{message}}</p> 
-		            </slot>
-		          </div>
-
-		          <div class="modal-footer">
-		            <slot name="footer">
-		              <button class="btn btn-success" @click="$emit('toggleModal')">
-		                OK
-		              </button>
-		            </slot>
-		          </div>
-		        </div>
-	        </div>
-	      </div>
-	    </div>
-	</transition> -->
-
 	<!-- Button trigger modal -->
 <!-- Modal -->
 <div class="modal-mask">
@@ -39,11 +8,11 @@
 	      <div class="modal-header">
 	        <!-- <h5 class="modal-title" id="exampleModalLongTitle">{{header}}</h5> -->
 	        <slot name="header">
-	          <h3 class="modal-title">{{header}}</h3>
+	          	<h3 class="modal-title">{{header}}</h3>
+		        <button @click="$emit('toggleModal')" type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
 	        </slot>
-	        <button @click="$emit('toggleModal')" type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
 	      </div>
 	      <div class="modal-body">
 	        <slot name="body">

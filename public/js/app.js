@@ -13347,6 +13347,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Modal__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Loading__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Loading___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Loading__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Confirm__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Confirm___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Confirm__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -13443,6 +13451,7 @@ var axios = __webpack_require__(16);
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
@@ -13450,6 +13459,10 @@ var axios = __webpack_require__(16);
                 ip: '',
                 board_id: '',
                 nik: '',
+                modelname: ''
+            },
+
+            server: {
                 modelname: ''
             },
 
@@ -13467,6 +13480,7 @@ var axios = __webpack_require__(16);
 
             isLoading: false,
             showModal: false,
+            showConfirm: false,
 
             modal: {
                 header: 'Header',
@@ -13483,7 +13497,7 @@ var axios = __webpack_require__(16);
 
 
     components: {
-        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a
+        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a
     },
 
     methods: {
@@ -13492,7 +13506,7 @@ var axios = __webpack_require__(16);
 
             var data = this.form;
             console.log(data);
-            return;
+            // return;
             axios.post('api/main', data).then(function (response) {
                 console.log(response);
             }).catch(function (error) {
@@ -13510,7 +13524,7 @@ var axios = __webpack_require__(16);
                     return;
                 }
 
-                _this.handleError(message, data.errors);
+                _this.handleError(message, data);
             });
         },
         handleError: function handleError(message) {
@@ -13522,6 +13536,7 @@ var axios = __webpack_require__(16);
         },
         returnViewConfirmation: function returnViewConfirmation() {
             console.log('view-confirmation');
+            this.showConfirm = !this.showConfirm;
         },
         showDetailError: function showDetailError() {
             // show modal containing the error 
@@ -13535,6 +13550,7 @@ var axios = __webpack_require__(16);
         },
         toggleModal: function toggleModal() {
             this.showModal = !this.showModal;
+            // this.showConfirm = !this.showConfirm;
             // this.isLoading = !this.isLoading;
         },
         getConfig: function getConfig() {
@@ -13576,37 +13592,6 @@ var axios = __webpack_require__(16);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -44031,7 +44016,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("\n                             TYPE : " + _vm._s(_vm.info.type) + "\n                         ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-3 col-sm-3"
+    staticClass: "col-md-4 col-sm-4"
   }, [_vm._v("\n                              PROCESS: " + _vm._s(_vm.info.process) + "\n                          ")])])]), _vm._v(" "), _c('div', {
     staticClass: "panel-body"
   }, [_c('form', {
@@ -44176,6 +44161,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "toggleModal": _vm.toggleModal
     }
+  }) : _vm._e(), _vm._v(" "), (_vm.showConfirm) ? _c('confirm', {
+    attrs: {
+      "config_modelname": _vm.form.modelname,
+      "server_modelname": _vm.server.modelname
+    },
+    on: {
+      "toggleModal": _vm.toggleModal
+    }
   }) : _vm._e()], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('button', {
@@ -44225,7 +44218,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "modal-header"
   }, [_vm._t("header", [_c('h3', {
     staticClass: "modal-title"
-  }, [_vm._v(_vm._s(_vm.header))])]), _vm._v(" "), _c('button', {
+  }, [_vm._v(_vm._s(_vm.header))]), _vm._v(" "), _c('button', {
     staticClass: "close btn btn-danger",
     attrs: {
       "type": "button",
@@ -44241,7 +44234,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "aria-hidden": "true"
     }
-  }, [_vm._v("×")])])], 2), _vm._v(" "), _c('div', {
+  }, [_vm._v("×")])])])], 2), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
   }, [_vm._t("body", [_c('p', [_vm._v(_vm._s(_vm.message))])])], 2), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
@@ -48799,6 +48792,135 @@ module.exports = function(module) {
 __webpack_require__(14);
 module.exports = __webpack_require__(15);
 
+
+/***/ }),
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modal_vue__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Modal_vue__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['config_modelname', 'server_modelname'],
+	components: {
+		modal: __WEBPACK_IMPORTED_MODULE_0__Modal_vue___default.a
+	},
+	methods: {
+		configOnClick: function configOnClick() {
+			console.log('configOnClick');
+			this.$emit('toggleModal');
+		},
+		serverOnClick: function serverOnClick() {
+			console.log('serverOnClick');
+			this.$emit('toggleModal');
+		}
+	}
+});
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(71),
+  /* template */
+  __webpack_require__(73),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Confirm.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Confirm.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-852ba496", Component.options)
+  } else {
+    hotAPI.reload("data-v-852ba496", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('modal', [_c('div', {
+    attrs: {
+      "slot": "header"
+    },
+    slot: "header"
+  }, [_c('h4', [_vm._v("Confirmation")])]), _vm._v(" "), _c('div', {
+    attrs: {
+      "slot": "body"
+    },
+    slot: "body"
+  }, [_c('p', [_vm._v(" model \"" + _vm._s(_vm.config_modelname) + "\" is different from " + _vm._s(_vm.server_modelname) + " ")]), _vm._v(" "), _c('p', [_vm._v(" You Need to choose which is correct ")])]), _vm._v(" "), _c('div', {
+    attrs: {
+      "slot": "footer"
+    },
+    slot: "footer"
+  }, [_c('button', {
+    staticClass: "btn btn-success",
+    on: {
+      "click": _vm.configOnClick
+    }
+  }, [_vm._v("\n\t\t\tconfig " + _vm._s(_vm.config_modelname) + "\n\t\t")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-info",
+    on: {
+      "click": _vm.serverOnClick
+    }
+  }, [_vm._v("\n\t\t\tserver " + _vm._s(_vm.server_modelname) + "\n\t\t")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-852ba496", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
