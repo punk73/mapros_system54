@@ -190,11 +190,14 @@ class Node
 
 	//triggered on instantiate 
 	public function setModel($parameter){
-		if (count($parameter['board_id']) >= 24 ) {
+		if (count($parameter['board_id']) == 24 ) {
 			$code = substr($parameter['board_id'], 0, 10);
-		}else{
+		}else if(count($parameter['board_id']) <= 16){
 			$code = substr($parameter['board_id'], 0, 5);
-		}// setup which model to work with
+		}else{
+			//ini untuk critical parts; gausah di substr dulu;
+			$code = $parameter['board_id'];
+		} 
 
 		/*if (in_array($code, $this->ticketCriteria )) {
 			// it is ticket, so we work with ticket
@@ -660,6 +663,8 @@ class Node
 
 
 		if (!is_null($board['name'])) {
+			// code below to avoid undefined error
+			$this->parameter['modelname'] = (isset($this->parameter['modelname'])) ? $this->parameter['modelname'] : null;
 			if($board['name'] != $this->parameter['modelname'] ){
 				throw new StoreResourceFailedException($this->confirmation_view_error, [
 					'node' => json_decode($this, true )

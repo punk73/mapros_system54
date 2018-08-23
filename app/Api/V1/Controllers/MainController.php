@@ -74,6 +74,10 @@ class MainController extends Controller
             return $this->runProcedureTicket($node);
         }
 
+        if($node->getModelType() == 'master'){
+            return $this->runProcedureMaster($node);
+        }
+
     }
 
     private function processBoard(Node $node){
@@ -229,10 +233,11 @@ class MainController extends Controller
         };
 
         return $this->processBoard($node);
-
-         
         
         return $this->returnValue;
+    }
+
+    private function runProcedureMaster(Node $node){
 
     }
     
