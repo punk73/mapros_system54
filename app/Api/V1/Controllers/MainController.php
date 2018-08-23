@@ -238,7 +238,7 @@ class MainController extends Controller
     }
 
     private function runProcedureMaster(Node $node){
-
+        
     }
     
     
