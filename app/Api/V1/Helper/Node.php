@@ -569,10 +569,14 @@ class Node
 					]);
 				}
 
+				// this will cause some trouble later;
 				$board_id = substr($boardPanel['board_id'], 0,5 );
 				# code...
 				$model = $model->where('code', $board_id );
-			}
+			}/*else {
+				// kalau belum, kita setup model based on user parameter;
+				$model = $model->where('code', $this->parameter['modelname0'] );
+			}*/
 			
 		}else{
 			// this is from bigs db
@@ -690,9 +694,9 @@ class Node
 			$this->parameter['modelname'] = (isset($this->parameter['modelname'])) ? $this->parameter['modelname'] : null;
 			if($board['name'] != $this->parameter['modelname'] ){
 				throw new StoreResourceFailedException($this->confirmation_view_error, [
-					'node' => json_decode($this, true )
+					'node' => json_decode($this, true ),
+					'server-modelname' => $this->board['name']
 				]);
-				
 			}
 
 			$sequence = Sequence::select(['process'])
