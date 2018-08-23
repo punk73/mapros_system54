@@ -13450,7 +13450,7 @@ var axios = __webpack_require__(16);
                 ip: '',
                 board_id: '',
                 nik: '',
-                modal: ''
+                modelname: ''
             },
 
             error: '',
@@ -13492,6 +13492,7 @@ var axios = __webpack_require__(16);
 
             var data = this.form;
             console.log(data);
+            return;
             axios.post('api/main', data).then(function (response) {
                 console.log(response);
             }).catch(function (error) {
@@ -13504,6 +13505,11 @@ var axios = __webpack_require__(16);
                     return;
                 }
 
+                if (message == 'view-confirmation') {
+                    _this.returnViewConfirmation();
+                    return;
+                }
+
                 _this.handleError(message, data.errors);
             });
         },
@@ -13513,6 +13519,9 @@ var axios = __webpack_require__(16);
             this.error = message;
             this.detailError = detailError;
             this.showAlert = !this.showAlert;
+        },
+        returnViewConfirmation: function returnViewConfirmation() {
+            console.log('view-confirmation');
         },
         showDetailError: function showDetailError() {
             // show modal containing the error 
@@ -13537,7 +13546,7 @@ var axios = __webpack_require__(16);
             }
             console.log(config);
             config = JSON.parse(config);
-            this.form.model = config.model;
+            this.form.modelname = config.model;
             this.form.ip = config.ip_address;
         },
         getInfo: function getInfo() {

@@ -101,7 +101,7 @@
                     ip: '',
                     board_id: '',
                     nik: '',
-                    modal:'',
+                    modelname:'',
                 },
 
                 error: '',
@@ -140,6 +140,7 @@
             onSubmit(){
                 let data = this.form
                 console.log(data)
+                return;
                 axios.post('api/main', data )
                     .then((response) => {
                         console.log(response)
@@ -154,6 +155,11 @@
                             return;
                         }
 
+                        if(message == 'view-confirmation'){
+                            this.returnViewConfirmation();
+                            return;
+                        }
+
                         this.handleError(message, data.errors );
                     })
             },
@@ -162,6 +168,10 @@
                 this.error = message;
                 this.detailError = detailError;
                 this.showAlert = !this.showAlert;
+            },
+
+            returnViewConfirmation(){
+                console.log('view-confirmation')
             },
 
             showDetailError(){
@@ -190,7 +200,7 @@
               }
               console.log(config);
               config = JSON.parse(config);
-              this.form.model = config.model;
+              this.form.modelname = config.model;
               this.form.ip = config.ip_address;
             },
 
