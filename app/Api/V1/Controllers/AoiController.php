@@ -23,5 +23,7 @@ class AoiController extends Controller
 			'data' => $aoi->first(),
 			'status' => $aoi->exists()
 		];
-	}	
+	},
+
+	
 }

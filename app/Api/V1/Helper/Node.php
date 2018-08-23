@@ -17,6 +17,8 @@ use App\ColumnSetting;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Guid;
+use GuzzleHttp\Client;
+use App\Endpoint;
 
 class Node
 {
@@ -401,6 +403,19 @@ class Node
 			return $model;
 		}else{
 			// send cURL here;
+			$endpoint = Endpoint::select()->find($this->lineprocess['endpoint_id']);
+			if(is_null($endpoint)){
+				throw new StoreResourceFailedException("endpoint with id ".$this->lineprocess['endpoint_id']." is not found", [
+					'lineprocess' => $this->lineprocess,
+				]);
+			}
+
+			$url = $endpoint->url; //'http://localhost/mapros_system54/public/api/aoies';
+			$client = new Client();
+			// $url = "https://api.github.com/repos/guzzle/guzzle";
+	        $res = $client->get($url);
+	        // it's should return boolean
+	        return $res->status;
 		}
 	}
 

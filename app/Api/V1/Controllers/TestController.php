@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Http\Request;
 use App\Sequence;
 use App\Api\V1\Traits\LoggerHelper;
+use GuzzleHttp\Client;
 
 class TestController extends Controller
 {	
@@ -25,6 +26,17 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		return $this->postLog($request, 'create');
+		return $this->testGuzzle($request);
+	}
+
+	public function testGuzzle(Request $request){
+		$client = new Client();
+		// $url = 'http://localhost:80/mapros_system54/public/api/aoies';
+		$url = 'http://localhost/mapros_system54/public/api/aoies';
+		// $url = "https://api.github.com/repos/guzzle/guzzle";
+        $res = $client->get($url);
+
+        return $res;
+
 	}
 }
