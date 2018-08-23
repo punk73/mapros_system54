@@ -86,6 +86,21 @@ class MainController extends Controller
             // cek kondisi sebelumnya is null
 
             $prevNode = $node->prev();
+
+            // kalau sequence pertama, maka insert;
+            if ($prevNode->isFirstSequence() ) {
+                // langsung input;
+                $node = $prevNode->next();
+                $node->setStatus('IN');
+                $node->setJudge('OK');
+                if(!$node->save()){
+                    throw new StoreResourceFailedException("Error Saving Progress", [
+                        'message' => 'something went wrong with save method on model! ask your IT member'
+                    ]);
+                };
+                return $this->returnValue;
+            }
+
             if( $prevNode->getStatus() == 'OUT' ){
                 
                 // we not sure if it calling prev() twice or not, hopefully it's not;
@@ -234,11 +249,14 @@ class MainController extends Controller
 
         return $this->processBoard($node);
         
-        return $this->returnValue;
     }
 
     private function runProcedureMaster(Node $node){
-        
+        $this->runProcedureTicket($node);
+
+        $node->updateChildGUidMaster();
+
+        return $this->returnValue;
     }
     
     

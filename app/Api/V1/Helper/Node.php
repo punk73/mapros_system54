@@ -61,6 +61,7 @@ class Node
 	protected $parameter;
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
+	protected $firstSequence = false;
 
 	function __construct($parameter, $debug = false ){	
 		// kalau sedang debugging, maka gausah run construct
@@ -254,7 +255,7 @@ class Node
 		if ($this->getModelType() == 'ticket') {
 			
 			// cek apakah ticket guid sudah di generate sebelumnya;
-			if ($this->isTicketGuidGenerated() ) {
+			if ($this->isGuidGenerated() ) {
 				$guid = $this->getLastGuid();
 
 				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
@@ -309,7 +310,7 @@ class Node
 		$this->guid_ticket = $guid;
 	}
 
-	public function isTicketGuidGenerated(){
+	public function isGuidGenerated(){
 		if (is_null($this->model)) {
 			throw new StoreResourceFailedException("node model is null", [
 				'node' => json_decode($this, true ),
@@ -554,7 +555,7 @@ class Node
 			}
 
 			// kalau sudah generated, baru masuk sini;
-			if ($this->isTicketGuidGenerated()) {
+			if ($this->isGuidGenerated()) {
 				// ambil dulu modelnya dari table board, kemudian pass hasilnya kesini;
 				$boardPanel = Board::select([
 					'board_id'
@@ -817,9 +818,28 @@ class Node
 				$this->loadStep();
 			}
 
+		}else{
+			$this->firstSequence = true;
 		}
 
 		return $this;
+	}
+
+	/*
+	* this is void, to update guid master of panel & board;
+	* don't understand enough how to achieve it;
+	*/
+	public function updateChildGUidMaster(){
+		// get guid master;
+		// search panel, mecha, & board that has that guid master
+		// get board that has same guid ticket 
+	}
+
+	public function isFirstSequence(){
+		// default value of property below is false;
+		// when move to prev and it's figure it out that is has key 0, (first index)
+		// it'll setup to true;
+		return $this->firstSequence;
 	}
 
 	public function prev(){
