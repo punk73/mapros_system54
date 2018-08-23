@@ -61,7 +61,7 @@ class MainController extends Controller
     	$parameter = $this->getParameter($request);
         // cek apakah board id atau ticket;
         $node = new Node($parameter);
-        
+
         // return $node->getGuidTicket();
 
         if ($node->getModelType() == 'board') {
@@ -83,13 +83,6 @@ class MainController extends Controller
 
     private function processBoard(Node $node){
         // cek current is null;
-        /*return [
-            'node' => $node->next(),
-            'exists' => $node->isExists(),
-            'isFirstSequence' => $node->isFirstSequence(),
-            'scanner_id' => $node->scanner_id,
-            'board_id'  => $node->dummy_id
-        ];*/
 
         if(!$node->isExists()){ //board null
             // cek kondisi sebelumnya is null
@@ -190,7 +183,7 @@ class MainController extends Controller
         if($node->getStatus() == 'OUT'){
             if($node->is_solder == false){
                 throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
-                    'node' => json_decode( $node, true )
+                    'node' => json_decode( $node, true ),
                 ]);    
             }
 
