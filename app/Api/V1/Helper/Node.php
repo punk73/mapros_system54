@@ -59,6 +59,7 @@ class Node
 	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
 	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type
 	protected $parameter;
+	protected $key; //array index of sequence 
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
 	protected $firstSequence = false;
@@ -94,6 +95,8 @@ class Node
 			$this->initColumnSetting();
 			// set status & judge
 			$this->loadStep();
+			// set $key as current node positions
+			$this->initCurrentPosition();
 		}
 	}
 
@@ -381,7 +384,7 @@ class Node
 			]);	
 		}
 
-		if($this->lineprocess['type'] == 1 ){
+		if($this->lineprocess['type'] === 1 ){
 			// masuk kesini jika internal;
 			$model = $this->model
 			->where( 'scanner_id' , $this->scanner_id  )
@@ -399,17 +402,10 @@ class Node
 			if(!is_null($is_solder)){
 				$model = $model->where('judge', 'like', 'SOLDER%');
 			}
-			
-			/*return [
-				'query'=>$model->toSql(),
-				'scanner_id' => $this->scanner_id,
-				'dummy_column' => $this->dummy_column,
-				'dummy_id' => $this->dummy_id,
-			];*/
 
-			$model = $model->exists(); 
-			return $model;
-		}else{
+			return $model->exists(); 
+
+		}else if ($this->lineprocess['type'] == 2 ){
 			// send cURL here;
 			$endpoint = Endpoint::select()->find($this->lineprocess['endpoint_id']);
 			if(is_null($endpoint)){
@@ -758,7 +754,7 @@ class Node
 		return $this->lineprocess;
 	}
 
-	public function move($step = 1){
+	public function initCurrentPosition(){
 		if( is_null($this->process) ){
 			throw new StoreResourceFailedException("Process Not found", [
                 'message' => 'Process not found',
@@ -776,10 +772,14 @@ class Node
 		$process = explode(',', $this->process);
 		
 		// get current process index;
-		$key = array_search($this->scanner['lineprocess_id'], $process );
-		
+		$this->key = array_search($this->scanner['lineprocess_id'], $process );
+		$this->firstSequence = ($this->key == 0)? true:false;
+	}
+
+	public function move($step = 1){
+		$process = explode(',', $this->process);
 		// $lineprocess_id tidak ditemukan di $process
-		if ($key === false ) { // === is required since 0 is false if its using == (two sama dengan)
+		if ($this->key === false ) { // === is required since 0 is false if its using == (two sama dengan)
 			throw new StoreResourceFailedException("this step shouldn't belong to the process", [
                 'current_step' 	=> $this->scanner['lineprocess_id'],
                 'process'		=> $process,
@@ -787,44 +787,44 @@ class Node
             ]);	
 		}
 
-		// kalau 0, maka ga ada prev;
-		if(!$key == 0 ){
-			$newIndex = $key + $step;
-			// cek new index key ada di array $process as key. prevent index not found error 
-			if(array_key_exists($newIndex, $process )){
-			
-				$newLineProcessId = $process[$newIndex];
+		// it's using $this->key for avoid error on first index;
+		$this->key = $this->key + $step;
+		// cek new index key ada di array $process as key. prevent index not found error 
+		if(array_key_exists($this->key, $process )){
+		
+			$newLineProcessId = $process[$this->key];
 
-				// setup $this->lineprocess to prev step;
-				$this->setLineprocess($newLineProcessId);
+			// setup $this->lineprocess to prev step;
+			$this->setLineprocess($newLineProcessId);
 
-				$scanner = Scanner::select([
-					'id',
-					'line_id',
-					'lineprocess_id',
-					'name',
-					'mac_address',
-					'ip_address',
-				])->where('lineprocess_id', $newLineProcessId )
-				->where('line_id', $this->scanner['line_id'] )
-				->first();
-	
-				if(!$scanner){ //kalau scanner tidak ketemu
-					throw new StoreResourceFailedException("scanner not registered yet", [
-		                'message' => 'scanner not registered yet'
-		            ]);
-				}
-				// setup new scanner id value;
-				$this->scanner_id = $scanner['id'];
-				$this->scanner = $scanner;
+			// will get the last scanner inputed by users
+			$scanner = Scanner::select([
+				'id',
+				'line_id',
+				'lineprocess_id',
+				'name',
+				'mac_address',
+				'ip_address',
+			])->where('lineprocess_id', $newLineProcessId )
+			->where('line_id', $this->scanner['line_id'] )
+			->orderBy('id', 'desc')
+			->first();
 
-				// run load step to changes status & judge
-				$this->loadStep();
+			if(!$scanner){ //kalau scanner tidak ketemu
+				throw new StoreResourceFailedException("scanner not registered yet", [
+	                'message' => 'scanner not registered yet'
+	            ]);
 			}
+			// setup new scanner id value;
+			$this->scanner_id = $scanner['id'];
+			$this->scanner = $scanner;
 
-		}else{
-			$this->firstSequence = true;
+			// run load step to changes status & judge
+			$this->loadStep();
 		}
+
+		// kalau 0, maka dia sequence pertama; we need to init key
+		$this->initCurrentPosition();
 
 		return $this;
 	}

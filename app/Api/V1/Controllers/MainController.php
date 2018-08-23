@@ -29,7 +29,8 @@ class MainController extends Controller
 
     protected $returnValue = [
         'success' => true,
-        'message' => 'data saved!'
+        'message' => 'data saved!',
+        'node'    => null  
     ];
 
     private function getParameter (BoardRequest $request){
@@ -60,7 +61,7 @@ class MainController extends Controller
     	$parameter = $this->getParameter($request);
         // cek apakah board id atau ticket;
         $node = new Node($parameter);
-
+        
         // return $node->getGuidTicket();
 
         if ($node->getModelType() == 'board') {
@@ -82,15 +83,19 @@ class MainController extends Controller
 
     private function processBoard(Node $node){
         // cek current is null;
+        /*return [
+            'node' => $node->next(),
+            'exists' => $node->isExists(),
+            'isFirstSequence' => $node->isFirstSequence(),
+            'scanner_id' => $node->scanner_id,
+            'board_id'  => $node->dummy_id
+        ];*/
+
         if(!$node->isExists()){ //board null
             // cek kondisi sebelumnya is null
-
-            $prevNode = $node->prev();
-
-            // kalau sequence pertama, maka insert;
-            if ($prevNode->isFirstSequence() ) {
+            // kalau sequence pertama, maka insert; gausah cek data sebelumnya dulu;
+            if ($node->isFirstSequence() ) {
                 // langsung input;
-                $node = $prevNode->next();
                 $node->setStatus('IN');
                 $node->setJudge('OK');
                 if(!$node->save()){
@@ -98,8 +103,13 @@ class MainController extends Controller
                         'message' => 'something went wrong with save method on model! ask your IT member'
                     ]);
                 };
+
+                $this->returnValue['node'] = $node;
+
                 return $this->returnValue;
             }
+
+            $prevNode = $node->prev();
 
             if( $prevNode->getStatus() == 'OUT' ){
                 
@@ -124,6 +134,7 @@ class MainController extends Controller
                         'message' => 'something went wrong with save method on model! ask your IT member'
                     ]);
                 };
+                $this->returnValue['node'] = $node;
                 return $this->returnValue;
             }
 
@@ -145,7 +156,7 @@ class MainController extends Controller
                 if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
                     throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
                         'message' => 'bukan solder',
-                        'note' => json_decode( $prevNode, true )
+                        'node' => json_decode( $prevNode, true )
                     ]);    
                 }
                 
@@ -165,6 +176,7 @@ class MainController extends Controller
                     ]);
                     
                 };
+                $this->returnValue['node'] = $node;
                 return $this->returnValue;
             }
 
@@ -192,7 +204,7 @@ class MainController extends Controller
                     'message' => 'something went wrong with save method on model! ask your IT member'
                 ]);
             } 
-            
+            $this->returnValue['node'] = $node;
             return $this->returnValue;
         }
 
@@ -223,7 +235,7 @@ class MainController extends Controller
                     'message' => 'something went wrong with save method on model! ask your IT member'
                 ]);
             } 
-            
+            $this->returnValue['node'] = $node;
             return $this->returnValue;
         }
     }
@@ -255,7 +267,7 @@ class MainController extends Controller
         $this->runProcedureTicket($node);
 
         $node->updateChildGUidMaster();
-
+        $this->returnValue['node'] = $node;
         return $this->returnValue;
     }
     
