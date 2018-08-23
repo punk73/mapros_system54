@@ -17,6 +17,8 @@ use App\ColumnSetting;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Guid;
+use GuzzleHttp\Client;
+use App\Endpoint;
 
 class Node
 {
@@ -57,8 +59,10 @@ class Node
 	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
 	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type
 	protected $parameter;
+	protected $key; //array index of sequence 
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
+	protected $firstSequence = false;
 
 	function __construct($parameter, $debug = false ){	
 		// kalau sedang debugging, maka gausah run construct
@@ -91,6 +95,8 @@ class Node
 			$this->initColumnSetting();
 			// set status & judge
 			$this->loadStep();
+			// set $key as current node positions
+			$this->initCurrentPosition();
 		}
 	}
 
@@ -190,11 +196,14 @@ class Node
 
 	//triggered on instantiate 
 	public function setModel($parameter){
-		if (count($parameter['board_id']) >= 24 ) {
+		if (count($parameter['board_id']) == 24 ) {
 			$code = substr($parameter['board_id'], 0, 10);
-		}else{
+		}else if(count($parameter['board_id']) <= 16){
 			$code = substr($parameter['board_id'], 0, 5);
-		}// setup which model to work with
+		}else{
+			//ini untuk critical parts; gausah di substr dulu;
+			$code = $parameter['board_id'];
+		} 
 
 		/*if (in_array($code, $this->ticketCriteria )) {
 			// it is ticket, so we work with ticket
@@ -249,7 +258,7 @@ class Node
 		if ($this->getModelType() == 'ticket') {
 			
 			// cek apakah ticket guid sudah di generate sebelumnya;
-			if ($this->isTicketGuidGenerated() ) {
+			if ($this->isGuidGenerated() ) {
 				$guid = $this->getLastGuid();
 
 				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
@@ -304,7 +313,7 @@ class Node
 		$this->guid_ticket = $guid;
 	}
 
-	public function isTicketGuidGenerated(){
+	public function isGuidGenerated(){
 		if (is_null($this->model)) {
 			throw new StoreResourceFailedException("node model is null", [
 				'node' => json_decode($this, true ),
@@ -323,11 +332,18 @@ class Node
 			]);
 		}
 
-		return $this->model
-			// ->where( 'scanner_id' , $this->scanner_id  )
-			->where( $this->dummy_column, $this->dummy_id )
-			->where('guid_master', null )
-			->exists();
+		if($this->getModelType() == 'ticket'){
+			return $this->model
+				// ->where( 'scanner_id' , $this->scanner_id  )
+				->where( $this->dummy_column, $this->dummy_id )
+				->where('guid_master', null )
+				->exists();
+		}else if ($this->getModelType() == 'master'){
+			return $this->model
+				->where( $this->dummy_column, $this->dummy_id )
+				->where('serial_no', null )
+				->exists();
+		}
 	}
 
 	public function generateGuid(){
@@ -368,7 +384,7 @@ class Node
 			]);	
 		}
 
-		if($this->lineprocess['type'] == 1 ){
+		if($this->lineprocess['type'] === 1 ){
 			// masuk kesini jika internal;
 			$model = $this->model
 			->where( 'scanner_id' , $this->scanner_id  )
@@ -386,18 +402,24 @@ class Node
 			if(!is_null($is_solder)){
 				$model = $model->where('judge', 'like', 'SOLDER%');
 			}
-			
-			/*return [
-				'query'=>$model->toSql(),
-				'scanner_id' => $this->scanner_id,
-				'dummy_column' => $this->dummy_column,
-				'dummy_id' => $this->dummy_id,
-			];*/
 
-			$model = $model->exists(); 
-			return $model;
-		}else{
+			return $model->exists(); 
+
+		}else if ($this->lineprocess['type'] == 2 ){
 			// send cURL here;
+			$endpoint = Endpoint::select()->find($this->lineprocess['endpoint_id']);
+			if(is_null($endpoint)){
+				throw new StoreResourceFailedException("endpoint with id ".$this->lineprocess['endpoint_id']." is not found", [
+					'lineprocess' => $this->lineprocess,
+				]);
+			}
+
+			$url = $endpoint->url; //'http://localhost/mapros_system54/public/api/aoies';
+			$client = new Client();
+			// $url = "https://api.github.com/repos/guzzle/guzzle";
+	        $res = $client->get($url);
+	        // it's should return boolean
+	        return $res->status;
 		}
 	}
 
@@ -529,7 +551,7 @@ class Node
 			}
 
 			// kalau sudah generated, baru masuk sini;
-			if ($this->isTicketGuidGenerated()) {
+			if ($this->isGuidGenerated()) {
 				// ambil dulu modelnya dari table board, kemudian pass hasilnya kesini;
 				$boardPanel = Board::select([
 					'board_id'
@@ -543,10 +565,14 @@ class Node
 					]);
 				}
 
+				// this will cause some trouble later;
 				$board_id = substr($boardPanel['board_id'], 0,5 );
 				# code...
 				$model = $model->where('code', $board_id );
-			}
+			}/*else {
+				// kalau belum, kita setup model based on user parameter;
+				$model = $model->where('code', $this->parameter['modelname0'] );
+			}*/
 			
 		}else{
 			// this is from bigs db
@@ -660,11 +686,13 @@ class Node
 
 
 		if (!is_null($board['name'])) {
+			// code below to avoid undefined error
+			$this->parameter['modelname'] = (isset($this->parameter['modelname'])) ? $this->parameter['modelname'] : null;
 			if($board['name'] != $this->parameter['modelname'] ){
 				throw new StoreResourceFailedException($this->confirmation_view_error, [
-					'node' => json_decode($this, true )
+					'node' => json_decode($this, true ),
+					'server-modelname' => $this->board['name']
 				]);
-				
 			}
 
 			$sequence = Sequence::select(['process'])
@@ -726,7 +754,7 @@ class Node
 		return $this->lineprocess;
 	}
 
-	public function move($step = 1){
+	public function initCurrentPosition(){
 		if( is_null($this->process) ){
 			throw new StoreResourceFailedException("Process Not found", [
                 'message' => 'Process not found',
@@ -744,10 +772,14 @@ class Node
 		$process = explode(',', $this->process);
 		
 		// get current process index;
-		$key = array_search($this->scanner['lineprocess_id'], $process );
-		
+		$this->key = array_search($this->scanner['lineprocess_id'], $process );
+		$this->firstSequence = ($this->key == 0)? true:false;
+	}
+
+	public function move($step = 1){
+		$process = explode(',', $this->process);
 		// $lineprocess_id tidak ditemukan di $process
-		if ($key === false ) { // === is required since 0 is false if its using == (two sama dengan)
+		if ($this->key === false ) { // === is required since 0 is false if its using == (two sama dengan)
 			throw new StoreResourceFailedException("this step shouldn't belong to the process", [
                 'current_step' 	=> $this->scanner['lineprocess_id'],
                 'process'		=> $process,
@@ -755,44 +787,63 @@ class Node
             ]);	
 		}
 
-		// kalau 0, maka ga ada prev;
-		if(!$key == 0 ){
-			$newIndex = $key + $step;
-			// cek new index key ada di array $process as key. prevent index not found error 
-			if(array_key_exists($newIndex, $process )){
-			
-				$newLineProcessId = $process[$newIndex];
+		// it's using $this->key for avoid error on first index;
+		$this->key = $this->key + $step;
+		// cek new index key ada di array $process as key. prevent index not found error 
+		if(array_key_exists($this->key, $process )){
+		
+			$newLineProcessId = $process[$this->key];
 
-				// setup $this->lineprocess to prev step;
-				$this->setLineprocess($newLineProcessId);
+			// setup $this->lineprocess to prev step;
+			$this->setLineprocess($newLineProcessId);
 
-				$scanner = Scanner::select([
-					'id',
-					'line_id',
-					'lineprocess_id',
-					'name',
-					'mac_address',
-					'ip_address',
-				])->where('lineprocess_id', $newLineProcessId )
-				->where('line_id', $this->scanner['line_id'] )
-				->first();
-	
-				if(!$scanner){ //kalau scanner tidak ketemu
-					throw new StoreResourceFailedException("scanner not registered yet", [
-		                'message' => 'scanner not registered yet'
-		            ]);
-				}
-				// setup new scanner id value;
-				$this->scanner_id = $scanner['id'];
-				$this->scanner = $scanner;
+			// will get the last scanner inputed by users
+			$scanner = Scanner::select([
+				'id',
+				'line_id',
+				'lineprocess_id',
+				'name',
+				'mac_address',
+				'ip_address',
+			])->where('lineprocess_id', $newLineProcessId )
+			->where('line_id', $this->scanner['line_id'] )
+			->orderBy('id', 'desc')
+			->first();
 
-				// run load step to changes status & judge
-				$this->loadStep();
+			if(!$scanner){ //kalau scanner tidak ketemu
+				throw new StoreResourceFailedException("scanner not registered yet", [
+	                'message' => 'scanner not registered yet'
+	            ]);
 			}
+			// setup new scanner id value;
+			$this->scanner_id = $scanner['id'];
+			$this->scanner = $scanner;
 
+			// run load step to changes status & judge
+			$this->loadStep();
 		}
 
+		// kalau 0, maka dia sequence pertama; we need to init key
+		$this->initCurrentPosition();
+
 		return $this;
+	}
+
+	/*
+	* this is void, to update guid master of panel & board;
+	* don't understand enough how to achieve it;
+	*/
+	public function updateChildGUidMaster(){
+		// get guid master;
+		// search panel, mecha, & board that has that guid master
+		// get board that has same guid ticket 
+	}
+
+	public function isFirstSequence(){
+		// default value of property below is false;
+		// when move to prev and it's figure it out that is has key 0, (first index)
+		// it'll setup to true;
+		return $this->firstSequence;
 	}
 
 	public function prev(){

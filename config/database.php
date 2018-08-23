@@ -69,11 +69,11 @@ return [
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             // 'server' => env('DB_SERVER2', 'svrdbs\sa'),
-            'host' => env('DB_HOST', '136.198.117.48'), 
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'sa'),
-            'password' => env('DB_PASSWORD', 'password'),
+            'host' => env('DB_HOST1', '136.198.117.48'), 
+            'port' => env('DB_PORT1', '1433'),
+            'database' => env('DB_DATABASE1', 'forge'),
+            'username' => env('DB_USERNAME1', 'sa'),
+            'password' => env('DB_PASSWORD1', 'password'),
             'prefix' => '',
 
         ],

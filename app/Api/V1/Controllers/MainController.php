@@ -29,7 +29,8 @@ class MainController extends Controller
 
     protected $returnValue = [
         'success' => true,
-        'message' => 'data saved!'
+        'message' => 'data saved!',
+        'node'    => null  
     ];
 
     private function getParameter (BoardRequest $request){
@@ -74,14 +75,35 @@ class MainController extends Controller
             return $this->runProcedureTicket($node);
         }
 
+        if($node->getModelType() == 'master'){
+            return $this->runProcedureMaster($node);
+        }
+
     }
 
     private function processBoard(Node $node){
         // cek current is null;
+
         if(!$node->isExists()){ //board null
             // cek kondisi sebelumnya is null
+            // kalau sequence pertama, maka insert; gausah cek data sebelumnya dulu;
+            if ($node->isFirstSequence() ) {
+                // langsung input;
+                $node->setStatus('IN');
+                $node->setJudge('OK');
+                if(!$node->save()){
+                    throw new StoreResourceFailedException("Error Saving Progress", [
+                        'message' => 'something went wrong with save method on model! ask your IT member'
+                    ]);
+                };
+
+                $this->returnValue['node'] = $node;
+
+                return $this->returnValue;
+            }
 
             $prevNode = $node->prev();
+
             if( $prevNode->getStatus() == 'OUT' ){
                 
                 // we not sure if it calling prev() twice or not, hopefully it's not;
@@ -105,6 +127,7 @@ class MainController extends Controller
                         'message' => 'something went wrong with save method on model! ask your IT member'
                     ]);
                 };
+                $this->returnValue['node'] = $node;
                 return $this->returnValue;
             }
 
@@ -126,7 +149,7 @@ class MainController extends Controller
                 if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
                     throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
                         'message' => 'bukan solder',
-                        'note' => json_decode( $prevNode, true )
+                        'node' => json_decode( $prevNode, true )
                     ]);    
                 }
                 
@@ -146,6 +169,7 @@ class MainController extends Controller
                     ]);
                     
                 };
+                $this->returnValue['node'] = $node;
                 return $this->returnValue;
             }
 
@@ -159,7 +183,7 @@ class MainController extends Controller
         if($node->getStatus() == 'OUT'){
             if($node->is_solder == false){
                 throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
-                    'node' => json_decode( $node, true )
+                    'node' => json_decode( $node, true ),
                 ]);    
             }
 
@@ -173,7 +197,7 @@ class MainController extends Controller
                     'message' => 'something went wrong with save method on model! ask your IT member'
                 ]);
             } 
-            
+            $this->returnValue['node'] = $node;
             return $this->returnValue;
         }
 
@@ -204,13 +228,13 @@ class MainController extends Controller
                     'message' => 'something went wrong with save method on model! ask your IT member'
                 ]);
             } 
-            
+            $this->returnValue['node'] = $node;
             return $this->returnValue;
         }
     }
 
     private function runProcedureTicket(Node $node){
-        if( (!$node->isTicketGuidGenerated()) && ($node->isJoin()) ){
+        if( (!$node->isGuidGenerated()) && ($node->isJoin()) ){
 
             $node->setStatus('IN');
             $node->setJudge('OK');
@@ -229,11 +253,15 @@ class MainController extends Controller
         };
 
         return $this->processBoard($node);
-
-         
         
-        return $this->returnValue;
+    }
 
+    private function runProcedureMaster(Node $node){
+        $this->runProcedureTicket($node);
+
+        $node->updateChildGUidMaster();
+        $this->returnValue['node'] = $node;
+        return $this->returnValue;
     }
     
     
