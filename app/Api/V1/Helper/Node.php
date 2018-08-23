@@ -328,11 +328,18 @@ class Node
 			]);
 		}
 
-		return $this->model
-			// ->where( 'scanner_id' , $this->scanner_id  )
-			->where( $this->dummy_column, $this->dummy_id )
-			->where('guid_master', null )
-			->exists();
+		if($this->getModelType() == 'ticket'){
+			return $this->model
+				// ->where( 'scanner_id' , $this->scanner_id  )
+				->where( $this->dummy_column, $this->dummy_id )
+				->where('guid_master', null )
+				->exists();
+		}else if ($this->getModelType() == 'master'){
+			return $this->model
+				->where( $this->dummy_column, $this->dummy_id )
+				->where('serial_no', null )
+				->exists();
+		}
 	}
 
 	public function generateGuid(){

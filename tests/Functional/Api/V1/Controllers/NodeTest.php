@@ -253,7 +253,7 @@ class NodeTest extends TestCase
         $this->seedDb();
         $node = new Node($this->parameter);
 
-        $this->assertEquals(false, $node->isTicketGuidGenerated() );
+        $this->assertEquals(false, $node->isGuidGenerated() );
 
     }
 
