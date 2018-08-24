@@ -13399,6 +13399,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Loading___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Loading__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Confirm__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Confirm___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Confirm__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Alert__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Alert___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Alert__);
 //
 //
 //
@@ -13514,6 +13516,7 @@ var axios = __webpack_require__(16);
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
@@ -13561,7 +13564,7 @@ var axios = __webpack_require__(16);
 
 
     components: {
-        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a
+        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a, alert: __WEBPACK_IMPORTED_MODULE_3__Alert___default.a
     },
 
     methods: {
@@ -13574,6 +13577,7 @@ var axios = __webpack_require__(16);
             this.toggleLoading();
             axios.post('api/main', data).then(function (response) {
                 self.toggleLoading();
+                self.handleSucces(response);
                 console.log(response);
             }).catch(function (error) {
                 var data = error.response.data;
@@ -13598,8 +13602,14 @@ var axios = __webpack_require__(16);
 
             this.error = message;
             this.detailError = detailError;
-            this.showAlert = !this.showAlert;
+
+            this.toggleAlert();
             // this.$refs.board_id.$el.focus();
+        },
+        handleSucces: function handleSucces(response) {
+            // set error to default value to show alert-success in alert
+            this.error = '';
+            this.toggleAlert();
         },
         returnViewConfirmation: function returnViewConfirmation(error) {
             this.server.modelname = error.errors['server-modelname'][0];
@@ -13631,6 +13641,9 @@ var axios = __webpack_require__(16);
         },
         toggleLoading: function toggleLoading() {
             this.isLoading = !this.isLoading;
+        },
+        toggleAlert: function toggleAlert() {
+            this.showAlert = !this.showAlert;
         },
         getConfig: function getConfig() {
             var config = localStorage.getItem('config');
@@ -44117,34 +44130,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row"
   }, [(_vm.showAlert) ? _c('div', {
     staticClass: "col-md-8 col-md-offset-2"
-  }, [_c('div', {
-    staticClass: "alert alert-danger alert-dismissible show",
+  }, [_c('alert', {
     attrs: {
-      "role": "alert"
-    }
-  }, [_vm._v("\n                " + _vm._s(_vm.error + ".") + " "), _c('a', {
-    staticClass: "alert-link",
-    on: {
-      "click": function($event) {
-        $event.preventDefault();
-        return _vm.showDetailError($event)
-      }
-    }
-  }, [_vm._v("detail")]), _vm._v(" "), _c('button', {
-    staticClass: "close",
-    attrs: {
-      "aria-label": "close"
+      "error": _vm.error,
+      "isDanger": _vm.error != ""
     },
     on: {
-      "click": function($event) {
-        _vm.showAlert = !_vm.showAlert
-      }
+      "showDetailError": _vm.showDetailError,
+      "toggleAlert": _vm.toggleAlert
     }
-  }, [_c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_vm._v("×")])])])]) : _vm._e(), _vm._v(" "), _c('div', {
+  })], 1) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "col-md-8 col-md-offset-2"
   }, [_c('div', {
     staticClass: "panel panel-default"
@@ -49011,6 +49006,116 @@ module.exports = function(module) {
 __webpack_require__(14);
 module.exports = __webpack_require__(15);
 
+
+/***/ }),
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['showAlert', 'error', 'isDanger'],
+	data: function data() {
+		return {
+			'alert-success': false
+		};
+	}
+});
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(74),
+  /* template */
+  __webpack_require__(76),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Alert.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] Alert.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5ff39591", Component.options)
+  } else {
+    hotAPI.reload("data-v-5ff39591", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    class: {
+      alert: true, 'alert-danger': _vm.isDanger, 'alert-success': !_vm.isDanger, 'alert-dismissible': true, 'show': true
+    },
+    attrs: {
+      "role": "alert"
+    }
+  }, [_vm._v("\n      " + _vm._s(_vm.error + ".") + " "), _c('a', {
+    staticClass: "alert-link",
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        _vm.$emit("showDetailError")
+      }
+    }
+  }, [_vm._v("detail")]), _vm._v(" "), _c('button', {
+    staticClass: "close",
+    attrs: {
+      "aria-label": "close"
+    },
+    on: {
+      "click": function($event) {
+        _vm.$emit("toggleAlert")
+      }
+    }
+  }, [_c('span', {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("×")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-5ff39591", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

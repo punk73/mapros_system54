@@ -4,12 +4,12 @@
         <div class="row">
 
             <div v-if="showAlert" class="col-md-8 col-md-offset-2">
-                <div class="alert alert-danger alert-dismissible show" role="alert">
-                  {{ error + "." }} <a class="alert-link" @click.prevent='showDetailError' >detail</a>
-                  <button class="close" @click='showAlert=!showAlert' aria-label="close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
+                <alert  
+                    @showDetailError='showDetailError'
+                    @toggleAlert='toggleAlert'
+                    :error='error'
+                    :isDanger='error!=""'
+                ></alert>
             </div>
 
             <div class="col-md-8 col-md-offset-2">
@@ -112,6 +112,7 @@
     import modal from './Modal';
     import loading from './Loading';
     import confirm from './Confirm';
+    import alert from './Alert';
 
     export default {
         data: () => {
@@ -159,7 +160,7 @@
         },
 
         components: {
-            modal, loading, confirm
+            modal, loading, confirm, alert
         },
 
         methods : {
@@ -171,6 +172,7 @@
                 axios.post('api/main', data )
                     .then((response) => {
                         self.toggleLoading()
+                        self.handleSucces(response)
                         console.log(response)
                     })
                     .catch( (error) => {
@@ -195,8 +197,15 @@
             handleError(message, detailError = '' ){
                 this.error = message;
                 this.detailError = detailError;
-                this.showAlert = !this.showAlert;
+
+                this.toggleAlert();
                 // this.$refs.board_id.$el.focus();
+            },
+
+            handleSucces(response){
+                // set error to default value to show alert-success in alert
+                this.error = '';
+                this.toggleAlert();
             },
 
             returnViewConfirmation(error){
@@ -231,6 +240,10 @@
 
             toggleLoading(){
                 this.isLoading = !this.isLoading;
+            },
+
+            toggleAlert(){
+                this.showAlert = !this.showAlert;
             },
 
             getConfig(){
