@@ -225,10 +225,10 @@
             },
 
             returnJoin(errors){
-                this.$router.push({
+                /*this.$router.push({
                     path: '/join',
                     params: errors
-                });
+                });*/
             },
 
             toggleModal(header = '', message = ''){

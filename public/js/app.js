@@ -13651,10 +13651,10 @@ var axios = __webpack_require__(16);
             console.log(this.detailError);
         },
         returnJoin: function returnJoin(errors) {
-            this.$router.push({
+            /*this.$router.push({
                 path: '/join',
                 params: errors
-            });
+            });*/
         },
         toggleModal: function toggleModal() {
             var header = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
