@@ -7,8 +7,8 @@
                 <alert  
                     @showDetailError='showDetailError'
                     @toggleAlert='toggleAlert'
-                    :error='error'
-                    :isDanger='error!=""'
+                    :message='error'
+                    :isDanger='hasError'
                 ></alert>
             </div>
 
@@ -130,6 +130,7 @@
                 },
 
                 error: '',
+                hasError: false,
 
                 detailError: '',
 
@@ -197,6 +198,7 @@
             handleError(message, detailError = '' ){
                 this.error = message;
                 this.detailError = detailError;
+                this.hasError = true;
 
                 this.toggleAlert();
                 // this.$refs.board_id.$el.focus();
@@ -204,7 +206,10 @@
 
             handleSucces(response){
                 // set error to default value to show alert-success in alert
-                this.error = '';
+                // console.log('handleSucces', response )
+                let message = response.data.message;
+                this.hasError = false;
+                this.error = message;
                 this.toggleAlert();
             },
 
