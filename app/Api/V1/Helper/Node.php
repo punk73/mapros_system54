@@ -773,11 +773,6 @@ class Node
 		
 		// get current process index;
 		$this->key = array_search($this->scanner['lineprocess_id'], $process );
-		$this->firstSequence = ($this->key == 0)? true:false;
-	}
-
-	public function move($step = 1){
-		$process = explode(',', $this->process);
 		// $lineprocess_id tidak ditemukan di $process
 		if ($this->key === false ) { // === is required since 0 is false if its using == (two sama dengan)
 			throw new StoreResourceFailedException("this step shouldn't belong to the process", [
@@ -786,6 +781,12 @@ class Node
                 'node'			=> json_decode($this,true) ,
             ]);	
 		}
+		
+		$this->firstSequence = ($this->key === 0)? true:false;
+	}
+
+	public function move($step = 1){
+		$process = explode(',', $this->process);
 
 		// it's using $this->key for avoid error on first index;
 		$this->key = $this->key + $step;

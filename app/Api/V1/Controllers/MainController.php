@@ -16,253 +16,262 @@ use Carbon\Carbon;
 
 class MainController extends Controller
 {
-    use LoggerHelper;
+	use LoggerHelper;
 
-    protected $allowedParameter = [
-        'board_id',
-        'nik',
-        'ip',
-        'guid',
-        'is_solder',
-        'modelname',
-    ];
+	protected $allowedParameter = [
+		'board_id',
+		'nik',
+		'ip',
+		'guid',
+		'is_solder',
+		'modelname',
+	];
 
-    protected $returnValue = [
-        'success' => true,
-        'message' => 'data saved!',
-        'node'    => null  
-    ];
+	protected $returnValue = [
+		'success' => true,
+		'message' => 'data saved!',
+		'node'    => null  
+	];
 
-    private function getParameter (BoardRequest $request){
-        $result = $request->only($this->allowedParameter);
+	private function getParameter (BoardRequest $request){
+		$result = $request->only($this->allowedParameter);
 
-        // setup default value for ip 
-        $result['ip'] = (!isset($result['ip'] )) ? $request->ip() : $request->ip ;
-        // setup default value for is_solder is false;
-        $result['is_solder'] = (!isset($result['is_solder'] )) ? false : $request->is_solder ;
+		// setup default value for ip 
+		$result['ip'] = (!isset($result['ip'] )) ? $request->ip() : $request->ip ;
+		// setup default value for is_solder is false;
+		$result['is_solder'] = (!isset($result['is_solder'] )) ? false : $request->is_solder ;
 
-        return $result;
-    }
+		return $result;
+	}
 
-    /*
-    *
-    * $currentStep must contains created_at && std_time
-    *
-    */
-    private function isMoreThanStdTime($currentStep){
-        $now = Carbon::now();
-        $lastScanned = Carbon::parse($currentStep['created_at']);
+	/*
+	*
+	* $currentStep must contains created_at && std_time
+	*
+	*/
+	private function isMoreThanStdTime($currentStep){
+		$now = Carbon::now();
+		$lastScanned = Carbon::parse($currentStep['created_at']);
 
-        // it'll return true if timeDiff is greater than std_time;
-        return ( $now->diffInSeconds($lastScanned) > $currentStep['std_time'] );
-    }
+		// it'll return true if timeDiff is greater than std_time;
+		return ( $now->diffInSeconds($lastScanned) > $currentStep['std_time'] );
+	}
 
-    public function store(BoardRequest $request ){
-    	$parameter = $this->getParameter($request);
-        // cek apakah board id atau ticket;
-        $node = new Node($parameter);
+	public function store(BoardRequest $request ){
+		$parameter = $this->getParameter($request);
+		// cek apakah board id atau ticket;
+		$node = new Node($parameter);
 
-        // return $node->getGuidTicket();
+		// return $node->getGuidTicket();
 
-        if ($node->getModelType() == 'board') {
-            return $this->processBoard($node);
-        }
+		if ($node->getModelType() == 'board') {
+			return $this->processBoard($node);
+		}
 
-        /*if($node->getModelType() == 'board'){
-            return 'critical';
-        }*/ 
-        if($node->getModelType() == 'ticket'){
-            return $this->runProcedureTicket($node);
-        }
+		/*if($node->getModelType() == 'board'){
+			return 'critical';
+		}*/ 
+		if($node->getModelType() == 'ticket'){
+			return $this->runProcedureTicket($node);
+		}
 
-        if($node->getModelType() == 'master'){
-            return $this->runProcedureMaster($node);
-        }
+		if($node->getModelType() == 'master'){
+			return $this->runProcedureMaster($node);
+		}
+	}
 
-    }
+	private function processBoard(Node $node){
+		// cek current is null;
 
-    private function processBoard(Node $node){
-        // cek current is null;
+		if(!$node->isExists()){ //board null
+			// cek kondisi sebelumnya is null
+			// kalau sequence pertama, maka insert; gausah cek data sebelumnya dulu;
+			if ($node->isFirstSequence() ) {
+				// langsung input;
+				$node->setStatus('IN');
+				$node->setJudge('OK');
+				if(!$node->save()){
+					throw new StoreResourceFailedException("Error Saving Progress", [
+						'message' => 'something went wrong with save method on model! ask your IT member'
+					]);
+				};
 
-        if(!$node->isExists()){ //board null
-            // cek kondisi sebelumnya is null
-            // kalau sequence pertama, maka insert; gausah cek data sebelumnya dulu;
-            if ($node->isFirstSequence() ) {
-                // langsung input;
-                $node->setStatus('IN');
-                $node->setJudge('OK');
-                if(!$node->save()){
-                    throw new StoreResourceFailedException("Error Saving Progress", [
-                        'message' => 'something went wrong with save method on model! ask your IT member'
-                    ]);
-                };
+				$this->returnValue['node'] = $node;
+				$this->returnValue['line_code'] = 100;
 
-                $this->returnValue['node'] = $node;
+				return $this->returnValue;
+			}
 
-                return $this->returnValue;
-            }
+			$prevNode = $node->prev();
 
-            $prevNode = $node->prev();
+			if( $prevNode->getStatus() == 'OUT' ){
 
-            if( $prevNode->getStatus() == 'OUT' ){
-                
-                // we not sure if it calling prev() twice or not, hopefully it's not;
-                if($prevNode->getJudge() == 'NG'){                    
-                    // kalau dia NG
-                    // cek di table repair, ada engga datanya.
-                    if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
-                        // kalau ga ada, maka throw error data is NG in prev stages! repair it first!
-                        throw new StoreResourceFailedException("Data is error in previous step, repair it first!", [
-                            'prevnode' => $prevNode,
-                            'node'     => $prevNode->next() 
-                        ]);
-                    }
-                }
+				// we not sure if it calling prev() twice or not, hopefully it's not;
+				if($prevNode->getJudge() == 'NG'){                    
+					// kalau dia NG
+					// cek di table repair, ada engga datanya.
+					if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
+						// kalau ga ada, maka throw error data is NG in prev stages! repair it first!
+						throw new StoreResourceFailedException("Data is error in previous step, repair it first!", [
+							'prevnode' => $prevNode,
+							'node'     => $prevNode->next() 
+						]);
+					}
+				}
 
-                $node = $prevNode->next();
-                $node->setStatus('IN');
-                $node->setJudge('OK');
-                if(!$node->save()){
-                    throw new StoreResourceFailedException("Error Saving Progress", [
-                        'message' => 'something went wrong with save method on model! ask your IT member'
-                    ]);
-                };
-                $this->returnValue['node'] = $node;
-                return $this->returnValue;
-            }
+				$node = $prevNode->next();
+				$node->setStatus('IN');
+				$node->setJudge('OK');
+				if(!$node->save()){
+					throw new StoreResourceFailedException("Error Saving Progress", [
+						'message' => 'something went wrong with save method on model! ask your IT member'
+					]);
+				};
+				$this->returnValue['node'] = $node;
+				$this->returnValue['line_code'] = 131;
 
-            if( $prevNode->getStatus() == 'IN' ){
-                // error handler
-                if($prevNode->getModelType() !== 'board'){
-                    throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
-                        'message' => 'bukan board',
-                        'note' => json_decode( $prevNode, true )
-                    ]);
-                }
+				return $this->returnValue;
+			}
 
-                /*
-                * cek logic below, I think we don't record the is solder in db;
-                * it's mean it will always return false;
-                */
+			if( $prevNode->getStatus() == 'IN' ){
+				// error handler
+				if($prevNode->getModelType() !== 'board'){
+					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
+						'message' => 'bukan board',
+						'note' => json_decode( $prevNode, true )
+					]);
+				}
 
-                // cek apakah solder atau bukan
-                if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
-                    throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
-                        'message' => 'bukan solder',
-                        'node' => json_decode( $prevNode, true )
-                    ]);    
-                }
-                
-                if($prevNode->isExists()){
-                    throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
-                        'message' => '',
-                        'note' => json_decode( $prevNode, true )
-                    ]);    
-                };
+				/*
+				* cek logic below, I think we don't record the is solder in db;
+				* it's mean it will always return false;
+				*/
 
-                $node = $prevNode->next();
-                $node->setStatus('OUT');
-                $node->setJudge('SOLDER');
-                if(!$node->save()){
-                    throw new StoreResourceFailedException("Error Saving Progress", [
-                        'message' => 'something went wrong with save method on model! ask your IT member'
-                    ]);
-                    
-                };
-                $this->returnValue['node'] = $node;
-                return $this->returnValue;
-            }
+				// cek apakah solder atau bukan
+				if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
+					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
+						'message' => 'bukan solder',
+						'node' => json_decode( $prevNode, true )
+					]);    
+				}
 
-            // jika get status bukan in atau out maka throw error
-            throw new StoreResourceFailedException("DATA NOT SCAN IN PREVIOUS STEP", [
-                'node' => json_decode( $prevNode, true )
-            ]);
-        }
+				if($prevNode->isExists()){
+					throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
+						'message' => '',
+						'note' => json_decode( $prevNode, true )
+					]);    
+				};
 
-        // disini node sudah exists
-        if($node->getStatus() == 'OUT'){
-            if($node->is_solder == false){
-                throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
-                    'node' => json_decode( $node, true ),
-                ]);    
-            }
+				$node = $prevNode->next();
+				$node->setStatus('OUT');
+				$node->setJudge('SOLDER');
+				if(!$node->save()){
+					throw new StoreResourceFailedException("Error Saving Progress", [
+						'message' => 'something went wrong with save method on model! ask your IT member'
+					]);
 
-            //isExists already implement is solder, so we dont need to check it again.
-            //if the code goes here, we save to immediately save the node;
+				};
+				$this->returnValue['node'] = $node;
+				$this->returnValue['line_code'] = 176;
 
-            $node->setStatus('IN');
-            $node->setJudge('SOLDER');
-            if(!$node->save()){
-                throw new StoreResourceFailedException("Error Saving Progress", [
-                    'message' => 'something went wrong with save method on model! ask your IT member'
-                ]);
-            } 
-            $this->returnValue['node'] = $node;
-            return $this->returnValue;
-        }
+				return $this->returnValue;
+			}
 
-        // return $node->getStatus();
-        if($node->getStatus() == 'IN'){
+			// jika get status bukan in atau out maka throw error
+			throw new StoreResourceFailedException("DATA NOT SCAN IN PREVIOUS STEP", [
+				'node' => json_decode( $prevNode, true )
+			]);
+		}
 
-            $currentStep = $node->getStep();
-            if($node->is_solder){
-                throw new StoreResourceFailedException("DATA ALREADY SCAN IN!", [
-                    'message' => 'you already scan solder with this scanner!'
-                ]);
+		// disini node sudah exists
+		if($node->getStatus() == 'OUT'){
+			if($node->is_solder == false){
+				throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
+					'node' => json_decode( $node, true ),
+				]);    
+			}
 
-            }
+			//isExists already implement is solder, so we dont need to check it again.
+			//if the code goes here, we save to immediately save the node;
 
-            // we need to count how long it is between now and step->created_at
-            if( !$this->isMoreThanStdTime($currentStep)){
-                // belum mencapai std time
-                throw new StoreResourceFailedException("DATA ALREADY Scan IN", [
-                    'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
-                ]);
-            }
-            
-            // save
-            $node->setStatus('OUT');
-            $node->setJudge('OK');
-            if(!$node->save()){
-                throw new StoreResourceFailedException("Error Saving Progress", [
-                    'message' => 'something went wrong with save method on model! ask your IT member'
-                ]);
-            } 
-            $this->returnValue['node'] = $node;
-            return $this->returnValue;
-        }
-    }
+			$node->setStatus('IN');
+			$node->setJudge('SOLDER');
+			if(!$node->save()){
+				throw new StoreResourceFailedException("Error Saving Progress", [
+					'message' => 'something went wrong with save method on model! ask your IT member'
+				]);
+			} 
+			$this->returnValue['node'] = $node;
+				$this->returnValue['line_code'] = 205;
 
-    private function runProcedureTicket(Node $node){
-        if( (!$node->isGuidGenerated()) && ($node->isJoin()) ){
+			return $this->returnValue;
+		}
 
-            $node->setStatus('IN');
-            $node->setJudge('OK');
-            if(!$node->save()){
-                throw new StoreResourceFailedException("Error Saving Progress", [
-                    'message' => 'something went wrong with save method on model! ask your IT member'
-                ]);
-            }    
+		// return $node->getStatus();
+		if($node->getStatus() == 'IN'){
 
-            throw new StoreResourceFailedException("view", [
-                'nik' => $node->getNik(),
-                'ip' => $node->getScanner()['ip_address'],
-                'dummy_id' => $node->dummy_id, 
-                'guid'=>    $node->generateGuid(),
-            ]);
-        };
+			$currentStep = $node->getStep();
+			if($node->is_solder){
+				throw new StoreResourceFailedException("DATA ALREADY SCAN IN!", [
+					'message' => 'you already scan solder with this scanner!'
+				]);
 
-        return $this->processBoard($node);
-        
-    }
+			}
 
-    private function runProcedureMaster(Node $node){
-        $this->runProcedureTicket($node);
+			// we need to count how long it is between now and step->created_at
+			if( !$this->isMoreThanStdTime($currentStep)){
+				// belum mencapai std time
+				throw new StoreResourceFailedException("DATA ALREADY Scan IN", [
+					'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
+				]);
+			}
 
-        $node->updateChildGUidMaster();
-        $this->returnValue['node'] = $node;
-        return $this->returnValue;
-    }
-    
-    
+			// save
+			$node->setStatus('OUT');
+			$node->setJudge('OK');
+			if(!$node->save()){
+				throw new StoreResourceFailedException("Error Saving Progress", [
+					'message' => 'something went wrong with save method on model! ask your IT member'
+				]);
+			} 
+			$this->returnValue['node'] = $node;
+				$this->returnValue['line_code'] = 239;
+
+			return $this->returnValue;
+		}
+	}
+
+	private function runProcedureTicket(Node $node){
+		if( (!$node->isGuidGenerated()) && ($node->isJoin()) ){
+
+			$node->setStatus('IN');
+			$node->setJudge('OK');
+			if(!$node->save()){
+				throw new StoreResourceFailedException("Error Saving Progress", [
+					'message' => 'something went wrong with save method on model! ask your IT member'
+				]);
+			}    
+
+			throw new StoreResourceFailedException("view", [
+				'node' => json_decode($node, true ),
+				'nik' => $node->getNik(),
+				'ip' => $node->getScanner()['ip_address'],
+				'dummy_id' => $node->dummy_id, 
+				'guid'=>    $node->generateGuid(),
+			]);
+		};
+
+		return $this->processBoard($node);
+
+	}
+
+	private function runProcedureMaster(Node $node){
+		$this->runProcedureTicket($node);
+
+		$node->updateChildGUidMaster();
+		$this->returnValue['node'] = $node;
+		return $this->returnValue;
+	}
+
+
 }
