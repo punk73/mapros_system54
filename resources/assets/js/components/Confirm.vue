@@ -4,7 +4,7 @@
 			<h4>Confirmation</h4>
 		</div>
 		<div slot='body'>
-			<p> model "{{ config_modelname }}" is different from {{server_modelname}} </p>
+			<p> model "{{ config_modelname }}" is different from "{{server_modelname}}" </p>
 			<p> You Need to choose which is correct </p>
 		</div>
 		<div slot='footer'>
@@ -29,11 +29,13 @@
 		methods: {
 			configOnClick(){
 				console.log('configOnClick');
-				this.$emit('toggleModal');
+				this.$emit('toggleConfirm');
+				this.$emit('toggleModal', 'ERROR', 'you scan wrong parts!!');
 			},
 			serverOnClick(){
 				console.log('serverOnClick');
-				this.$emit('toggleModal');
+				this.$emit('toggleConfirm');
+				this.$emit('changeConfig', this.server_modelname );
 			}
 		}
 	}

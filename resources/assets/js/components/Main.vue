@@ -6,7 +6,7 @@
             <div v-if="showAlert" class="col-md-8 col-md-offset-2">
                 <div class="alert alert-danger alert-dismissible show" role="alert">
                   {{ error + "." }} <a class="alert-link" @click.prevent='showDetailError' >detail</a>
-                  <button class="close" data-dismiss="alert" aria-label="close">
+                  <button class="close" @click='showAlert=!showAlert' aria-label="close">
                       <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
@@ -27,6 +27,9 @@
                             <div class="col-md-4 col-sm-4">
                                 PROCESS: {{info.process}}
                             </div>
+                            <div class="col-md-4 col-md-offset-4">
+                               STEP ID : {{ info.lineprocess_id }}
+                           </div>
                         </div>
                     </div>
                     <div class="panel-body">
@@ -48,12 +51,19 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="board_id" class="col-md-4 control-label">Board Id</label>
+                                <label class="col-md-4 control-label">Board Id</label>
 
                                 <div class="col-md-6">
-                                    <input id="board_id" v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
+                                    <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-4">
+                                    <input type="checkbox" id="checkbox" v-model="form.isSolder">
+                                    <label for="checkbox"> is solder </label>
+                                </div>
+                            </div>  
 
                             <div class="form-group">
                                 <div class="col-md-3 col-md-offset-4">
@@ -63,7 +73,7 @@
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary" @click.prevent='onSubmit' >
                                         Submit
                                     </button>
 
@@ -89,6 +99,8 @@
     <confirm 
         v-if='showConfirm'
         @toggleModal='toggleModal'
+        @toggleConfirm='toggleConfirm'
+        @changeConfig='changeConfig'
         v-bind:config_modelname='form.modelname'
         v-bind:server_modelname='server.modelname'
     ></confirm>
@@ -109,6 +121,7 @@
                     board_id: '',
                     nik: '',
                     modelname:'',
+                    isSolder:false,
                 },
 
                 server:{
@@ -125,6 +138,7 @@
                     line    : '',
                     proces  : '',
                     type    : '',
+                    lineprocess_id : '',
                 },
 
                 isLoading:false,
@@ -150,25 +164,27 @@
 
         methods : {
             onSubmit(){
-                let data = this.form
-                console.log(data)
-                // return;
+                let data = this.form;
+                console.log(data);
+                let self = this;
+                this.toggleLoading();
                 axios.post('api/main', data )
                     .then((response) => {
+                        self.toggleLoading()
                         console.log(response)
                     })
                     .catch( (error) => {
                         let data = error.response.data;
                         console.log(data)
                         let message = data.message;
-                        
+                        self.toggleLoading()
                         if(message == 'view'){
                             this.returnJoin(data.errors);
                             return;
                         }
 
-                        if(message == 'view-confirmation'){
-                            this.returnViewConfirmation();
+                        if(message == 'confirmation-view'){
+                            this.returnViewConfirmation(data);
                             return;
                         }
 
@@ -180,10 +196,12 @@
                 this.error = message;
                 this.detailError = detailError;
                 this.showAlert = !this.showAlert;
+                // this.$refs.board_id.$el.focus();
             },
 
-            returnViewConfirmation(){
-                console.log('view-confirmation')
+            returnViewConfirmation(error){
+                this.server.modelname = error.errors['server-modelname'][0]
+                console.log('view-confirmation', error.errors['server-modelname'][0] )
                 this.showConfirm = !this.showConfirm;
             },
 
@@ -199,10 +217,20 @@
                 });
             },
 
-            toggleModal(){
+            toggleModal(header = '', message = ''){
+                this.modal.header = header;
+                this.modal.message = message;
                 this.showModal = !this.showModal
                 // this.showConfirm = !this.showConfirm;
                 // this.isLoading = !this.isLoading;
+            },
+
+            toggleConfirm(){
+                this.showConfirm = !this.showConfirm
+            },
+
+            toggleLoading(){
+                this.isLoading = !this.isLoading;
             },
 
             getConfig(){
@@ -215,15 +243,30 @@
               console.log(config);
               config = JSON.parse(config);
               this.form.modelname = config.model;
-              this.form.ip = config.ip_address;
+              this.form.ip = config.ip;
+            },
+
+            // triggered by child view
+            changeConfig(serverModel){
+                this.form.modelname = serverModel;
+                let newConfig = {
+                    model: serverModel,
+                    ip : this.form.ip
+                }
+
+                localStorage.setItem('config', JSON.stringify(newConfig) );
+                // changes localstorage
             },
 
             getInfo(){
               let modal = this.modal;
               let self= this;
+              let config = localStorage.getItem('config');
+              let ipConfig = JSON.parse(config);
+              let ip = this.form.ip || ipConfig.ip
               axios.get('api/configs', {
                 params:{
-                  ip: this.form.ip
+                  ip: ip
                 }
               }).then((response) => {
                 console.log(response)

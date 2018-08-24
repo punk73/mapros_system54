@@ -15,7 +15,8 @@ class ConfigController extends Controller
     	$scanner = Scanner::select([
     		'lines.name as line',
     		'lineprocesses.name as process',
-    		'lineprocesses.type'
+    		'lineprocesses.type',
+            'lineprocesses.id as lineprocess_id',
     	])
     	->where('ip_address', $request->ip )
     	->leftJoin('lines', 'scanners.line_id', '=', 'lines.id')

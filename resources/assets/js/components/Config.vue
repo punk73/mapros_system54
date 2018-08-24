@@ -18,7 +18,7 @@
 							<div class="form-group">
                                 <label for="nik" class="col-md-3 control-label">IP Address</label>
                                 <div class="col-md-9">
-                                    <input  type="text" v-model='config.ip_address' class="form-control" required autofocus>
+                                    <input  type="text" v-model='config.ip' class="form-control" required autofocus>
                                 </div>
                             </div>
 
@@ -43,7 +43,7 @@
 			return {
 				config : {
 					model:'',
-					ip_address:'',
+					ip:'',
 				},
 			}
 		},
