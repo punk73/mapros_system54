@@ -287,6 +287,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-14 12:22:10',
                 'updated_at' => '2018-08-14 13:59:30',
             ),
+            15 => 
+            array (
+                'id' => 24,
+                'name' => 'tickets',
+                'slug' => 'tickets',
+                'display_name_singular' => 'Ticket',
+                'display_name_plural' => 'Tickets',
+                'icon' => '',
+                'model_name' => 'App\\Ticket',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-24 09:53:38',
+                'updated_at' => '2018-08-24 09:53:38',
+            ),
         ));
         
         

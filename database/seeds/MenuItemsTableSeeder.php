@@ -401,6 +401,22 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'voyager.ticket-masters.index',
                 'parameters' => NULL,
             ),
+            24 => 
+            array (
+                'id' => 25,
+                'menu_id' => 1,
+                'title' => 'Tickets',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => '',
+                'color' => NULL,
+                'parent_id' => NULL,
+                'order' => 20,
+                'created_at' => '2018-08-24 09:53:38',
+                'updated_at' => '2018-08-24 09:53:38',
+                'route' => 'voyager.tickets.index',
+                'parameters' => NULL,
+            ),
         ));
         
         
