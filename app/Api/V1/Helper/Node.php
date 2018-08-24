@@ -267,9 +267,13 @@ class Node
 				$guid = ($guid == null )?  $this->generateGuid() : $guid;
 			}
 
+			$this->setGuidTicket($guid);
+		}
+
+		if($this->getModelType() == 'master'){
+
 		}
 		
-		$this->setGuidTicket($guid);
 		$this->setUniqueId($guid);
 	}
 
@@ -311,6 +315,14 @@ class Node
 
 	public function setGuidTicket($guid){
 		$this->guid_ticket = $guid;
+	}
+
+	public function setGuidMaster($guid){
+		$this->guid_master = $guid;
+	}
+
+	public function getGuidMaster(){
+		return $this->guid_master;
 	}
 
 	public function isGuidGenerated(){
@@ -452,6 +464,12 @@ class Node
 		$model->status = $this->status;
 		$model->judge = $this->judge;
 		$model->scan_nik = $this->nik;
+
+		if ($this->getModelType() == 'board' ) {
+			$model->modelname = $this->modelname;
+			$model->lotno = $this->lotno;	
+		}
+
 		return $model->save();
 	}
 	

@@ -18,6 +18,8 @@ class CreateTableBoards extends Migration
             $table->string('board_id');
             $table->string('guid_master')->nullable();
             $table->string('guid_ticket')->nullable();
+            $table->string('modelname')->nullable();
+            $table->string('lotno')->nullable();
             $table->integer('scanner_id');
             $table->string('status');
             $table->string('scan_nik');
