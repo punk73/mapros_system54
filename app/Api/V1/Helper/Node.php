@@ -59,7 +59,7 @@ class Node
 	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
 	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type
 	protected $parameter;
-	protected $key; //array index of sequence 
+	protected $key; //array index of sequence  
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
 	protected $firstSequence = false;
@@ -126,8 +126,8 @@ class Node
 			'step'			=> $this->step,
 			'model'			=> $this->model,
 			'column_setting'=> $this->column_setting,
-			// 'modelname'		=> $this->modelname,
-			// 'lotno'			=> $this->lotno,
+			'modelname'		=> $this->modelname,
+			'lotno'			=> $this->lotno,
 			'parameter'		=> $this->parameter,
 		]);
 	}
@@ -181,7 +181,7 @@ class Node
 		return $this->column_setting;
 	}
 
-	public function setColumnSetting( $columnSetting){
+	public function setColumnSetting( $columnSetting = null ){
 		$this->column_setting = $columnSetting;
 	}
 
@@ -198,8 +198,12 @@ class Node
 	public function setModel($parameter){
 		if (count($parameter['board_id']) == 24 ) {
 			$code = substr($parameter['board_id'], 0, 10);
+			
+			$this->setLotno($parameter['board_id']);
+
 		}else if(count($parameter['board_id']) <= 16){
 			$code = substr($parameter['board_id'], 0, 5);
+			$this->setLotno($parameter['board_id']);
 		}else{
 			//ini untuk critical parts; gausah di substr dulu;
 			$code = $parameter['board_id'];
@@ -254,24 +258,26 @@ class Node
 
 	// method init guid di triggere dari main Controller;
 	private function initGuid($guid){
+		// cek apakah ticket guid sudah di generate sebelumnya;
+		if ($this->isGuidGenerated() ) {
+			$guid = $this->getLastGuid();
+			$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
+		}else {
+			$guid = ($guid == null )?  $this->generateGuid() : $guid;
+		}
+
 		// it can triggered after scanner & model has been set; 
-		if ($this->getModelType() == 'ticket') {
-			
-			// cek apakah ticket guid sudah di generate sebelumnya;
-			if ($this->isGuidGenerated() ) {
-				$guid = $this->getLastGuid();
-
-				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
-			}else {
-
-				$guid = ($guid == null )?  $this->generateGuid() : $guid;
-			}
-
+		if ($this->getModelType() == 'ticket' ) {
 			$this->setGuidTicket($guid);
 		}
 
 		if($this->getModelType() == 'master'){
+			$this->setGuidMaster($guid);
+		}
 
+		if($this->getModelType() == 'board'){
+			// cek column setting, this step is join atau bkn,
+			// kalo join, apa dengan apa;
 		}
 		
 		$this->setUniqueId($guid);
@@ -601,6 +607,8 @@ class Node
 
 		if ($model !== null) {
 			$this->setBoard($model);
+			$this->setModelname($model->name);
+
 		}
 
 		return $this;
@@ -610,6 +618,28 @@ class Node
 		// $this->board['name'] = $model['name'];
 		// $this->board['pwbname'] = $model['pwbname'];
 		$this->board = $model;
+	}
+
+	public function setModelname($modelname){
+		$this->modelname = $modelname;
+	}
+
+	public function getModelname(){
+		return $this->modelname;
+	}
+
+	public function setLotno($parameterBoardId){
+		if( count($parameterBoardId) <= 16 ){
+			$lotno = substr($parameterBoardId, 9, 3);
+		}else{
+			// untuk 24 char
+			$lotno = substr($parameterBoardId, 16, 4);
+		}
+		$this->lotno = $lotno;
+	}
+
+	public function getLotno(){
+		return $this->lotno;
 	}
 
 	public function getBoard(){

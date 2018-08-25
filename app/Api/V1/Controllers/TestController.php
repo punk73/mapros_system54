@@ -26,7 +26,8 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		return $this->testGuzzle($request);
+		// return $this->testGuzzle($request);
+
 	}
 
 	public function testGuzzle(Request $request){
@@ -37,6 +38,5 @@ class TestController extends Controller
         $res = $client->get($url);
 
         return $res;
-
 	}
 }

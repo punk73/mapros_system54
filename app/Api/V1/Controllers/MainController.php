@@ -62,7 +62,7 @@ class MainController extends Controller
 		// cek apakah board id atau ticket;
 		$node = new Node($parameter);
 
-		// return $node->getGuidTicket();
+		$this->returnValue['node'] = $node;
 
 		if ($node->getModelType() == 'board') {
 			return $this->processBoard($node);
@@ -96,7 +96,7 @@ class MainController extends Controller
 					]);
 				};
 
-				$this->returnValue['node'] = $node;
+				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 100;
 
 				return $this->returnValue;
@@ -127,7 +127,7 @@ class MainController extends Controller
 						'message' => 'something went wrong with save method on model! ask your IT member'
 					]);
 				};
-				$this->returnValue['node'] = $node;
+				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 131;
 
 				return $this->returnValue;
@@ -149,16 +149,15 @@ class MainController extends Controller
 
 				// cek apakah solder atau bukan
 				if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
-					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
+					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET IN PREVIOUS STEP!", [
 						'message' => 'bukan solder',
 						'node' => json_decode( $prevNode, true )
 					]);    
 				}
 
-				if($prevNode->isExists()){
-					throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
-						'message' => '',
-						'note' => json_decode( $prevNode, true )
+				if($prevNode->isExists('OUT','SOLDER')){ //cek data solder dengan status out
+					throw new StoreResourceFailedException("DATA SOLDER ALREADY SCAN OUT!", [
+						'prevNode' => json_decode( $prevNode, true )
 					]);    
 				};
 
@@ -171,7 +170,7 @@ class MainController extends Controller
 					]);
 
 				};
-				$this->returnValue['node'] = $node;
+				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 176;
 
 				return $this->returnValue;
@@ -201,7 +200,7 @@ class MainController extends Controller
 					'message' => 'something went wrong with save method on model! ask your IT member'
 				]);
 			} 
-			$this->returnValue['node'] = $node;
+			//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 205;
 
 			return $this->returnValue;
@@ -212,10 +211,9 @@ class MainController extends Controller
 
 			$currentStep = $node->getStep();
 			if($node->is_solder){
-				throw new StoreResourceFailedException("DATA ALREADY SCAN IN!", [
+				throw new StoreResourceFailedException("DATA ALREADY SCAN IN! you already scan solder with this scanner!",[
 					'message' => 'you already scan solder with this scanner!'
 				]);
-
 			}
 
 			// we need to count how long it is between now and step->created_at
@@ -234,8 +232,8 @@ class MainController extends Controller
 					'message' => 'something went wrong with save method on model! ask your IT member'
 				]);
 			} 
-			$this->returnValue['node'] = $node;
-				$this->returnValue['line_code'] = 239;
+			//$this->returnValue['node'] = $node;
+			$this->returnValue['line_code'] = 239;
 
 			return $this->returnValue;
 		}
@@ -269,7 +267,7 @@ class MainController extends Controller
 		$this->runProcedureTicket($node);
 
 		$node->updateChildGUidMaster();
-		$this->returnValue['node'] = $node;
+		//$this->returnValue['node'] = $node;
 		return $this->returnValue;
 	}
 
