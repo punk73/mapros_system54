@@ -264,13 +264,21 @@ class Node
 	}
 
 	// method init guid di triggere dari main Controller;
-	private function initGuid($guid){
+	private function initGuid($guidParam){
 		// cek apakah ticket guid sudah di generate sebelumnya;
 		if ($this->isGuidGenerated() ) {
-			$guid = $this->getLastGuid();
+			$guid = $this->getLastGuid(); //this method need update to acomodate master
 			$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
 		}else {
-			$guid = ($guid == null )?  $this->generateGuid() : $guid;
+			if($this->getModelType() == 'board'){
+				if ($guidParam == null ) {
+					throw new StoreResourceFailedException("this is join process, you need to scan ticket or master first!",[
+						'node' => json_decode( $this, true ),
+					]);
+				}
+			}
+
+			$guid = ($guidParam == null )?  $this->generateGuid() : $guidParam ;
 		}
 
 		// it can triggered after scanner & model has been set; 
@@ -286,6 +294,7 @@ class Node
 			// cek column setting, this step is join atau bkn,
 			if($this->isJoin()){
 				$settings = $this->getColumnSetting();
+
 				// kalo join, apa dengan apa;
 				foreach ($settings as $key => $setting ) {
 				 	$settingName = str_singular($setting['table_name']);
@@ -312,6 +321,7 @@ class Node
 		return $this->unique_id;
 	}
 
+	// we need to changes this method to acomodate the masters 
 	private function getLastGuid(){
 		if (is_null($this->dummy_column)) {
 			throw new StoreResourceFailedException("dummy_column id is null", [
