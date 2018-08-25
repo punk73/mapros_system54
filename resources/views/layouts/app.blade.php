@@ -75,7 +75,7 @@
                                     </li>
                                 </ul>
                             </li>
-
+                            <li><a href="#/config"><span class="fa fa-cogs"> Config </span></a></li>
                         @endif
                     </ul>
                 </div>
