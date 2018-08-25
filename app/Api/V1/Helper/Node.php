@@ -82,21 +82,25 @@ class Node
 			// setup board_id
 			$this->dummy_id = $parameter['board_id'];
 			
-			// get board type from big & set into board properties
-			$this->getBoardType();
-			// run to get sequence and set to process attribute
-			$this->getSequence();
-	
 			// set lineprocess
 			$this->setLineprocess($this->scanner['lineprocess_id']);
 			// set column setting;
+			// dependence to lineprocess;
 			$this->initColumnSetting();
 
 			// get prev guid id; this initGuid need to be called after initColumnSetting
+			// dependence to initColumnSetting;
 			$guidId = (isset($parameter['guid'])) ? $parameter['guid'] : null;
 			$this->initGuid($guidId);
-			
+
+			// get board type from big & set into board properties
+			// dependence to initGuid
+			$this->getBoardType();
+			// run to get sequence and set to process attribute
+			// dependence to setScannerId, setModel, getBoardType()
+			$this->getSequence();
 			// set status & judge
+			//dependence to setLineprocess;
 			$this->loadStep();
 			// set $key as current node positions
 			$this->initCurrentPosition();
@@ -753,6 +757,17 @@ class Node
 		$board   = $this->getBoard();
 		$scanner = $this->getScanner();
 
+		if (is_null( $board)) {
+			throw new StoreResourceFailedException("Board is not defined yet!", [
+				'message' => 'getSequence method dependence to board'
+			]);
+		}
+
+		if (is_null($scanner)) {
+			throw new StoreResourceFailedException("Scanner is null", [
+				'message'=>'getSequence method dependence to setScannerId method'
+			]);
+		}
 
 		if (!is_null($board['name'])) {
 			// code below to avoid undefined error
