@@ -81,9 +81,7 @@ class Node
 			$this->nik = $parameter['nik'];
 			// setup board_id
 			$this->dummy_id = $parameter['board_id'];
-			// get prev guid id;
-			$guidId = (isset($parameter['guid'])) ? $parameter['guid'] : null;
-			$this->initGuid($guidId);
+			
 			// get board type from big & set into board properties
 			$this->getBoardType();
 			// run to get sequence and set to process attribute
@@ -93,6 +91,11 @@ class Node
 			$this->setLineprocess($this->scanner['lineprocess_id']);
 			// set column setting;
 			$this->initColumnSetting();
+
+			// get prev guid id; this initGuid need to be called after initColumnSetting
+			$guidId = (isset($parameter['guid'])) ? $parameter['guid'] : null;
+			$this->initGuid($guidId);
+			
 			// set status & judge
 			$this->loadStep();
 			// set $key as current node positions
@@ -277,7 +280,21 @@ class Node
 
 		if($this->getModelType() == 'board'){
 			// cek column setting, this step is join atau bkn,
-			// kalo join, apa dengan apa;
+			if($this->isJoin()){
+				$settings = $this->getColumnSetting();
+				// kalo join, apa dengan apa;
+				foreach ($settings as $key => $setting ) {
+				 	$settingName = str_singular($setting['table_name']);
+
+				 	if( $settingName == 'master' ){
+				 		$this->setGuidMaster($guid);
+				 	}
+
+					if( $settingName == 'ticket' ){
+				 		$this->setGuidTicket($guid);
+				 	}				 	
+				 };
+			};
 		}
 		
 		$this->setUniqueId($guid);
@@ -635,6 +652,10 @@ class Node
 			// untuk 24 char
 			$lotno = substr($parameterBoardId, 16, 4);
 		}
+		// kalau hasil substr ga ketemu, dia bakal return false;
+		// untuk mengatasi itu, maka simpan saja empty string instead of 0;
+		$lotno = (!$lotno)? '':$lotno;
+
 		$this->lotno = $lotno;
 	}
 
@@ -867,6 +888,11 @@ class Node
 			// setup new scanner id value;
 			$this->scanner_id = $scanner['id'];
 			$this->scanner = $scanner;
+
+			// set lineprocess
+			$this->setLineprocess($this->scanner['lineprocess_id']);
+			// set column setting;
+			$this->initColumnSetting();
 
 			// run load step to changes status & judge
 			$this->loadStep();

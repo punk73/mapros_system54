@@ -62,6 +62,8 @@ class MainController extends Controller
 		// cek apakah board id atau ticket;
 		$node = new Node($parameter);
 
+		// return $node;
+
 		$this->returnValue['node'] = $node;
 
 		if ($node->getModelType() == 'board') {
@@ -82,9 +84,9 @@ class MainController extends Controller
 
 	private function processBoard(Node $node){
 		// cek current is null;
-
+		// cek kondisi sebelumnya is null
 		if(!$node->isExists()){ //board null
-			// cek kondisi sebelumnya is null
+			
 			// kalau sequence pertama, maka insert; gausah cek data sebelumnya dulu;
 			if ($node->isFirstSequence() ) {
 				// langsung input;
