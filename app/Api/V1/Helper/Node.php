@@ -769,7 +769,8 @@ class Node
 
 		if (is_null( $board)) {
 			throw new StoreResourceFailedException("Board is not defined yet!", [
-				'message' => 'getSequence method dependence to board'
+				'message' => 'getSequence method dependence to board',
+				'node' => json_decode($this, true )
 			]);
 		}
 

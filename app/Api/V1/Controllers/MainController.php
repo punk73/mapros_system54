@@ -138,9 +138,9 @@ class MainController extends Controller
 			if( $prevNode->getStatus() == 'IN' ){
 				// error handler
 				if($prevNode->getModelType() !== 'board'){
-					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET!", [
+					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET AT PREVIOUS STEP!", [
 						'message' => 'bukan board',
-						'note' => json_decode( $prevNode, true )
+						'prevNode' => json_decode( $prevNode, true )
 					]);
 				}
 
