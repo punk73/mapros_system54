@@ -263,7 +263,7 @@ class Node
 		$this->setIdType($idType);
 	}
 
-	// method init guid di triggere dari main Controller;
+	// method init guid di triggere dari constructor;
 	private function initGuid($guidParam){
 		// cek apakah ticket guid sudah di generate sebelumnya;
 		if ($this->isGuidGenerated() ) {
@@ -376,15 +376,96 @@ class Node
 	}
 
 	public function setGuidTicket($guid){
+		if ($this->getModelType() == 'board') {
+			// if it has a sibling, then
+			if( $this->hasTicketSibling() ){
+				//verify it has same modelname and lotno
+				$this->verifyModelnameAndLotno('ticket');
+				// if failed, throw error that the previous board has different modelname & lotno
+			}
+
+			if($this->hasMasterSibling() ){
+				// verify it has same modelname and lotno
+				$this->verifyModelnameAndLotno('master');
+				// if failed, throw error that the previous board has different modelname & lotno
+			}
+		}
+
 		$this->guid_ticket = $guid;
 	}
 
 	public function setGuidMaster($guid){
+		if ($this->getModelType() == 'board') {
+			// if it has a sibling, then
+			if( $this->hasTicketSibling() ){
+				//verify it has same modelname and lotno
+				$this->verifyModelnameAndLotno('ticket');
+				// if failed, throw error that the previous board has different modelname & lotno
+			}
+
+			if($this->hasMasterSibling() ){
+				// verify it has same modelname and lotno
+				$this->verifyModelnameAndLotno('master');
+				// if failed, throw error that the previous board has different modelname & lotno
+			}
+		}
+
 		$this->guid_master = $guid;
 	}
 
 	public function getGuidMaster(){
 		return $this->guid_master;
+	}
+
+
+	/*
+	* @parameter = 'ticket' or 'master'
+	* this method called in setGuidMaster & setGuidTicket for verification
+	*/
+	public function verifyModelnameAndLotno($type = 'ticket'){
+		// get board based on guid; wheter it is 
+		if($type == 'ticket'){
+			$prevBoard = Board::where( 'guid_ticket' , '!=', null )
+				->where( 'guid_ticket' , $this->guid_ticket )
+				->first();
+		}
+
+		if($type == 'master'){
+			$prevBoard = Board::where( 'guid_master' , '!=', null )
+				->where( 'guid_master' , $this->guid_master )
+				->first();	
+		}
+
+		if( $prevBoard->modelname != $this->modelname ){
+			throw new StoreResourceFailedException("board model you scan is different from previous model!", [
+				'node' => json_decode($this, true ),
+				'prevBoard' => $prevBoard,
+			]);
+		}
+
+		if( $prevBoard->lotno != $this->lotno ){
+			throw new StoreResourceFailedException("board lot number you scan is different from previous lot number!", [
+				'node' => json_decode($this, true ),
+				'prevBoard' => $prevBoard,
+			]);
+		}
+	}
+
+	// only work for board because only 
+	public function hasTicketSibling(){
+		if( $this->getModelType() == 'board' ){
+			return Board::where('guid_ticket', '!=', null )
+			->where('guid_ticket', $this->guid_ticket )
+			->exists();
+		}
+	}
+	// only work for board
+	public function hasMasterSibling(){
+		if( $this->getModelType() == 'board' ){
+			return Board::where('guid_master', '!=', null )
+			->where('guid_master', $this->guid_master )
+			->exists();
+		}
 	}
 
 	public function isGuidGenerated(){
@@ -646,7 +727,8 @@ class Node
 				->first();
 
 				if (is_null($boardPanel)) {
-					throw new StoreResourceFailedException("board with guid_ticket ".$this->guid_ticket." not found", [
+					// it's mean the operator not scan the board after it; so, it need to return view of join;
+					throw new StoreResourceFailedException("board with guid_ticket ".$this->guid_ticket." not found! this is join process you need to scan the board first", [
 						'node' => json_decode($this, true ),
 					]);
 				}
@@ -699,6 +781,11 @@ class Node
 	}
 
 	public function setLotno($parameterBoardId){
+		if($this->getModelType() != 'board'){
+			// kalau bukan board, gausah set lot no
+			return;
+		}
+
 		if( count($parameterBoardId) <= 16 ){
 			$lotno = substr($parameterBoardId, 9, 3);
 		}else{
