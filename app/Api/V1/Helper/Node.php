@@ -636,8 +636,8 @@ class Node
 				]);
 			}
 
-			// kalau sudah generated, baru masuk sini;
-			if ($this->isGuidGenerated()) {
+			// kalau sudah generated, dan proses nya adalah proses join, serta sudah ada proses In ;
+			if ($this->isGuidGenerated() && $this->isJoin() && $this->isIn() ) {
 				// ambil dulu modelnya dari table board, kemudian pass hasilnya kesini;
 				$boardPanel = Board::select([
 					'board_id'
@@ -655,12 +655,14 @@ class Node
 				$board_id = substr($boardPanel['board_id'], 0,5 );
 				# code...
 				$model = $model->where('code', $board_id );
-			}/*else {
+			}else {
 				// kalau belum, kita setup model based on user parameter;
-				$model = $model->where('code', $this->parameter['modelname0'] );
-			}*/
+				// ini untuk meng akomodir kebutuhan scan panel sebelumn proses join dengan board;
+				$model = $model->where('name', $this->parameter['modelname'] );
+			}
 			
 		} else if($this->getModelType() == 'master') {
+
 			$model = $model->where('name', $this->parameter['modelname'] );
 		}else{
 			// this is from bigs db
@@ -1077,7 +1079,7 @@ class Node
 				->where('scanner_id', $this->scanner_id )
 				->orderBy('id', 'desc')
 				->first();
-				
+
 			if($ticket != null ){
 				$newTicket = new Board([
 			    	'ticket_no' => $ticket->ticket_no,

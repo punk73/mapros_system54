@@ -248,7 +248,8 @@ class MainController extends Controller
 	}
 
 	private function runProcedureTicket(Node $node){
-		if( (!$node->isGuidGenerated()) && ($node->isJoin()) ){
+		// memastikan proses ini belum In && join proses
+		if( ($node->isJoin()) && ( $node->isIn() == false ) ){
 
 			$node->setStatus('IN');
 			$node->setJudge('OK');
