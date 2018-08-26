@@ -13,6 +13,8 @@ class Board extends Model
     	'board_id',
     	'guid_master',
     	'guid_ticket',
+        'modelname',
+        'lotno',
     	'scanner_id',
     	'status',
     	'judge',

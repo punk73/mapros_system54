@@ -226,6 +226,7 @@ class MainController extends Controller
 				]);
 			}
 
+			// disini kita harus ikut update status dari child node; jika ini adalah proses join;
 			// save
 			$node->setStatus('OUT');
 			$node->setJudge('OK');
@@ -234,9 +235,14 @@ class MainController extends Controller
 					'message' => 'something went wrong with save method on model! ask your IT member'
 				]);
 			} 
-			//$this->returnValue['node'] = $node;
-			$this->returnValue['line_code'] = 239;
 
+			// updateChildren hanya akan ter trigger ketika join saja;
+			// method ini berfungsi untuk update board yg di scan skali, kemudian masuk ke dalam set;
+			// board tsb tdk di scan langsung oleh user, melainkan di insert ketika parent nya di scan out pada proses 
+			// join;
+			$node->updateChildren();
+
+			$this->returnValue['line_code'] = 239;
 			return $this->returnValue;
 		}
 	}
