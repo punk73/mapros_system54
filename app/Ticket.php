@@ -10,6 +10,16 @@ class Ticket extends Model
     //
     protected $table = 'tickets';
 
+    protected $fillable = [
+    	'ticket_no',
+		'guid_master',
+		'guid_ticket',
+		'scanner_id',
+		'status',
+		'judge',
+		'scan_nik',
+    ];
+
     public function getActivityDescriptionForEvent($eventName)
 	{
 	    if ($eventName == 'created')

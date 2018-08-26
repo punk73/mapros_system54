@@ -1018,7 +1018,9 @@ class Node
 
 		// check type model;
 		if( $this->getModelType() == 'ticket' ){
+			// get child, that has already scan by the same scanner & has same guid_ticket
 			$child = Board::where('guid_ticket', $this->guid_ticket )
+				->where('scanner_id', $this->scanner_id )
 				->orderBy('id', 'desc')
 				->first();
 
@@ -1044,7 +1046,51 @@ class Node
 		}
 
 		if( $this->getModelType() == 'master' ){
+			// board;
+			$child = Board::where('guid_master', $this->guid_master )
+				->where('scanner_id', $this->scanner_id )
+				->orderBy('id', 'desc')
+				->first();
 
+			if($child!=null){
+				// jika last status dari board adalah 'IN'
+				if ($child->status == 'IN') {
+					// insert out nya untuk si child;
+					$newBoard = new Board([
+				    	'board_id' => $child->board_id,
+				    	'guid_master' => $child->guid_master,
+				    	'guid_ticket' => $child->guid_ticket,
+				    	'scanner_id' => $this->scanner_id,
+				    	'modelname'	=> $child->modelname,
+				    	'lotno'	=> $child->lotno,
+				    	'status' => 'OUT',
+				    	'judge' => 'OK',
+				    	'scan_nik' => $this->parameter['nik'],
+				    ]);
+
+				    $newBoard->save();
+				}
+			}
+
+			// ticket;
+			$ticket = Ticket::where('guid_master', $this->guid_master )
+				->where('scanner_id', $this->scanner_id )
+				->orderBy('id', 'desc')
+				->first();
+				
+			if($ticket != null ){
+				$newTicket = new Board([
+			    	'ticket_no' => $ticket->ticket_no,
+			    	'guid_master' => $ticket->guid_master,
+			    	'guid_ticket' => $ticket->guid_ticket,
+			    	'scanner_id' => $this->scanner_id,
+			    	'status' => 'OUT',
+			    	'judge' => 'OK',
+			    	'scan_nik' => $this->parameter['nik'],
+			    ]);
+
+			    $newTicket->save();
+			}
 		}		
 	}
 
