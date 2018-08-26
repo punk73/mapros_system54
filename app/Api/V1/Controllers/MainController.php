@@ -267,8 +267,6 @@ class MainController extends Controller
 
 	private function runProcedureMaster(Node $node){
 		$this->runProcedureTicket($node);
-
-		$node->updateChildGUidMaster();
 		//$this->returnValue['node'] = $node;
 		return $this->returnValue;
 	}

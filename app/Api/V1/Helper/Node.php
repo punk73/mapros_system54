@@ -268,7 +268,15 @@ class Node
 		// cek apakah ticket guid sudah di generate sebelumnya;
 		if ($this->isGuidGenerated() ) {
 			$guid = $this->getLastGuid(); //this method need update to acomodate master
-			$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null; 
+			
+			if($this->getModelType() == 'ticket'){
+				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null;
+			}
+
+			if($this->getModelType() == 'master'){
+				$guid = (!is_null($guid)) ? $guid['guid_master'] : null;
+			}
+
 		}else {
 			if($this->getModelType() == 'board'){
 				if ($guidParam == null ) {
@@ -283,7 +291,16 @@ class Node
 
 		// it can triggered after scanner & model has been set; 
 		if ($this->getModelType() == 'ticket' ) {
+			if($guidParam != null){
+				$this->setGuidMaster($guidParam);
+			}
 			$this->setGuidTicket($guid);
+			// we have problem here, we cannot assign master guid to ticket, since guid always assign ton 
+			// guid_ticket;
+
+			// we need to determined if we had last guid or no;
+			// if we had, that's mean guid parameter should be as guid_master;
+			// if not, 
 		}
 
 		if($this->getModelType() == 'master'){
@@ -335,15 +352,23 @@ class Node
 			]);
 		}
 
-		return $this->model
-		->select([
-			'guid_ticket'
-		])
-		->where( $this->dummy_column, $this->dummy_id )
-		->where('guid_master', null )
-		->where('guid_ticket','!=', null )
-		->orderBy('id', 'desc')
-		->first();
+		$guid = $this->model
+			->where( $this->dummy_column, $this->dummy_id )
+			->orderBy('id', 'desc');
+
+		if( $this->getModelType() == 'ticket' ){
+			$guid = $guid->select([
+				'guid_ticket'
+			])->where('guid_master', null )
+			->where('guid_ticket','!=', null );
+		}else if($this->getModelType() == 'master'){
+			$guid = $guid->select([
+				'guid_master'
+			])->where('serial_no', null )
+			->where('guid_master','!=', null );
+		}
+
+		return $guid = $guid->first();
 	}
 
 	public function getGuidTicket(){
@@ -496,7 +521,11 @@ class Node
 		$model = $this->model;
 		$model[$this->dummy_column] = $this->dummy_id;
 		$model->guid_master = $this->guid_master;
-		$model->guid_ticket = $this->guid_ticket;
+		
+		if($this->getModelType() != 'master'){
+			$model->guid_ticket = $this->guid_ticket;
+		}
+		
 		$model->scanner_id = $this->scanner_id;
 		$model->status = $this->status;
 		$model->judge = $this->judge;
@@ -506,6 +535,8 @@ class Node
 			$model->modelname = $this->modelname;
 			$model->lotno = $this->lotno;	
 		}
+
+		$this->updateGuidSibling();
 
 		return $model->save();
 	}
@@ -629,6 +660,8 @@ class Node
 				$model = $model->where('code', $this->parameter['modelname0'] );
 			}*/
 			
+		} else if($this->getModelType() == 'master') {
+			$model = $model->where('name', $this->parameter['modelname'] );
 		}else{
 			// this is from bigs db
 			$model = $model->where('code', $board_id );
@@ -636,11 +669,15 @@ class Node
 			
 		$model = $model->first();
 
-		if ($model !== null) {
-			$this->setBoard($model);
-			$this->setModelname($model->name);
-
+		if ($model == null) {
+			throw new StoreResourceFailedException("Board not found", [
+				'node' => json_decode($this, true )
+			]);
+					
 		}
+
+		$this->setBoard($model);
+		$this->setModelname($model->name);
 
 		return $this;
 	}
@@ -796,12 +833,10 @@ class Node
 
 			if ($this->getModelType() == 'board' ) {
 				$sequence =	$sequence->where('pwbname', $board['pwbname']);
-			}
-
-			if ($this->getModelType() == 'ticket' ) {
+			}else {
 				// disini kita harus determine wheter it is panel or mecha;
 				$sequence =	$sequence->where('pwbname', $this->getIdType()  ); 
-			}
+			}			
 			
 			$sequence = $sequence->first();
 
@@ -933,11 +968,46 @@ class Node
 	/*
 	* this is void, to update guid master of panel & board;
 	* don't understand enough how to achieve it;
+	* this method is run by save method 
 	*/
-	public function updateChildGUidMaster(){
-		// get guid master;
-		// search panel, mecha, & board that has that guid master
-		// get board that has same guid ticket 
+	public function updateGuidSibling(){
+		/*
+		* yang meng update itu child yang sudah punya guid, dia update teman temannya.
+		* bukan parent yang yang punya child;
+		*/
+
+		if ($this->getModelType() == 'board') {
+			# we need to determine which column need to update, guid ticket or guid master 
+			
+			// jika guid ticket nya tidak null, maka update;
+			if($this->guid_ticket!= null){
+				// update yang guid ticket nya masih null;
+				// ketika join;
+				Board::where('guid_ticket', null )
+				->where('board_id', $this->parameter['board_id'] )
+				->where('lotno', $this->lotno )
+				->update(['guid_ticket' => $this->guid_ticket ]);
+			}
+
+			if($this->guid_master != null){
+				// update yang guid ticket nya masih null;
+				// ketika join;
+				Board::where('guid_master', null )
+				->where('board_id', $this->parameter['board_id'] )
+				->where('lotno', $this->lotno )
+				->update(['guid_master' => $this->guid_master ]);
+			}
+		}
+
+		if($this->getModelType() == 'ticket'){
+			// get guid master;
+			if($this->guid_master != null){
+				// get board that has same guid ticket
+				Ticket::where('guid_master', null )
+				->where('guid_ticket', $this->guid_ticket )
+				->update(['guid_master' => $this->guid_master ]);
+			}
+		}
 	}
 
 	public function isFirstSequence(){
