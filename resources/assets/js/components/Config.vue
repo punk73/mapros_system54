@@ -22,6 +22,13 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <input type="checkbox" id="checkbox" v-model="config.showSolder">
+                                    <label for="checkbox"> show solder options </label>
+                                </div>
+                            </div>  
+
                             <div class="form-group row">
                                 <div class="col-md-3 col-md-offset-3">
                                     <a href="#/" class="btn btn-primary"><i class="fa fa-arrow-circle-left float-right"></i></a>
@@ -44,6 +51,7 @@
 				config : {
 					model:'',
 					ip:'',
+					showConfig: false,
 				},
 			}
 		},

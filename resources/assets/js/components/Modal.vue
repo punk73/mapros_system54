@@ -14,11 +14,17 @@
 		        </button>
 	        </slot>
 	      </div>
-	      <div class="modal-body">
-	        <slot name="body">
-              <p>{{message}}</p> 
-            </slot>
-	      </div>
+          <div class="modal-body">
+          	<div class="container-fluid">
+          		<div class="row">
+          			<div class="col-md-12 col-xs-12 col-sm-12">
+			            <slot name="body">
+			              {{message}}
+			            </slot>
+          			</div>
+          		</div>
+          	</div>
+          </div>
 	      <div class="modal-footer">
 	        <!-- <button type="button" class="btn btn-secondary" @click="$emit('toggleModal')" data-dismiss="modal">Close</button> -->
 	        <slot name="footer">
@@ -63,6 +69,7 @@
 	  background-color: rgba(0, 0, 0, .5);
 	  display: table;
 	  transition: opacity .3s ease;
+	  /*padding-right: 0 !important;*/
 	}
 
 	/*.modal-wrapper {

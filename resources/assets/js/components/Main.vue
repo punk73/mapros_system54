@@ -16,20 +16,27 @@
                 <div class="panel panel-default">
                     <div class="panel-heading custom-color">
                         <div class="row">
-                           <div class="col-md-4 col-sm-4">
+                           <div class="col-md-6 col-sm-6 col-xs-7">
                             LINE : {{ info.line }}
                            </div>
-                           <div class="col-md-4 col-md-offset-4">
+                           <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
                                TYPE : {{ info.type }}
                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 col-sm-4">
+                            <div class="col-md-6 col-sm-6 col-xs-7">
                                 PROCESS: {{info.process}}
                             </div>
-                            <div class="col-md-4 col-md-offset-4">
+                            <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
                                STEP ID : {{ info.lineprocess_id }}
                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                model: {{form.modelname}}
+                            </div>
+                            
                         </div>
                     </div>
                     <div class="panel-body">
@@ -58,7 +65,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div v-if="config.showSolder" class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <input type="checkbox" id="checkbox" v-model="form.isSolder">
                                     <label for="checkbox"> is solder </label>
@@ -77,9 +84,9 @@
                                         Submit
                                     </button>
 
-                                    <button @click='toggleModal'  type="button" class="btn btn-primary">
+                                    <!-- <button @click='toggleModal'  type="button" class="btn btn-primary">
                                         show modal
-                                    </button>
+                                    </button> -->
 
                                 </div>
                             </div>
@@ -147,6 +154,12 @@
                 showModal: false,
                 showConfirm:false,
 
+                config : {
+                    modelname: '',
+                    ip       : '',
+                    showSolder: true,
+                },
+
                 modal: {
                     header: 'Header',
                     message: 'message'
@@ -166,8 +179,10 @@
 
         methods : {
             onSubmit(){
+                // this.verifyForm();
+
                 let data = this.form;
-                console.log(data);
+                // console.log(data);
                 let self = this;
                 this.toggleLoading();
                 axios.post('api/main', data )
@@ -193,6 +208,10 @@
 
                         this.handleError(message, data );
                     })
+            },
+
+            verifyForm(){
+
             },
 
             handleError(message, detailError = '' ){
@@ -222,6 +241,8 @@
             showDetailError(){
                 // show modal containing the error 
                 console.log(this.detailError )
+                let errors = this.detailError.errors
+                this.toggleModal('error', JSON.stringify(errors) )
             },
 
             returnJoin(errors){
@@ -258,8 +279,9 @@
                   path: '/config'
                 })
               }
-              console.log(config);
               config = JSON.parse(config);
+              this.config = config;
+              console.log(config);
               this.form.modelname = config.model;
               this.form.ip = config.ip;
             },

@@ -13266,13 +13266,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
 		return {
 			config: {
 				model: '',
-				ip: ''
+				ip: '',
+				showConfig: false
 			}
 		};
 	},
@@ -13535,6 +13543,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(16);
 
@@ -13575,6 +13590,12 @@ var axios = __webpack_require__(16);
             showModal: false,
             showConfirm: false,
 
+            config: {
+                modelname: '',
+                ip: '',
+                showSolder: true
+            },
+
             modal: {
                 header: 'Header',
                 message: 'message'
@@ -13597,8 +13618,10 @@ var axios = __webpack_require__(16);
         onSubmit: function onSubmit() {
             var _this = this;
 
+            // this.verifyForm();
+
             var data = this.form;
-            console.log(data);
+            // console.log(data);
             var self = this;
             this.toggleLoading();
             axios.post('api/main', data).then(function (response) {
@@ -13623,6 +13646,7 @@ var axios = __webpack_require__(16);
                 _this.handleError(message, data);
             });
         },
+        verifyForm: function verifyForm() {},
         handleError: function handleError(message) {
             var detailError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
@@ -13649,6 +13673,8 @@ var axios = __webpack_require__(16);
         showDetailError: function showDetailError() {
             // show modal containing the error 
             console.log(this.detailError);
+            var errors = this.detailError.errors;
+            this.toggleModal('error', JSON.stringify(errors));
         },
         returnJoin: function returnJoin(errors) {
             /*this.$router.push({
@@ -13682,8 +13708,9 @@ var axios = __webpack_require__(16);
                     path: '/config'
                 });
             }
-            console.log(config);
             config = JSON.parse(config);
+            this.config = config;
+            console.log(config);
             this.form.modelname = config.model;
             this.form.ip = config.ip;
         },
@@ -13730,6 +13757,12 @@ var axios = __webpack_require__(16);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -16226,7 +16259,7 @@ exports.push([module.i, "\n.custom-color{\n    background-image: none!important;
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(10)();
-exports.push([module.i, "\n.modal-mask {\n  position: fixed;\n  z-index: 9998;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, .5);\n  display: table;\n  transition: opacity .3s ease;\n}\n\n/*.modal-wrapper {\n  display: table-cell;\n  vertical-align: middle;\n}\n\n.modal-container {\n  width: 300px;\n  margin: 0px auto;\n  padding: 20px 30px;\n  background-color: #fff;\n  border-radius: 2px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n  transition: all .3s ease;\n  font-family: Helvetica, Arial, sans-serif;\n}\n\n.modal-header h3 {\n  margin-top: 0;\n  color: #42b983;\n}\n\n.modal-body {\n  margin: 20px 0;\n}*/\n\n/*.modal-default-button {\n  float: right;\n}*/\n\n/*\n * The following styles are auto-applied to elements with\n * transition=\"modal\" when their visibility is toggled\n * by Vue.js.\n *\n * You can easily play with the modal transition by editing\n * these styles.\n */\n\n/*.modal-enter {\n  opacity: 0;\n}\n\n.modal-leave-active {\n  opacity: 0;\n}*/\n", ""]);
+exports.push([module.i, "\n.modal-mask {\n  position: fixed;\n  z-index: 9998;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, .5);\n  display: table;\n  transition: opacity .3s ease;\n  /*padding-right: 0 !important;*/\n}\n\n/*.modal-wrapper {\n  display: table-cell;\n  vertical-align: middle;\n}\n\n.modal-container {\n  width: 300px;\n  margin: 0px auto;\n  padding: 20px 30px;\n  background-color: #fff;\n  border-radius: 2px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n  transition: all .3s ease;\n  font-family: Helvetica, Arial, sans-serif;\n}\n\n.modal-header h3 {\n  margin-top: 0;\n  color: #42b983;\n}\n\n.modal-body {\n  margin: 20px 0;\n}*/\n\n/*.modal-default-button {\n  float: right;\n}*/\n\n/*\n * The following styles are auto-applied to elements with\n * transition=\"modal\" when their visibility is toggled\n * by Vue.js.\n *\n * You can easily play with the modal transition by editing\n * these styles.\n */\n\n/*.modal-enter {\n  opacity: 0;\n}\n\n.modal-leave-active {\n  opacity: 0;\n}*/\n", ""]);
 
 /***/ }),
 /* 45 */
@@ -44212,16 +44245,20 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-4 col-sm-4"
+    staticClass: "col-md-6 col-sm-6 col-xs-7"
   }, [_vm._v("\n                          LINE : " + _vm._s(_vm.info.line) + "\n                         ")]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-4 col-md-offset-4"
+    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
   }, [_vm._v("\n                             TYPE : " + _vm._s(_vm.info.type) + "\n                         ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-4 col-sm-4"
+    staticClass: "col-md-6 col-sm-6 col-xs-7"
   }, [_vm._v("\n                              PROCESS: " + _vm._s(_vm.info.process) + "\n                          ")]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-4 col-md-offset-4"
-  }, [_vm._v("\n                             STEP ID : " + _vm._s(_vm.info.lineprocess_id) + "\n                         ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
+  }, [_vm._v("\n                             STEP ID : " + _vm._s(_vm.info.lineprocess_id) + "\n                         ")])]), _vm._v(" "), _c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-12"
+  }, [_vm._v("\n                              model: " + _vm._s(_vm.form.modelname) + "\n                          ")])])]), _vm._v(" "), _c('div', {
     staticClass: "panel-body"
   }, [_c('form', {
     staticClass: "form-horizontal",
@@ -44334,7 +44371,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "board_id", $event.target.value)
       }
     }
-  })])]), _vm._v(" "), _c('div', {
+  })])]), _vm._v(" "), (_vm.config.showSolder) ? _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-6 col-md-offset-4"
@@ -44374,7 +44411,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "for": "checkbox"
     }
-  }, [_vm._v(" is solder ")])])]), _vm._v(" "), _c('div', {
+  }, [_vm._v(" is solder ")])])]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-4"
@@ -44393,15 +44430,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.onSubmit($event)
       }
     }
-  }, [_vm._v("\n                                      Submit\n                                  ")]), _vm._v(" "), _c('button', {
-    staticClass: "btn btn-primary",
-    attrs: {
-      "type": "button"
-    },
-    on: {
-      "click": _vm.toggleModal
-    }
-  }, [_vm._v("\n                                      show modal\n                                  ")])])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [_vm._v("\n                                      Submit\n                                  ")])])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
@@ -44474,7 +44503,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("×")])])])], 2), _vm._v(" "), _c('div', {
     staticClass: "modal-body"
-  }, [_vm._t("body", [_c('p', [_vm._v(_vm._s(_vm.message))])])], 2), _vm._v(" "), _c('div', {
+  }, [_c('div', {
+    staticClass: "container-fluid"
+  }, [_c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-md-12 col-xs-12 col-sm-12"
+  }, [_vm._t("body", [_vm._v("\n\t\t\t              " + _vm._s(_vm.message) + "\n\t\t\t            ")])], 2)])])]), _vm._v(" "), _c('div', {
     staticClass: "modal-footer"
   }, [_vm._t("footer", [_c('button', {
     staticClass: "btn btn-success",
@@ -44617,6 +44652,46 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   })])]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.showSolder),
+      expression: "config.showSolder"
+    }],
+    attrs: {
+      "type": "checkbox",
+      "id": "checkbox"
+    },
+    domProps: {
+      "checked": Array.isArray(_vm.config.showSolder) ? _vm._i(_vm.config.showSolder, null) > -1 : (_vm.config.showSolder)
+    },
+    on: {
+      "change": function($event) {
+        var $$a = _vm.config.showSolder,
+          $$el = $event.target,
+          $$c = $$el.checked ? (true) : (false);
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && (_vm.$set(_vm.config, "showSolder", $$a.concat([$$v])))
+          } else {
+            $$i > -1 && (_vm.$set(_vm.config, "showSolder", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
+          }
+        } else {
+          _vm.$set(_vm.config, "showSolder", $$c)
+        }
+      }
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "checkbox"
+    }
+  }, [_vm._v(" show solder options ")])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-3"
