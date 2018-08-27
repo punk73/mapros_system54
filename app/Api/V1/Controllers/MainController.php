@@ -249,7 +249,7 @@ class MainController extends Controller
 
 	private function runProcedureTicket(Node $node){
 		// memastikan proses ini belum In && join proses
-		if( ($node->isJoin()) && ( $node->isIn() == false ) ){
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) ){
 
 			$node->setStatus('IN');
 			$node->setJudge('OK');
@@ -273,6 +273,25 @@ class MainController extends Controller
 	}
 
 	private function runProcedureMaster(Node $node){
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket')) ){
+
+			$node->setStatus('IN');
+			$node->setJudge('OK');
+			if(!$node->save()){
+				throw new StoreResourceFailedException("Error Saving Progress", [
+					'message' => 'something went wrong with save method on model! ask your IT member'
+				]);
+			}    
+
+			throw new StoreResourceFailedException("view", [
+				'node' => json_decode($node, true ),
+				'nik' => $node->getNik(),
+				'ip' => $node->getScanner()['ip_address'],
+				'dummy_id' => $node->dummy_id, 
+				'guid'=>    $node->getGuidMaster(),
+			]);
+		};
+
 		$this->runProcedureTicket($node);
 		
 		return $this->returnValue;

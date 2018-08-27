@@ -270,6 +270,19 @@ class Node
 			$guid = $this->getLastGuid(); //this method need update to acomodate master
 			
 			if($this->getModelType() == 'ticket'){
+				// join dan column setting tidak contain board;
+				if( $this->isJoin() && !$this->isSettingContain('board') ){
+					// cek apakah guid master sudah di generated based on ticket;
+					// untuk cek guid master sudah generate atau belum dari ticket, masih kesulitan, jadi diganti dengan
+					// cek apakah ini join & seting tidak contain board, karena kalau dia join dan tidak kontain board, maka pasti dia contain master; that's why langkah ini harus punya guidParam as guid_master nya;
+					if ($guidParam == null ) {
+						throw new StoreResourceFailedException("this is join process, you need to scan master first!",[
+							'note' => 'need guid master',
+							'node' => json_decode( $this, true ),
+						]);
+					}
+				}
+
 				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null;
 			}
 
@@ -278,13 +291,24 @@ class Node
 			}
 
 		}else {
-			if($this->getModelType() == 'board'){
+			// tadinya ga ada is join, something went wrong. so add the is join to verify 
+			if( ($this->getModelType()=='board') && ($this->isJoin()) && ($this->isSettingContain('board')) ){
 				if ($guidParam == null ) {
 					throw new StoreResourceFailedException("this is join process, you need to scan ticket or master first!",[
+						'note' => 'need guid_ticket or guid_master',
 						'node' => json_decode( $this, true ),
 					]);
 				}
 			}
+
+			if( ($this->getModelType() == 'ticket') && ($this->isJoin()) && ($this->isSettingContain('ticket')) && ($this->isSettingContain('master')) ){
+				if ($guidParam == null ) {
+					throw new StoreResourceFailedException("this is join process, you need to scan master first!",[
+						'note' => 'need guid master',
+						'node' => json_decode( $this, true ),
+					]);
+				}
+			}			
 
 			$guid = ($guidParam == null )?  $this->generateGuid() : $guidParam ;
 		}
@@ -468,7 +492,7 @@ class Node
 		}
 	}
 
-	public function isGuidGenerated(){
+	public function isGuidGenerated($paramType = null ){
 		if (is_null($this->model)) {
 			throw new StoreResourceFailedException("node model is null", [
 				'node' => json_decode($this, true ),
@@ -487,19 +511,25 @@ class Node
 			]);
 		}
 
-		if($this->getModelType() == 'ticket'){
+		if( is_null($paramType) ){
+			$paramType = $this->getModelType();
+		}
+		
+		if( $paramType  == 'ticket'){
 			return $this->model
 				// ->where( 'scanner_id' , $this->scanner_id  )
 				->where( $this->dummy_column, $this->dummy_id )
 				->where('guid_master', null )
 				->exists();
-		}else if ($this->getModelType() == 'master'){
+		}else if ($paramType == 'master'){
 			return $this->model
 				->where( $this->dummy_column, $this->dummy_id )
 				->where('serial_no', null )
 				->exists();
 		}
+		
 	}
+	
 
 	public function generateGuid(){
 		// cek apakah php punya com_create_guid
@@ -718,7 +748,7 @@ class Node
 			}
 
 			// kalau sudah generated, dan proses nya adalah proses join, serta sudah ada proses In ;
-			if ($this->isGuidGenerated() && $this->isJoin() && $this->isIn() ) {
+			if ($this->isGuidGenerated() && $this->isJoin() && $this->isIn() && $this->isSettingContainBoard() ) {
 				// ambil dulu modelnya dari table board, kemudian pass hasilnya kesini;
 				$boardPanel = Board::select([
 					'board_id'
@@ -728,14 +758,15 @@ class Node
 
 				if (is_null($boardPanel)) {
 					// it's mean the operator not scan the board after it; so, it need to return view of join;
-					throw new StoreResourceFailedException("board with guid_ticket ".$this->guid_ticket." not found! this is join process you need to scan the board first", [
+					throw new StoreResourceFailedException("view", [
+						'message' => "board with guid_ticket ".$this->guid_ticket." not found! this is join process you need to scan the board first",
 						'node' => json_decode($this, true ),
 					]);
 				}
 
 				// this will cause some trouble later;
 				$board_id = substr($boardPanel['board_id'], 0,5 );
-				# code...
+				# code... 
 				$model = $model->where('code', $board_id );
 			}else {
 				// kalau belum, kita setup model based on user parameter;
@@ -770,6 +801,22 @@ class Node
 		// $this->board['name'] = $model['name'];
 		// $this->board['pwbname'] = $model['pwbname'];
 		$this->board = $model;
+	}
+
+	// @ return boolean; indicate that the column setting is contain board
+	public function isSettingContainBoard(){
+		return $this->isSettingContain('board');
+	}
+
+	public function isSettingContain($modelType = 'board'){
+		$result = false;
+		foreach ($this->column_setting as $key => $setting ) {
+			$settingTable = str_singular( $setting['table_name'] );
+			if($settingTable == $modelType ){
+				$result = true;
+			}
+		}
+		return $result;	
 	}
 
 	public function setModelname($modelname){
@@ -1135,50 +1182,56 @@ class Node
 		}
 
 		if( $this->getModelType() == 'master' ){
-			// board;
-			$child = Board::where('guid_master', $this->guid_master )
-				->where('scanner_id', $this->scanner_id )
-				->orderBy('id', 'desc')
-				->first();
+			// this if is to avoid updating unnecessary table;
+			// so it's only updating in join setting;
+			if($this->isSettingContainBoard()){
+				// board;
+				$child = Board::where('guid_master', $this->guid_master )
+					->where('scanner_id', $this->scanner_id )
+					->orderBy('id', 'desc')
+					->first();
+	
+				if($child!=null){
+					// jika last status dari board adalah 'IN'
+					if ($child->status == 'IN') {
+						// insert out nya untuk si child;
+						$newBoard = new Board([
+					    	'board_id' => $child->board_id,
+					    	'guid_master' => $child->guid_master,
+					    	'guid_ticket' => $child->guid_ticket,
+					    	'scanner_id' => $this->scanner_id,
+					    	'modelname'	=> $child->modelname,
+					    	'lotno'	=> $child->lotno,
+					    	'status' => 'OUT',
+					    	'judge' => 'OK',
+					    	'scan_nik' => $this->parameter['nik'],
+					    ]);
+	
+					    $newBoard->save();
+					}
+				}
+			}
 
-			if($child!=null){
-				// jika last status dari board adalah 'IN'
-				if ($child->status == 'IN') {
-					// insert out nya untuk si child;
-					$newBoard = new Board([
-				    	'board_id' => $child->board_id,
-				    	'guid_master' => $child->guid_master,
-				    	'guid_ticket' => $child->guid_ticket,
+			if($this->isSettingContain('ticket')){
+				// ticket;
+				$ticket = Ticket::where('guid_master', $this->guid_master )
+					->where('scanner_id', $this->scanner_id )
+					->orderBy('id', 'desc')
+					->first();
+	
+				if($ticket != null ){
+					$newTicket = new Ticket([
+				    	'ticket_no' => $ticket->ticket_no,
+				    	'guid_master' => $ticket->guid_master,
+				    	'guid_ticket' => $ticket->guid_ticket,
 				    	'scanner_id' => $this->scanner_id,
-				    	'modelname'	=> $child->modelname,
-				    	'lotno'	=> $child->lotno,
 				    	'status' => 'OUT',
 				    	'judge' => 'OK',
 				    	'scan_nik' => $this->parameter['nik'],
 				    ]);
-
-				    $newBoard->save();
+	
+				    $newTicket->save();
 				}
-			}
-
-			// ticket;
-			$ticket = Ticket::where('guid_master', $this->guid_master )
-				->where('scanner_id', $this->scanner_id )
-				->orderBy('id', 'desc')
-				->first();
-
-			if($ticket != null ){
-				$newTicket = new Board([
-			    	'ticket_no' => $ticket->ticket_no,
-			    	'guid_master' => $ticket->guid_master,
-			    	'guid_ticket' => $ticket->guid_ticket,
-			    	'scanner_id' => $this->scanner_id,
-			    	'status' => 'OUT',
-			    	'judge' => 'OK',
-			    	'scan_nik' => $this->parameter['nik'],
-			    ]);
-
-			    $newTicket->save();
 			}
 		}		
 	}
