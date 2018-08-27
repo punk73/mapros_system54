@@ -64,24 +64,24 @@ class Node
 	protected $confirmation_view_error = 'confirmation-view';
 	protected $firstSequence = false;
 
-	function __construct($parameter, $debug = false ){	
+	function __construct($parameter, $debug = false ){
 		// kalau sedang debugging, maka gausah run construct
 		if (!$debug)
-		{	
+		{
 			$this->parameter = $parameter;
 			// setup model (board, ticket, or master)
 			$this->setModel($parameter);
 			// setup scanner_id;
 			$ip = $parameter['ip'];
 			$this->setScannerId($ip);
-	
+
 			// setup is_solder
 			$this->is_solder = $parameter['is_solder'];
 			// setup nik
 			$this->nik = $parameter['nik'];
 			// setup board_id
 			$this->dummy_id = $parameter['board_id'];
-			
+
 			// set lineprocess
 			$this->setLineprocess($this->scanner['lineprocess_id']);
 			// set column setting;
@@ -167,7 +167,7 @@ class Node
 
 	public function isJoin(){
 		if ($this->column_setting == null ) {
-			$this->column_setting = [];	
+			$this->column_setting = [];
 		}
 
 		return (count($this->column_setting) > 1 );
@@ -205,7 +205,7 @@ class Node
 	public function setModel($parameter){
 		if (count($parameter['board_id']) == 24 ) {
 			$code = substr($parameter['board_id'], 0, 10);
-			
+
 			$this->setLotno($parameter['board_id']);
 
 		}else if(count($parameter['board_id']) <= 16){
@@ -268,7 +268,7 @@ class Node
 		// cek apakah ticket guid sudah di generate sebelumnya;
 		if ($this->isGuidGenerated() ) {
 			$guid = $this->getLastGuid(); //this method need update to acomodate master
-			
+
 			if($this->getModelType() == 'ticket'){
 				// join dan column setting tidak contain board;
 				if( $this->isJoin() && !$this->isSettingContain('board') ){
@@ -308,7 +308,7 @@ class Node
 						'node' => json_decode( $this, true ),
 					]);
 				}
-			}			
+			}
 
 			$guid = ($guidParam == null )?  $this->generateGuid() : $guidParam ;
 		}
@@ -346,11 +346,11 @@ class Node
 
 					if( $settingName == 'ticket' ){
 				 		$this->setGuidTicket($guid);
-				 	}				 	
+				 	}				 
 				 };
 			};
 		}
-		
+
 		$this->setUniqueId($guid);
 	}
 
@@ -457,7 +457,7 @@ class Node
 		if($type == 'master'){
 			$prevBoard = Board::where( 'guid_master' , '!=', null )
 				->where( 'guid_master' , $this->guid_master )
-				->first();	
+				->first();
 		}
 
 		if( $prevBoard->modelname != $this->modelname ){
@@ -514,7 +514,7 @@ class Node
 		if( is_null($paramType) ){
 			$paramType = $this->getModelType();
 		}
-		
+
 		if( $paramType  == 'ticket'){
 			return $this->model
 				// ->where( 'scanner_id' , $this->scanner_id  )
@@ -527,9 +527,9 @@ class Node
 				->where('serial_no', null )
 				->exists();
 		}
-		
+
 	}
-	
+
 
 	public function generateGuid(){
 		// cek apakah php punya com_create_guid
@@ -542,7 +542,7 @@ class Node
     	/*$newGuid = new Guid(['guid'=> $guid]);
         $newGuid->save();*/
         return $guid;
-	
+
 	}
 
 	public function getModel(){
@@ -566,7 +566,7 @@ class Node
 		if(is_null($this->lineprocess)){
 			throw new StoreResourceFailedException("this lineprocess is not set", [
 				'message' => $this->lineprocess
-			]);	
+			]);
 		}
 
 		if($this->lineprocess['type'] === 1 ){
@@ -574,7 +574,7 @@ class Node
 			$model = $this->model
 			->where( 'scanner_id' , $this->scanner_id  )
 			->where( $this->dummy_column, $this->dummy_id );
-			
+
 			if (!is_null($status)) {
 				$model = $model->where('status', 'like', $status.'%' );
 			}
@@ -632,11 +632,11 @@ class Node
 		$model = $this->model;
 		$model[$this->dummy_column] = $this->dummy_id;
 		$model->guid_master = $this->guid_master;
-		
+
 		if($this->getModelType() != 'master'){
 			$model->guid_ticket = $this->guid_ticket;
 		}
-		
+
 		$model->scanner_id = $this->scanner_id;
 		$model->status = $this->status;
 		$model->judge = $this->judge;
@@ -644,14 +644,14 @@ class Node
 
 		if ($this->getModelType() == 'board' ) {
 			$model->modelname = $this->modelname;
-			$model->lotno = $this->lotno;	
+			$model->lotno = $this->lotno;
 		}
 
 		$this->updateGuidSibling();
 
 		return $model->save();
 	}
-	
+
 	// no longer use due to huge latency
 	protected $big_url = 'http://136.198.117.48/big/public/api/models';
 	// no longer use due to huge latency
@@ -705,7 +705,7 @@ class Node
 		if (count($result['data']) > 0) {
 			return $result['data'][0]['pwbname'];
 		}else{
-			throw new HttpException(422);	
+			throw new HttpException(422);
 		}
 	}
 
@@ -773,7 +773,7 @@ class Node
 				// ini untuk meng akomodir kebutuhan scan panel sebelumn proses join dengan board;
 				$model = $model->where('name', $this->parameter['modelname'] );
 			}
-			
+
 		} else if($this->getModelType() == 'master') {
 
 			$model = $model->where('name', $this->parameter['modelname'] );
@@ -781,14 +781,14 @@ class Node
 			// this is from bigs db
 			$model = $model->where('code', $board_id );
 		}
-			
+
 		$model = $model->first();
 
 		if ($model == null) {
 			throw new StoreResourceFailedException("Board not found", [
 				'node' => json_decode($this, true )
 			]);
-					
+
 		}
 
 		$this->setBoard($model);
@@ -816,7 +816,7 @@ class Node
 				$result = true;
 			}
 		}
-		return $result;	
+		return $result;
 	}
 
 	public function setModelname($modelname){
@@ -874,7 +874,7 @@ class Node
 		}
 
 		if($lineprocess['type'] == 1) {//internal
-	
+
 			$model = $this->model
 				->where( 'scanner_id' , $this->scanner_id  )
 				->where( $this->dummy_column, $this->dummy_id )
@@ -929,7 +929,7 @@ class Node
 			throw new StoreResourceFailedException("Status ".$status. " not allowed ", [
 				'allowed status' => $this->allowedStatus
 			]);
-			
+
 		}
 
 		$this->status = $status;
@@ -972,8 +972,8 @@ class Node
 			}else {
 				// disini kita harus determine wheter it is panel or mecha;
 				$sequence =	$sequence->where('pwbname', $this->getIdType()  ); 
-			}			
-			
+			}
+
 			$sequence = $sequence->first();
 
 			if($sequence){
@@ -1010,7 +1010,7 @@ class Node
 			throw new StoreResourceFailedException("lineprocess with id=".$lineprocess_id." not found", [
                 'current_step' 	=> $this->scanner['lineprocess_id'],
                 'process'		=> $this->process,
-            ]);			
+            ]);
 		}
 
 		$this->lineprocess = $lineprocess;
@@ -1036,7 +1036,7 @@ class Node
 
 		// set process into array
 		$process = explode(',', $this->process);
-		
+
 		// get current process index;
 		$this->key = array_search($this->scanner['lineprocess_id'], $process );
 		// $lineprocess_id tidak ditemukan di $process
@@ -1045,9 +1045,9 @@ class Node
                 'current_step' 	=> $this->scanner['lineprocess_id'],
                 'process'		=> $process,
                 'node'			=> json_decode($this,true) ,
-            ]);	
+            ]);
 		}
-		
+
 		$this->firstSequence = ($this->key === 0)? true:false;
 	}
 
@@ -1058,7 +1058,7 @@ class Node
 		$this->key = $this->key + $step;
 		// cek new index key ada di array $process as key. prevent index not found error 
 		if(array_key_exists($this->key, $process )){
-		
+
 			$newLineProcessId = $process[$this->key];
 
 			// setup $this->lineprocess to prev step;
@@ -1114,7 +1114,7 @@ class Node
 
 		if ($this->getModelType() == 'board') {
 			# we need to determine which column need to update, guid ticket or guid master 
-			
+
 			// jika guid ticket nya tidak null, maka update;
 			if($this->guid_ticket!= null){
 				// update yang guid ticket nya masih null;
@@ -1190,7 +1190,7 @@ class Node
 					->where('scanner_id', $this->scanner_id )
 					->orderBy('id', 'desc')
 					->first();
-	
+
 				if($child!=null){
 					// jika last status dari board adalah 'IN'
 					if ($child->status == 'IN') {
@@ -1206,7 +1206,7 @@ class Node
 					    	'judge' => 'OK',
 					    	'scan_nik' => $this->parameter['nik'],
 					    ]);
-	
+
 					    $newBoard->save();
 					}
 				}
@@ -1218,7 +1218,7 @@ class Node
 					->where('scanner_id', $this->scanner_id )
 					->orderBy('id', 'desc')
 					->first();
-	
+
 				if($ticket != null ){
 					$newTicket = new Ticket([
 				    	'ticket_no' => $ticket->ticket_no,
@@ -1229,11 +1229,11 @@ class Node
 				    	'judge' => 'OK',
 				    	'scan_nik' => $this->parameter['nik'],
 				    ]);
-	
+
 				    $newTicket->save();
 				}
 			}
-		}		
+		}
 	}
 
 	public function isFirstSequence(){

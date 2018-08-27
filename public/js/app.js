@@ -13635,6 +13635,7 @@ var axios = __webpack_require__(16);
                 self.toggleLoading();
                 if (message == 'view') {
                     _this.returnJoin(data.errors);
+
                     return;
                 }
 
@@ -13655,6 +13656,7 @@ var axios = __webpack_require__(16);
             this.hasError = true;
 
             this.toggleAlert();
+            // this.showAlert = true;
             // this.$refs.board_id.$el.focus();
         },
         handleSucces: function handleSucces(response) {
@@ -13663,7 +13665,10 @@ var axios = __webpack_require__(16);
             var message = response.data.message;
             this.hasError = false;
             this.error = message;
-            this.toggleAlert();
+            this.toggleAlert('Success', message);
+            // this.showAlert = true;
+            this.form.board_id = '';
+            // set focus
         },
         returnViewConfirmation: function returnViewConfirmation(error) {
             this.server.modelname = error.errors['server-modelname'][0];

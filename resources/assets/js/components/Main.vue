@@ -198,6 +198,7 @@
                         self.toggleLoading()
                         if(message == 'view'){
                             this.returnJoin(data.errors);
+                            
                             return;
                         }
 
@@ -220,6 +221,7 @@
                 this.hasError = true;
 
                 this.toggleAlert();
+                // this.showAlert = true;
                 // this.$refs.board_id.$el.focus();
             },
 
@@ -229,7 +231,10 @@
                 let message = response.data.message;
                 this.hasError = false;
                 this.error = message;
-                this.toggleAlert();
+                this.toggleAlert('Success', message );
+                // this.showAlert = true;
+                this.form.board_id = '';
+                // set focus
             },
 
             returnViewConfirmation(error){
