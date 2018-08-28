@@ -12333,7 +12333,9 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
 
 
 
-var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_2__components_Main_vue___default.a }, { path: '/join', component: __WEBPACK_IMPORTED_MODULE_3__components_Join_vue___default.a, props: true }, { path: '/config', component: __WEBPACK_IMPORTED_MODULE_4__components_Config_vue___default.a, props: true }];
+var routes = [{ path: '/', component: __WEBPACK_IMPORTED_MODULE_2__components_Main_vue___default.a },
+// { path: '/join', component: join, props: true },
+{ path: '/config', component: __WEBPACK_IMPORTED_MODULE_4__components_Config_vue___default.a, props: true }];
 
 var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
   routes: routes // short for `routes: routes`
@@ -13359,6 +13361,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modal__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Modal__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -13394,11 +13413,59 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['errors'],
+	props: ['errors', 'form'],
+	components: {
+		modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a
+	},
 	mounted: function mounted() {
-		console.log(this.props);
+		var errors = this.errors;
+		this.form.board_id = '';
+		var form = this.form;
+		console.log({ errors: errors, form: form });
+	},
+	data: function data() {
+		return {
+			responseText: ''
+		};
+	},
+
+
+	methods: {
+		onSubmit: function onSubmit() {
+			var _this = this;
+
+			var form = {
+				'nik': this.form.nik,
+				'ip': this.form.ip,
+				'guid': this.errors['guid'][0],
+				'modelname': this.form.modelname,
+				'board_id': this.form.board_id
+			};
+
+			console.log(form);
+			__WEBPACK_IMPORTED_MODULE_1_axios___default.a.post('api/main', form).then(function (response) {
+				console.log('success', response);
+				var message = response.data.message;
+				_this.responseText = message;
+				_this.form.board_id = '';
+			}).catch(function (error) {
+				var data = error.response.data;
+				console.log('ERROR', data);
+				var message = data.message;
+				_this.responseText = message;
+			});
+		},
+		togglejoin: function togglejoin() {
+			this.responseText = '';
+			this.form.board_id = '';
+			this.$emit('toggleJoin');
+		}
 	}
+
 });
 
 /***/ }),
@@ -13434,6 +13501,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Confirm___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Confirm__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Alert__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Alert___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Alert__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Join__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Join___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__Join__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -13557,6 +13639,7 @@ var axios = __webpack_require__(16);
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
@@ -13575,9 +13658,12 @@ var axios = __webpack_require__(16);
             error: '',
             hasError: false,
 
+            responseText: '',
+
             detailError: '',
 
             showAlert: false,
+            showJoin: false,
 
             info: {
                 line: '',
@@ -13611,7 +13697,7 @@ var axios = __webpack_require__(16);
 
 
     components: {
-        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a, alert: __WEBPACK_IMPORTED_MODULE_3__Alert___default.a
+        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a, alert: __WEBPACK_IMPORTED_MODULE_3__Alert___default.a, join: __WEBPACK_IMPORTED_MODULE_4__Join___default.a
     },
 
     methods: {
@@ -13682,10 +13768,8 @@ var axios = __webpack_require__(16);
             this.toggleModal('error', JSON.stringify(errors));
         },
         returnJoin: function returnJoin(errors) {
-            /*this.$router.push({
-                path: '/join',
-                params: errors
-            });*/
+            this.errors = errors;
+            this.showJoin = true;
         },
         toggleModal: function toggleModal() {
             var header = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
@@ -13705,6 +13789,9 @@ var axios = __webpack_require__(16);
         },
         toggleAlert: function toggleAlert() {
             this.showAlert = !this.showAlert;
+        },
+        toggleJoin: function toggleJoin() {
+            this.showJoin = !this.showJoin;
         },
         getConfig: function getConfig() {
             var config = localStorage.getItem('config');
@@ -44453,6 +44540,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "toggleConfirm": _vm.toggleConfirm,
       "changeConfig": _vm.changeConfig
     }
+  }) : _vm._e(), _vm._v(" "), (_vm.showJoin) ? _c('join', {
+    attrs: {
+      "form": _vm.form,
+      "errors": _vm.errors
+    },
+    on: {
+      "toggleJoin": _vm.toggleJoin
+    }
   }) : _vm._e()], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
@@ -44783,18 +44878,19 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "container"
-  }, [_c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-md-8 col-md-offset-2"
-  }, [_c('div', {
-    staticClass: "panel panel-default"
-  }, [_vm._m(0), _vm._v(" "), _c('div', {
-    staticClass: "panel-body"
+  return _c('modal', [_c('div', {
+    attrs: {
+      "slot": "header"
+    },
+    slot: "header"
+  }, [_c('h4', [_vm._v("JOIN")])]), _vm._v(" "), _c('div', {
+    staticClass: "scrollable",
+    attrs: {
+      "slot": "body"
+    },
+    slot: "body"
   }, [_c('form', {
-    staticClass: "form-horizontal",
+    staticClass: "form-horizontal scrollable",
     attrs: {
       "role": "form"
     },
@@ -44836,12 +44932,32 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "board_id", $event.target.value)
       }
     }
-  })])])])])])])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "panel-heading"
-  }, [_c('h1', [_vm._v("Join")])])
-}]}
+  })])]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: "col-md-12 col-xs-12"
+  }, [_c('div', {
+    staticClass: "well "
+  }, [_vm._v("\n                            " + _vm._s(_vm.responseText) + "\n                        ")])])])])]), _vm._v(" "), _c('div', {
+    attrs: {
+      "slot": "footer"
+    },
+    slot: "footer"
+  }, [_c('button', {
+    staticClass: "btn btn-danger",
+    on: {
+      "click": _vm.togglejoin
+    }
+  }, [_vm._v("\n                Close\n            ")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-success",
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        return _vm.onSubmit($event)
+      }
+    }
+  }, [_vm._v("\n                Submit\n            ")])])])
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()

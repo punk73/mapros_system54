@@ -761,6 +761,10 @@ class Node
 					throw new StoreResourceFailedException("view", [
 						'message' => "board with guid_ticket ".$this->guid_ticket." not found! this is join process you need to scan the board first",
 						'node' => json_decode($this, true ),
+						'nik' => $this->getNik(),
+						'ip' => $this->getScanner()['ip_address'],
+						'dummy_id' => $this->dummy_id, 
+						'guid'=>    $this->getGuidTicket(),
 					]);
 				}
 

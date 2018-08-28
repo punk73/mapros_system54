@@ -264,7 +264,7 @@ class MainController extends Controller
 				'nik' => $node->getNik(),
 				'ip' => $node->getScanner()['ip_address'],
 				'dummy_id' => $node->dummy_id, 
-				'guid'=>    $node->generateGuid(),
+				'guid'=>    $node->getGuidTicket(), //$node->generateGuid(),
 			]);
 		};
 

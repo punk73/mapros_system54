@@ -24,7 +24,7 @@ import modal from './components/Modal.vue';
 
 const routes = [
   { path: '/', component: mymain },
-  { path: '/join', component: join, props: true },
+  // { path: '/join', component: join, props: true },
   { path: '/config', component: config, props: true },
 
 ]

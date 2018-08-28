@@ -77,6 +77,14 @@
                                     <loading v-if='isLoading' />
                                 </div>
                             </div>
+
+                            <!-- <div class="form-group">
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="well ">
+                                        {{responseText}}
+                                    </div>
+                                </div>
+                            </div> -->                            
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
@@ -84,7 +92,7 @@
                                         Submit
                                     </button>
 
-                                    <!-- <button @click='toggleModal'  type="button" class="btn btn-primary">
+                                    <!-- <button @click='toggleJoin'  type="button" class="btn btn-primary">
                                         show modal
                                     </button> -->
 
@@ -111,6 +119,11 @@
         v-bind:config_modelname='form.modelname'
         v-bind:server_modelname='server.modelname'
     ></confirm>
+    <join v-if='showJoin' 
+        :form='form'
+        :errors='errors'
+        @toggleJoin='toggleJoin'
+    ></join>
   </div>
 </template>
 
@@ -120,6 +133,7 @@
     import loading from './Loading';
     import confirm from './Confirm';
     import alert from './Alert';
+    import join from './Join';
 
     export default {
         data: () => {
@@ -139,9 +153,12 @@
                 error: '',
                 hasError: false,
 
+                responseText: '',
+
                 detailError: '',
 
                 showAlert : false,
+                showJoin  : false,
 
                 info : {
                     line    : '',
@@ -174,7 +191,7 @@
         },
 
         components: {
-            modal, loading, confirm, alert
+            modal, loading, confirm, alert, join
         },
 
         methods : {
@@ -198,7 +215,7 @@
                         self.toggleLoading()
                         if(message == 'view'){
                             this.returnJoin(data.errors);
-                            
+
                             return;
                         }
 
@@ -251,10 +268,8 @@
             },
 
             returnJoin(errors){
-                /*this.$router.push({
-                    path: '/join',
-                    params: errors
-                });*/
+                this.errors = errors
+                this.showJoin = true;
             },
 
             toggleModal(header = '', message = ''){
@@ -275,6 +290,10 @@
 
             toggleAlert(){
                 this.showAlert = !this.showAlert;
+            },
+
+            toggleJoin(){
+                this.showJoin = !this.showJoin
             },
 
             getConfig(){
