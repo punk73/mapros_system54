@@ -15,14 +15,18 @@ class CreateTableCriticals extends Migration
     {
         Schema::create('criticals', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('scanner_id');
-            $table->integer('master_critical_id');
-            $table->string('partid');
-            $table->string('partno');
+            $table->integer('line_id');
+            $table->integer('lineprocess_id');
+            $table->string('unique_id');
+            $table->string('supp_code');
+            $table->string('part_no');
             $table->string('po');
+            $table->string('production_date');
+            $table->string('lotno');
             $table->integer('qty');
             $table->string('scan_nik');
             $table->timestamps();
+            
         });
     }
 
