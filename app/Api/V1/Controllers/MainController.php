@@ -59,7 +59,32 @@ class MainController extends Controller
 
 	public function store(BoardRequest $request ){
 		$parameter = $this->getParameter($request);
-		// cek apakah board id atau ticket;
+		
+		if( strlen($parameter['board_id']) >= 80 ){
+			return $this->runCritical($parameter);
+		}else{
+			return $this->runNode($parameter);
+		}
+	}
+
+	private function runCritical(array $parameter){
+		$board_id = $parameter['board_id'];
+		$result = [];
+		$result['partNo'] 	= trim( substr($board_id, 0, 15) );
+		$result['PO'] 		= trim( substr($board_id, 17, 7));
+		$result['qty'] 		= trim( substr($board_id, 25, 29));
+		$result['unique'] 	= trim( substr($board_id, 31, 46));
+		$result['prod_date'] = trim( substr($board_id, 78, 8));
+		$result['supplierLotno'] = trim( substr($board_id, 87, 20));
+		
+		if( $result['prod_date'] !='' || $result['supplierLotno'] !='' ){
+			// save to critical;
+		}else{
+			return 'not critical';
+		}
+	}
+
+	private function runNode($parameter){
 		$node = new Node($parameter);
 
 		// return $node;
