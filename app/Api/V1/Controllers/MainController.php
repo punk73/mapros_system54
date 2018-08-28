@@ -4,6 +4,8 @@ namespace App\Api\V1\Controllers;
 
 use Config;
 use App\Board;
+use App\Scanner;
+use App\Critical;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Api\V1\Requests\BoardRequest;
@@ -70,18 +72,65 @@ class MainController extends Controller
 	private function runCritical(array $parameter){
 		$board_id = $parameter['board_id'];
 		$result = [];
-		$result['partNo'] 	= trim( substr($board_id, 0, 15) );
-		$result['PO'] 		= trim( substr($board_id, 17, 7));
-		$result['qty'] 		= trim( substr($board_id, 25, 29));
-		$result['unique'] 	= trim( substr($board_id, 31, 46));
-		$result['prod_date'] = trim( substr($board_id, 78, 8));
-		$result['supplierLotno'] = trim( substr($board_id, 87, 20));
+		$result['part_no'] 	= substr($board_id, 0, 15);
+		$result['po'] 		= trim( substr($board_id, 16, 7));
+		$result['qty'] 		= trim( substr($board_id, 24, 5));
+		$result['unique_id'] 	= trim( substr($board_id, 30, 46));
+		$result['supp_code']	= trim( substr($board_id, 31, 6));
+		$result['production_date'] = trim( substr($board_id, 77, 8));
+		$result['lotno'] = trim( substr($board_id, 86, 20));
 		
-		if( $result['prod_date'] !='' || $result['supplierLotno'] !='' ){
+		if( $result['production_date'] !='' || $result['supplierLotno'] !='' ){
+			// get data
+			$data = $this->getCriticalScannerData($parameter);
+
+			if(is_null($data)){
+				throw new StoreResourceFailedException("Scanner with ip ".$parameter['ip']." not found", [
+					'parameter' => $parameter
+				]);
+			}
+
+			$data = $data->toArray();
+			$data['scan_nik'] = $parameter['nik'];
 			// save to critical;
+			$result = array_merge($result, $data );
+			
+			if($this->isCriticalExists($result)){
+				throw new StoreResourceFailedException("Part already scanned!", [
+					'parameter' => $result
+				]);
+			}
+
+			$critical = new Critical($result);
+			$critical->save();
+
+			return $this->returnValue;
+
 		}else{
-			return 'not critical';
+			throw new StoreResourceFailedException("It's not critical parts, don't need to scan this parts!", [
+				'parameter' => $parameter
+			]);
+			
 		}
+	}
+
+	private function getCriticalScannerData($parameter){
+		return Scanner::select([
+				// 'scanners.id',
+				'lines.id as line_id',
+				'lineprocesses.id as lineprocess_id',
+			])
+			->where('ip_address', $parameter['ip'])
+			->leftJoin('lines', 'scanners.line_id', '=', 'lines.id')
+			->leftJoin('lineprocesses', 'scanners.lineprocess_id', '=', 'lineprocesses.id')
+			->first();
+	}
+
+	private function isCriticalExists($result){
+		return Critical::where('unique_id', $result['unique_id'])
+		->where('part_no', $result['part_no'])
+		->where('po', $result['po'])
+		->exists();
 	}
 
 	private function runNode($parameter){
