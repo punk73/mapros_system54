@@ -13768,13 +13768,19 @@ var axios = __webpack_require__(5);
             });
         },
         verifyForm: function verifyForm() {},
+        boardOnFocus: function boardOnFocus() {
+            console.log(this.$event);
+            return;
+
+            this.$event.target.nextElementSibling.focus();
+        },
         handleError: function handleError(message) {
             var detailError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
             this.error = message;
             this.detailError = detailError;
             this.hasError = true;
-
+            this.form.board_id = '';
             this.toggleAlert();
             // this.showAlert = true;
             // this.$refs.board_id.$el.focus();
@@ -44392,6 +44398,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "value": (_vm.form.nik)
     },
     on: {
+      "keyup": function($event) {
+        if (!('button' in $event) && $event.keyCode !== 13) { return null; }
+        $event.preventDefault();
+        return _vm.boardOnFocus($event)
+      },
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.$set(_vm.form, "nik", $event.target.value)
@@ -44507,22 +44518,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-4"
-  }, [(_vm.isLoading) ? _c('loading') : _vm._e()], 1)]), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
-  }, [_c('div', {
-    staticClass: "col-md-6 col-md-offset-4"
-  }, [_c('button', {
-    staticClass: "btn btn-primary",
-    attrs: {
-      "type": "submit"
-    },
-    on: {
-      "click": function($event) {
-        $event.preventDefault();
-        return _vm.onSubmit($event)
-      }
-    }
-  }, [_vm._v("\n                                      Submit\n                                  ")])])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [(_vm.isLoading) ? _c('loading') : _vm._e()], 1)]), _vm._v(" "), _vm._m(0)])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
@@ -44549,7 +44545,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "toggleJoin": _vm.toggleJoin
     }
   }) : _vm._e()], 1)
-},staticRenderFns: []}
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: "col-md-6 col-md-offset-4"
+  }, [_c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("\n                                      Submit\n                                  ")])])])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()

@@ -40,12 +40,12 @@
                         </div>
                     </div>
                     <div class="panel-body">
-                        <form class="form-horizontal" role="form" @submit.prevent="onSubmit" >
+                        <form class="form-horizontal" role="form" @submit.prevent='onSubmit' >
                             <div class="form-group">
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
 
                                 <div class="col-md-6">
-                                    <input id="nik" type="text" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus>
+                                    <input id="nik" type="text" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
                                 </div>
                             </div>
 
@@ -88,7 +88,7 @@
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary" @click.prevent='onSubmit' >
+                                    <button type="submit" class="btn btn-primary" >
                                         Submit
                                     </button>
 
@@ -229,14 +229,20 @@
             },
 
             verifyForm(){
+            },
 
+            boardOnFocus(){
+                console.log(this.$event)
+                return
+
+                this.$event.target.nextElementSibling.focus()
             },
 
             handleError(message, detailError = '' ){
                 this.error = message;
                 this.detailError = detailError;
                 this.hasError = true;
-
+                this.form.board_id='';
                 this.toggleAlert();
                 // this.showAlert = true;
                 // this.$refs.board_id.$el.focus();
