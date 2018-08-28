@@ -587,53 +587,13 @@ class PermissionsTableSeeder extends Seeder
             ),
             71 => 
             array (
-                'id' => 97,
-                'key' => 'browse_master_criticals',
-                'table_name' => 'master_criticals',
-                'created_at' => '2018-08-09 13:55:03',
-                'updated_at' => '2018-08-09 13:55:03',
-            ),
-            72 => 
-            array (
-                'id' => 98,
-                'key' => 'read_master_criticals',
-                'table_name' => 'master_criticals',
-                'created_at' => '2018-08-09 13:55:03',
-                'updated_at' => '2018-08-09 13:55:03',
-            ),
-            73 => 
-            array (
-                'id' => 99,
-                'key' => 'edit_master_criticals',
-                'table_name' => 'master_criticals',
-                'created_at' => '2018-08-09 13:55:03',
-                'updated_at' => '2018-08-09 13:55:03',
-            ),
-            74 => 
-            array (
-                'id' => 100,
-                'key' => 'add_master_criticals',
-                'table_name' => 'master_criticals',
-                'created_at' => '2018-08-09 13:55:03',
-                'updated_at' => '2018-08-09 13:55:03',
-            ),
-            75 => 
-            array (
-                'id' => 101,
-                'key' => 'delete_master_criticals',
-                'table_name' => 'master_criticals',
-                'created_at' => '2018-08-09 13:55:03',
-                'updated_at' => '2018-08-09 13:55:03',
-            ),
-            76 => 
-            array (
                 'id' => 102,
                 'key' => 'browse_column_settings',
                 'table_name' => 'column_settings',
                 'created_at' => '2018-08-13 13:42:52',
                 'updated_at' => '2018-08-13 13:42:52',
             ),
-            77 => 
+            72 => 
             array (
                 'id' => 103,
                 'key' => 'read_column_settings',
@@ -641,7 +601,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-13 13:42:52',
                 'updated_at' => '2018-08-13 13:42:52',
             ),
-            78 => 
+            73 => 
             array (
                 'id' => 104,
                 'key' => 'edit_column_settings',
@@ -649,7 +609,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-13 13:42:52',
                 'updated_at' => '2018-08-13 13:42:52',
             ),
-            79 => 
+            74 => 
             array (
                 'id' => 105,
                 'key' => 'add_column_settings',
@@ -657,7 +617,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-13 13:42:52',
                 'updated_at' => '2018-08-13 13:42:52',
             ),
-            80 => 
+            75 => 
             array (
                 'id' => 106,
                 'key' => 'delete_column_settings',
@@ -665,7 +625,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-13 13:42:52',
                 'updated_at' => '2018-08-13 13:42:52',
             ),
-            81 => 
+            76 => 
             array (
                 'id' => 107,
                 'key' => 'browse_ticket_masters',
@@ -673,7 +633,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-14 12:22:11',
                 'updated_at' => '2018-08-14 12:22:11',
             ),
-            82 => 
+            77 => 
             array (
                 'id' => 108,
                 'key' => 'read_ticket_masters',
@@ -681,7 +641,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-14 12:22:11',
                 'updated_at' => '2018-08-14 12:22:11',
             ),
-            83 => 
+            78 => 
             array (
                 'id' => 109,
                 'key' => 'edit_ticket_masters',
@@ -689,7 +649,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-14 12:22:11',
                 'updated_at' => '2018-08-14 12:22:11',
             ),
-            84 => 
+            79 => 
             array (
                 'id' => 110,
                 'key' => 'add_ticket_masters',
@@ -697,7 +657,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-14 12:22:11',
                 'updated_at' => '2018-08-14 12:22:11',
             ),
-            85 => 
+            80 => 
             array (
                 'id' => 111,
                 'key' => 'delete_ticket_masters',
@@ -705,7 +665,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-14 12:22:11',
                 'updated_at' => '2018-08-14 12:22:11',
             ),
-            86 => 
+            81 => 
             array (
                 'id' => 112,
                 'key' => 'browse_tickets',
@@ -713,7 +673,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-24 09:53:38',
                 'updated_at' => '2018-08-24 09:53:38',
             ),
-            87 => 
+            82 => 
             array (
                 'id' => 113,
                 'key' => 'read_tickets',
@@ -721,7 +681,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-24 09:53:38',
                 'updated_at' => '2018-08-24 09:53:38',
             ),
-            88 => 
+            83 => 
             array (
                 'id' => 114,
                 'key' => 'edit_tickets',
@@ -729,7 +689,7 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-24 09:53:38',
                 'updated_at' => '2018-08-24 09:53:38',
             ),
-            89 => 
+            84 => 
             array (
                 'id' => 115,
                 'key' => 'add_tickets',
@@ -737,13 +697,53 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-24 09:53:38',
                 'updated_at' => '2018-08-24 09:53:38',
             ),
-            90 => 
+            85 => 
             array (
                 'id' => 116,
                 'key' => 'delete_tickets',
                 'table_name' => 'tickets',
                 'created_at' => '2018-08-24 09:53:38',
                 'updated_at' => '2018-08-24 09:53:38',
+            ),
+            86 => 
+            array (
+                'id' => 117,
+                'key' => 'browse_masters',
+                'table_name' => 'masters',
+                'created_at' => '2018-08-26 07:37:12',
+                'updated_at' => '2018-08-26 07:37:12',
+            ),
+            87 => 
+            array (
+                'id' => 118,
+                'key' => 'read_masters',
+                'table_name' => 'masters',
+                'created_at' => '2018-08-26 07:37:12',
+                'updated_at' => '2018-08-26 07:37:12',
+            ),
+            88 => 
+            array (
+                'id' => 119,
+                'key' => 'edit_masters',
+                'table_name' => 'masters',
+                'created_at' => '2018-08-26 07:37:12',
+                'updated_at' => '2018-08-26 07:37:12',
+            ),
+            89 => 
+            array (
+                'id' => 120,
+                'key' => 'add_masters',
+                'table_name' => 'masters',
+                'created_at' => '2018-08-26 07:37:12',
+                'updated_at' => '2018-08-26 07:37:12',
+            ),
+            90 => 
+            array (
+                'id' => 121,
+                'key' => 'delete_masters',
+                'table_name' => 'masters',
+                'created_at' => '2018-08-26 07:37:12',
+                'updated_at' => '2018-08-26 07:37:12',
             ),
         ));
         
