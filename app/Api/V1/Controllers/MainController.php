@@ -264,9 +264,25 @@ class MainController extends Controller
 		// disini node sudah exists
 		if($node->getStatus() == 'OUT'){
 			if($node->is_solder == false){
+				// cek current judge
+				if(!$node->getJudge() == 'REWORK'){
+					if($node->isRepaired()){
+						$node->setStatus('IN');
+						$node->setJudge('REWORK');
+						if(!$node->save()){
+							throw new StoreResourceFailedException("Error Saving Progress", [
+								'message' => 'something went wrong with save method on model! ask your IT member'
+							]);
+						}
+
+						$this->returnValue['line_code'] = 278;
+						return $this->returnValue;
+					}
+				}
+
 				throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
 					'node' => json_decode( $node, true ),
-				]);    
+				]);
 			}
 
 			//isExists already implement is solder, so we dont need to check it again.
@@ -278,7 +294,7 @@ class MainController extends Controller
 				throw new StoreResourceFailedException("Error Saving Progress", [
 					'message' => 'something went wrong with save method on model! ask your IT member'
 				]);
-			} 
+			}
 			//$this->returnValue['node'] = $node;
 
 			$this->returnValue['line_code'] = 205;
@@ -306,7 +322,7 @@ class MainController extends Controller
 			// disini kita harus ikut update status dari child node; jika ini adalah proses join;
 			// save
 			$node->setStatus('OUT');
-			// it's mean to get current in process judgement, so won't it's rework; it'll get rework
+			// it's mean to get current in process judgement, so when it's rework; it'll get rework
 			$node->setJudge($node->getJudge());
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [
