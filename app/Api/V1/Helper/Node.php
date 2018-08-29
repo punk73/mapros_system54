@@ -924,6 +924,13 @@ class Node
         ]);
 
         $result = json_decode( $res->getBody(), true );
+
+        if(!isset($result['judge'])){
+        	throw new StoreResourceFailedException("external source should always contain judge & status!", [
+        		'result' => $result
+        	]);
+        }
+		
 		// end point should always contain status and judge;
         if($result['success'] && $result['judge'] != 'NG'){
         	$this->setStatus('OUT');
