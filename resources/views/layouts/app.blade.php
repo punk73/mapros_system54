@@ -74,6 +74,10 @@
                                     </li>
                                 </ul>
                             </li>
+<<<<<<< HEAD
+=======
+                            <li><a href="#/config"><span class="fa fa-cogs"> Config </span></a></li>
+>>>>>>> b9a71ac968f58426ab779944b580523f53ecc760
                         @endif
                     </ul>
                 </div>

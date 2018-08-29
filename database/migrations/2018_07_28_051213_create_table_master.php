@@ -20,7 +20,6 @@ class CreateTableMaster extends Migration
             $table->string('status');
             $table->integer('scanner_id');
             $table->string('scan_nik');
-            $table->string('model_name');
             $table->string('serial_no')->nullable();
             $table->string('judge')->default('OK');
             $table->timestamps();

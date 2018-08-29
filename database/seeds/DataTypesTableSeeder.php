@@ -123,7 +123,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 03:31:01',
-                'updated_at' => '2018-08-17 09:55:31',
+                'updated_at' => '2018-08-29 12:03:46',
             ),
             6 => 
             array (
@@ -231,27 +231,9 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-08 09:50:17',
-                'updated_at' => '2018-08-14 11:10:08',
+                'updated_at' => '2018-08-25 11:54:36',
             ),
             12 => 
-            array (
-                'id' => 20,
-                'name' => 'master_criticals',
-                'slug' => 'master-criticals',
-                'display_name_singular' => 'Master Critical',
-                'display_name_plural' => 'Master Criticals',
-                'icon' => '',
-                'model_name' => 'App\\MasterCritical',
-                'policy_name' => '',
-                'controller' => '',
-                'description' => '',
-                'generate_permissions' => 1,
-                'server_side' => 1,
-                'details' => '{"order_column":"","order_display_column":""}',
-                'created_at' => '2018-08-09 13:55:02',
-                'updated_at' => '2018-08-09 13:56:05',
-            ),
-            13 => 
             array (
                 'id' => 21,
                 'name' => 'column_settings',
@@ -269,7 +251,7 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-13 13:42:52',
                 'updated_at' => '2018-08-14 11:12:31',
             ),
-            14 => 
+            13 => 
             array (
                 'id' => 23,
                 'name' => 'ticket_masters',
@@ -286,6 +268,42 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-14 12:22:10',
                 'updated_at' => '2018-08-14 13:59:30',
+            ),
+            14 => 
+            array (
+                'id' => 24,
+                'name' => 'tickets',
+                'slug' => 'tickets',
+                'display_name_singular' => 'Ticket',
+                'display_name_plural' => 'Tickets',
+                'icon' => '',
+                'model_name' => 'App\\Ticket',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-24 09:53:38',
+                'updated_at' => '2018-08-24 09:53:38',
+            ),
+            15 => 
+            array (
+                'id' => 25,
+                'name' => 'masters',
+                'slug' => 'masters',
+                'display_name_singular' => 'Master',
+                'display_name_plural' => 'Masters',
+                'icon' => '',
+                'model_name' => 'App\\Master',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-26 07:37:12',
+                'updated_at' => '2018-08-26 07:37:12',
             ),
         ));
         

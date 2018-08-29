@@ -11,7 +11,38 @@ class SequenceSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(){
+
+        $sequences = [
+            [
+                'name' => 'model',
+                'modelname' => 'model',
+                'pwbname' => 'main',
+                'line_id' => 1,
+                'process' => '2,3,4,5',
+            ],
+            [
+                'name' => 'model',
+                'modelname' => 'model',
+                'pwbname' => 'panel',
+                'line_id' => 1,
+                'process' => '6,7,8,2',
+            ],
+
+        ];
+
+        foreach ($sequences as $key => $data) {
+            $sequence = new Sequence;
+            $sequence->name = $data['name'];
+            $sequence->modelname = $data['modelname'];
+            $sequence->pwbname = $data['pwbname'];
+            $sequence->line_id = $data['line_id'];
+            $sequence->process = $data['process'];
+            $sequence->save();
+        }
+    }
+
+    public function runBackup()
     {   
         $sequences = $this->getData();
         foreach ($sequences as $key => $data) {

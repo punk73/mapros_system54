@@ -19,7 +19,7 @@ class UsersTableSeeder extends Seeder
         \DB::table('users')->insert(array (
             0 => 
             array (
-                'id' => 2,
+                'id' => 1,
                 'role_id' => 1,
                 'name' => 'admin',
                 'email' => 'admin@admin.com',
@@ -30,30 +30,11 @@ class UsersTableSeeder extends Seeder
                 'update_by' => NULL,
                 'grade_id' => NULL,
                 'department_id' => NULL,
-                'password' => 'password',
-                'remember_token' => 'Q5imdckLZemEafE300UVuIDyWKGwBVmg55ZsN3eJ4JO08dSHxTniQikjHhaO',
-                'settings' => NULL,
-                'created_at' => '2018-08-04 00:10:31',
-                'updated_at' => '2018-08-04 03:47:35',
-            ),
-            1 => 
-            array (
-                'id' => 3,
-                'role_id' => 2,
-                'name' => 'punk73',
-                'email' => 'punk73@email.com',
-                'avatar' => 'users/default.png',
-                'nik' => '39598',
-                'access_id' => NULL,
-                'input_by' => NULL,
-                'update_by' => NULL,
-                'grade_id' => NULL,
-                'department_id' => NULL,
-                'password' => '123465',
+                'password' => '$2y$10$Se9iAIaaI2Nay5z6N0Q8seOohWHLrPz/QtY3/TSHOYgXiNRbCdrWi',
                 'remember_token' => NULL,
                 'settings' => NULL,
-                'created_at' => '2018-08-04 02:53:13',
-                'updated_at' => '2018-08-04 02:53:13',
+                'created_at' => '2018-08-24 17:27:34',
+                'updated_at' => '2018-08-24 17:27:34',
             ),
         ));
         

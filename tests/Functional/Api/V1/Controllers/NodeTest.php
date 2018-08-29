@@ -22,6 +22,7 @@ class NodeTest extends TestCase
         'nik' => '39596',
         'ip' => '::1', //localhost scanner
         'is_solder' => false,
+        'modelname' => 'KW-R710H3A9N'
     ];
 
     /*
@@ -223,6 +224,7 @@ class NodeTest extends TestCase
         $this->assertInstanceOf('App\Board', $node->getModel());
     }
 
+    // initColumnSetting
     public function testSetColumnSettingSuccess(){
         $this->seedDb([
             '--class'=>'ScannerSeeder'
@@ -244,6 +246,14 @@ class NodeTest extends TestCase
         $this->assertNotNull($node->getColumnSetting());
         
         fwrite(STDOUT, var_dump($node->getColumnSetting()));
+
+    }
+
+    public function testIsGuidGeneratedSuccess(){
+        $this->seedDb();
+        $node = new Node($this->parameter);
+
+        $this->assertEquals(false, $node->isGuidGenerated() );
 
     }
 

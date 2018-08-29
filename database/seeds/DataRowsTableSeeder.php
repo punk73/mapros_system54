@@ -617,11 +617,11 @@ class DataRowsTableSeeder extends Seeder
                 'type' => 'text',
                 'display_name' => 'Endpoint Id',
                 'required' => 0,
-                'browse' => 0,
-                'read' => 0,
-                'edit' => 0,
-                'add' => 0,
-                'delete' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
                 'details' => '',
                 'order' => 5,
             ),
@@ -1651,150 +1651,6 @@ class DataRowsTableSeeder extends Seeder
             ),
             102 => 
             array (
-                'id' => 157,
-                'data_type_id' => 20,
-                'field' => 'id',
-                'type' => 'text',
-                'display_name' => 'Id',
-                'required' => 1,
-                'browse' => 0,
-                'read' => 0,
-                'edit' => 0,
-                'add' => 0,
-                'delete' => 0,
-                'details' => '',
-                'order' => 1,
-            ),
-            103 => 
-            array (
-                'id' => 158,
-                'data_type_id' => 20,
-                'field' => 'linetype_id',
-                'type' => 'text',
-                'display_name' => 'Linetype Id',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '',
-                'order' => 2,
-            ),
-            104 => 
-            array (
-                'id' => 159,
-                'data_type_id' => 20,
-                'field' => 'partno',
-                'type' => 'text',
-                'display_name' => 'Partno',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '',
-                'order' => 3,
-            ),
-            105 => 
-            array (
-                'id' => 160,
-                'data_type_id' => 20,
-                'field' => 'partname',
-                'type' => 'text',
-                'display_name' => 'Partname',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '',
-                'order' => 4,
-            ),
-            106 => 
-            array (
-                'id' => 161,
-                'data_type_id' => 20,
-                'field' => 'qty_request',
-                'type' => 'text',
-                'display_name' => 'Qty Request',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '',
-                'order' => 5,
-            ),
-            107 => 
-            array (
-                'id' => 162,
-                'data_type_id' => 20,
-                'field' => 'supplier',
-                'type' => 'text',
-                'display_name' => 'Supplier',
-                'required' => 1,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '',
-                'order' => 6,
-            ),
-            108 => 
-            array (
-                'id' => 163,
-                'data_type_id' => 20,
-                'field' => 'created_at',
-                'type' => 'timestamp',
-                'display_name' => 'Created At',
-                'required' => 0,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 0,
-                'delete' => 1,
-                'details' => '',
-                'order' => 7,
-            ),
-            109 => 
-            array (
-                'id' => 164,
-                'data_type_id' => 20,
-                'field' => 'updated_at',
-                'type' => 'timestamp',
-                'display_name' => 'Updated At',
-                'required' => 0,
-                'browse' => 0,
-                'read' => 0,
-                'edit' => 0,
-                'add' => 0,
-                'delete' => 0,
-                'details' => '',
-                'order' => 8,
-            ),
-            110 => 
-            array (
-                'id' => 165,
-                'data_type_id' => 20,
-                'field' => 'master_critical_belongsto_linetype_relationship',
-                'type' => 'relationship',
-                'display_name' => 'linetypes',
-                'required' => 0,
-                'browse' => 1,
-                'read' => 1,
-                'edit' => 1,
-                'add' => 1,
-                'delete' => 1,
-                'details' => '{"model":"App\\\\Linetype","table":"linetypes","type":"belongsTo","column":"linetype_id","key":"id","label":"name","pivot_table":"accesses","pivot":"0","taggable":"0"}',
-                'order' => 9,
-            ),
-            111 => 
-            array (
                 'id' => 166,
                 'data_type_id' => 21,
                 'field' => 'id',
@@ -1809,7 +1665,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 1,
             ),
-            112 => 
+            103 => 
             array (
                 'id' => 167,
                 'data_type_id' => 21,
@@ -1825,7 +1681,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 2,
             ),
-            113 => 
+            104 => 
             array (
                 'id' => 168,
                 'data_type_id' => 21,
@@ -1841,7 +1697,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 3,
             ),
-            114 => 
+            105 => 
             array (
                 'id' => 169,
                 'data_type_id' => 21,
@@ -1857,7 +1713,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 4,
             ),
-            115 => 
+            106 => 
             array (
                 'id' => 170,
                 'data_type_id' => 21,
@@ -1873,7 +1729,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 5,
             ),
-            116 => 
+            107 => 
             array (
                 'id' => 171,
                 'data_type_id' => 21,
@@ -1889,7 +1745,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 6,
             ),
-            117 => 
+            108 => 
             array (
                 'id' => 172,
                 'data_type_id' => 21,
@@ -1905,7 +1761,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"model":"App\\\\Lineprocess","table":"lineprocesses","type":"belongsToMany","column":"id","key":"id","label":"name","pivot_table":"column_setting_lineprocess","pivot":"1","taggable":"on"}',
                 'order' => 7,
             ),
-            118 => 
+            109 => 
             array (
                 'id' => 173,
                 'data_type_id' => 11,
@@ -1921,7 +1777,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"model":"App\\\\ColumnSetting","table":"column_settings","type":"belongsToMany","column":"id","key":"id","label":"code_prefix","pivot_table":"column_setting_lineprocess","pivot":"1","taggable":"on"}',
                 'order' => 9,
             ),
-            119 => 
+            110 => 
             array (
                 'id' => 174,
                 'data_type_id' => 10,
@@ -1937,7 +1793,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"model":"App\\\\ColumnSetting","table":"column_settings","type":"belongsToMany","column":"id","key":"id","label":"name","pivot_table":"column_setting_lineprocess","pivot":"1","taggable":"on"}',
                 'order' => 9,
             ),
-            120 => 
+            111 => 
             array (
                 'id' => 175,
                 'data_type_id' => 21,
@@ -1953,7 +1809,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 2,
             ),
-            121 => 
+            112 => 
             array (
                 'id' => 177,
                 'data_type_id' => 12,
@@ -1969,7 +1825,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"model":"App\\\\Lineprocess","table":"lineprocesses","type":"belongsToMany","column":"id","key":"id","label":"id","pivot_table":"lineprocess_sequence","pivot":"1","taggable":"on"}',
                 'order' => 10,
             ),
-            122 => 
+            113 => 
             array (
                 'id' => 178,
                 'data_type_id' => 23,
@@ -1985,7 +1841,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 1,
             ),
-            123 => 
+            114 => 
             array (
                 'id' => 179,
                 'data_type_id' => 23,
@@ -2001,7 +1857,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 2,
             ),
-            124 => 
+            115 => 
             array (
                 'id' => 180,
                 'data_type_id' => 23,
@@ -2017,7 +1873,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 3,
             ),
-            125 => 
+            116 => 
             array (
                 'id' => 181,
                 'data_type_id' => 23,
@@ -2033,7 +1889,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 4,
             ),
-            126 => 
+            117 => 
             array (
                 'id' => 182,
                 'data_type_id' => 23,
@@ -2049,7 +1905,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 5,
             ),
-            127 => 
+            118 => 
             array (
                 'id' => 183,
                 'data_type_id' => 23,
@@ -2065,7 +1921,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 6,
             ),
-            128 => 
+            119 => 
             array (
                 'id' => 184,
                 'data_type_id' => 23,
@@ -2081,7 +1937,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"model":"App\\\\Line","table":"lines","type":"belongsTo","column":"line_id","key":"id","label":"name","pivot_table":"accesses","pivot":"0","taggable":"0"}',
                 'order' => 7,
             ),
-            129 => 
+            120 => 
             array (
                 'id' => 185,
                 'data_type_id' => 23,
@@ -2097,7 +1953,7 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{"model":"App\\\\ColumnSetting","table":"column_settings","type":"belongsTo","column":"code","key":"code_prefix","label":"code_prefix","pivot_table":"accesses","pivot":"0","taggable":"0"}',
                 'order' => 8,
             ),
-            130 => 
+            121 => 
             array (
                 'id' => 186,
                 'data_type_id' => 10,
@@ -2111,6 +1967,358 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{"model":"App\\\\Scanner","table":"scanners","type":"hasOne","column":"lineprocess_id","key":"id","label":"id","pivot_table":"accesses","pivot":"0","taggable":"0"}',
+                'order' => 10,
+            ),
+            122 => 
+            array (
+                'id' => 187,
+                'data_type_id' => 24,
+                'field' => 'id',
+                'type' => 'text',
+                'display_name' => 'Id',
+                'required' => 1,
+                'browse' => 0,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '',
+                'order' => 1,
+            ),
+            123 => 
+            array (
+                'id' => 188,
+                'data_type_id' => 24,
+                'field' => 'ticket_no',
+                'type' => 'text',
+                'display_name' => 'Ticket No',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 2,
+            ),
+            124 => 
+            array (
+                'id' => 189,
+                'data_type_id' => 24,
+                'field' => 'guid_master',
+                'type' => 'text',
+                'display_name' => 'Guid Master',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 3,
+            ),
+            125 => 
+            array (
+                'id' => 190,
+                'data_type_id' => 24,
+                'field' => 'guid_ticket',
+                'type' => 'text',
+                'display_name' => 'Guid Ticket',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 4,
+            ),
+            126 => 
+            array (
+                'id' => 191,
+                'data_type_id' => 24,
+                'field' => 'scanner_id',
+                'type' => 'text',
+                'display_name' => 'Scanner Id',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 5,
+            ),
+            127 => 
+            array (
+                'id' => 192,
+                'data_type_id' => 24,
+                'field' => 'status',
+                'type' => 'text',
+                'display_name' => 'Status',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 6,
+            ),
+            128 => 
+            array (
+                'id' => 193,
+                'data_type_id' => 24,
+                'field' => 'scan_nik',
+                'type' => 'text',
+                'display_name' => 'Scan Nik',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 7,
+            ),
+            129 => 
+            array (
+                'id' => 194,
+                'data_type_id' => 24,
+                'field' => 'judge',
+                'type' => 'text',
+                'display_name' => 'Judge',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 8,
+            ),
+            130 => 
+            array (
+                'id' => 195,
+                'data_type_id' => 24,
+                'field' => 'created_at',
+                'type' => 'timestamp',
+                'display_name' => 'Created At',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 0,
+                'delete' => 1,
+                'details' => '',
+                'order' => 9,
+            ),
+            131 => 
+            array (
+                'id' => 196,
+                'data_type_id' => 24,
+                'field' => 'updated_at',
+                'type' => 'timestamp',
+                'display_name' => 'Updated At',
+                'required' => 0,
+                'browse' => 0,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '',
+                'order' => 10,
+            ),
+            132 => 
+            array (
+                'id' => 197,
+                'data_type_id' => 18,
+                'field' => 'modelname',
+                'type' => 'text',
+                'display_name' => 'Modelname',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 5,
+            ),
+            133 => 
+            array (
+                'id' => 198,
+                'data_type_id' => 18,
+                'field' => 'lotno',
+                'type' => 'text',
+                'display_name' => 'Lotno',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 6,
+            ),
+            134 => 
+            array (
+                'id' => 199,
+                'data_type_id' => 25,
+                'field' => 'id',
+                'type' => 'text',
+                'display_name' => 'Id',
+                'required' => 1,
+                'browse' => 0,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '',
+                'order' => 1,
+            ),
+            135 => 
+            array (
+                'id' => 200,
+                'data_type_id' => 25,
+                'field' => 'ticket_no_master',
+                'type' => 'text',
+                'display_name' => 'Ticket No Master',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 2,
+            ),
+            136 => 
+            array (
+                'id' => 201,
+                'data_type_id' => 25,
+                'field' => 'guid_master',
+                'type' => 'text',
+                'display_name' => 'Guid Master',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 3,
+            ),
+            137 => 
+            array (
+                'id' => 202,
+                'data_type_id' => 25,
+                'field' => 'status',
+                'type' => 'text',
+                'display_name' => 'Status',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 4,
+            ),
+            138 => 
+            array (
+                'id' => 203,
+                'data_type_id' => 25,
+                'field' => 'scanner_id',
+                'type' => 'text',
+                'display_name' => 'Scanner Id',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 5,
+            ),
+            139 => 
+            array (
+                'id' => 204,
+                'data_type_id' => 25,
+                'field' => 'scan_nik',
+                'type' => 'text',
+                'display_name' => 'Scan Nik',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 6,
+            ),
+            140 => 
+            array (
+                'id' => 205,
+                'data_type_id' => 25,
+                'field' => 'serial_no',
+                'type' => 'text',
+                'display_name' => 'Serial No',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 7,
+            ),
+            141 => 
+            array (
+                'id' => 206,
+                'data_type_id' => 25,
+                'field' => 'judge',
+                'type' => 'text',
+                'display_name' => 'Judge',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '',
+                'order' => 8,
+            ),
+            142 => 
+            array (
+                'id' => 207,
+                'data_type_id' => 25,
+                'field' => 'created_at',
+                'type' => 'timestamp',
+                'display_name' => 'Created At',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 0,
+                'delete' => 1,
+                'details' => '',
+                'order' => 9,
+            ),
+            143 => 
+            array (
+                'id' => 208,
+                'data_type_id' => 25,
+                'field' => 'updated_at',
+                'type' => 'timestamp',
+                'display_name' => 'Updated At',
+                'required' => 0,
+                'browse' => 0,
+                'read' => 0,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '',
                 'order' => 10,
             ),
         ));
