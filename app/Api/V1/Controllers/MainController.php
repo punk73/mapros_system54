@@ -181,7 +181,8 @@ class MainController extends Controller
 			$prevNode = $node->prev();
 
 			if( $prevNode->getStatus() == 'OUT' ){
-
+				// if it's rework, then judgment will get rework instead;
+				$judgement = 'OK';
 				// we not sure if it calling prev() twice or not, hopefully it's not;
 				if($prevNode->getJudge() == 'NG'){                    
 					// kalau dia NG
@@ -192,20 +193,22 @@ class MainController extends Controller
 							'prevnode' => json_decode( $prevNode, true),
 							'node'     => json_decode( $prevNode->next(), true) 
 						]);
+					}else{
+						$judgement = 'REWORK';
 					}
 				}
 
 				$node = $prevNode->next();
 				$node->setStatus('IN');
-				$node->setJudge('OK');
+				$node->setJudge($judgement);
 				if(!$node->save()){
 					throw new StoreResourceFailedException("Error Saving Progress", [
 						'message' => 'something went wrong with save method on model! ask your IT member'
 					]);
 				};
 				//$this->returnValue['node'] = $node;
-				$this->returnValue['line_code'] = 131;
 
+				$this->returnValue['line_code'] = 131;
 				return $this->returnValue;
 			}
 
@@ -303,7 +306,8 @@ class MainController extends Controller
 			// disini kita harus ikut update status dari child node; jika ini adalah proses join;
 			// save
 			$node->setStatus('OUT');
-			$node->setJudge('OK');
+			// it's mean to get current in process judgement, so won't it's rework; it'll get rework
+			$node->setJudge($node->getJudge());
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [
 					'message' => 'something went wrong with save method on model! ask your IT member'

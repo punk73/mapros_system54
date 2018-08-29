@@ -960,12 +960,12 @@ class Node
 		return $this->step;
 	}
 
-	public function getJudge(){
-		return $this->judge;
-	}
-
 	public function setJudge($judge){
 		$this->judge = $judge;
+	}
+
+	public function getJudge(){
+		return $this->judge;
 	}
 
 	public function getStatus(){
