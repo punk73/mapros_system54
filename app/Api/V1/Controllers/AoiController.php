@@ -11,8 +11,6 @@ use App\AOI;
 class AoiController extends Controller
 {	
 	public function index(AoiRequest $request){
-
-
 		$aoi = AOI::select([
 			'barcode',
 			'userjudgment'
@@ -21,7 +19,8 @@ class AoiController extends Controller
 		return [
 			'success' => true,
 			'data' => $aoi->first(),
-			'status' => $aoi->exists()
+			'status' => 'OUT',
+			'judge' => ($aoi->exists()) ? 'OK':'NG'
 		];
 	}
 

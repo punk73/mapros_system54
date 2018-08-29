@@ -925,7 +925,7 @@ class Node
 
         $result = json_decode( $res->getBody(), true );
 		// end point should always contain status and judge;
-        if($result['success'] && $result['data']['userjudgment'] != 'NG'){
+        if($result['success'] && $result['judge'] != 'NG'){
         	$this->setStatus('OUT');
 			$this->setJudge("OK");
         }else{
