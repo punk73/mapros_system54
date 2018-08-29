@@ -602,9 +602,16 @@ class Node
 			$url = $endpoint->url; //'http://localhost/mapros_system54/public/api/aoies';
 			$client = new Client();
 			// $url = "https://api.github.com/repos/guzzle/guzzle";
-	        $res = $client->get($url);
+	        $res = $client->get($url, [	
+	    		'query' => [
+	    			'board_id'	=> $this->parameter['board_id']
+	    		],
+		 		'headers' => ['Content-type' => 'application/json'],
+	        ]);
+
+	        $result = json_decode( $res->getBody(), true );
 	        // it's should return boolean
-	        return $res->status;
+	        return ($result['success'] && $result['data']['userjudgment'] != 'NG');
 		}
 	}
 
@@ -896,12 +903,35 @@ class Node
 
 	}
 
-	// called in loadStep
+	// called in loadStep 
 	public function procedureGetStepExternal(){
 		// send ajax into end point;
+		$endpoint = Endpoint::select()->find($this->lineprocess['endpoint_id']);
+		if(is_null($endpoint)){
+			throw new StoreResourceFailedException("endpoint with id ".$this->lineprocess['endpoint_id']." is not found", [
+				'lineprocess' => $this->lineprocess,
+			]);
+		}
 
+		$url = $endpoint->url; //'http://localhost/mapros_system54/public/api/aoies';
+		$client = new Client();
+		// $url = "https://api.github.com/repos/guzzle/guzzle";
+        $res = $client->get($url, [	
+    		'query' => [
+    			'board_id'	=> $this->parameter['board_id']
+    		],
+	 		'headers' => ['Content-type' => 'application/json'],
+        ]);
+
+        $result = json_decode( $res->getBody(), true );
 		// end point should always contain status and judge;
-
+        if($result['success'] && $result['data']['userjudgment'] != 'NG'){
+        	$this->setStatus('OUT');
+			$this->setJudge("OK");
+        }else{
+        	$this->setStatus('OUT');
+			$this->setJudge("NG");
+        }
 	}
 
 	// this method triggered by loadStep();

@@ -26,17 +26,23 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		// return $this->testGuzzle($request);
+		return $this->testGuzzle($request);
 
 	}
 
 	public function testGuzzle(Request $request){
 		$client = new Client();
 		// $url = 'http://localhost:80/mapros_system54/public/api/aoies';
-		$url = 'http://localhost/mapros_system54/public/api/aoies';
+		$url = 'http://136.198.117.48/mapros_system54/public/api/aoies';
 		// $url = "https://api.github.com/repos/guzzle/guzzle";
-        $res = $client->get($url);
+        $res = $client->get($url, [	
+    		'query' => [
+    			'board_id'	=> '000047A000010900'
+    		],
+	 		'headers' => ['Content-type' => 'application/json'],
+        ]);
+        $result = json_decode( $res->getBody(), true );
 
-        return $res;
+        return $result;
 	}
 }
