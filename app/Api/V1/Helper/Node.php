@@ -923,11 +923,21 @@ class Node
 	 		'headers' => ['Content-type' => 'application/json'],
         ]);
 
+        if( $res->getStatusCode() !== 200 ){
+        	throw new StoreResourceFailedException("Something wrong to your external code data", [
+        		'status_code' => $res->getStatusCode(),
+        		'body' => $res->getBody()
+        	]);
+        }
+
         $result = json_decode( $res->getBody(), true );
 
-        if(!isset($result['judge'])){
+        if( /*array_key_exists('judge', $result ) || */$result == null ){
+        	// return $result;
         	throw new StoreResourceFailedException("external source should always contain judge & status!", [
-        		'result' => $result
+        		'result' => $result,
+        		'url' => $url,
+        		'response' => $res->getStatusCode() //json_decode( json_encode($res), true )
         	]);
         }
 		

@@ -189,8 +189,8 @@ class MainController extends Controller
 					if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
 						// kalau ga ada, maka throw error data is NG in prev stages! repair it first!
 						throw new StoreResourceFailedException("Data is error in previous step, repair it first!", [
-							'prevnode' => $prevNode,
-							'node'     => $prevNode->next() 
+							'prevnode' => json_decode( $prevNode, true),
+							'node'     => json_decode( $prevNode->next(), true) 
 						]);
 					}
 				}
