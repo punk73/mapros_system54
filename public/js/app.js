@@ -13788,7 +13788,7 @@ var axios = __webpack_require__(5);
             this.detailError = detailError;
             this.hasError = true;
             this.form.board_id = '';
-            this.toggleAlert();
+            // this.toggleAlert();
             // this.showAlert = true;
             // this.$refs.board_id.$el.focus();
         },

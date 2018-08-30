@@ -250,7 +250,7 @@
                 this.detailError = detailError;
                 this.hasError = true;
                 this.form.board_id='';
-                this.toggleAlert();
+                // this.toggleAlert();
                 // this.showAlert = true;
                 // this.$refs.board_id.$el.focus();
             },
