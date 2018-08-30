@@ -13666,6 +13666,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 var axios = __webpack_require__(5);
 
@@ -13791,7 +13793,7 @@ var axios = __webpack_require__(5);
             var message = response.data.message;
             this.hasError = false;
             this.error = message;
-            this.toggleAlert('Success', message);
+            // this.toggleAlert('Success', message );
             // this.showAlert = true;
             this.form.board_id = '';
             // set focus
@@ -16384,7 +16386,7 @@ if (typeof jQuery === 'undefined') {
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(11)();
-exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    background-color: white !important;\n}\n", ""]);
+exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    background-color: 'yellow' !important;\n}\n", ""]);
 
 /***/ }),
 /* 45 */
@@ -44518,7 +44520,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-4"
-  }, [(_vm.isLoading) ? _c('loading') : _vm._e()], 1)]), _vm._v(" "), _vm._m(0)])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [(_vm.isLoading) ? _c('loading') : _vm._e()], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: "col-md-12 col-xs-12"
+  }, [_c('div', {
+    staticClass: "well costum-color text-center"
+  }, [_vm._v("\n                                      information status\n\n                                      "), _c('H2', {
+    class: {
+      "text-danger": _vm.hasError, "text-success": !_vm.hasError
+    }
+  }, [_c('strong', [_vm._v(_vm._s(_vm.error))])])], 1)])]), _vm._v(" "), _vm._m(0)])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header

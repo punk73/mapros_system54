@@ -78,13 +78,15 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="form-group">
+                            <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
-                                    <div class="well ">
-                                        {{responseText}}
+                                    <div class="well costum-color text-center">
+                                        information status
+
+                                        <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ error }}</strong></H2>
                                     </div>
                                 </div>
-                            </div> -->                            
+                            </div>                            
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
@@ -254,7 +256,7 @@
                 let message = response.data.message;
                 this.hasError = false;
                 this.error = message;
-                this.toggleAlert('Success', message );
+                // this.toggleAlert('Success', message );
                 // this.showAlert = true;
                 this.form.board_id = '';
                 // set focus
@@ -358,6 +360,6 @@
 <style>
     .custom-color{
         background-image: none!important;
-        background-color: white !important;
+        background-color: 'yellow' !important;
     }
 </style>
