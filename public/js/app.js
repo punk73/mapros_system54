@@ -13668,6 +13668,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 var axios = __webpack_require__(5);
 
@@ -13807,7 +13809,7 @@ var axios = __webpack_require__(5);
             // show modal containing the error 
             console.log(this.detailError);
             var errors = this.detailError.errors;
-            this.toggleModal('error', JSON.stringify(errors));
+            this.toggleModal('Information', JSON.stringify(errors));
         },
         returnJoin: function returnJoin(errors) {
             this.errors = errors;
@@ -44530,7 +44532,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     class: {
       "text-danger": _vm.hasError, "text-success": !_vm.hasError
     }
-  }, [_c('strong', [_vm._v(_vm._s(_vm.error))])])], 1)])]), _vm._v(" "), _vm._m(0)])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [_c('strong', [_vm._v(_vm._s(_vm.error))])]), _vm._v(" "), _c('a', {
+    staticClass: "btn btn-info",
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        return _vm.showDetailError($event)
+      }
+    }
+  }, [_vm._v("detail")])], 1)])]), _vm._v(" "), _vm._m(0)])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header

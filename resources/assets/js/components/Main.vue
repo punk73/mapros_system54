@@ -84,6 +84,8 @@
                                         information status
 
                                         <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ error }}</strong></H2>
+
+                                        <a class="btn btn-info" @click.prevent="showDetailError" >detail</a>
                                     </div>
                                 </div>
                             </div>                            
@@ -272,7 +274,7 @@
                 // show modal containing the error 
                 console.log(this.detailError )
                 let errors = this.detailError.errors
-                this.toggleModal('error', JSON.stringify(errors) )
+                this.toggleModal('Information', JSON.stringify(errors) )
             },
 
             returnJoin(errors){
