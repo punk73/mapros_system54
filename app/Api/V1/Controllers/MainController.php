@@ -80,7 +80,7 @@ class MainController extends Controller
 		$result['production_date'] = trim( substr($board_id, 77, 8));
 		$result['lotno'] = trim( substr($board_id, 86, 20));
 		
-		if( $result['production_date'] !='' || $result['supplierLotno'] !='' ){
+		if( $result['production_date'] !='' || $result['lotno'] !='' ){
 			// get data
 			$data = $this->getCriticalScannerData($parameter);
 
