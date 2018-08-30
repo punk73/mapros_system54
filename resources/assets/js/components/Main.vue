@@ -81,9 +81,12 @@
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
                                     <div class="well costum-color text-center">
-                                        information status
+                                        information status: <br>
+                                        <div :class='{"text-danger": hasError, "text-success": !hasError }'>
+                                            <strong> {{error}} </strong>
+                                        </div>
 
-                                        <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ error }}</strong></H2>
+                                        <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
 
                                         <a class="btn btn-info" @click.prevent="showDetailError" >detail</a>
                                     </div>

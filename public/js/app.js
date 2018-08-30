@@ -13670,6 +13670,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 var axios = __webpack_require__(5);
 
@@ -44528,11 +44531,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "col-md-12 col-xs-12"
   }, [_c('div', {
     staticClass: "well costum-color text-center"
-  }, [_vm._v("\n                                      information status\n\n                                      "), _c('H2', {
+  }, [_vm._v("\n                                      information status: "), _c('br'), _vm._v(" "), _c('div', {
     class: {
       "text-danger": _vm.hasError, "text-success": !_vm.hasError
     }
-  }, [_c('strong', [_vm._v(_vm._s(_vm.error))])]), _vm._v(" "), _c('a', {
+  }, [_c('strong', [_vm._v(" " + _vm._s(_vm.error) + " ")])]), _vm._v(" "), _c('H2', {
+    class: {
+      "text-danger": _vm.hasError, "text-success": !_vm.hasError
+    }
+  }, [_c('strong', [_vm._v(_vm._s((_vm.hasError) ? 'NG' : 'OK'))])]), _vm._v(" "), _c('a', {
     staticClass: "btn btn-info",
     on: {
       "click": function($event) {
