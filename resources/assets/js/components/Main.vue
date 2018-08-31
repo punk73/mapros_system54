@@ -129,7 +129,6 @@
     <join v-if='showJoin' 
         :form='form'
         :errors='errors'
-        :hasError='hasError'
         @toggleJoin='toggleJoin'
     ></join>
   </div>
@@ -357,7 +356,15 @@
                 modal.message = error.response.data.message;
                 self.showModal = !self.showModal;
               })
-            }
+            },
+
+            toggleHasError(hasError = ''){
+                if(hasError == ''){
+                    this.hasError = !this.hasError;
+                }else{
+                    this.hasError = hasError;
+                }
+            },
         }
     }
 

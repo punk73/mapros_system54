@@ -58,7 +58,7 @@
 	import loading from './Loading';
 
 	export default {
-		props: ['errors', 'form', 'hasError' ],
+		props: ['errors', 'form' ],
 		components : {
 			modal, loading
 		},
@@ -73,6 +73,7 @@
 			return {
 				responseText:'',
 				isLoading : false,
+				hasError : false,
 			}
 		},
 
@@ -92,6 +93,7 @@
 				axios.post('api/main', form )
 				.then((response) => {
 					console.log('success', response)
+					this.hasError = false;
 					let message = response.data.message
 					this.responseText = message;
 					this.form.board_id = '';
@@ -99,6 +101,7 @@
 				})
 				.catch((error) => {
 					let data = error.response.data;
+					this.hasError = true;
                     console.log('ERROR', data)
                     let message = data.message;
                     this.responseText = message;
