@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(GradesTableSeeder::class);
         $this->call(ColumnSettingsTableSeeder::class);
         
+        $this->call(EndpointsTableSeeder::class);
     }
 }
