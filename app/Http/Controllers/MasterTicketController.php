@@ -24,7 +24,7 @@ class MasterTicketController extends Controller
 			$file .= $value.'.png';
 			//save to storage
 			if(!Storage::exists($file)){
-				QRCode::format('png')->size(57)->generate($value, $file );
+				QRCode::format('png')->size(57)->margin(1)->generate($value, $file );
 			}//save src in new array 
 			
 			$item = [
