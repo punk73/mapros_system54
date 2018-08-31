@@ -129,6 +129,7 @@
     <join v-if='showJoin' 
         :form='form'
         :errors='errors'
+        :hasError='hasError'
         @toggleJoin='toggleJoin'
     ></join>
   </div>

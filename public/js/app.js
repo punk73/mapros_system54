@@ -13399,6 +13399,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Modal__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Loading__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Loading___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Loading__);
 //
 //
 //
@@ -13446,14 +13448,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ['errors', 'form'],
+	props: ['errors', 'form', 'hasError'],
 	components: {
-		modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a
+		modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_2__Loading___default.a
 	},
 	mounted: function mounted() {
 		var errors = this.errors;
@@ -13463,7 +13473,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	},
 	data: function data() {
 		return {
-			responseText: ''
+			responseText: '',
+			isLoading: false
 		};
 	},
 
@@ -13480,18 +13491,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				'board_id': this.form.board_id
 			};
 
+			this.toggleLoading();
+
 			console.log(form);
 			__WEBPACK_IMPORTED_MODULE_1_axios___default.a.post('api/main', form).then(function (response) {
 				console.log('success', response);
 				var message = response.data.message;
 				_this.responseText = message;
 				_this.form.board_id = '';
+				_this.toggleLoading();
 			}).catch(function (error) {
 				var data = error.response.data;
 				console.log('ERROR', data);
 				var message = data.message;
 				_this.responseText = message;
+				_this.toggleLoading();
 			});
+		},
+		toggleLoading: function toggleLoading() {
+			this.isLoading = !this.isLoading;
 		},
 		togglejoin: function togglejoin() {
 			this.responseText = '';
@@ -13537,6 +13555,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Alert___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Alert__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Join__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Join___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__Join__);
+//
 //
 //
 //
@@ -44568,7 +44587,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }) : _vm._e(), _vm._v(" "), (_vm.showJoin) ? _c('join', {
     attrs: {
       "form": _vm.form,
-      "errors": _vm.errors
+      "errors": _vm.errors,
+      "hasError": _vm.hasError
     },
     on: {
       "toggleJoin": _vm.toggleJoin
@@ -44971,10 +44991,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   })])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
+    staticClass: "col-md-3 col-md-offset-4"
+  }, [(_vm.isLoading) ? _c('loading') : _vm._e()], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
     staticClass: "col-md-12 col-xs-12"
   }, [_c('div', {
-    staticClass: "well "
-  }, [_vm._v("\n                            " + _vm._s(_vm.responseText) + "\n                        ")])])])])]), _vm._v(" "), _c('div', {
+    class: {
+      "text-danger": _vm.hasError, "text-success": !_vm.hasError, "well": true, "text-center": true
+    }
+  }, [_c('strong', [_vm._v(" " + _vm._s(_vm.responseText) + " ")])])])])])]), _vm._v(" "), _c('div', {
     attrs: {
       "slot": "footer"
     },
