@@ -182,6 +182,7 @@
                     modelname: '',
                     ip       : '',
                     showSolder: true,
+                    isGenerateFile : false,
                 },
 
                 modal: {
@@ -203,7 +204,6 @@
 
         methods : {
             onSubmit(){
-                // this.verifyForm();
 
                 let data = this.form;
                 // console.log(data);
@@ -235,7 +235,23 @@
                     })
             },
 
-            verifyForm(){
+            download(data, filename, type) {
+                var file = new Blob([data], {type: type});
+                console.log('download');
+                if (window.navigator.msSaveOrOpenBlob) // IE10+
+                    window.navigator.msSaveOrOpenBlob(file, filename);
+                else { // Others
+                    var a = document.createElement("a"),
+                            url = URL.createObjectURL(file);
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);  
+                    }, 0); 
+                }
             },
 
             boardOnFocus(){
@@ -261,6 +277,10 @@
                 let message = response.data.message;
                 this.hasError = false;
                 this.error = message;
+
+                if(this.config.isGenerateFile){
+                    this.download(this.form.board_id, 'RUN_AVMT.txt' );
+                }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
                 this.form.board_id = '';

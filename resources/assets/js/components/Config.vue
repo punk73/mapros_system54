@@ -24,8 +24,15 @@
 
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
-                                    <input type="checkbox" id="checkbox" v-model="config.showSolder">
-                                    <label for="checkbox"> show solder options </label>
+                                    <input type="checkbox" id="showSolder" v-model="config.showSolder">
+                                    <label for="showSolder"> show solder options </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <input type="checkbox" id="isGenerateFile" v-model="config.isGenerateFile">
+                                    <label for="isGenerateFile"> Generate file on scan </label>
                                 </div>
                             </div>  
 
@@ -52,6 +59,7 @@
 					model:'',
 					ip:'',
 					showConfig: false,
+					isGenerateFile : false,
 				},
 			}
 		},

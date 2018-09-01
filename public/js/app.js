@@ -13343,6 +13343,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
@@ -13350,7 +13357,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			config: {
 				model: '',
 				ip: '',
-				showConfig: false
+				showConfig: false,
+				isGenerateFile: false
 			}
 		};
 	},
@@ -13775,7 +13783,8 @@ var axios = __webpack_require__(5);
             config: {
                 modelname: '',
                 ip: '',
-                showSolder: true
+                showSolder: true,
+                isGenerateFile: false
             },
 
             modal: {
@@ -13799,8 +13808,6 @@ var axios = __webpack_require__(5);
     methods: {
         onSubmit: function onSubmit() {
             var _this = this;
-
-            // this.verifyForm();
 
             var data = this.form;
             // console.log(data);
@@ -13829,7 +13836,24 @@ var axios = __webpack_require__(5);
                 _this.handleError(message, data);
             });
         },
-        verifyForm: function verifyForm() {},
+        download: function download(data, filename, type) {
+            var file = new Blob([data], { type: type });
+            console.log('download');
+            if (window.navigator.msSaveOrOpenBlob) // IE10+
+                window.navigator.msSaveOrOpenBlob(file, filename);else {
+                // Others
+                var a = document.createElement("a"),
+                    url = URL.createObjectURL(file);
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function () {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 0);
+            }
+        },
         boardOnFocus: function boardOnFocus() {
             console.log(this.$event);
             return;
@@ -13853,6 +13877,10 @@ var axios = __webpack_require__(5);
             var message = response.data.message;
             this.hasError = false;
             this.error = message;
+
+            if (this.config.isGenerateFile) {
+                this.download(this.form.board_id, 'RUN_AVMT.txt');
+            }
             // this.toggleAlert('Success', message );
             // this.showAlert = true;
             this.form.board_id = '';
@@ -44830,7 +44858,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     attrs: {
       "type": "checkbox",
-      "id": "checkbox"
+      "id": "showSolder"
     },
     domProps: {
       "checked": Array.isArray(_vm.config.showSolder) ? _vm._i(_vm.config.showSolder, null) > -1 : (_vm.config.showSolder)
@@ -44855,9 +44883,49 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('label', {
     attrs: {
-      "for": "checkbox"
+      "for": "showSolder"
     }
   }, [_vm._v(" show solder options ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.isGenerateFile),
+      expression: "config.isGenerateFile"
+    }],
+    attrs: {
+      "type": "checkbox",
+      "id": "isGenerateFile"
+    },
+    domProps: {
+      "checked": Array.isArray(_vm.config.isGenerateFile) ? _vm._i(_vm.config.isGenerateFile, null) > -1 : (_vm.config.isGenerateFile)
+    },
+    on: {
+      "change": function($event) {
+        var $$a = _vm.config.isGenerateFile,
+          $$el = $event.target,
+          $$c = $$el.checked ? (true) : (false);
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && (_vm.$set(_vm.config, "isGenerateFile", $$a.concat([$$v])))
+          } else {
+            $$i > -1 && (_vm.$set(_vm.config, "isGenerateFile", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
+          }
+        } else {
+          _vm.$set(_vm.config, "isGenerateFile", $$c)
+        }
+      }
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isGenerateFile"
+    }
+  }, [_vm._v(" Generate file on scan ")])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-3"
