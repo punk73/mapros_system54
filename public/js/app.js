@@ -13744,7 +13744,7 @@ var axios = __webpack_require__(5);
                 board_id: '',
                 nik: '',
                 modelname: '',
-                isSolder: false
+                is_solder: false
             },
 
             server: {
@@ -44519,31 +44519,31 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.form.isSolder),
-      expression: "form.isSolder"
+      value: (_vm.form.is_solder),
+      expression: "form.is_solder"
     }],
     attrs: {
       "type": "checkbox",
       "id": "checkbox"
     },
     domProps: {
-      "checked": Array.isArray(_vm.form.isSolder) ? _vm._i(_vm.form.isSolder, null) > -1 : (_vm.form.isSolder)
+      "checked": Array.isArray(_vm.form.is_solder) ? _vm._i(_vm.form.is_solder, null) > -1 : (_vm.form.is_solder)
     },
     on: {
       "change": function($event) {
-        var $$a = _vm.form.isSolder,
+        var $$a = _vm.form.is_solder,
           $$el = $event.target,
           $$c = $$el.checked ? (true) : (false);
         if (Array.isArray($$a)) {
           var $$v = null,
             $$i = _vm._i($$a, $$v);
           if ($$el.checked) {
-            $$i < 0 && (_vm.$set(_vm.form, "isSolder", $$a.concat([$$v])))
+            $$i < 0 && (_vm.$set(_vm.form, "is_solder", $$a.concat([$$v])))
           } else {
-            $$i > -1 && (_vm.$set(_vm.form, "isSolder", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
+            $$i > -1 && (_vm.$set(_vm.form, "is_solder", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
           }
         } else {
-          _vm.$set(_vm.form, "isSolder", $$c)
+          _vm.$set(_vm.form, "is_solder", $$c)
         }
       }
     }

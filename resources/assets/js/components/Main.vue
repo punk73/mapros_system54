@@ -67,7 +67,7 @@
 
                             <div v-if="config.showSolder" class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <input type="checkbox" id="checkbox" v-model="form.isSolder">
+                                    <input type="checkbox" id="checkbox" v-model="form.is_solder">
                                     <label for="checkbox"> is solder </label>
                                 </div>
                             </div>  
@@ -150,7 +150,7 @@
                     board_id: '',
                     nik: '',
                     modelname:'',
-                    isSolder:false,
+                    is_solder:false,
                 },
 
                 server:{
