@@ -13879,6 +13879,7 @@ var axios = __webpack_require__(5);
             this.error = message;
 
             if (this.config.isGenerateFile) {
+                if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
                 this.download(this.form.board_id, 'RUN_AVMT.txt');
             }
             // this.toggleAlert('Success', message );
