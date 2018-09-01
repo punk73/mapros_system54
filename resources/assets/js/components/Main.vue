@@ -298,7 +298,7 @@
                 // show modal containing the error 
                 console.log(this.detailError )
                 let errors = this.detailError.errors
-                this.toggleModal('Information', JSON.stringify(errors) )
+                this.toggleModal('Information', errors )
             },
 
             returnJoin(errors){

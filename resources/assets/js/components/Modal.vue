@@ -19,7 +19,10 @@
           		<div class="row">
           			<div class="col-md-12 col-xs-12 col-sm-12">
 			            <slot name="body">
-			              {{message}}
+			              <vue-json-pretty
+						      :data="message"
+						  >
+						  </vue-json-pretty>
 			            </slot>
           			</div>
           		</div>
@@ -41,15 +44,21 @@
 </template>
 
 <script>
+	import VueJsonPretty from 'vue-json-pretty'
 	export default {
 		props: {
 			header: {
 				type: String,
 			},
 			message: {
-				type: String,
+				
 			}
 		},
+
+		components : {
+			'vue-json-pretty' : VueJsonPretty
+		},
+
 		data(){
 			return {
 
