@@ -16500,7 +16500,7 @@ exports.push([module.i, "\n.custom-color{\n    background-image: none!important;
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(11)();
-exports.push([module.i, "\n.modal-mask {\n  position: fixed;\n  z-index: 9998;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, .5);\n  display: table;\n  transition: opacity .3s ease;\n  /*padding-right: 0 !important;*/\n}\n\n/*.modal-wrapper {\n  display: table-cell;\n  vertical-align: middle;\n}\n\n.modal-container {\n  width: 300px;\n  margin: 0px auto;\n  padding: 20px 30px;\n  background-color: #fff;\n  border-radius: 2px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n  transition: all .3s ease;\n  font-family: Helvetica, Arial, sans-serif;\n}\n\n.modal-header h3 {\n  margin-top: 0;\n  color: #42b983;\n}\n\n.modal-body {\n  margin: 20px 0;\n}*/\n\n/*.modal-default-button {\n  float: right;\n}*/\n\n/*\n * The following styles are auto-applied to elements with\n * transition=\"modal\" when their visibility is toggled\n * by Vue.js.\n *\n * You can easily play with the modal transition by editing\n * these styles.\n */\n\n/*.modal-enter {\n  opacity: 0;\n}\n\n.modal-leave-active {\n  opacity: 0;\n}*/\n", ""]);
+exports.push([module.i, "\n.modal-mask {\n\t  position: fixed;\n\t  z-index: 9998;\n\t  top: 0;\n\t  left: 0;\n\t  width: 100%;\n\t  height: 100%;\n\t  background-color: rgba(0, 0, 0, .5);\n\t  display: table;\n\t  transition: opacity .3s ease;\n\t  /*padding-right: 0 !important;*/\n}\n.modal-dialog {\n\t\toverflow-y: initial !important\n}\n.modal-body {\n\t\tmax-height: 60vh;\n    \toverflow-y: auto;\n}\n\n\t/*.modal-wrapper {\n\t  display: table-cell;\n\t  vertical-align: middle;\n\t}\n\n\t.modal-container {\n\t  width: 300px;\n\t  margin: 0px auto;\n\t  padding: 20px 30px;\n\t  background-color: #fff;\n\t  border-radius: 2px;\n\t  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n\t  transition: all .3s ease;\n\t  font-family: Helvetica, Arial, sans-serif;\n\t}\n\n\t.modal-header h3 {\n\t  margin-top: 0;\n\t  color: #42b983;\n\t}\n\n\t.modal-body {\n\t  margin: 20px 0;\n\t}*/\n\n\t/*.modal-default-button {\n\t  float: right;\n\t}*/\n\n\t/*\n\t * The following styles are auto-applied to elements with\n\t * transition=\"modal\" when their visibility is toggled\n\t * by Vue.js.\n\t *\n\t * You can easily play with the modal transition by editing\n\t * these styles.\n\t */\n\n\t/*.modal-enter {\n\t  opacity: 0;\n\t}\n\n\t.modal-leave-active {\n\t  opacity: 0;\n\t}*/\n", ""]);
 
 /***/ }),
 /* 47 */
@@ -44678,7 +44678,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "modal show",
     attrs: {
-      "id": "exampleModalCenter",
       "tabindex": "-1",
       "role": "dialog",
       "aria-labelledby": "exampleModalCenterTitle",
@@ -44712,7 +44711,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "aria-hidden": "true"
     }
   }, [_vm._v("×")])])])], 2), _vm._v(" "), _c('div', {
-    staticClass: "modal-body"
+    staticClass: "modal-body scrollable"
   }, [_c('div', {
     staticClass: "container-fluid"
   }, [_c('div', {
