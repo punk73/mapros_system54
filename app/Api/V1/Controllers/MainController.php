@@ -287,6 +287,11 @@ class MainController extends Controller
 
 			//isExists already implement is solder, so we dont need to check it again.
 			//if the code goes here, we save to immediately save the node;
+			if($node->getJudge() == 'SOLDER'){
+				throw new StoreResourceFailedException("DATA ALREADY SCAN OUT AS SOLDER!!", [
+					'node' => json_decode($node, true )
+				]);
+			}
 
 			$node->setStatus('IN');
 			$node->setJudge('SOLDER');
