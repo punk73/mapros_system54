@@ -25,9 +25,16 @@
                 </div>
 
                 <div class="form-group">
+                    <div class="col-md-3 col-md-offset-4">
+                        <loading v-if='isLoading' />
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <div class="col-md-12 col-xs-12">
-                        <div class="well ">
-                            {{responseText}}
+
+                        <div :class='{"text-danger": hasError, "text-success": !hasError, "well":true, "text-center":true }'>
+                            <strong> {{responseText}} </strong>
                         </div>
                     </div>
                 </div>   
@@ -48,11 +55,12 @@
 <script >
 	import modal from './Modal';
 	import axios from 'axios';
+	import loading from './Loading';
 
 	export default {
 		props: ['errors', 'form' ],
 		components : {
-			modal
+			modal, loading
 		},
 		mounted(){
 			let errors = this.errors;
@@ -63,7 +71,9 @@
 
 		data(){
 			return {
-				responseText:''
+				responseText:'',
+				isLoading : false,
+				hasError : false,
 			}
 		},
 
@@ -76,21 +86,31 @@
 					'modelname' : this.form.modelname,
 					'board_id': this.form.board_id ,
 				}
+				
+				this.toggleLoading();
 
 				console.log(form)
 				axios.post('api/main', form )
 				.then((response) => {
 					console.log('success', response)
+					this.hasError = false;
 					let message = response.data.message
 					this.responseText = message;
 					this.form.board_id = '';
+					this.toggleLoading();
 				})
 				.catch((error) => {
 					let data = error.response.data;
+					this.hasError = true;
                     console.log('ERROR', data)
                     let message = data.message;
                     this.responseText = message;
+                    this.toggleLoading();
 				});
+			},
+
+			toggleLoading(){
+				this.isLoading = !this.isLoading;
 			},
 
 			togglejoin(){

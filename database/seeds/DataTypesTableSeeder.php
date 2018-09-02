@@ -305,6 +305,24 @@ class DataTypesTableSeeder extends Seeder
                 'created_at' => '2018-08-26 07:37:12',
                 'updated_at' => '2018-08-26 07:37:12',
             ),
+            16 => 
+            array (
+                'id' => 26,
+                'name' => 'criticals',
+                'slug' => 'criticals',
+                'display_name_singular' => 'Critical',
+                'display_name_plural' => 'Criticals',
+                'icon' => '',
+                'model_name' => 'App\\Critical',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":""}',
+                'created_at' => '2018-08-30 14:39:25',
+                'updated_at' => '2018-08-30 14:39:25',
+            ),
         ));
         
         

@@ -78,13 +78,20 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="form-group">
+                            <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
-                                    <div class="well ">
-                                        {{responseText}}
+                                    <div class="well costum-color text-center">
+                                        information status: <br>
+                                        <div :class='{"text-danger": hasError, "text-success": !hasError }'>
+                                            <strong> {{error}} </strong>
+                                        </div>
+
+                                        <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
+
+                                        <a class="btn btn-info" @click.prevent="showDetailError" >detail</a>
                                     </div>
                                 </div>
-                            </div> -->                            
+                            </div>                            
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
@@ -243,7 +250,7 @@
                 this.detailError = detailError;
                 this.hasError = true;
                 this.form.board_id='';
-                this.toggleAlert();
+                // this.toggleAlert();
                 // this.showAlert = true;
                 // this.$refs.board_id.$el.focus();
             },
@@ -254,7 +261,7 @@
                 let message = response.data.message;
                 this.hasError = false;
                 this.error = message;
-                this.toggleAlert('Success', message );
+                // this.toggleAlert('Success', message );
                 // this.showAlert = true;
                 this.form.board_id = '';
                 // set focus
@@ -270,7 +277,7 @@
                 // show modal containing the error 
                 console.log(this.detailError )
                 let errors = this.detailError.errors
-                this.toggleModal('error', JSON.stringify(errors) )
+                this.toggleModal('Information', JSON.stringify(errors) )
             },
 
             returnJoin(errors){
@@ -349,7 +356,15 @@
                 modal.message = error.response.data.message;
                 self.showModal = !self.showModal;
               })
-            }
+            },
+
+            toggleHasError(hasError = ''){
+                if(hasError == ''){
+                    this.hasError = !this.hasError;
+                }else{
+                    this.hasError = hasError;
+                }
+            },
         }
     }
 
@@ -358,6 +373,6 @@
 <style>
     .custom-color{
         background-image: none!important;
-        background-color: white !important;
+        background-color: 'yellow' !important;
     }
 </style>

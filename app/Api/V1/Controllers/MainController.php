@@ -80,7 +80,7 @@ class MainController extends Controller
 		$result['production_date'] = trim( substr($board_id, 77, 8));
 		$result['lotno'] = trim( substr($board_id, 86, 20));
 		
-		if( $result['production_date'] !='' || $result['supplierLotno'] !='' ){
+		if( $result['production_date'] !='' || $result['lotno'] !='' ){
 			// get data
 			$data = $this->getCriticalScannerData($parameter);
 
@@ -341,7 +341,7 @@ class MainController extends Controller
 		}
 	}
 
-	private function runProcedureTicket(Node $node){
+	private function runProcedureTicket(Node $node, $isRunningMaster=false ){
 		// memastikan proses ini belum In && join proses
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) ){
 
@@ -358,7 +358,8 @@ class MainController extends Controller
 				'nik' => $node->getNik(),
 				'ip' => $node->getScanner()['ip_address'],
 				'dummy_id' => $node->dummy_id, 
-				'guid'=>    $node->getGuidTicket(), //$node->generateGuid(),
+				'guid'=> ( $isRunningMaster == false ) ? $node->getGuidTicket() : $node->getGuidMaster(),
+				'message' => 'runProcedureTicket',
 			]);
 		};
 
@@ -383,10 +384,11 @@ class MainController extends Controller
 				'ip' => $node->getScanner()['ip_address'],
 				'dummy_id' => $node->dummy_id, 
 				'guid'=>    $node->getGuidMaster(),
+				'message' => 'master procedures',
 			]);
 		};
 
-		$this->runProcedureTicket($node);
+		$this->runProcedureTicket($node , true );
 		
 		return $this->returnValue;
 	}
