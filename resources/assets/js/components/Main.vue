@@ -178,11 +178,14 @@
                 showModal: false,
                 showConfirm:false,
 
+                // it's basically will be override by getConfig method
                 config : {
                     modelname: '',
                     ip       : '',
                     showSolder: true,
                     isGenerateFile : false,
+                    isSendAjax : false,
+                    uri : '',
                 },
 
                 modal: {

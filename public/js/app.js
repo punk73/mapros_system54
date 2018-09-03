@@ -13806,11 +13806,14 @@ var axios = __webpack_require__(5);
             showModal: false,
             showConfirm: false,
 
+            // it's basically will be override by getConfig method
             config: {
                 modelname: '',
                 ip: '',
                 showSolder: true,
-                isGenerateFile: false
+                isGenerateFile: false,
+                isSendAjax: false,
+                uri: ''
             },
 
             modal: {
@@ -45027,7 +45030,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "for": "isSendAjax"
     }
-  }, [_vm._v(" send ajax to avn test / avmt ")])])]), _vm._v(" "), (_vm.config.isSendAjax) ? _c('div', {
+  }, [_vm._v(" send data to avn test / avmt ")])])]), _vm._v(" "), (_vm.config.isSendAjax) ? _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-3 control-label",

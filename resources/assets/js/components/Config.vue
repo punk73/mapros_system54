@@ -39,7 +39,7 @@
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <input type="checkbox" id="isSendAjax" v-model="config.isSendAjax">
-                                    <label for="isSendAjax"> send ajax to avn test / avmt </label>
+                                    <label for="isSendAjax"> send data to avn test / avmt </label>
                                 </div>
                             </div>
 
