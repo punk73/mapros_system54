@@ -282,6 +282,11 @@
                     if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
                     this.download(this.form.board_id, 'RUN_AVMT.txt' );
                 }
+
+                if( this.config.isSendAjax ){
+                    if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
+                    this.sendAjax()    
+                }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
                 this.form.board_id = '';
@@ -354,6 +359,20 @@
 
                 localStorage.setItem('config', JSON.stringify(newConfig) );
                 // changes localstorage
+            },
+
+            sendAjax(){
+                console.log(this.config, 'sendAjax methods triggered')
+                axios.get(this.config.uri, {
+                    params : {
+                        valscan : this.form.board_id
+                    }
+                }).then( (response) => {
+                    console.log('Success', response )
+                }).catch((error) => {
+                    console.log('error', error )
+                    
+                })
             },
 
             getInfo(){

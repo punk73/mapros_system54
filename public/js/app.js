@@ -13297,6 +13297,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -13358,7 +13374,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				model: '',
 				ip: '',
 				showConfig: false,
-				isGenerateFile: false
+				isGenerateFile: false,
+				isSendAjax: false,
+				uri: ''
 			}
 		};
 	},
@@ -13368,6 +13386,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 	methods: {
 		save: function save() {
+			if (this.config.isSendAjax) {
+				if (_typeof(this.config.uri) == undefined) {
+					alert('you need to fill URI');
+					return;
+				}
+			}
+
 			localStorage.setItem('config', JSON.stringify(this.config));
 			this.$router.push('/');
 		},
@@ -13882,6 +13907,11 @@ var axios = __webpack_require__(5);
                 if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
                 this.download(this.form.board_id, 'RUN_AVMT.txt');
             }
+
+            if (this.config.isSendAjax) {
+                if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
+                this.sendAjax();
+            }
             // this.toggleAlert('Success', message );
             // this.showAlert = true;
             this.form.board_id = '';
@@ -13949,6 +13979,18 @@ var axios = __webpack_require__(5);
 
             localStorage.setItem('config', JSON.stringify(newConfig));
             // changes localstorage
+        },
+        sendAjax: function sendAjax() {
+            console.log(this.config, 'sendAjax methods triggered');
+            axios.get(this.config.uri, {
+                params: {
+                    valscan: this.form.board_id
+                }
+            }).then(function (response) {
+                console.log('Success', response);
+            }).catch(function (error) {
+                console.log('error', error);
+            });
         },
         getInfo: function getInfo() {
             var modal = this.modal;
@@ -44945,6 +44987,77 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "for": "isGenerateFile"
     }
   }, [_vm._v(" Generate file on scan ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.isSendAjax),
+      expression: "config.isSendAjax"
+    }],
+    attrs: {
+      "type": "checkbox",
+      "id": "isSendAjax"
+    },
+    domProps: {
+      "checked": Array.isArray(_vm.config.isSendAjax) ? _vm._i(_vm.config.isSendAjax, null) > -1 : (_vm.config.isSendAjax)
+    },
+    on: {
+      "change": function($event) {
+        var $$a = _vm.config.isSendAjax,
+          $$el = $event.target,
+          $$c = $$el.checked ? (true) : (false);
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && (_vm.$set(_vm.config, "isSendAjax", $$a.concat([$$v])))
+          } else {
+            $$i > -1 && (_vm.$set(_vm.config, "isSendAjax", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
+          }
+        } else {
+          _vm.$set(_vm.config, "isSendAjax", $$c)
+        }
+      }
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isSendAjax"
+    }
+  }, [_vm._v(" send ajax to avn test / avmt ")])])]), _vm._v(" "), (_vm.config.isSendAjax) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label",
+    attrs: {
+      "for": "uri"
+    }
+  }, [_vm._v("URI")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.uri),
+      expression: "config.uri"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.config.uri)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.config, "uri", $event.target.value)
+      }
+    }
+  })])]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-3"
