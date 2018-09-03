@@ -26,17 +26,17 @@ class Critical extends Model
 	{
 	    if ($eventName == 'created')
 	    {
-	        return $this->table .' "'. $this->getData() . '" was created';
+	        return $this->table .' "'. $this->part_no . '/' . $this->po .'/'. $this->qty .'/'. $this->supp_code .'/'. $this->unique_id .'/'. $this->production_date .'/'. $this->lotno  . '" was created';
 	    }
 
 	    if ($eventName == 'updated')
 	    {
-	        return $this->table .' "'. $this->getData() . '" was updated';
+	        return $this->table .' "'. $this->part_no . '/' . $this->po .'/'. $this->qty .'/'. $this->supp_code .'/'. $this->unique_id .'/'. $this->production_date .'/'. $this->lotno  . '" was updated';
 	    }
 
 	    if ($eventName == 'deleted')
 	    {
-	        return $this->table .' "'. $this->getData() . '" was deleted';
+	        return $this->table .' "'. $this->part_no . '/' . $this->po .'/'. $this->qty .'/'. $this->supp_code .'/'. $this->unique_id .'/'. $this->production_date .'/'. $this->lotno  . '" was deleted';
 	    }
 
 	    return '';
