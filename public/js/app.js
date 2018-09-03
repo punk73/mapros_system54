@@ -13537,6 +13537,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		this.form.board_id = '';
 		var form = this.form;
 		console.log({ errors: errors, form: form });
+		document.getElementById('join-board-id').focus();
 	},
 	data: function data() {
 		return {
@@ -45184,10 +45185,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "form-control",
     attrs: {
-      "id": "board_id",
+      "tabindex": "-1",
+      "id": "join-board-id",
       "type": "board_id",
       "name": "board_id",
-      "required": ""
+      "required": "",
+      "autofocus": ""
     },
     domProps: {
       "value": (_vm.form.board_id)

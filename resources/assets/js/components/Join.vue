@@ -20,7 +20,7 @@
                     <label for="board_id" class="col-md-4 control-label">Board Id</label>
 
                     <div class="col-md-6">
-                        <input id="board_id" v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
+                        <input tabindex="-1" id="join-board-id" v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required autofocus>
                     </div>
                 </div>
 
@@ -67,6 +67,7 @@
 			this.form.board_id ='';
 			let form = this.form;
 			console.log({ errors, form })
+			document.getElementById('join-board-id').focus();
 		},
 
 		data(){
