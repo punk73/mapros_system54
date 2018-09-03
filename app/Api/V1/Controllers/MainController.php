@@ -32,7 +32,7 @@ class MainController extends Controller
 	protected $returnValue = [
 		'success' => true,
 		'message' => 'data saved!',
-		'node'    => null  
+		'node'    => null
 	];
 
 	private function getParameter (BoardRequest $request){
@@ -174,6 +174,7 @@ class MainController extends Controller
 
 				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 100;
+				$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
 
 				return $this->returnValue;
 			}
@@ -209,6 +210,8 @@ class MainController extends Controller
 				//$this->returnValue['node'] = $node;
 
 				$this->returnValue['line_code'] = 131;
+				$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+
 				return $this->returnValue;
 			}
 
@@ -251,6 +254,7 @@ class MainController extends Controller
 				};
 				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 176;
+				$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
 
 				return $this->returnValue;
 			}
@@ -276,6 +280,8 @@ class MainController extends Controller
 						}
 
 						$this->returnValue['line_code'] = 278;
+						$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+
 						return $this->returnValue;
 					}
 				}
@@ -303,6 +309,8 @@ class MainController extends Controller
 			//$this->returnValue['node'] = $node;
 
 			$this->returnValue['line_code'] = 205;
+			$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+
 			return $this->returnValue;
 		}
 
@@ -342,6 +350,8 @@ class MainController extends Controller
 			$node->updateChildren();
 
 			$this->returnValue['line_code'] = 239;
+			$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+			
 			return $this->returnValue;
 		}
 	}
@@ -395,6 +405,7 @@ class MainController extends Controller
 
 		$this->runProcedureTicket($node , true );
 		
+		$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
 		return $this->returnValue;
 	}
 
