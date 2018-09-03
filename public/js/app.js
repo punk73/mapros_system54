@@ -13366,6 +13366,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
@@ -13376,6 +13383,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				showConfig: false,
 				isGenerateFile: false,
 				isSendAjax: false,
+				isShowDeleteButton: false,
 				uri: ''
 			}
 		};
@@ -13813,6 +13821,7 @@ var axios = __webpack_require__(5);
                 showSolder: true,
                 isGenerateFile: false,
                 isSendAjax: false,
+                isShowDeleteButton: false,
                 uri: ''
             },
 
@@ -13920,6 +13929,26 @@ var axios = __webpack_require__(5);
             // this.showAlert = true;
             this.form.board_id = '';
             // set focus
+        },
+        deleteOnClick: function deleteOnClick() {
+            var _this2 = this;
+
+            var data = this.form;
+            var self = this;
+            this.toggleLoading();
+
+            axios.delete('api/main', data).then(function (response) {
+                self.toggleLoading();
+                self.handleSucces(response);
+                console.log(response);
+            }).catch(function (error) {
+                var data = error.response.data;
+                console.log(data);
+                var message = data.message;
+                self.toggleLoading();
+
+                _this2.handleError(message, data);
+            });
         },
         returnViewConfirmation: function returnViewConfirmation(error) {
             this.server.modelname = error.errors['server-modelname'][0];
@@ -44667,7 +44696,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.showDetailError($event)
       }
     }
-  }, [_vm._v("detail")])], 1)])]), _vm._v(" "), _vm._m(0)])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [_vm._v("detail")])], 1)])]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: "col-md-6 col-md-offset-4"
+  }, [_c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("\n                                      Submit\n                                  ")]), _vm._v(" "), (_vm.config.isShowDeleteButton) ? _c('button', {
+    staticClass: "btn btn-danger",
+    attrs: {
+      "type": "button"
+    },
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        return _vm.deleteOnClick($event)
+      }
+    }
+  }, [_vm._v("\n                                      Delete\n                                  ")]) : _vm._e()])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
@@ -44694,18 +44743,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "toggleJoin": _vm.toggleJoin
     }
   }) : _vm._e()], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "form-group"
-  }, [_c('div', {
-    staticClass: "col-md-6 col-md-offset-4"
-  }, [_c('button', {
-    staticClass: "btn btn-primary",
-    attrs: {
-      "type": "submit"
-    }
-  }, [_vm._v("\n                                      Submit\n                                  ")])])])
-}]}
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -45062,6 +45100,45 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   })])]) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.isShowDeleteButton),
+      expression: "config.isShowDeleteButton"
+    }],
+    attrs: {
+      "type": "checkbox"
+    },
+    domProps: {
+      "checked": Array.isArray(_vm.config.isShowDeleteButton) ? _vm._i(_vm.config.isShowDeleteButton, null) > -1 : (_vm.config.isShowDeleteButton)
+    },
+    on: {
+      "change": function($event) {
+        var $$a = _vm.config.isShowDeleteButton,
+          $$el = $event.target,
+          $$c = $$el.checked ? (true) : (false);
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && (_vm.$set(_vm.config, "isShowDeleteButton", $$a.concat([$$v])))
+          } else {
+            $$i > -1 && (_vm.$set(_vm.config, "isShowDeleteButton", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
+          }
+        } else {
+          _vm.$set(_vm.config, "isShowDeleteButton", $$c)
+        }
+      }
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isShowDeleteButton"
+    }
+  }, [_vm._v(" show delete button ")])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-3"

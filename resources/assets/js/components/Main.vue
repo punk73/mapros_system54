@@ -99,9 +99,9 @@
                                         Submit
                                     </button>
 
-                                    <!-- <button @click='toggleJoin'  type="button" class="btn btn-primary">
-                                        show modal
-                                    </button> -->
+                                    <button v-if='config.isShowDeleteButton' @click.prevent='deleteOnClick'  type="button" class="btn btn-danger">
+                                        Delete
+                                    </button>
 
                                 </div>
                             </div>
@@ -185,6 +185,7 @@
                     showSolder: true,
                     isGenerateFile : false,
                     isSendAjax : false,
+                    isShowDeleteButton : false,
                     uri : '',
                 },
 
@@ -294,6 +295,27 @@
                 // this.showAlert = true;
                 this.form.board_id = '';
                 // set focus
+            },
+
+            deleteOnClick(){
+                let data = this.form;
+                let self = this;
+                this.toggleLoading();
+
+                axios.delete('api/main', data )
+                    .then((response) => {
+                        self.toggleLoading()
+                        self.handleSucces(response)
+                        console.log(response)
+                    })
+                    .catch( (error) => {
+                        let data = error.response.data;
+                        console.log(data)
+                        let message = data.message;
+                        self.toggleLoading()
+                        
+                        this.handleError(message, data );
+                    })
             },
 
             returnViewConfirmation(error){

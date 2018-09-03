@@ -492,6 +492,31 @@ class Node
 		}
 	}
 
+	public function hasChildren(){
+		if($this->getModelType() == 'board' ){
+			return false;
+		}
+
+		if($this->getModelType() == 'master'){
+			$ticket = Ticket::where('guid_master', $this->getGuidMaster() )
+			->where('scanner_id', $this->scanner_id )
+			->exists();
+
+			$board = Board::where('guid_master', $this->getGuidMaster() )
+			->where('scanner_id', $this->scanner_id )
+			->exists();
+
+			return ( $ticket || $board );
+		}
+
+		if($this->getModelType() == 'ticket'){
+			return Board::where('guid_ticket', $this->getGuidTicket() )
+			->where('scanner_id', $this->scanner_id )
+			->exists();
+		}		
+
+	}
+
 	public function isGuidGenerated($paramType = null ){
 		if (is_null($this->model)) {
 			throw new StoreResourceFailedException("node model is null", [
@@ -657,6 +682,15 @@ class Node
 		$this->updateGuidSibling();
 
 		return $model->save();
+	}
+
+	public function delete(){
+		if($this->hasChildren() == false ){
+
+			return $this->model->where($this->dummy_column, $this->dummy_id )
+			->where('scanner_id', $this->scanner_id )
+			->delete();
+		}
 	}
 
 	// no longer use due to huge latency

@@ -50,6 +50,13 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <input type="checkbox" v-model="config.isShowDeleteButton">
+                                    <label for="isShowDeleteButton"> show delete button </label>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-3 col-md-offset-3">
                                     <a href="#/" class="btn btn-primary"><i class="fa fa-arrow-circle-left float-right"></i></a>
@@ -75,6 +82,7 @@
 					showConfig: false,
 					isGenerateFile : false,
 					isSendAjax : false,
+					isShowDeleteButton : false,
 					uri : '',
 				},
 			}

@@ -409,5 +409,12 @@ class MainController extends Controller
 		return $this->returnValue;
 	}
 
+	public function destroy(BoardRequest $request){
+		$parameter = $this->getParameter($request);
+		$node = new Node($parameter);
+
+		$this->returnValue['message'] = $node->delete() .' Data Deleted!!';
+		return $this->returnValue;
+	}
 
 }
