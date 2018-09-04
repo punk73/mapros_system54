@@ -416,7 +416,7 @@ class Node
 		}
 
 		$guid = $this->model
-			->where( $this->dummy_column, $this->dummy_id )
+			->where( function($query){ $this->ignoreSideQuery($query); } )
 			->orderBy('id', 'desc');
 
 		if( $this->getModelType() == 'ticket' ){
@@ -962,7 +962,7 @@ class Node
 
 			$model = $this->model
 				->where( 'scanner_id' , $this->scanner_id  )
-				->where( $this->dummy_column, $this->dummy_id )
+				->where( function($query){ $this->ignoreSideQuery($query); } )
 				->orderBy('id', 'desc') //order menurun
 				->first();
 
