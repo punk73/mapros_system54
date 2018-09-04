@@ -130,6 +130,7 @@
         :form='form'
         :errors='errors'
         @toggleJoin='toggleJoin'
+        @toggleModal='toggleModal'
     ></join>
   </div>
 </template>
