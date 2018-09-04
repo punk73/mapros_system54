@@ -358,7 +358,7 @@ class MainController extends Controller
 
 	private function runProcedureTicket(Node $node, $isRunningMaster=false ){
 		// memastikan proses ini belum In && join proses
-		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) ){
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) && ($isRunningMaster == false) ){
 
 			$node->setStatus('IN');
 			$node->setJudge('OK');
