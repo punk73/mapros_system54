@@ -374,7 +374,7 @@ class Node
 	}
 
 	public function ignoreSideQuery($query){
-		if(strlen($this->dummy_id) <= 16 ){
+		if(strlen($this->dummy_id) == 16 ){
 			if( $this->getModelType() == 'board' ){
 				$tmp = $this->getDummyParent();
 				
