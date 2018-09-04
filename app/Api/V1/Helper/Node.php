@@ -637,7 +637,8 @@ class Node
 			// masuk kesini jika internal;
 			$model = $this->model
 			->where( 'scanner_id' , $this->scanner_id  )
-			->where( $this->dummy_column, $this->dummy_id );
+			->where( function($query){ $this->ignoreSideQuery($query); } );
+			// ->where( $this->dummy_column, $this->dummy_id );
 
 			if (!is_null($status)) {
 				$model = $model->where('status', 'like', $status.'%' );
