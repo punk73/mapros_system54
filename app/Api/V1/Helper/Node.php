@@ -394,10 +394,10 @@ class Node
 					->orWhere($this->dummy_column, $parentA )
 					->orWhere($this->dummy_column, $parentB );
 
-			}else {
-				// ticket & master
-				$query->where( $this->dummy_column, $this->dummy_id );	
 			}
+		}else {
+			// ticket & master
+			$query->where( $this->dummy_column, $this->dummy_id );	
 		}
 	}
 
