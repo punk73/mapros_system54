@@ -67,7 +67,7 @@ class NodeTest extends TestCase
         $board->scanner_id = 11; //scanner_id untuk ip ::1
         $board->board_id = $this->parameter['board_id'];
         $board->scan_nik = $this->parameter['nik'];
-        $board->status = 'in';
+        $board->status = 'IN';
         $board->save();
     }
 
@@ -103,8 +103,6 @@ class NodeTest extends TestCase
         $this->assertGreaterThan( 0, count($board));
 
         $node = new Node($this->parameter);
-
-
 
         $this->assertEquals(11, $node->scanner_id );
 

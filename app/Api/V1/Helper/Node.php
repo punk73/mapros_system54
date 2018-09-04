@@ -633,7 +633,7 @@ class Node
 			]);
 		}
 
-		if($this->lineprocess['type'] === 1 ){
+		if($this->lineprocess['type'] == 1 ){
 			// masuk kesini jika internal;
 			$model = $this->model
 			->where( 'scanner_id' , $this->scanner_id  )
