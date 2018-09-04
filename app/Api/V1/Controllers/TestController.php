@@ -26,8 +26,11 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		return $this->testGuzzle($request);
+		return $this->testNode();
+	}
 
+	public function testNode(){
+		return 'wawa';
 	}
 
 	public function testGuzzle(Request $request){

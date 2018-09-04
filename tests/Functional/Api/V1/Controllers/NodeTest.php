@@ -20,7 +20,7 @@ class NodeTest extends TestCase
     protected $parameter = [
         'board_id'=> '000027A010010002', //KW-R710H3A9N
         'nik' => '39596',
-        'ip' => '3', //localhost scanner
+        'ip' => '11', //localhost scanner
         'is_solder' => false,
         'modelname' => 'NMZK-W69DJN'
     ];
@@ -96,7 +96,7 @@ class NodeTest extends TestCase
         $this->seedDb();
 
         $board = Board::all();
-        $scanners = Scanner::where('ip_address', '::1')->get();
+        $scanners = Scanner::where('id', 11 )->get();
 
         // assertGreaterThan( $idealValue , $assertedValue )
         $this->assertGreaterThan( 0, count($scanners));
@@ -104,7 +104,14 @@ class NodeTest extends TestCase
 
         $node = new Node($this->parameter);
 
+
+
         $this->assertEquals(11, $node->scanner_id );
+
+
+        fwrite(STDOUT, $node );
+
+        fwrite(STDOUT, $board );
         // assertEquals($expected, $actual )
         $this->assertEquals( true, $node->isExists() );
     }

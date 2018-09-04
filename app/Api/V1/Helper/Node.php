@@ -390,7 +390,10 @@ class Node
 				$b[6] = 'B';
 	
 				$query->where($this->dummy_column, $a )
-					->orWhere($this->dummy_column, $b );
+					->orWhere($this->dummy_column, $b )
+					->orWhere($this->dummy_column, $parentA )
+					->orWhere($this->dummy_column, $parentB );
+
 			}else {
 				// ticket & master
 				$query->where( $this->dummy_column, $this->dummy_id );	
