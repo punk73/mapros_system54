@@ -447,7 +447,9 @@ class Node
 	* this method called in setGuidMaster & setGuidTicket for verification
 	*/
 	public function verifyModelnameAndLotno($type = 'ticket'){
-		// get board based on guid; wheter it is 
+		// get board based on guid; wheter it is
+		return ; //non aktifkan untuk pp
+
 		if($type == 'ticket'){
 			$prevBoard = Board::where( 'guid_ticket' , '!=', null )
 				->where( 'guid_ticket' , $this->guid_ticket )
