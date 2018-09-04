@@ -18,11 +18,11 @@ class NodeTest extends TestCase
     use DatabaseMigrations;
 
     protected $parameter = [
-        'board_id'=> '00001IA01001007', //KW-R710H3A9N
+        'board_id'=> '000027A010010002', //KW-R710H3A9N
         'nik' => '39596',
-        'ip' => '::1', //localhost scanner
+        'ip' => '3', //localhost scanner
         'is_solder' => false,
-        'modelname' => 'KW-R710H3A9N'
+        'modelname' => 'NMZK-W69DJN'
     ];
 
     /*
@@ -254,7 +254,13 @@ class NodeTest extends TestCase
         $node = new Node($this->parameter);
 
         $this->assertEquals(false, $node->isGuidGenerated() );
+    }
 
+    public function testGetDummyParrent(){
+        $node = new Node($this->parameter, true ); //debug
+        $node->setDummyId($this->parameter['board_id']);
+
+        $this->assertEquals('000027A000010002', $node->getDummyParent() );
     }
 
 }

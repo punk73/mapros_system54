@@ -184,6 +184,10 @@ class Node
 
 	}
 
+	public function setDummyId($dummy_id){
+		$this->dummy_id = $dummy_id;
+	}
+
 	public function getColumnSetting(){
 		return $this->column_setting;
 	}
@@ -360,6 +364,31 @@ class Node
 
 	public function getUniqueId(){
 		return $this->unique_id;
+	}
+
+	public function getDummyParent(){
+		$tmp = str_split($this->dummy_id);
+		$tmp[7] = 0;
+		$tmp[8] = 0;
+		return implode('', $tmp );
+	}
+
+	public function ignoreSideQuery($query){
+		if(strlen($this->dummy_id) <= 16 ){.
+			if( $this->getModelType() == 'board' ){
+				$tmp = $this->getDummyParent();
+				$a = $this->dummy_id;
+				$a[6] = 'A';
+				$b = $this->dummy_id;
+				$b[6] = 'B';
+	
+				$query->where($this->dummy_column, $a )
+					->orWhere($this->dummy_column, $b );
+			}else {
+				// ticket & master
+				$query->where( $this->dummy_column, $this->dummy_id );	
+			}
+		}
 	}
 
 	// we need to changes this method to acomodate the masters 
