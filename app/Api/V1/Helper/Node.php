@@ -734,9 +734,17 @@ class Node
 	public function delete(){
 		if($this->hasChildren() == false ){
 
-			return $this->model->where($this->dummy_column, $this->dummy_id )
-			->where('scanner_id', $this->scanner_id )
-			->delete();
+			$model =  $this->model->where($this->dummy_column, $this->dummy_id )
+			->where('scanner_id', $this->scanner_id );
+
+			if($this->getModelType() == 'master'){
+				// make sure the finished dummy can be reuse;
+				$model = $model->where('serial_no', null );
+			}else if($this->getModelType() == 'ticket'){
+				$model = $model->where('guid_master', null );
+			}
+
+			$model = $model->delete();
 		}
 	}
 
