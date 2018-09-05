@@ -656,7 +656,7 @@ class Node
 			if($this->getModelType() == 'master'){
 				// make sure the finished dummy can be reuse;
 				$model = $model->where('serial_no', null );
-			}else if($this->getModelType() == 'master'){
+			}else if($this->getModelType() == 'ticket'){
 				$model = $model->where('guid_master', null );
 			}
 
@@ -970,8 +970,16 @@ class Node
 			$model = $this->model
 				->where( 'scanner_id' , $this->scanner_id  )
 				->where( function($query){ $this->ignoreSideQuery($query); } )
-				->orderBy('id', 'desc') //order menurun
-				->first();
+				->orderBy('id', 'desc'); //order menurun
+
+			if($this->getModelType() == 'master'){
+				// make sure the finished dummy can be reuse;
+				$model = $model->where('serial_no', null );
+			}else if($this->getModelType() == 'ticket'){
+				$model = $model->where('guid_master', null );
+			}
+
+			$model = $model->first();
 
 			if($model !== null){
 				$this->setStatus($model->status );
