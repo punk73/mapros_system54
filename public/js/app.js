@@ -13520,6 +13520,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -13584,9 +13594,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			this.responseText = '';
 			this.form.board_id = '';
 			this.$emit('toggleJoin');
-		},
-		showDetail: function showDetail() {
-			this.$emit('toggleModal', 'Informations', this.responseText);
 		}
 	}
 
@@ -45335,15 +45342,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     class: {
       "text-danger": _vm.hasError, "text-success": !_vm.hasError, "well": true, "text-center": true
     }
-  }, [_c('strong', [_vm._v(" " + _vm._s(_vm.responseText) + " ")])]), _vm._v(" "), _c('button', {
-    staticClass: "btn btn-info",
-    on: {
-      "click": function($event) {
-        $event.preventDefault();
-        return _vm.showDetail($event)
-      }
-    }
-  }, [_vm._v("Detail")])])])])]), _vm._v(" "), _c('div', {
+  }, [_c('strong', [_vm._v(" " + _vm._s(_vm.responseText) + " ")])])])])])]), _vm._v(" "), _c('div', {
     attrs: {
       "slot": "footer"
     },
@@ -45353,7 +45352,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.togglejoin
     }
-  }, [_vm._v("\n                Close\n            ")])])])
+  }, [_vm._v("\n                Close\n            ")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-success",
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        return _vm.onSubmit($event)
+      }
+    }
+  }, [_vm._v("\n                Submit\n            ")])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

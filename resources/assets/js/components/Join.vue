@@ -5,6 +5,17 @@
 		</div>
 		<div slot='body' class='scrollable' >
 			<form class="form-horizontal scrollable" role="form" @submit.prevent="onSubmit" >
+				<!-- we don't need view to show the data, everything handle by data -->
+				<!-- <div v-for="(item, key) in errors">
+					<div hidden="true" v-if='Array.isArray(item) && key != "message" ' class="form-group">
+                        <label for="board_id" class="col-md-4 control-label">{{key}}</label>
+
+                        <div class="col-md-6">
+                            <input id="key" type="input" class="form-control" name="key" v-model='item[0]' required>
+                        </div>
+                    </div>
+				</div> -->
+
                 <div class="form-group">
                     <label for="board_id" class="col-md-4 control-label">Board Id</label>
 
@@ -21,11 +32,10 @@
 
                 <div class="form-group">
                     <div class="col-md-12 col-xs-12">
+
                         <div :class='{"text-danger": hasError, "text-success": !hasError, "well":true, "text-center":true }'>
                             <strong> {{responseText}} </strong>
                         </div>
-                    	<button class="btn btn-info" @click.prevent='showDetail'>Detail</button>
-                        
                     </div>
                 </div>   
             </form>			
@@ -34,9 +44,9 @@
 			<button class="btn btn-danger" @click="togglejoin">
                 Close
             </button>
-			<!-- <button class="btn btn-success" @click.prevent="onSubmit">
+			<button class="btn btn-success" @click.prevent="onSubmit">
                 Submit
-            </button> -->
+            </button>
 		</div>
 	</modal>
 	
@@ -109,10 +119,6 @@
 				this.form.board_id='';
 				this.$emit('toggleJoin')
 			},
-
-			showDetail(){
-				this.$emit('toggleModal', 'Informations', this.responseText )
-			}
 		}
 
 	}
