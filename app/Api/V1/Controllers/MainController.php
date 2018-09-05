@@ -269,7 +269,7 @@ class MainController extends Controller
 		if($node->getStatus() == 'OUT'){
 			if($node->is_solder == false){
 				// cek current judge
-				if(!$node->getJudge() == 'REWORK'){
+				if($node->getJudge() != 'REWORK'){
 					if($node->isRepaired()){
 						$node->setStatus('IN');
 						$node->setJudge('REWORK');
