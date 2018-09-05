@@ -653,6 +653,13 @@ class Node
 				$model = $model->where('judge', 'like', 'SOLDER%');
 			}
 
+			if($this->getModelType() == 'master'){
+				// make sure the finished dummy can be reuse;
+				$model = $model->where('serial_no', null );
+			}else if($this->getModelType() == 'master'){
+				$model = $model->where('guid_master', null );
+			}
+
 			return $model->exists(); 
 
 		}else if ($this->lineprocess['type'] == 2 ){
