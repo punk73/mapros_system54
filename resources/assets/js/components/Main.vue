@@ -17,7 +17,7 @@
                     <div class="panel-heading custom-color">
                         <div class="row">
                            <div class="col-md-6 col-sm-6 col-xs-7">
-                            LINE : {{ info.line }}
+                            LINE : <strong> {{ info.line }} </strong>
                            </div>
                            <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
                                TYPE : {{ info.type }}
@@ -25,7 +25,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-7">
-                                PROCESS: {{info.process}}
+                                PROCESS: <strong> {{info.process}} </strong>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
                                STEP ID : {{ info.lineprocess_id }}
@@ -34,18 +34,19 @@
 
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                model: {{form.modelname}}
+                                model: <strong> {{form.modelname}} </strong>
                             </div>
-                            
                         </div>
                     </div>
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" @submit.prevent='onSubmit' >
                             <div class="form-group">
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
-
                                 <div class="col-md-6">
-                                    <input id="nik" type="text" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
+                                    <div class="button-group">
+                                        <input id="nik" type="text" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
+                                        <span id="searchclear" class="fa fa-clear"></span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -80,15 +81,35 @@
 
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
-                                    <div class="well costum-color text-center">
-                                        information status: <br>
-                                        <div :class='{"text-danger": hasError, "text-success": !hasError }'>
-                                            <strong> {{error}} </strong>
+                                    <div class="well">
+                                        <div class="custom-color text-center">
+                                            <div class="row">
+                                               <div class="col-md-12 col-sm-12 col-xs-12">
+                                                LINE : <strong> {{ info.line }} </strong>
+                                               </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                                    PROCESS: <strong> {{info.process}} </strong>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                                    model: <strong> {{form.modelname}} </strong>
+                                                </div>
+                                            </div>
+                                            <hr class="black">
                                         </div>
+                                        <div class="text-center">
+                                            information status: <br>
+                                            <div :class='{"text-danger": hasError, "text-success": !hasError }'>
+                                                <strong> {{error}} </strong>
+                                            </div>
 
-                                        <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
+                                            <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
 
-                                        <a class="btn btn-info" @click.prevent="showDetailError" >detail</a>
+                                            <a class="text-danger" @click.prevent="showDetailError" >detail >></a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>                            
@@ -385,6 +406,7 @@
 
                 localStorage.setItem('config', JSON.stringify(newConfig) );
                 // changes localstorage
+                this.onSubmit();
             },
 
             sendAjax(){
@@ -439,6 +461,11 @@
 <style>
     .custom-color{
         background-image: none!important;
-        background-color: 'yellow' !important;
+        /*background-color: yellow !important;*/
+    }
+
+    .black {
+        border-color: #636B6F;
+        border-width: 2px;
     }
 </style>

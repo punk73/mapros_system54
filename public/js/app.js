@@ -13764,6 +13764,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(5);
 
@@ -14006,6 +14027,7 @@ var axios = __webpack_require__(5);
 
             localStorage.setItem('config', JSON.stringify(newConfig));
             // changes localstorage
+            this.onSubmit();
         },
         sendAjax: function sendAjax() {
             console.log(this.config, 'sendAjax methods triggered');
@@ -16562,7 +16584,7 @@ if (typeof jQuery === 'undefined') {
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(11)();
-exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    background-color: 'yellow' !important;\n}\n", ""]);
+exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n}\n", ""]);
 
 /***/ }),
 /* 46 */
@@ -44494,19 +44516,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-6 col-sm-6 col-xs-7"
-  }, [_vm._v("\n                          LINE : " + _vm._s(_vm.info.line) + "\n                         ")]), _vm._v(" "), _c('div', {
+  }, [_vm._v("\n                          LINE : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])]), _vm._v(" "), _c('div', {
     staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
   }, [_vm._v("\n                             TYPE : " + _vm._s(_vm.info.type) + "\n                         ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-6 col-sm-6 col-xs-7"
-  }, [_vm._v("\n                              PROCESS: " + _vm._s(_vm.info.process) + "\n                          ")]), _vm._v(" "), _c('div', {
+  }, [_vm._v("\n                              PROCESS: "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.process) + " ")])]), _vm._v(" "), _c('div', {
     staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
   }, [_vm._v("\n                             STEP ID : " + _vm._s(_vm.info.lineprocess_id) + "\n                         ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-6 col-sm-6 col-xs-12"
-  }, [_vm._v("\n                              model: " + _vm._s(_vm.form.modelname) + "\n                          ")])])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("\n                              model: "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])])]), _vm._v(" "), _c('div', {
     staticClass: "panel-body"
   }, [_c('form', {
     staticClass: "form-horizontal",
@@ -44528,6 +44550,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("NIK")]), _vm._v(" "), _c('div', {
     staticClass: "col-md-6"
+  }, [_c('div', {
+    staticClass: "button-group"
   }, [_c('input', {
     directives: [{
       name: "model",
@@ -44558,7 +44582,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "nik", $event.target.value)
       }
     }
-  })])]), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _c('span', {
+    staticClass: "fa fa-clear",
+    attrs: {
+      "id": "searchclear"
+    }
+  })])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group",
     attrs: {
       "hidden": "true"
@@ -44673,8 +44702,26 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "col-md-12 col-xs-12"
   }, [_c('div', {
-    staticClass: "well costum-color text-center"
-  }, [_vm._v("\n                                      information status: "), _c('br'), _vm._v(" "), _c('div', {
+    staticClass: "well"
+  }, [_c('div', {
+    staticClass: "custom-color text-center"
+  }, [_c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-md-12 col-sm-12 col-xs-12"
+  }, [_vm._v("\n                                              LINE : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-md-12 col-sm-12 col-xs-12"
+  }, [_vm._v("\n                                                  PROCESS: "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.process) + " ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-md-12 col-sm-12 col-xs-12"
+  }, [_vm._v("\n                                                  model: "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])]), _vm._v(" "), _c('hr', {
+    staticClass: "black"
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "text-center"
+  }, [_vm._v("\n                                          information status: "), _c('br'), _vm._v(" "), _c('div', {
     class: {
       "text-danger": _vm.hasError, "text-success": !_vm.hasError
     }
@@ -44683,14 +44730,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "text-danger": _vm.hasError, "text-success": !_vm.hasError
     }
   }, [_c('strong', [_vm._v(_vm._s((_vm.hasError) ? 'NG' : 'OK'))])]), _vm._v(" "), _c('a', {
-    staticClass: "btn btn-info",
+    staticClass: "text-danger",
     on: {
       "click": function($event) {
         $event.preventDefault();
         return _vm.showDetailError($event)
       }
     }
-  }, [_vm._v("detail")])], 1)])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("detail >>")])], 1)])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-6 col-md-offset-4"
