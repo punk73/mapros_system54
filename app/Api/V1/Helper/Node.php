@@ -155,7 +155,7 @@ class Node
 		])->where('ip_address', $scanner_ip )->first();
 
 		if (is_null($scanner)) {
-			throw new StoreResourceFailedException("Scanner with ip=".$scanner_ip." not found. Perhaps scanner not registered yet", [
+			throw new StoreResourceFailedException("Scanner dengan ip=".$scanner_ip." tidak ditemukan. Mungkin scanner belum di register oleh admin", [
 				'ip_address' => $scanner_ip,
 				'message' => 'scanner not registered yet'
 			]);
@@ -175,7 +175,7 @@ class Node
 
 	public function initColumnSetting(){
 		if ($this->lineprocess == null ) {
-			throw new StoreResourceFailedException("Lineprocess is not found", [
+			throw new StoreResourceFailedException("Lineprocess Tidak Ditemukan", [
 				'node' => $this
 			]);
 		}
@@ -280,7 +280,7 @@ class Node
 					// untuk cek guid master sudah generate atau belum dari ticket, masih kesulitan, jadi diganti dengan
 					// cek apakah ini join & seting tidak contain board, karena kalau dia join dan tidak kontain board, maka pasti dia contain master; that's why langkah ini harus punya guidParam as guid_master nya;
 					if ($guidParam == null ) {
-						throw new StoreResourceFailedException("this is join process, you need to scan master first!",[
+						throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN MASTER TERLEBIH DULU!",[
 							'note' => 'need guid master',
 							'node' => json_decode( $this, true ),
 						]);
@@ -298,7 +298,7 @@ class Node
 			// tadinya ga ada is join, something went wrong. so add the is join to verify 
 			if( ($this->getModelType()=='board') && ($this->isJoin()) && ($this->isSettingContain('board')) ){
 				if ($guidParam == null ) {
-					throw new StoreResourceFailedException("this is join process, you need to scan ticket or master first!",[
+					throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN TICKET ATAU MASTER DULU!",[
 						'note' => 'need guid_ticket or guid_master',
 						'node' => json_decode( $this, true ),
 					]);
@@ -307,8 +307,8 @@ class Node
 
 			if( ($this->getModelType() == 'ticket') && ($this->isJoin()) && ($this->isSettingContain('ticket')) && ($this->isSettingContain('master')) ){
 				if ($guidParam == null ) {
-					throw new StoreResourceFailedException("this is join process, you need to scan master first!",[
-						'note' => 'need guid master',
+					throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN MASTER DULU!",[
+						'note' => 'BUTUH GUID MASTER',
 						'node' => json_decode( $this, true ),
 					]);
 				}
@@ -504,14 +504,14 @@ class Node
 		}
 
 		if( $prevBoard->modelname != $this->modelname ){
-			throw new StoreResourceFailedException("board model you scan is different from previous model!", [
+			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. KLIK DETAIL UNTUK INFO LEBIH LANJUT!", [
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
 		}
 
 		if( $prevBoard->lotno != $this->lotno ){
-			throw new StoreResourceFailedException("board lot number you scan is different from previous lot number!", [
+			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA.", [
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
@@ -1025,7 +1025,7 @@ class Node
         ]);
 
         if( $res->getStatusCode() != 200 ){
-        	throw new StoreResourceFailedException("Something wrong to your external code data", [
+        	throw new StoreResourceFailedException("Something wrong to your external code data. CALL IT!", [
         		'status_code' => $res->getStatusCode(),
         		'body' => $res->getBody()
         	]);
@@ -1035,7 +1035,7 @@ class Node
 
         if( /*array_key_exists('judge', $result ) || */$result == null ){
         	// return $result;
-        	throw new StoreResourceFailedException("external source should always contain judge & status!", [
+        	throw new StoreResourceFailedException("SUMBER EXTERNAL HARUS SELALU MENGANDUNG 'JUDGE' & 'STATUS'!", [
         		'result' => $result,
         		'url' => $url,
         		'response' => $res->getStatusCode() //json_decode( json_encode($res), true )
