@@ -289,7 +289,7 @@ class MainController extends Controller
 					}
 				}
 
-				throw new StoreResourceFailedException("DATA SUDAH DI SCAN OUT DI PROSES INI!", [
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT DI PROSES INI!", [
 					'node' => json_decode( $node, true ),
 				]);
 			}
@@ -297,7 +297,7 @@ class MainController extends Controller
 			//isExists already implement is solder, so we dont need to check it again.
 			//if the code goes here, we save to immediately save the node;
 			if($node->getJudge() == 'SOLDER'){
-				throw new StoreResourceFailedException("DATA SUDAH SCAN OUT SOLDER!!", [
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT SOLDER!!", [
 					'node' => json_decode($node, true )
 				]);
 			}
@@ -322,7 +322,7 @@ class MainController extends Controller
 
 			$currentStep = $node->getStep();
 			if($node->is_solder){
-				throw new StoreResourceFailedException("DATA SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
+				throw new StoreResourceFailedException("DATA SUDAH '".$node->getDummyId()."' SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
 					'message' => 'you already scan solder with this scanner!'
 				]);
 			}
@@ -330,7 +330,7 @@ class MainController extends Controller
 			// we need to count how long it is between now and step->created_at
 			if( !$this->isMoreThanStdTime($currentStep)){
 				// belum mencapai std time
-				throw new StoreResourceFailedException("DATA SUDAH SCAN IN! AND HARUS TUNGGU ". $currentStep['std_time']." DETIK", [
+				throw new StoreResourceFailedException("DATA SUDAH '".$node->getDummyId()."' SCAN IN! AND HARUS TUNGGU ". $currentStep['std_time']." DETIK", [
 					'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
 				]);
 			}

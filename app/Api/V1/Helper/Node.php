@@ -1195,7 +1195,7 @@ class Node
 		$this->key = array_search($this->scanner['lineprocess_id'], $process );
 		// $lineprocess_id tidak ditemukan di $process
 		if ($this->key === false ) { // === is required since 0 is false if its using == (two sama dengan)
-			throw new StoreResourceFailedException("this step shouldn't belong to the process", [
+			throw new StoreResourceFailedException("SCAN ".$this->getIdType()." '".$this->getDummyId()."' TIDAK SEHARUSNYA DILAKUKAN DI STEP INI.", [
                 'current_step' 	=> $this->scanner['lineprocess_id'],
                 'process'		=> $process,
                 'node'			=> json_decode($this,true) ,
