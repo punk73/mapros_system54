@@ -85,7 +85,7 @@ class MainController extends Controller
 			$data = $this->getCriticalScannerData($parameter);
 
 			if(is_null($data)){
-				throw new StoreResourceFailedException("Scanner with ip ".$parameter['ip']." not found", [
+				throw new StoreResourceFailedException("SCANNER DENGAN IP ".$parameter['ip']." TIDAK DITEMUKAN. CEK PENGATURAN ADMIN!", [
 					'parameter' => $parameter
 				]);
 			}
@@ -174,7 +174,7 @@ class MainController extends Controller
 
 				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 100;
-				$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+				$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 
 				return $this->returnValue;
 			}
@@ -210,7 +210,7 @@ class MainController extends Controller
 				//$this->returnValue['node'] = $node;
 
 				$this->returnValue['line_code'] = 131;
-				$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+				$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 
 				return $this->returnValue;
 			}
@@ -254,7 +254,7 @@ class MainController extends Controller
 				};
 				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 176;
-				$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+				$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 
 				return $this->returnValue;
 			}
@@ -280,7 +280,7 @@ class MainController extends Controller
 						}
 
 						$this->returnValue['line_code'] = 278;
-						$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+						$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 
 						return $this->returnValue;
 					}
@@ -309,7 +309,7 @@ class MainController extends Controller
 			//$this->returnValue['node'] = $node;
 
 			$this->returnValue['line_code'] = 205;
-			$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+			$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 
 			return $this->returnValue;
 		}
@@ -350,7 +350,7 @@ class MainController extends Controller
 			$node->updateChildren();
 
 			$this->returnValue['line_code'] = 239;
-			$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+			$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 			
 			return $this->returnValue;
 		}
@@ -405,7 +405,7 @@ class MainController extends Controller
 
 		$this->runProcedureTicket($node , true );
 		
-		$this->returnValue['message'] = $node->getStatus() . ' / ' . $node->getJudge() ;
+		$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 		return $this->returnValue;
 	}
 

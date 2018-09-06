@@ -373,6 +373,10 @@ class Node
 		return implode('', $tmp );
 	}
 
+	public function getDummyId(){
+		return $this->dummy_id;
+	}
+
 	public function ignoreSideQuery($query){
 		if(strlen($this->dummy_id) == 16 ){
 			if( $this->getModelType() == 'board' ){
