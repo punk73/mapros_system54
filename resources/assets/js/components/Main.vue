@@ -310,8 +310,10 @@
                 }
 
                 if( this.config.isSendAjax ){
-                    if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
-                    this.sendAjax()    
+                    if (response.data.node.status == 'IN') { 
+                        //kalau dia bkn in, gausah download;
+                        this.sendAjax()    
+                    }
                 }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
