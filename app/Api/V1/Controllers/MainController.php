@@ -96,7 +96,7 @@ class MainController extends Controller
 			$result = array_merge($result, $data );
 			
 			if($this->isCriticalExists($result)){
-				throw new StoreResourceFailedException("Part already scanned!", [
+				throw new StoreResourceFailedException("PART SUDAH DI SCAN!", [
 					'parameter' => $result
 				]);
 			}
@@ -107,7 +107,7 @@ class MainController extends Controller
 			return $this->returnValue;
 
 		}else{
-			throw new StoreResourceFailedException("It's not critical parts, don't need to scan this parts!", [
+			throw new StoreResourceFailedException("BUKAN CRITICAL PART. TIDAK USAH SCAN", [
 				'parameter' => $parameter
 			]);
 			
@@ -190,7 +190,7 @@ class MainController extends Controller
 					// cek di table repair, ada engga datanya.
 					if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
 						// kalau ga ada, maka throw error data is NG in prev stages! repair it first!
-						throw new StoreResourceFailedException("Data is error in previous step, repair it first!", [
+						throw new StoreResourceFailedException("DATA ". $prevNode->getDummyId() ." ERROR DI PROSES SEBELUMNYA!", [
 							'prevnode' => json_decode( $prevNode, true),
 							'node'     => json_decode( $prevNode->next(), true) 
 						]);
@@ -218,7 +218,8 @@ class MainController extends Controller
 			if( $prevNode->getStatus() == 'IN' ){
 				// error handler
 				if($prevNode->getModelType() !== 'board'){
-					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET AT PREVIOUS STEP!", [
+					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( ".$step." )", [
 						'message' => 'bukan board',
 						'prevNode' => json_decode( $prevNode, true )
 					]);
@@ -231,14 +232,15 @@ class MainController extends Controller
 
 				// cek apakah solder atau bukan
 				if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
-					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET IN PREVIOUS STEP!", [
+					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( ".$step." )", [
 						'message' => 'bukan solder',
 						'node' => json_decode( $prevNode, true )
 					]);    
 				}
 
 				if($prevNode->isExists('OUT','SOLDER')){ //cek data solder dengan status out
-					throw new StoreResourceFailedException("DATA SOLDER ALREADY SCAN OUT!", [
+					throw new StoreResourceFailedException("DATA SOLDER SUDAH SCAN OUT!", [
 						'prevNode' => json_decode( $prevNode, true )
 					]);    
 				};
@@ -260,7 +262,8 @@ class MainController extends Controller
 			}
 
 			// jika get status bukan in atau out maka throw error
-			throw new StoreResourceFailedException("DATA NOT SCAN IN PREVIOUS STEP", [
+			$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+			throw new StoreResourceFailedException("DATA BELUM DI SCAN IN DI PROSES SEBELUMNYA. ( ".$step." )", [
 				'node' => json_decode( $prevNode, true )
 			]);
 		}
@@ -286,7 +289,7 @@ class MainController extends Controller
 					}
 				}
 
-				throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
+				throw new StoreResourceFailedException("DATA SUDAH DI SCAN OUT DI PROSES INI!", [
 					'node' => json_decode( $node, true ),
 				]);
 			}
@@ -294,7 +297,7 @@ class MainController extends Controller
 			//isExists already implement is solder, so we dont need to check it again.
 			//if the code goes here, we save to immediately save the node;
 			if($node->getJudge() == 'SOLDER'){
-				throw new StoreResourceFailedException("DATA ALREADY SCAN OUT AS SOLDER!!", [
+				throw new StoreResourceFailedException("DATA SUDAH SCAN OUT SOLDER!!", [
 					'node' => json_decode($node, true )
 				]);
 			}
@@ -319,7 +322,7 @@ class MainController extends Controller
 
 			$currentStep = $node->getStep();
 			if($node->is_solder){
-				throw new StoreResourceFailedException("DATA ALREADY SCAN IN! you already scan solder with this scanner!",[
+				throw new StoreResourceFailedException("DATA SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
 					'message' => 'you already scan solder with this scanner!'
 				]);
 			}
@@ -327,7 +330,7 @@ class MainController extends Controller
 			// we need to count how long it is between now and step->created_at
 			if( !$this->isMoreThanStdTime($currentStep)){
 				// belum mencapai std time
-				throw new StoreResourceFailedException("DATA ALREADY Scan IN", [
+				throw new StoreResourceFailedException("DATA SUDAH SCAN IN! AND HARUS TUNGGU ". $currentStep['std_time']." DETIK", [
 					'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
 				]);
 			}
