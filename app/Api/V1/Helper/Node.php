@@ -1020,7 +1020,7 @@ class Node
 	 		'headers' => ['Content-type' => 'application/json'],
         ]);
 
-        if( $res->getStatusCode() !== 200 ){
+        if( $res->getStatusCode() != 200 ){
         	throw new StoreResourceFailedException("Something wrong to your external code data", [
         		'status_code' => $res->getStatusCode(),
         		'body' => $res->getBody()
@@ -1039,13 +1039,15 @@ class Node
         }
 		
 		// end point should always contain status and judge;
-        if($result['success'] && $result['judge'] != 'NG'){
+        if( ($result['success']) && ($result['judge'] != 'NG') ){
         	$this->setStatus('OUT');
 			$this->setJudge("OK");
         }else{
         	$this->setStatus('OUT');
 			$this->setJudge("NG");
         }
+        
+        $this->setStep($result);
 	}
 
 	// this method triggered by loadStep();

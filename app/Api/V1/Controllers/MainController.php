@@ -383,7 +383,7 @@ class MainController extends Controller
 	}
 
 	private function runProcedureMaster(Node $node){
-		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket')) && ($node->isSettingContain('master')) ){
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 
 			$node->setStatus('IN');
 			$node->setJudge('OK');

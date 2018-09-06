@@ -26,7 +26,7 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		return $this->testNode();
+		return $this->testGuzzle($request);
 	}
 
 	public function testNode(){
@@ -36,11 +36,11 @@ class TestController extends Controller
 	public function testGuzzle(Request $request){
 		$client = new Client();
 		// $url = 'http://localhost:80/mapros_system54/public/api/aoies';
-		$url = 'http://136.198.117.48/mapros_system54/public/api/aoies';
-		// $url = "https://api.github.com/repos/guzzle/guzzle";
+		// $url = 'http://136.198.117.48/mapros_system54/public/api/aoies';
+		$url = "http://136.198.117.48/mecha/api/inspects";
         $res = $client->get($url, [	
     		'query' => [
-    			'board_id'	=> '000047A000010900'
+    			'board_id'	=> $request->board_id,
     		],
 	 		'headers' => ['Content-type' => 'application/json'],
         ]);
