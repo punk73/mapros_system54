@@ -289,9 +289,27 @@ class MainController extends Controller
 					}
 				}
 
-				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT DI PROSES INI!", [
-					'node' => json_decode( $node, true ),
-				]);
+				if($node->getJudge() == 'OK'){
+					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT DI PROSES INI!", [
+						'node' => json_decode( $node, true ),
+					]);
+				}
+
+				// kalau status skrg out & judge solder, itu artinya blm scan in proses terkini;
+				if($node->getJudge() == 'SOLDER'){
+					$node->setStatus('IN');
+					$node->setJudge('OK');
+					if(!$node->save()){
+						throw new StoreResourceFailedException("Error Saving Progress", [
+							'message' => 'something went wrong with save method on model! ask your IT member'
+						]);
+					}
+
+					$this->returnValue['line_code'] = 307;
+					$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
+
+					return $this->returnValue;
+				}				
 			}
 
 			//isExists already implement is solder, so we dont need to check it again.
