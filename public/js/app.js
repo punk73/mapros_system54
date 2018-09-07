@@ -13878,13 +13878,29 @@ var axios = __webpack_require__(5);
                 self.handleSucces(response);
                 console.log(response);
             }).catch(function (error) {
+                self.toggleLoading();
+
+                if (error == undefined) {
+                    _this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {});
+                    return;
+                }
+
+                if (error.response == undefined) {
+                    _this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', { errors: error });
+                    return;
+                }
+
+                if (error.response.data == undefined) {
+                    _this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', { errors: error.response });
+                    return;
+                }
+
                 var data = error.response.data;
                 console.log(data);
                 var message = data.message;
-                self.toggleLoading();
+
                 if (message == 'view') {
                     _this.returnJoin(data.errors);
-
                     return;
                 }
 

@@ -242,13 +242,29 @@
                         console.log(response)
                     })
                     .catch( (error) => {
+                        self.toggleLoading();
+
+                        if(error == undefined ){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {} )
+                            return;
+                        }
+
+                        if(error.response == undefined ){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {errors : error })
+                            return;
+                        }
+
+                        if(error.response.data == undefined){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', { errors : error.response })
+                            return;
+                        }
+
                         let data = error.response.data;
                         console.log(data)
                         let message = data.message;
-                        self.toggleLoading()
+                        
                         if(message == 'view'){
                             this.returnJoin(data.errors);
-
                             return;
                         }
 
