@@ -20,7 +20,7 @@ class ConfigController extends Controller
     	])->with(['lineprocess' => function ($lineprocess){
             $lineprocess->select(['id','name'])
                 ->with(['columnSettings' => function ($columnSettings){
-                    $columnSettings->select(['name']);
+                    $columnSettings->select(['name', 'table_name']);
                 }]);
         }])
     	->where('ip_address', $request->ip )

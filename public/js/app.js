@@ -14064,12 +14064,12 @@ var axios = __webpack_require__(5);
                 if (this.info.lineprocess.column_settings != undefined) {
                     var column_settings = this.info.lineprocess.column_settings;
                     for (var i = 0; i < column_settings.length; i++) {
-                        if (column_settings[i]['name'] == 'master') {
+                        if (column_settings[i]['table_name'] == 'masters') {
                             this.label.id = 'DUMMY MASTER';
                             return;
                         }
 
-                        if (column_settings[i]['name'] == 'ticket') {
+                        if (column_settings[i]['table_name'] == 'tickets') {
                             this.label.id = 'DUMMY TICKET';
                         }
                     }
