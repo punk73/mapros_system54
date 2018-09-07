@@ -37,10 +37,6 @@ class Scanner extends Model implements LogsActivityInterface
 		return $this->belongsTo('App\Lineprocess');
 	}
 
-	public function columnSettings(){
-		return $this->with(['lineprocess.columnSettings']);
-	}
-
 	public function line(){
 		return $this->hasOne('App\Line');
 	}
