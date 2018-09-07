@@ -322,8 +322,8 @@ class MainController extends Controller
 
 			$currentStep = $node->getStep();
 			if($node->is_solder){
-				throw new StoreResourceFailedException("DATA SUDAH '".$node->getDummyId()."' SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
-					'message' => 'you already scan solder with this scanner!'
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
+					'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
 				]);
 			}
 
