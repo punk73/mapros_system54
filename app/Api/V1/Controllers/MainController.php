@@ -339,9 +339,15 @@ class MainController extends Controller
 		if($node->getStatus() == 'IN'){
 
 			$currentStep = $node->getStep();
-			if($node->is_solder){
+			if( ($node->is_solder) && ($node->getJudge() == 'SOLDER' ) ){
 				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
 					'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
+				]);
+			}
+			
+			if( ($node->is_solder) != ($node->getJudge() == 'SOLDER' ) ){
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT SOLDER!!",[
+					'message' => 'HAPUS CHECKLIST SOLDER'
 				]);
 			}
 
@@ -357,12 +363,13 @@ class MainController extends Controller
 			// save
 			$node->setStatus('OUT');
 			// it's mean to get current in process judgement, so when it's rework; it'll get rework
+
 			$node->setJudge($node->getJudge());
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [
 					'message' => 'something went wrong with save method on model! ask your IT member'
 				]);
-			} 
+			}
 
 			// updateChildren hanya akan ter trigger ketika join saja;
 			// method ini berfungsi untuk update board yg di scan skali, kemudian masuk ke dalam set;
