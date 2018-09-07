@@ -44,8 +44,8 @@
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
                                 <div class="col-md-6">
                                     <div class="button-group">
-                                        <input id="nik" type="text" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
-                                        <span id="searchclear" class="fa fa-clear"></span>
+                                        <input id="nik" type="search" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
+                                        <!-- <span id="searchclear" class="fa fa-window-close"></span> -->
                                     </div>
                                 </div>
                             </div>
@@ -69,8 +69,8 @@
                             <div v-if="config.showSolder" class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <!-- <input type="checkbox" id="checkbox" v-model="form.is_solder"> -->
-                                    <toggle-button v-model="form.is_solder" :labels="true"/>
-                                    <label for="checkbox"> is solder </label>
+                                    <toggle-button v-model="form.is_solder" :color="'#2ab27b'" :labels="true"/>
+                                    <label for="checkbox"> SOLDER </label>
                                 </div>
                             </div>  
 
@@ -117,8 +117,8 @@
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary" >
-                                        Submit
+                                    <button type="submit" class="btn btn-success" >
+                                        Submit <i class="fa fa-check float-right"></i>
                                     </button>
 
                                     <button v-if='config.isShowDeleteButton' @click.prevent='deleteOnClick'  type="button" class="btn btn-danger">

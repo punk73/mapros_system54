@@ -58,9 +58,9 @@
                             </div>
 
                             <div class="form-group row">
-                                <div class="col-md-3 col-md-offset-3">
-                                    <a href="#/" class="btn btn-primary"><i class="fa fa-arrow-circle-left float-right"></i></a>
-                                    <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i></a>
+                                <div class="col-md-9 col-md-offset-3">
+                                    <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
+                                    <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i> Save </a>
                                 </div>
                             </div>
 						</form>
