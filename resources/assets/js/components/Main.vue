@@ -59,7 +59,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Board Id</label>
+                                <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
                                     <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
@@ -200,6 +200,10 @@
                 showModal: false,
                 showConfirm:false,
 
+                label : {
+                    id : 'Board ID'
+                },
+
                 // it's basically will be override by getConfig method
                 config : {
                     modelname: '',
@@ -242,13 +246,29 @@
                         console.log(response)
                     })
                     .catch( (error) => {
+                        self.toggleLoading();
+
+                        if(error == undefined ){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {} )
+                            return;
+                        }
+
+                        if(error.response == undefined ){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {errors : error })
+                            return;
+                        }
+
+                        if(error.response.data == undefined){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', { errors : error.response })
+                            return;
+                        }
+
                         let data = error.response.data;
                         console.log(data)
                         let message = data.message;
-                        self.toggleLoading()
+                        
                         if(message == 'view'){
                             this.returnJoin(data.errors);
-
                             return;
                         }
 
@@ -411,6 +431,25 @@
                 this.onSubmit();
             },
 
+            initLabel(){
+                console.log(this.info, 'set label method')
+                if( this.info.lineprocess != undefined ){
+                    if(this.info.lineprocess.column_settings != undefined){
+                        let column_settings = this.info.lineprocess.column_settings;
+                        for (var i = 0; i < column_settings.length; i++) {
+                            if( column_settings[i]['name'] == 'master') {
+                                this.label.id = 'DUMMY MASTER';
+                                return;
+                            }
+
+                            if( column_settings[i]['name'] == 'ticket') {
+                                this.label.id = 'DUMMY TICKET';
+                            }
+                        }
+                    }
+                }
+            },
+
             sendAjax(){
                 console.log(this.config, 'sendAjax methods triggered')
                 axios.get(this.config.uri, {
@@ -438,6 +477,7 @@
               }).then((response) => {
                 console.log(response)
                 self.info = response.data.data;
+                self.initLabel();
               })
               .catch((error)=> {
 

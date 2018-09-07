@@ -17,7 +17,12 @@ class ConfigController extends Controller
     		'lineprocesses.name as process',
     		'lineprocesses.type',
             'lineprocesses.id as lineprocess_id',
-    	])
+    	])->with(['lineprocess' => function ($lineprocess){
+            $lineprocess->select(['id','name'])
+                ->with(['columnSettings' => function ($columnSettings){
+                    $columnSettings->select(['name']);
+                }]);
+        }])
     	->where('ip_address', $request->ip )
     	->leftJoin('lines', 'scanners.line_id', '=', 'lines.id')
     	->leftJoin('lineprocesses', 'scanners.lineprocess_id', '=', 'lineprocesses.id')
