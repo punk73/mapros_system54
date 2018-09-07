@@ -32,7 +32,7 @@ class MainController extends Controller
 	protected $returnValue = [
 		'success' => true,
 		'message' => 'data saved!',
-		'node'    => null  
+		'node'    => null
 	];
 
 	private function getParameter (BoardRequest $request){
@@ -85,7 +85,7 @@ class MainController extends Controller
 			$data = $this->getCriticalScannerData($parameter);
 
 			if(is_null($data)){
-				throw new StoreResourceFailedException("Scanner with ip ".$parameter['ip']." not found", [
+				throw new StoreResourceFailedException("SCANNER DENGAN IP ".$parameter['ip']." TIDAK DITEMUKAN. CEK PENGATURAN ADMIN!", [
 					'parameter' => $parameter
 				]);
 			}
@@ -96,7 +96,7 @@ class MainController extends Controller
 			$result = array_merge($result, $data );
 			
 			if($this->isCriticalExists($result)){
-				throw new StoreResourceFailedException("Part already scanned!", [
+				throw new StoreResourceFailedException("PART SUDAH DI SCAN!", [
 					'parameter' => $result
 				]);
 			}
@@ -107,7 +107,7 @@ class MainController extends Controller
 			return $this->returnValue;
 
 		}else{
-			throw new StoreResourceFailedException("It's not critical parts, don't need to scan this parts!", [
+			throw new StoreResourceFailedException("BUKAN CRITICAL PART. TIDAK USAH SCAN", [
 				'parameter' => $parameter
 			]);
 			
@@ -174,6 +174,7 @@ class MainController extends Controller
 
 				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 100;
+				$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 
 				return $this->returnValue;
 			}
@@ -182,6 +183,14 @@ class MainController extends Controller
 
 			if( $prevNode->getStatus() == 'OUT' ){
 				// if it's rework, then judgment will get rework instead;
+				
+				if(($prevNode->getJudge() != 'SOLDER') && ($node->is_solder == true)){
+					throw new StoreResourceFailedException("HAPUS CHECKLIST SOLDER !!!", [
+						'message' => 'Scan in this process',
+						'prevNode' => json_decode( $prevNode, true )
+					]);
+				}
+
 				$judgement = 'OK';
 				// we not sure if it calling prev() twice or not, hopefully it's not;
 				if($prevNode->getJudge() == 'NG'){                    
@@ -189,7 +198,7 @@ class MainController extends Controller
 					// cek di table repair, ada engga datanya.
 					if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
 						// kalau ga ada, maka throw error data is NG in prev stages! repair it first!
-						throw new StoreResourceFailedException("Data is error in previous step, repair it first!", [
+						throw new StoreResourceFailedException("DATA ". $prevNode->getDummyId() ." ERROR DI PROSES SEBELUMNYA!", [
 							'prevnode' => json_decode( $prevNode, true),
 							'node'     => json_decode( $prevNode->next(), true) 
 						]);
@@ -209,13 +218,16 @@ class MainController extends Controller
 				//$this->returnValue['node'] = $node;
 
 				$this->returnValue['line_code'] = 131;
+				$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
+
 				return $this->returnValue;
 			}
 
 			if( $prevNode->getStatus() == 'IN' ){
 				// error handler
 				if($prevNode->getModelType() !== 'board'){
-					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET AT PREVIOUS STEP!", [
+					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( ".$step." )", [
 						'message' => 'bukan board',
 						'prevNode' => json_decode( $prevNode, true )
 					]);
@@ -226,19 +238,30 @@ class MainController extends Controller
 				* it's mean it will always return false;
 				*/
 
+				
+				if(($prevNode->isExists('IN','SOLDER')) && ( $node->is_solder == false)){ //cek data solder dengan status out
+					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( SOLDER )", [
+						'message' => 'SCAN OUT SOLDER',
+						'prevNode' => json_decode( $prevNode, true )
+					]);  
+				};
+
 				// cek apakah solder atau bukan
 				if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
-					throw new StoreResourceFailedException("DATA NOT SCAN OUT YET IN PREVIOUS STEP!", [
+					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( ".$step." )", [
 						'message' => 'bukan solder',
 						'node' => json_decode( $prevNode, true )
 					]);    
 				}
 
 				if($prevNode->isExists('OUT','SOLDER')){ //cek data solder dengan status out
-					throw new StoreResourceFailedException("DATA SOLDER ALREADY SCAN OUT!", [
+					throw new StoreResourceFailedException("DATA SOLDER SUDAH SCAN OUT!", [
 						'prevNode' => json_decode( $prevNode, true )
 					]);    
 				};
+
+				
 
 				$node = $prevNode->next();
 				$node->setStatus('OUT');
@@ -251,12 +274,14 @@ class MainController extends Controller
 				};
 				//$this->returnValue['node'] = $node;
 				$this->returnValue['line_code'] = 176;
+				$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 
 				return $this->returnValue;
 			}
 
 			// jika get status bukan in atau out maka throw error
-			throw new StoreResourceFailedException("DATA NOT SCAN IN PREVIOUS STEP", [
+			$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+			throw new StoreResourceFailedException("DATA BELUM DI SCAN IN DI PROSES SEBELUMNYA. ( ".$step." )", [
 				'node' => json_decode( $prevNode, true )
 			]);
 		}
@@ -265,7 +290,7 @@ class MainController extends Controller
 		if($node->getStatus() == 'OUT'){
 			if($node->is_solder == false){
 				// cek current judge
-				if(!$node->getJudge() == 'REWORK'){
+				if($node->getJudge() != 'REWORK'){
 					if($node->isRepaired()){
 						$node->setStatus('IN');
 						$node->setJudge('REWORK');
@@ -276,20 +301,48 @@ class MainController extends Controller
 						}
 
 						$this->returnValue['line_code'] = 278;
+						$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
+
 						return $this->returnValue;
 					}
 				}
 
-				throw new StoreResourceFailedException("DATA ALREADY SCAN OUT!", [
-					'node' => json_decode( $node, true ),
-				]);
+				if($node->getJudge() == 'OK'){
+					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT DI PROSES INI!", [
+						'node' => json_decode( $node, true ),
+					]);
+				}
+
+				// kalau status skrg out & judge solder, itu artinya blm scan in proses terkini;
+				if($node->getJudge() == 'SOLDER'){
+					$node->setStatus('IN');
+					$node->setJudge('OK');
+					if(!$node->save()){
+						throw new StoreResourceFailedException("Error Saving Progress", [
+							'message' => 'something went wrong with save method on model! ask your IT member'
+						]);
+					}
+
+					$this->returnValue['line_code'] = 307;
+					$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
+
+					return $this->returnValue;
+				}				
 			}
 
 			//isExists already implement is solder, so we dont need to check it again.
 			//if the code goes here, we save to immediately save the node;
 			if($node->getJudge() == 'SOLDER'){
-				throw new StoreResourceFailedException("DATA ALREADY SCAN OUT AS SOLDER!!", [
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT SOLDER!!", [
 					'node' => json_decode($node, true )
+				]);
+			}
+
+			if($node->isExists('OUT', 'SOLDER')){
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT SOLDER!!", [
+					'MESSAGE' => 'DATA SUDAH SCAN OUT SOLDER DISINI DAN SUDAH IN OUT OK ',
+					'node' => json_decode($node, true ),
+
 				]);
 			}
 
@@ -303,6 +356,8 @@ class MainController extends Controller
 			//$this->returnValue['node'] = $node;
 
 			$this->returnValue['line_code'] = 205;
+			$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
+
 			return $this->returnValue;
 		}
 
@@ -310,16 +365,34 @@ class MainController extends Controller
 		if($node->getStatus() == 'IN'){
 
 			$currentStep = $node->getStep();
-			if($node->is_solder){
-				throw new StoreResourceFailedException("DATA ALREADY SCAN IN! you already scan solder with this scanner!",[
-					'message' => 'you already scan solder with this scanner!'
-				]);
-			}
+			// if( ($node->is_solder == true) && ($node->getJudge() == 'SOLDER' ) ){
+			// 	throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
+			// 		'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
+			// 	]);
+			// }
 
+			if( ($node->is_solder) ){
+				
+				if($node->getJudge() == 'SOLDER'){
+					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
+						'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
+					]);
+				}
+				if( $node->getJudge() != 'SOLDER' ){
+					throw new StoreResourceFailedException("HAPUS CHECKLIST SOLDER UNTUK SCAN OUT PROSES SAAT INI !!",[
+						'message' => 'SCAN OUT PROCESS SAAT INI'
+					]);
+				}
+			}
+			if($node->getJudge() == 'SOLDER'){
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT, LANJUTKAN PROSES BERIKUTNYA.",[
+					'message' => 'NEXT PROSES'
+				]);
+			}	
 			// we need to count how long it is between now and step->created_at
 			if( !$this->isMoreThanStdTime($currentStep)){
 				// belum mencapai std time
-				throw new StoreResourceFailedException("DATA ALREADY Scan IN", [
+				throw new StoreResourceFailedException("DATA SUDAH '".$node->getDummyId()."' SCAN IN! AND HARUS TUNGGU ". $currentStep['std_time']." DETIK", [
 					'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
 				]);
 			}
@@ -328,12 +401,13 @@ class MainController extends Controller
 			// save
 			$node->setStatus('OUT');
 			// it's mean to get current in process judgement, so when it's rework; it'll get rework
+
 			$node->setJudge($node->getJudge());
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [
 					'message' => 'something went wrong with save method on model! ask your IT member'
 				]);
-			} 
+			}
 
 			// updateChildren hanya akan ter trigger ketika join saja;
 			// method ini berfungsi untuk update board yg di scan skali, kemudian masuk ke dalam set;
@@ -342,13 +416,15 @@ class MainController extends Controller
 			$node->updateChildren();
 
 			$this->returnValue['line_code'] = 239;
+			$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
+			
 			return $this->returnValue;
 		}
 	}
 
 	private function runProcedureTicket(Node $node, $isRunningMaster=false ){
 		// memastikan proses ini belum In && join proses
-		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) ){
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){
 
 			$node->setStatus('IN');
 			$node->setJudge('OK');
@@ -373,7 +449,7 @@ class MainController extends Controller
 	}
 
 	private function runProcedureMaster(Node $node){
-		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket')) ){
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 
 			$node->setStatus('IN');
 			$node->setJudge('OK');
@@ -395,8 +471,16 @@ class MainController extends Controller
 
 		$this->runProcedureTicket($node , true );
 		
+		$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
 		return $this->returnValue;
 	}
 
+	public function destroy(BoardRequest $request){
+		$parameter = $this->getParameter($request);
+		$node = new Node($parameter);
+
+		$this->returnValue['message'] = $node->delete() .' Data Deleted!!';
+		return $this->returnValue;
+	}
 
 }

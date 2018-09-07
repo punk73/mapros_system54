@@ -34,12 +34,33 @@
                                     <input type="checkbox" id="isGenerateFile" v-model="config.isGenerateFile">
                                     <label for="isGenerateFile"> Generate file on scan </label>
                                 </div>
-                            </div>  
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <input type="checkbox" id="isSendAjax" v-model="config.isSendAjax">
+                                    <label for="isSendAjax"> send data to avn test / avmt </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if='config.isSendAjax'>
+                                <label for="uri" class="col-md-3 control-label">URI</label>
+                                <div class="col-md-9">
+                                    <input  type="text" v-model='config.uri' class="form-control" required autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <input type="checkbox" v-model="config.isShowDeleteButton">
+                                    <label for="isShowDeleteButton"> show delete button </label>
+                                </div>
+                            </div>
 
                             <div class="form-group row">
-                                <div class="col-md-3 col-md-offset-3">
-                                    <a href="#/" class="btn btn-primary"><i class="fa fa-arrow-circle-left float-right"></i></a>
-                                    <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i></a>
+                                <div class="col-md-9 col-md-offset-3">
+                                    <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
+                                    <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i> Save </a>
                                 </div>
                             </div>
 						</form>
@@ -60,6 +81,9 @@
 					ip:'',
 					showConfig: false,
 					isGenerateFile : false,
+					isSendAjax : false,
+					isShowDeleteButton : false,
+					uri : '',
 				},
 			}
 		},
@@ -69,6 +93,14 @@
 		},
 		methods: {
 			save(){
+				if (this.config.isSendAjax) {
+					if ( typeof this.config.uri == undefined ) {
+						alert('you need to fill URI');
+						return;
+					}
+				}
+
+				
 				localStorage.setItem('config', JSON.stringify(this.config) )
 				this.$router.push('/');
 			},

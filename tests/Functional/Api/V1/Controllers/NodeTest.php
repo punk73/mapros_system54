@@ -18,11 +18,11 @@ class NodeTest extends TestCase
     use DatabaseMigrations;
 
     protected $parameter = [
-        'board_id'=> '00001IA01001007', //KW-R710H3A9N
+        'board_id'=> '000027A010010002', //KW-R710H3A9N
         'nik' => '39596',
-        'ip' => '::1', //localhost scanner
+        'ip' => '11', //localhost scanner
         'is_solder' => false,
-        'modelname' => 'KW-R710H3A9N'
+        'modelname' => 'NMZK-W69DJN'
     ];
 
     /*
@@ -67,7 +67,7 @@ class NodeTest extends TestCase
         $board->scanner_id = 11; //scanner_id untuk ip ::1
         $board->board_id = $this->parameter['board_id'];
         $board->scan_nik = $this->parameter['nik'];
-        $board->status = 'in';
+        $board->status = 'IN';
         $board->save();
     }
 
@@ -96,7 +96,7 @@ class NodeTest extends TestCase
         $this->seedDb();
 
         $board = Board::all();
-        $scanners = Scanner::where('ip_address', '::1')->get();
+        $scanners = Scanner::where('id', 11 )->get();
 
         // assertGreaterThan( $idealValue , $assertedValue )
         $this->assertGreaterThan( 0, count($scanners));
@@ -105,6 +105,11 @@ class NodeTest extends TestCase
         $node = new Node($this->parameter);
 
         $this->assertEquals(11, $node->scanner_id );
+
+
+        fwrite(STDOUT, $node );
+
+        fwrite(STDOUT, $board );
         // assertEquals($expected, $actual )
         $this->assertEquals( true, $node->isExists() );
     }
@@ -254,7 +259,13 @@ class NodeTest extends TestCase
         $node = new Node($this->parameter);
 
         $this->assertEquals(false, $node->isGuidGenerated() );
+    }
 
+    public function testGetDummyParrent(){
+        $node = new Node($this->parameter, true ); //debug
+        $node->setDummyId($this->parameter['board_id']);
+
+        $this->assertEquals('000027A000010002', $node->getDummyParent() );
     }
 
 }

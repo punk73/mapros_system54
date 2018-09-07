@@ -155,7 +155,7 @@ class Node
 		])->where('ip_address', $scanner_ip )->first();
 
 		if (is_null($scanner)) {
-			throw new StoreResourceFailedException("Scanner with ip=".$scanner_ip." not found. Perhaps scanner not registered yet", [
+			throw new StoreResourceFailedException("Scanner dengan ip=".$scanner_ip." tidak ditemukan. Mungkin scanner belum di register oleh admin", [
 				'ip_address' => $scanner_ip,
 				'message' => 'scanner not registered yet'
 			]);
@@ -175,13 +175,17 @@ class Node
 
 	public function initColumnSetting(){
 		if ($this->lineprocess == null ) {
-			throw new StoreResourceFailedException("Lineprocess is not found", [
+			throw new StoreResourceFailedException("Lineprocess Tidak Ditemukan", [
 				'node' => $this
 			]);
 		}
 
 		$this->setColumnSetting( $this->lineprocess->columnSettings );
 
+	}
+
+	public function setDummyId($dummy_id){
+		$this->dummy_id = $dummy_id;
 	}
 
 	public function getColumnSetting(){
@@ -276,7 +280,7 @@ class Node
 					// untuk cek guid master sudah generate atau belum dari ticket, masih kesulitan, jadi diganti dengan
 					// cek apakah ini join & seting tidak contain board, karena kalau dia join dan tidak kontain board, maka pasti dia contain master; that's why langkah ini harus punya guidParam as guid_master nya;
 					if ($guidParam == null ) {
-						throw new StoreResourceFailedException("this is join process, you need to scan master first!",[
+						throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN MASTER TERLEBIH DULU!",[
 							'note' => 'need guid master',
 							'node' => json_decode( $this, true ),
 						]);
@@ -294,7 +298,7 @@ class Node
 			// tadinya ga ada is join, something went wrong. so add the is join to verify 
 			if( ($this->getModelType()=='board') && ($this->isJoin()) && ($this->isSettingContain('board')) ){
 				if ($guidParam == null ) {
-					throw new StoreResourceFailedException("this is join process, you need to scan ticket or master first!",[
+					throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN TICKET ATAU MASTER DULU!",[
 						'note' => 'need guid_ticket or guid_master',
 						'node' => json_decode( $this, true ),
 					]);
@@ -303,8 +307,8 @@ class Node
 
 			if( ($this->getModelType() == 'ticket') && ($this->isJoin()) && ($this->isSettingContain('ticket')) && ($this->isSettingContain('master')) ){
 				if ($guidParam == null ) {
-					throw new StoreResourceFailedException("this is join process, you need to scan master first!",[
-						'note' => 'need guid master',
+					throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN MASTER DULU!",[
+						'note' => 'BUTUH GUID MASTER',
 						'node' => json_decode( $this, true ),
 					]);
 				}
@@ -362,6 +366,45 @@ class Node
 		return $this->unique_id;
 	}
 
+	public function getDummyParent(){
+		$tmp = str_split($this->dummy_id);
+		$tmp[7] = 0;
+		$tmp[8] = 0;
+		return implode('', $tmp );
+	}
+
+	public function getDummyId(){
+		return $this->dummy_id;
+	}
+
+	public function ignoreSideQuery($query){
+		if(strlen($this->dummy_id) == 16 ){
+			if( $this->getModelType() == 'board' ){
+				$tmp = $this->getDummyParent();
+				
+				$parentA = $tmp;
+				$parentA[6] = 'A';
+
+				$parentB = $tmp;
+				$parentB[6] = 'B';
+
+				$a = $this->dummy_id;
+				$a[6] = 'A';
+				$b = $this->dummy_id;
+				$b[6] = 'B';
+	
+				$query->where($this->dummy_column, $a )
+					->orWhere($this->dummy_column, $b )
+					->orWhere($this->dummy_column, $parentA )
+					->orWhere($this->dummy_column, $parentB );
+
+			}
+		}else {
+			// ticket & master
+			$query->where( $this->dummy_column, $this->dummy_id );	
+		}
+	}
+
 	// we need to changes this method to acomodate the masters 
 	private function getLastGuid(){
 		if (is_null($this->dummy_column)) {
@@ -377,7 +420,7 @@ class Node
 		}
 
 		$guid = $this->model
-			->where( $this->dummy_column, $this->dummy_id )
+			->where( function($query){ $this->ignoreSideQuery($query); } )
 			->orderBy('id', 'desc');
 
 		if( $this->getModelType() == 'ticket' ){
@@ -461,14 +504,14 @@ class Node
 		}
 
 		if( $prevBoard->modelname != $this->modelname ){
-			throw new StoreResourceFailedException("board model you scan is different from previous model!", [
+			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. KLIK DETAIL UNTUK INFO LEBIH LANJUT!", [
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
 		}
 
 		if( $prevBoard->lotno != $this->lotno ){
-			throw new StoreResourceFailedException("board lot number you scan is different from previous lot number!", [
+			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA.", [
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
@@ -490,6 +533,31 @@ class Node
 			->where('guid_master', $this->guid_master )
 			->exists();
 		}
+	}
+
+	public function hasChildren(){
+		if($this->getModelType() == 'board' ){
+			return false;
+		}
+
+		if($this->getModelType() == 'master'){
+			$ticket = Ticket::where('guid_master', $this->getGuidMaster() )
+			->where('scanner_id', $this->scanner_id )
+			->exists();
+
+			$board = Board::where('guid_master', $this->getGuidMaster() )
+			->where('scanner_id', $this->scanner_id )
+			->exists();
+
+			return ( $ticket || $board );
+		}
+
+		if($this->getModelType() == 'ticket'){
+			return Board::where('guid_ticket', $this->getGuidTicket() )
+			->where('scanner_id', $this->scanner_id )
+			->exists();
+		}		
+
 	}
 
 	public function isGuidGenerated($paramType = null ){
@@ -569,11 +637,12 @@ class Node
 			]);
 		}
 
-		if($this->lineprocess['type'] === 1 ){
+		if($this->lineprocess['type'] == 1 ){
 			// masuk kesini jika internal;
 			$model = $this->model
 			->where( 'scanner_id' , $this->scanner_id  )
-			->where( $this->dummy_column, $this->dummy_id );
+			->where( function($query){ $this->ignoreSideQuery($query); } );
+			// ->where( $this->dummy_column, $this->dummy_id );
 
 			if (!is_null($status)) {
 				$model = $model->where('status', 'like', $status.'%' );
@@ -586,6 +655,13 @@ class Node
 			// $is_solder is parameter, if it refer to $this->is_solder, it broke the logic in mainController;
 			if(!is_null($is_solder)){
 				$model = $model->where('judge', 'like', 'SOLDER%');
+			}
+
+			if($this->getModelType() == 'master'){
+				// make sure the finished dummy can be reuse;
+				$model = $model->where('serial_no', null );
+			}else if($this->getModelType() == 'ticket'){
+				$model = $model->where('guid_master', null );
 			}
 
 			return $model->exists(); 
@@ -657,6 +733,23 @@ class Node
 		$this->updateGuidSibling();
 
 		return $model->save();
+	}
+
+	public function delete(){
+		if($this->hasChildren() == false ){
+
+			$model =  $this->model->where($this->dummy_column, $this->dummy_id )
+			->where('scanner_id', $this->scanner_id );
+
+			if($this->getModelType() == 'master'){
+				// make sure the finished dummy can be reuse;
+				$model = $model->where('serial_no', null );
+			}else if($this->getModelType() == 'ticket'){
+				$model = $model->where('guid_master', null );
+			}
+
+			$model = $model->delete();
+		}
 	}
 
 	// no longer use due to huge latency
@@ -888,9 +981,17 @@ class Node
 
 			$model = $this->model
 				->where( 'scanner_id' , $this->scanner_id  )
-				->where( $this->dummy_column, $this->dummy_id )
-				->orderBy('id', 'desc') //order menurun
-				->first();
+				->where( function($query){ $this->ignoreSideQuery($query); } )
+				->orderBy('id', 'desc'); //order menurun
+
+			if($this->getModelType() == 'master'){
+				// make sure the finished dummy can be reuse;
+				$model = $model->where('serial_no', null );
+			}else if($this->getModelType() == 'ticket'){
+				$model = $model->where('guid_master', null );
+			}
+
+			$model = $model->first();
 
 			if($model !== null){
 				$this->setStatus($model->status );
@@ -923,8 +1024,8 @@ class Node
 	 		'headers' => ['Content-type' => 'application/json'],
         ]);
 
-        if( $res->getStatusCode() !== 200 ){
-        	throw new StoreResourceFailedException("Something wrong to your external code data", [
+        if( $res->getStatusCode() != 200 ){
+        	throw new StoreResourceFailedException("Something wrong to your external code data. CALL IT!", [
         		'status_code' => $res->getStatusCode(),
         		'body' => $res->getBody()
         	]);
@@ -934,7 +1035,7 @@ class Node
 
         if( /*array_key_exists('judge', $result ) || */$result == null ){
         	// return $result;
-        	throw new StoreResourceFailedException("external source should always contain judge & status!", [
+        	throw new StoreResourceFailedException("SUMBER EXTERNAL HARUS SELALU MENGANDUNG 'JUDGE' & 'STATUS'!", [
         		'result' => $result,
         		'url' => $url,
         		'response' => $res->getStatusCode() //json_decode( json_encode($res), true )
@@ -942,13 +1043,15 @@ class Node
         }
 		
 		// end point should always contain status and judge;
-        if($result['success'] && $result['judge'] != 'NG'){
+        if( ($result['success']) && ($result['judge'] != 'NG') ){
         	$this->setStatus('OUT');
 			$this->setJudge("OK");
         }else{
         	$this->setStatus('OUT');
 			$this->setJudge("NG");
         }
+        
+        $this->setStep($result);
 	}
 
 	// this method triggered by loadStep();
@@ -1092,7 +1195,7 @@ class Node
 		$this->key = array_search($this->scanner['lineprocess_id'], $process );
 		// $lineprocess_id tidak ditemukan di $process
 		if ($this->key === false ) { // === is required since 0 is false if its using == (two sama dengan)
-			throw new StoreResourceFailedException("this step shouldn't belong to the process", [
+			throw new StoreResourceFailedException("SCAN ".$this->getIdType()." '".$this->getDummyId()."' TIDAK SEHARUSNYA DILAKUKAN DI STEP INI.", [
                 'current_step' 	=> $this->scanner['lineprocess_id'],
                 'process'		=> $process,
                 'node'			=> json_decode($this,true) ,

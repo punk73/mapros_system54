@@ -17,7 +17,7 @@
                     <div class="panel-heading custom-color">
                         <div class="row">
                            <div class="col-md-6 col-sm-6 col-xs-7">
-                            LINE : {{ info.line }}
+                            LINE : <strong> {{ info.line }} </strong>
                            </div>
                            <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
                                TYPE : {{ info.type }}
@@ -25,7 +25,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-7">
-                                PROCESS: {{info.process}}
+                                PROCESS: <strong> {{info.process}} </strong>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
                                STEP ID : {{ info.lineprocess_id }}
@@ -34,18 +34,19 @@
 
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                model: {{form.modelname}}
+                                model: <strong> {{form.modelname}} </strong>
                             </div>
-                            
                         </div>
                     </div>
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" @submit.prevent='onSubmit' >
                             <div class="form-group">
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
-
                                 <div class="col-md-6">
-                                    <input id="nik" type="text" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
+                                    <div class="button-group">
+                                        <input id="nik" type="search" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
+                                        <!-- <span id="searchclear" class="fa fa-window-close"></span> -->
+                                    </div>
                                 </div>
                             </div>
 
@@ -58,7 +59,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">Board Id</label>
+                                <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
                                     <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
@@ -67,8 +68,9 @@
 
                             <div v-if="config.showSolder" class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <input type="checkbox" id="checkbox" v-model="form.is_solder">
-                                    <label for="checkbox"> is solder </label>
+                                    <!-- <input type="checkbox" id="checkbox" v-model="form.is_solder"> -->
+                                    <toggle-button v-model="form.is_solder" :color="'#2ab27b'" :labels="true"/>
+                                    <label for="checkbox"> SOLDER </label>
                                 </div>
                             </div>  
 
@@ -80,28 +82,48 @@
 
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
-                                    <div class="well costum-color text-center">
-                                        information status: <br>
-                                        <div :class='{"text-danger": hasError, "text-success": !hasError }'>
-                                            <strong> {{error}} </strong>
+                                    <div class="well">
+                                        <div class="custom-color text-center">
+                                            <div class="row">
+                                               <div class="col-md-12 col-sm-12 col-xs-12">
+                                                LINE : <strong> {{ info.line }} </strong>
+                                               </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                                    PROCESS: <strong> {{info.process}} </strong>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                                    model: <strong> {{form.modelname}} </strong>
+                                                </div>
+                                            </div>
+                                            <hr class="black">
                                         </div>
+                                        <div class="text-center">
+                                            information status: <br>
+                                            <div :class='{"text-danger": hasError, "text-success": !hasError }'>
+                                                <strong> {{error}} </strong>
+                                            </div>
 
-                                        <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
+                                            <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
 
-                                        <a class="btn btn-info" @click.prevent="showDetailError" >detail</a>
+                                            <a class="text-danger" @click.prevent="showDetailError" >detail >></a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>                            
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary" >
-                                        Submit
+                                    <button type="submit" class="btn btn-success" >
+                                        Submit <i class="fa fa-check float-right"></i>
                                     </button>
 
-                                    <!-- <button @click='toggleJoin'  type="button" class="btn btn-primary">
-                                        show modal
-                                    </button> -->
+                                    <button v-if='config.isShowDeleteButton' @click.prevent='deleteOnClick'  type="button" class="btn btn-danger">
+                                        Delete
+                                    </button>
 
                                 </div>
                             </div>
@@ -130,6 +152,7 @@
         :form='form'
         :errors='errors'
         @toggleJoin='toggleJoin'
+        @toggleModal='toggleModal'
     ></join>
   </div>
 </template>
@@ -141,7 +164,7 @@
     import confirm from './Confirm';
     import alert from './Alert';
     import join from './Join';
-
+    import ToggleButton from 'vue-js-toggle-button/src/Button';
     export default {
         data: () => {
             return {
@@ -178,11 +201,19 @@
                 showModal: false,
                 showConfirm:false,
 
+                label : {
+                    id : 'Board ID'
+                },
+
+                // it's basically will be override by getConfig method
                 config : {
                     modelname: '',
                     ip       : '',
                     showSolder: true,
                     isGenerateFile : false,
+                    isSendAjax : false,
+                    isShowDeleteButton : false,
+                    uri : '',
                 },
 
                 modal: {
@@ -199,7 +230,7 @@
         },
 
         components: {
-            modal, loading, confirm, alert, join
+            modal, loading, confirm, alert, join, ToggleButton,
         },
 
         methods : {
@@ -216,13 +247,29 @@
                         console.log(response)
                     })
                     .catch( (error) => {
+                        self.toggleLoading();
+
+                        if(error == undefined ){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {} )
+                            return;
+                        }
+
+                        if(error.response == undefined ){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {errors : error })
+                            return;
+                        }
+
+                        if(error.response.data == undefined){
+                            this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', { errors : error.response })
+                            return;
+                        }
+
                         let data = error.response.data;
                         console.log(data)
                         let message = data.message;
-                        self.toggleLoading()
+                        
                         if(message == 'view'){
                             this.returnJoin(data.errors);
-
                             return;
                         }
 
@@ -282,10 +329,38 @@
                     if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
                     this.download(this.form.board_id, 'RUN_AVMT.txt' );
                 }
+
+                if( this.config.isSendAjax ){
+                    if (response.data.node.status == 'IN') { 
+                        //kalau dia bkn in, gausah download;
+                        this.sendAjax()    
+                    }
+                }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
                 this.form.board_id = '';
                 // set focus
+            },
+
+            deleteOnClick(){
+                let data = this.form;
+                let self = this;
+                this.toggleLoading();
+
+                axios.delete('api/main', data )
+                    .then((response) => {
+                        self.toggleLoading()
+                        self.handleSucces(response)
+                        console.log(response)
+                    })
+                    .catch( (error) => {
+                        let data = error.response.data;
+                        console.log(data)
+                        let message = data.message;
+                        self.toggleLoading()
+                        
+                        this.handleError(message, data );
+                    })
             },
 
             returnViewConfirmation(error){
@@ -354,6 +429,40 @@
 
                 localStorage.setItem('config', JSON.stringify(newConfig) );
                 // changes localstorage
+                this.onSubmit();
+            },
+
+            initLabel(){
+                console.log(this.info, 'set label method')
+                if( this.info.lineprocess != undefined ){
+                    if(this.info.lineprocess.column_settings != undefined){
+                        let column_settings = this.info.lineprocess.column_settings;
+                        for (var i = 0; i < column_settings.length; i++) {
+                            if( column_settings[i]['table_name'] == 'masters') {
+                                this.label.id = 'DUMMY MASTER';
+                                return;
+                            }
+
+                            if( (column_settings[i]['table_name'] == 'tickets') ) {
+                                this.label.id = 'DUMMY TICKET';
+                            }
+                        }
+                    }
+                }
+            },
+
+            sendAjax(){
+                console.log(this.config, 'sendAjax methods triggered')
+                axios.get(this.config.uri, {
+                    params : {
+                        valscan : this.form.board_id
+                    }
+                }).then( (response) => {
+                    console.log('Success', response )
+                }).catch((error) => {
+                    console.log('error', error )
+                    
+                })
             },
 
             getInfo(){
@@ -369,6 +478,7 @@
               }).then((response) => {
                 console.log(response)
                 self.info = response.data.data;
+                self.initLabel();
               })
               .catch((error)=> {
 
@@ -394,6 +504,11 @@
 <style>
     .custom-color{
         background-image: none!important;
-        background-color: 'yellow' !important;
+        /*background-color: yellow !important;*/
+    }
+
+    .black {
+        border-color: #636B6F;
+        border-width: 2px;
     }
 </style>
