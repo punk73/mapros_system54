@@ -183,6 +183,14 @@ class MainController extends Controller
 
 			if( $prevNode->getStatus() == 'OUT' ){
 				// if it's rework, then judgment will get rework instead;
+				
+				if(($prevNode->getJudge() != 'SOLDER') && ($node->is_solder == true)){
+					throw new StoreResourceFailedException("HAPUS CHECKLIST SOLDER !!!", [
+						'message' => 'Scan in this process',
+						'prevNode' => json_decode( $prevNode, true )
+					]);
+				}
+
 				$judgement = 'OK';
 				// we not sure if it calling prev() twice or not, hopefully it's not;
 				if($prevNode->getJudge() == 'NG'){                    
@@ -230,6 +238,14 @@ class MainController extends Controller
 				* it's mean it will always return false;
 				*/
 
+				
+				if(($prevNode->isExists('IN','SOLDER')) && ( $node->is_solder == false)){ //cek data solder dengan status out
+					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( SOLDER )", [
+						'message' => 'SCAN OUT SOLDER',
+						'prevNode' => json_decode( $prevNode, true )
+					]);  
+				};
+
 				// cek apakah solder atau bukan
 				if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
 					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
@@ -244,6 +260,8 @@ class MainController extends Controller
 						'prevNode' => json_decode( $prevNode, true )
 					]);    
 				};
+
+				
 
 				$node = $prevNode->next();
 				$node->setStatus('OUT');
@@ -320,6 +338,14 @@ class MainController extends Controller
 				]);
 			}
 
+			if($node->isExists('OUT', 'SOLDER')){
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT SOLDER!!", [
+					'MESSAGE' => 'DATA SUDAH SCAN OUT SOLDER DISINI DAN SUDAH IN OUT OK ',
+					'node' => json_decode($node, true ),
+
+				]);
+			}
+
 			$node->setStatus('IN');
 			$node->setJudge('SOLDER');
 			if(!$node->save()){
@@ -339,12 +365,30 @@ class MainController extends Controller
 		if($node->getStatus() == 'IN'){
 
 			$currentStep = $node->getStep();
-			if($node->is_solder){
-				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
-					'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
-				]);
-			}
+			// if( ($node->is_solder == true) && ($node->getJudge() == 'SOLDER' ) ){
+			// 	throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
+			// 		'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
+			// 	]);
+			// }
 
+			if( ($node->is_solder) ){
+				
+				if($node->getJudge() == 'SOLDER'){
+					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
+						'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
+					]);
+				}
+				if( $node->getJudge() != 'SOLDER' ){
+					throw new StoreResourceFailedException("HAPUS CHECKLIST SOLDER UNTUK SCAN OUT PROSES SAAT INI !!",[
+						'message' => 'SCAN OUT PROCESS SAAT INI'
+					]);
+				}
+			}
+			if($node->getJudge() == 'SOLDER'){
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT, LANJUTKAN PROSES BERIKUTNYA.",[
+					'message' => 'NEXT PROSES'
+				]);
+			}	
 			// we need to count how long it is between now and step->created_at
 			if( !$this->isMoreThanStdTime($currentStep)){
 				// belum mencapai std time
@@ -357,12 +401,13 @@ class MainController extends Controller
 			// save
 			$node->setStatus('OUT');
 			// it's mean to get current in process judgement, so when it's rework; it'll get rework
+
 			$node->setJudge($node->getJudge());
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [
 					'message' => 'something went wrong with save method on model! ask your IT member'
 				]);
-			} 
+			}
 
 			// updateChildren hanya akan ter trigger ketika join saja;
 			// method ini berfungsi untuk update board yg di scan skali, kemudian masuk ke dalam set;
