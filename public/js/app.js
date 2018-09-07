@@ -13836,6 +13836,10 @@ var axios = __webpack_require__(5);
             showModal: false,
             showConfirm: false,
 
+            label: {
+                id: 'Board ID'
+            },
+
             // it's basically will be override by getConfig method
             config: {
                 modelname: '',
@@ -14054,6 +14058,24 @@ var axios = __webpack_require__(5);
             // changes localstorage
             this.onSubmit();
         },
+        initLabel: function initLabel() {
+            console.log(this.info, 'set label method');
+            if (this.info.lineprocess != undefined) {
+                if (this.info.lineprocess.column_settings != undefined) {
+                    var column_settings = this.info.lineprocess.column_settings;
+                    for (var i = 0; i < column_settings.length; i++) {
+                        if (column_settings[i]['name'] == 'master') {
+                            this.label.id = 'DUMMY MASTER';
+                            return;
+                        }
+
+                        if (column_settings[i]['name'] == 'ticket') {
+                            this.label.id = 'DUMMY TICKET';
+                        }
+                    }
+                }
+            }
+        },
         sendAjax: function sendAjax() {
             console.log(this.config, 'sendAjax methods triggered');
             axios.get(this.config.uri, {
@@ -14079,6 +14101,7 @@ var axios = __webpack_require__(5);
             }).then(function (response) {
                 console.log(response);
                 self.info = response.data.data;
+                self.initLabel();
             }).catch(function (error) {
 
                 modal.header = 'ERROR';
@@ -44652,7 +44675,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label"
-  }, [_vm._v("Board Id")]), _vm._v(" "), _c('div', {
+  }, [_vm._v(_vm._s(_vm.label.id))]), _vm._v(" "), _c('div', {
     staticClass: "col-md-6"
   }, [_c('input', {
     directives: [{
