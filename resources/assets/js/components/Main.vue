@@ -68,7 +68,8 @@
 
                             <div v-if="config.showSolder" class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <input type="checkbox" id="checkbox" v-model="form.is_solder">
+                                    <!-- <input type="checkbox" id="checkbox" v-model="form.is_solder"> -->
+                                    <toggle-button v-model="form.is_solder" :labels="true"/>
                                     <label for="checkbox"> is solder </label>
                                 </div>
                             </div>  
@@ -163,7 +164,7 @@
     import confirm from './Confirm';
     import alert from './Alert';
     import join from './Join';
-
+    import ToggleButton from 'vue-js-toggle-button/src/Button';
     export default {
         data: () => {
             return {
@@ -229,7 +230,7 @@
         },
 
         components: {
-            modal, loading, confirm, alert, join
+            modal, loading, confirm, alert, join, ToggleButton,
         },
 
         methods : {
