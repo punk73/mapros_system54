@@ -320,6 +320,14 @@ class MainController extends Controller
 				]);
 			}
 
+			if($node->isExists('OUT', 'SOLDER')){
+				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT SOLDER!!", [
+					'MESSAGE' => 'DATA SUDAH SCAN OUT SOLDER DISINI DAN SUDAH IN OUT OK ',
+					'node' => json_decode($node, true ),
+
+				]);
+			}
+
 			$node->setStatus('IN');
 			$node->setJudge('SOLDER');
 			if(!$node->save()){
@@ -344,7 +352,7 @@ class MainController extends Controller
 					'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
 				]);
 			}
-			
+
 			if( ($node->is_solder) != ($node->getJudge() == 'SOLDER' ) ){
 				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT SOLDER!!",[
 					'message' => 'HAPUS CHECKLIST SOLDER'
