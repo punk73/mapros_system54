@@ -14022,6 +14022,31 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(7);
 
@@ -44834,24 +44859,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "panel panel-default"
   }, [_c('div', {
-    staticClass: "panel-heading custom-color"
-  }, [_c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-7"
-  }, [_vm._v("\n                          LINE : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
-  }, [_vm._v("\n                             TYPE : " + _vm._s(_vm.info.type) + "\n                         ")])]), _vm._v(" "), _c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-7"
-  }, [_vm._v("\n                              PROCESS: "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.process) + " ")])]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
-  }, [_vm._v("\n                             STEP ID : " + _vm._s(_vm.info.lineprocess_id) + "\n                         ")])]), _vm._v(" "), _c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-12"
-  }, [_vm._v("\n                              model: "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])])]), _vm._v(" "), _c('div', {
     staticClass: "panel-body"
   }, [_c('form', {
     staticClass: "form-horizontal",
@@ -45002,19 +45009,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "well"
   }, [_c('div', {
-    staticClass: "custom-color text-center"
+    staticClass: "panel-heading custom-color"
   }, [_c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-12 col-sm-12 col-xs-12"
-  }, [_vm._v("\n                                              LINE : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-7"
+  }, [_vm._v("\n                                              LINE 1 : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
+  }, [_vm._v("\n                                                 TYPE : " + _vm._s(_vm.info.type) + "\n                                             ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-12 col-sm-12 col-xs-12"
-  }, [_vm._v("\n                                                  PROCESS: "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.process) + " ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-7"
+  }, [_vm._v("\n                                                  PROCESS: "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.process) + " ")])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
+  }, [_vm._v("\n                                                 STEP ID : " + _vm._s(_vm.info.lineprocess_id) + "\n                                             ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-12 col-sm-12 col-xs-12"
+    staticClass: "col-md-6 col-sm-6 col-xs-12"
   }, [_vm._v("\n                                                  model: "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])]), _vm._v(" "), _c('hr', {
     staticClass: "black"
   })]), _vm._v(" "), _c('div', {

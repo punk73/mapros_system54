@@ -14,10 +14,10 @@
 
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading custom-color">
+                    <!-- <div class="panel-heading custom-color">
                         <div class="row">
                            <div class="col-md-6 col-sm-6 col-xs-7">
-                            LINE : <strong> {{ info.line }} </strong>
+                            LINE 1 : <strong> {{ info.line }} </strong>
                            </div>
                            <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
                                TYPE : {{ info.type }}
@@ -37,7 +37,7 @@
                                 model: <strong> {{form.modelname}} </strong>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" @submit.prevent='onSubmit' >
                             <div class="form-group">
@@ -83,10 +83,35 @@
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
                                     <div class="well">
-                                        <div class="custom-color text-center">
+                                        <div class="panel-heading custom-color">
+                                            <div class="row">
+                                               <div class="col-md-6 col-sm-6 col-xs-7">
+                                                LINE 1 : <strong> {{ info.line }} </strong>
+                                               </div>
+                                               <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
+                                                   TYPE : {{ info.type }}
+                                               </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-6 col-xs-7">
+                                                    PROCESS: <strong> {{info.process}} </strong>
+                                                </div>
+                                                <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
+                                                   STEP ID : {{ info.lineprocess_id }}
+                                               </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    model: <strong> {{form.modelname}} </strong>
+                                                </div>
+                                            </div>
+                                            <hr class="black">
+                                        </div>
+                                        <!-- <div class="custom-color text-left">
                                             <div class="row">
                                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                                LINE : <strong> {{ info.line }} </strong>
+                                                LINE 2 : <strong> {{ info.line }} </strong>
                                                </div>
                                             </div>
                                             <div class="row">
@@ -100,7 +125,7 @@
                                                 </div>
                                             </div>
                                             <hr class="black">
-                                        </div>
+                                        </div> -->
                                         <div class="text-center">
                                             information status: <br>
                                             <div :class='{"text-danger": hasError, "text-success": !hasError }'>
