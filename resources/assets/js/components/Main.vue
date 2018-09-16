@@ -14,30 +14,7 @@
 
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <!-- <div class="panel-heading custom-color">
-                        <div class="row">
-                           <div class="col-md-6 col-sm-6 col-xs-7">
-                            LINE 1 : <strong> {{ info.line }} </strong>
-                           </div>
-                           <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
-                               TYPE : {{ info.type }}
-                           </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 col-xs-7">
-                                PROCESS: <strong> {{info.process}} </strong>
-                            </div>
-                            <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
-                               STEP ID : {{ info.lineprocess_id }}
-                           </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                model: <strong> {{form.modelname}} </strong>
-                            </div>
-                        </div>
-                    </div> -->
+                    
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" @submit.prevent='onSubmit' >
                             <div class="form-group text-center">
@@ -111,24 +88,6 @@
                                             </div>
                                             <hr class="black">
                                         </div>
-                                        <!-- <div class="custom-color text-left">
-                                            <div class="row">
-                                               <div class="col-md-12 col-sm-12 col-xs-12">
-                                                LINE 2 : <strong> {{ info.line }} </strong>
-                                               </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                                    PROCESS: <strong> {{info.process}} </strong>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                                    model: <strong> {{form.modelname}} </strong>
-                                                </div>
-                                            </div>
-                                            <hr class="black">
-                                        </div> -->
                                         <div class="text-center">
                                             Information Status: <br>
                                             <!-- <div :class='{"text-danger": hasError, "text-success": !hasError }'> -->
@@ -153,7 +112,7 @@
                                         Delete
                                     </button>
 
-                                    <button @click.prevent='changesColor' class="btn btn-info">change color</button>
+                                    <!-- <button @click.prevent='changesColor' class="btn btn-info">change color</button> -->
                                 </div>
                             </div>
 
@@ -335,17 +294,6 @@
                     backgroundColor : '#8e0d0d',
                     'border-color' : '#888080'
                 }
-
-                /*if (this.state == 'yellow' ) {
-                    this.styles = green;
-                    this.state = 'green';
-                }else if (this.state == 'green'){
-                    this.styles = red;
-                    this.state = 'red';
-                }else {
-                    this.state = 'yellow';
-                    this.styles = yellow;
-                }*/
 
                 if(color == 'red'){
                     this.styles = red;

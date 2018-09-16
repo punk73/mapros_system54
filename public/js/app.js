@@ -14013,47 +14013,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 var axios = __webpack_require__(7);
 
@@ -14201,19 +14160,9 @@ var axios = __webpack_require__(7);
                 color: '#d2c6c6',
                 backgroundColor: '#8e0d0d',
                 'border-color': '#888080'
+            };
 
-                /*if (this.state == 'yellow' ) {
-                    this.styles = green;
-                    this.state = 'green';
-                }else if (this.state == 'green'){
-                    this.styles = red;
-                    this.state = 'red';
-                }else {
-                    this.state = 'yellow';
-                    this.styles = yellow;
-                }*/
-
-            };if (color == 'red') {
+            if (color == 'red') {
                 this.styles = red;
             } else if (color == 'yellow') {
                 this.styles = yellow;
@@ -45111,15 +45060,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.deleteOnClick($event)
       }
     }
-  }, [_vm._v("\n                                      Delete\n                                  ")]) : _vm._e(), _vm._v(" "), _c('button', {
-    staticClass: "btn btn-info",
-    on: {
-      "click": function($event) {
-        $event.preventDefault();
-        return _vm.changesColor($event)
-      }
-    }
-  }, [_vm._v("change color")])])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [_vm._v("\n                                      Delete\n                                  ")]) : _vm._e()])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
