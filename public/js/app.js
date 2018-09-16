@@ -14212,6 +14212,7 @@ var axios = __webpack_require__(7);
             var message = response.data.message;
             this.hasError = false;
             this.error = message;
+            this.detailError = message;
 
             if (this.config.isGenerateFile) {
                 if (response.data.node.status == 'IN') {
@@ -14243,10 +14244,12 @@ var axios = __webpack_require__(7);
             var _this2 = this;
 
             var data = this.form;
+            console.log(data);
+            // return;
             var self = this;
             this.toggleLoading();
 
-            axios.delete('api/main', data).then(function (response) {
+            axios.delete('api/main', { data: data }).then(function (response) {
                 self.toggleLoading();
                 self.handleSucces(response);
                 console.log(response);
@@ -45066,10 +45069,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-6 col-md-offset-4"
-  }, [_vm._m(1), _vm._v(" "), (_vm.config.isShowDeleteButton) ? _c('button', {
+  }, [(!_vm.config.isShowDeleteButton) ? _c('button', {
+    staticClass: "btn btn-success",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("\n                                      Submit "), _c('i', {
+    staticClass: "fa fa-check float-right"
+  })]) : _vm._e(), _vm._v(" "), (_vm.config.isShowDeleteButton) ? _c('button', {
     staticClass: "btn btn-danger",
     attrs: {
-      "type": "button"
+      "type": "submit"
     },
     on: {
       "click": function($event) {
@@ -45077,7 +45087,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.deleteOnClick($event)
       }
     }
-  }, [_vm._v("\n                                      Delete\n                                  ")]) : _vm._e()])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [_vm._v("\n                                      Delete "), _c('i', {
+    staticClass: "fa fa-trash float-right"
+  })]) : _vm._e()])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
@@ -45109,15 +45121,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "form-group text-center"
   }, [_c('h3', [_c('strong', [_vm._v("PLEASE SCAN DATA")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('button', {
-    staticClass: "btn btn-success",
-    attrs: {
-      "type": "submit"
-    }
-  }, [_vm._v("\n                                      Submit "), _c('i', {
-    staticClass: "fa fa-check float-right"
-  })])
 }]}
 module.exports.render._withStripped = true
 if (false) {

@@ -104,12 +104,12 @@
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-success" >
+                                    <button v-if='!config.isShowDeleteButton' type="submit" class="btn btn-success" >
                                         Submit <i class="fa fa-check float-right"></i>
                                     </button>
 
-                                    <button v-if='config.isShowDeleteButton' @click.prevent='deleteOnClick'  type="button" class="btn btn-danger">
-                                        Delete
+                                    <button v-if='config.isShowDeleteButton' @click.prevent='deleteOnClick'  type="submit" class="btn btn-danger">
+                                        Delete <i class="fa fa-trash float-right"></i>
                                     </button>
 
                                     <!-- <button @click.prevent='changesColor' class="btn btn-info">change color</button> -->
@@ -348,6 +348,7 @@
                 let message = response.data.message;
                 this.hasError = false;
                 this.error = message;
+                this.detailError = message;
 
                 if(this.config.isGenerateFile){
                     if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
@@ -377,10 +378,12 @@
 
             deleteOnClick(){
                 let data = this.form;
+                console.log(data)
+                // return;
                 let self = this;
                 this.toggleLoading();
 
-                axios.delete('api/main', data )
+                axios.delete('api/main', {data : data } )
                     .then((response) => {
                         self.toggleLoading()
                         self.handleSucces(response)

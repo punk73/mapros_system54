@@ -749,6 +749,7 @@ class Node
 			}
 
 			$model = $model->delete();
+			return $model;
 		}
 	}
 
