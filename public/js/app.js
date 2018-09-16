@@ -13836,11 +13836,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
 		return {
-			source: '../storage/app/public/ajax-loader.gif'
+			source: '../storage/app/public/hourglass.svg'
+			// source:'../storage/app/public/ajax-loader.gif'
 		};
 	}
 });
@@ -13863,6 +13866,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Join___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__Join__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button__ = __webpack_require__(54);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button__);
+//
 //
 //
 //
@@ -14090,6 +14094,13 @@ var axios = __webpack_require__(7);
                 lineprocess_id: ''
             },
 
+            state: 'in',
+
+            styles: {
+                // backgroundColor: '#ffffff',
+                // color : '#eeeeee'
+            },
+
             isLoading: false,
             showModal: false,
             showConfirm: false,
@@ -14174,6 +14185,42 @@ var axios = __webpack_require__(7);
                 _this.handleError(message, data);
             });
         },
+        changesColor: function changesColor(color) {
+            var yellow = {
+                backgroundColor: '#e5ff12',
+                'border-color': '#888080'
+            };
+
+            var green = {
+                backgroundColor: '#11b90e',
+                color: 'white',
+                'border-color': '##819289'
+            };
+
+            var red = {
+                color: '#d2c6c6',
+                backgroundColor: '#8e0d0d',
+                'border-color': '#888080'
+
+                /*if (this.state == 'yellow' ) {
+                    this.styles = green;
+                    this.state = 'green';
+                }else if (this.state == 'green'){
+                    this.styles = red;
+                    this.state = 'red';
+                }else {
+                    this.state = 'yellow';
+                    this.styles = yellow;
+                }*/
+
+            };if (color == 'red') {
+                this.styles = red;
+            } else if (color == 'yellow') {
+                this.styles = yellow;
+            } else {
+                this.styles = green;
+            }
+        },
         download: function download(data, filename, type) {
             var file = new Blob([data], { type: type });
             console.log('download');
@@ -14204,6 +14251,7 @@ var axios = __webpack_require__(7);
             this.error = message;
             this.detailError = detailError;
             this.hasError = true;
+            this.changesColor('red');
             this.form.board_id = '';
             // this.toggleAlert();
             // this.showAlert = true;
@@ -14211,7 +14259,7 @@ var axios = __webpack_require__(7);
         },
         handleSucces: function handleSucces(response) {
             // set error to default value to show alert-success in alert
-            // console.log('handleSucces', response )
+            console.log('handleSucces', response);
             var message = response.data.message;
             this.hasError = false;
             this.error = message;
@@ -14226,6 +14274,12 @@ var axios = __webpack_require__(7);
                     //kalau dia bkn in, gausah download;
                     this.sendAjax();
                 }
+            }
+
+            if (message.includes('IN')) {
+                this.changesColor('yellow');
+            } else {
+                this.changesColor('green');
             }
             // this.toggleAlert('Success', message );
             // this.showAlert = true;
@@ -16890,7 +16944,7 @@ if (typeof jQuery === 'undefined') {
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(5)();
-exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n}\n", ""]);
+exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n}\n.txt-color {\n    color: #ffffff;\n}\n.bg-color {\n    background-color: #edf108;\n}\n", ""]);
 
 /***/ }),
 /* 47 */
@@ -45010,7 +45064,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "col-md-12 col-xs-12"
   }, [_c('div', {
-    staticClass: "well"
+    staticClass: "well",
+    style: (_vm.styles)
   }, [_c('div', {
     staticClass: "custom-color"
   }, [_c('div', {
@@ -45033,16 +45088,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "black"
   })]), _vm._v(" "), _c('div', {
     staticClass: "text-center"
-  }, [_vm._v("\n                                          Information Status: "), _c('br'), _vm._v(" "), _c('div', {
-    class: {
-      "text-danger": _vm.hasError, "text-success": !_vm.hasError
-    }
-  }, [_c('strong', [_vm._v(" " + _vm._s(_vm.error) + " ")])]), _vm._v(" "), _c('H2', {
-    class: {
-      "text-danger": _vm.hasError, "text-success": !_vm.hasError
-    }
-  }, [_c('strong', [_vm._v(_vm._s((_vm.hasError) ? 'NG' : 'OK'))])]), _vm._v(" "), _c('a', {
-    staticClass: "text-danger",
+  }, [_vm._v("\n                                          Information Status: "), _c('br'), _vm._v(" "), _c('strong', [_vm._v(" " + _vm._s(_vm.error) + " ")]), _vm._v(" "), _c('H2', [_c('strong', [_vm._v(_vm._s((_vm.hasError) ? 'NG' : 'OK'))])]), _vm._v(" "), _c('a', {
+    style: (_vm.styles),
     on: {
       "click": function($event) {
         $event.preventDefault();
@@ -45064,7 +45111,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.deleteOnClick($event)
       }
     }
-  }, [_vm._v("\n                                      Delete\n                                  ")]) : _vm._e()])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [_vm._v("\n                                      Delete\n                                  ")]) : _vm._e(), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-info",
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        return _vm.changesColor($event)
+      }
+    }
+  }, [_vm._v("change color")])])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
@@ -45739,13 +45794,13 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('img', {
+  return _c('div', [_c('img', {
     staticClass: "img-fluid",
     attrs: {
       "src": _vm.source,
       "alt": "Responsive image"
     }
-  })
+  }), _vm._v(" LOADING ...\n")])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

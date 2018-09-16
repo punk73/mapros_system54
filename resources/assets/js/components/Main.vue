@@ -85,7 +85,7 @@
 
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
-                                    <div class="well">
+                                    <div class="well" :style="styles" >
                                         <div class="custom-color">
                                             <div class="row">
                                                <div class="col-md-6 col-sm-6 col-xs-7">
@@ -131,13 +131,13 @@
                                         </div> -->
                                         <div class="text-center">
                                             Information Status: <br>
-                                            <div :class='{"text-danger": hasError, "text-success": !hasError }'>
+                                            <!-- <div :class='{"text-danger": hasError, "text-success": !hasError }'> -->
                                                 <strong> {{error}} </strong>
-                                            </div>
+                                            <!-- </div> -->
+                                            <!-- :class='{"text-danger": hasError, "text-success": !hasError }' -->
+                                            <H2  ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
 
-                                            <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
-
-                                            <a class="text-danger" @click.prevent="showDetailError" >See Details >></a>
+                                            <a :style='styles' @click.prevent="showDetailError" >See Details >></a>
                                         </div>
                                     </div>
                                 </div>
@@ -153,6 +153,7 @@
                                         Delete
                                     </button>
 
+                                    <button @click.prevent='changesColor' class="btn btn-info">change color</button>
                                 </div>
                             </div>
 
@@ -223,6 +224,13 @@
                     proces  : '',
                     type    : '',
                     lineprocess_id : '',
+                },
+
+                state : 'in',
+
+                styles : {
+                    // backgroundColor: '#ffffff',
+                    // color : '#eeeeee'
                 },
 
                 isLoading:false,
@@ -310,6 +318,45 @@
                     })
             },
 
+            changesColor(color){
+                let yellow = {
+                    backgroundColor : '#e5ff12',
+                    'border-color'    : '#888080',
+                }
+
+                let green = {
+                    backgroundColor : '#11b90e',
+                    color           : 'white',
+                    'border-color'    : '##819289'
+                }
+
+                let red  = {
+                    color : '#d2c6c6',
+                    backgroundColor : '#8e0d0d',
+                    'border-color' : '#888080'
+                }
+
+                /*if (this.state == 'yellow' ) {
+                    this.styles = green;
+                    this.state = 'green';
+                }else if (this.state == 'green'){
+                    this.styles = red;
+                    this.state = 'red';
+                }else {
+                    this.state = 'yellow';
+                    this.styles = yellow;
+                }*/
+
+                if(color == 'red'){
+                    this.styles = red;
+                }else if (color == 'yellow'){
+                    this.styles = yellow;
+                }else{
+                    this.styles = green;
+                }
+
+            },
+
             download(data, filename, type) {
                 var file = new Blob([data], {type: type});
                 console.log('download');
@@ -340,6 +387,7 @@
                 this.error = message;
                 this.detailError = detailError;
                 this.hasError = true;
+                this.changesColor('red');
                 this.form.board_id='';
                 // this.toggleAlert();
                 // this.showAlert = true;
@@ -348,7 +396,7 @@
 
             handleSucces(response){
                 // set error to default value to show alert-success in alert
-                // console.log('handleSucces', response )
+                console.log('handleSucces', response )
                 let message = response.data.message;
                 this.hasError = false;
                 this.error = message;
@@ -363,6 +411,12 @@
                         //kalau dia bkn in, gausah download;
                         this.sendAjax()    
                     }
+                }
+
+                if(message.includes('IN')){
+                    this.changesColor('yellow')
+                }else {
+                    this.changesColor('green')
                 }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
@@ -538,5 +592,13 @@
     .black {
         border-color: #636B6F;
         border-width: 2px;
+    }
+
+    .txt-color {
+        color: #ffffff;
+    }
+
+    .bg-color {
+        background-color: #edf108;
     }
 </style>
