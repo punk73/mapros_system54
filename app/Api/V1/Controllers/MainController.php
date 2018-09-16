@@ -135,8 +135,15 @@ class MainController extends Controller
 	}
 
 	private function runNode($parameter){
+		if ( strlen($parameter['board_id']) == 16 ) {
+			if ( $parameter['board_id'][6] != 'A' ) {
+				throw new StoreResourceFailedException("TOLONG SCAN BARCODE SIDE A !!", [
+					'PARAMETER' => $parameter
+				]);
+			}
+		}
+
 		$node = new Node($parameter);
-		
 		// return $node;
 
 		$this->returnValue['node'] = $node;
