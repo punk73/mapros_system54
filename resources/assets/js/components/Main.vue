@@ -350,14 +350,17 @@
                 this.error = message;
 
                 if(this.config.isGenerateFile){
-                    if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
-                    this.download(this.form.board_id, 'RUN_AVMT.txt' );
+                    if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
+                        this.download(this.form.board_id, 'RUN_AVMT.txt' );
+                    }
                 }
 
                 if( this.config.isSendAjax ){
                     if (response.data.node.status == 'IN') { 
                         //kalau dia bkn in, gausah download;
-                        this.sendAjax()    
+                        let data = response.data;
+                        // console.log(data, 'handleSucces sending ajax')
+                        this.sendAjax(data)    
                     }
                 }
 
@@ -481,11 +484,24 @@
                 }
             },
 
-            sendAjax(){
-                console.log(this.config, 'sendAjax methods triggered')
+            sendAjax(responseData){
+                let scanner_id = responseData.node.scanner.id;
+                let guid;
+                let board_id = this.form.board_id;
+                if(responseData.node.guid_master != null ){
+                    guid = responseData.node.guid_master;
+                }else if (responseData.node.guid_ticket != null ){
+                    guid = responseData.node.guid_ticket;
+                }else {
+                    guid = 'noData';
+                }
+
+                let value = board_id + '_' + guid + '_' + scanner_id ;
+                // console.log({responseData, value}, 'sendAjax methods triggered')
+                
                 axios.get(this.config.uri, {
                     params : {
-                        valscan : this.form.board_id
+                        valscan : value
                     }
                 }).then( (response) => {
                     console.log('Success', response )

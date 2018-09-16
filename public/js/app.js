@@ -14214,14 +14214,18 @@ var axios = __webpack_require__(7);
             this.error = message;
 
             if (this.config.isGenerateFile) {
-                if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
-                this.download(this.form.board_id, 'RUN_AVMT.txt');
+                if (response.data.node.status == 'IN') {
+                    //kalau dia bkn in, gausah download;
+                    this.download(this.form.board_id, 'RUN_AVMT.txt');
+                }
             }
 
             if (this.config.isSendAjax) {
                 if (response.data.node.status == 'IN') {
                     //kalau dia bkn in, gausah download;
-                    this.sendAjax();
+                    var data = response.data;
+                    // console.log(data, 'handleSucces sending ajax')
+                    this.sendAjax(data);
                 }
             }
 
@@ -14337,11 +14341,24 @@ var axios = __webpack_require__(7);
                 }
             }
         },
-        sendAjax: function sendAjax() {
-            console.log(this.config, 'sendAjax methods triggered');
+        sendAjax: function sendAjax(responseData) {
+            var scanner_id = responseData.node.scanner.id;
+            var guid = void 0;
+            var board_id = this.form.board_id;
+            if (responseData.node.guid_master != null) {
+                guid = responseData.node.guid_master;
+            } else if (responseData.node.guid_ticket != null) {
+                guid = responseData.node.guid_ticket;
+            } else {
+                guid = 'noData';
+            }
+
+            var value = board_id + '_' + guid + '_' + scanner_id;
+            // console.log({responseData, value}, 'sendAjax methods triggered')
+
             axios.get(this.config.uri, {
                 params: {
-                    valscan: this.form.board_id
+                    valscan: value
                 }
             }).then(function (response) {
                 console.log('Success', response);
