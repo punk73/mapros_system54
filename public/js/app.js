@@ -14047,6 +14047,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 var axios = __webpack_require__(7);
 
@@ -44871,7 +44874,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.onSubmit($event)
       }
     }
-  }, [_c('div', {
+  }, [_vm._m(0), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label",
@@ -45009,12 +45012,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "well"
   }, [_c('div', {
-    staticClass: "panel-heading custom-color"
+    staticClass: "custom-color"
   }, [_c('div', {
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-6 col-sm-6 col-xs-7"
-  }, [_vm._v("\n                                              LINE 1 : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("\n                                              LINE : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])]), _vm._v(" "), _c('div', {
     staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
   }, [_vm._v("\n                                                 TYPE : " + _vm._s(_vm.info.type) + "\n                                             ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
@@ -45026,11 +45029,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-6 col-sm-6 col-xs-12"
-  }, [_vm._v("\n                                                  model: "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])]), _vm._v(" "), _c('hr', {
+  }, [_vm._v("\n                                                  MODEL : "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])]), _vm._v(" "), _c('hr', {
     staticClass: "black"
   })]), _vm._v(" "), _c('div', {
     staticClass: "text-center"
-  }, [_vm._v("\n                                          information status: "), _c('br'), _vm._v(" "), _c('div', {
+  }, [_vm._v("\n                                          Information Status: "), _c('br'), _vm._v(" "), _c('div', {
     class: {
       "text-danger": _vm.hasError, "text-success": !_vm.hasError
     }
@@ -45046,11 +45049,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.showDetailError($event)
       }
     }
-  }, [_vm._v("detail >>")])], 1)])])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("See Details >>")])], 1)])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-6 col-md-offset-4"
-  }, [_vm._m(0), _vm._v(" "), (_vm.config.isShowDeleteButton) ? _c('button', {
+  }, [_vm._m(1), _vm._v(" "), (_vm.config.isShowDeleteButton) ? _c('button', {
     staticClass: "btn btn-danger",
     attrs: {
       "type": "button"
@@ -45090,6 +45093,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }) : _vm._e()], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "form-group text-center"
+  }, [_c('h3', [_c('strong', [_vm._v("PLEASE SCAN DATA")])])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('button', {
     staticClass: "btn btn-success",
     attrs: {

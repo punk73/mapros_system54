@@ -40,6 +40,9 @@
                     </div> -->
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" @submit.prevent='onSubmit' >
+                            <div class="form-group text-center">
+                                <h3><strong>PLEASE SCAN DATA</strong></h3>
+                            </div>
                             <div class="form-group">
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
                                 <div class="col-md-6">
@@ -83,10 +86,10 @@
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
                                     <div class="well">
-                                        <div class="panel-heading custom-color">
+                                        <div class="custom-color">
                                             <div class="row">
                                                <div class="col-md-6 col-sm-6 col-xs-7">
-                                                LINE 1 : <strong> {{ info.line }} </strong>
+                                                LINE : <strong> {{ info.line }} </strong>
                                                </div>
                                                <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
                                                    TYPE : {{ info.type }}
@@ -103,7 +106,7 @@
 
                                             <div class="row">
                                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                                    model: <strong> {{form.modelname}} </strong>
+                                                    MODEL : <strong> {{form.modelname}} </strong>
                                                 </div>
                                             </div>
                                             <hr class="black">
@@ -127,14 +130,14 @@
                                             <hr class="black">
                                         </div> -->
                                         <div class="text-center">
-                                            information status: <br>
+                                            Information Status: <br>
                                             <div :class='{"text-danger": hasError, "text-success": !hasError }'>
                                                 <strong> {{error}} </strong>
                                             </div>
 
                                             <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
 
-                                            <a class="text-danger" @click.prevent="showDetailError" >detail >></a>
+                                            <a class="text-danger" @click.prevent="showDetailError" >See Details >></a>
                                         </div>
                                     </div>
                                 </div>
