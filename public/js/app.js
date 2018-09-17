@@ -13669,7 +13669,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -45624,22 +45623,22 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "slot": "body"
     },
     slot: "body"
-  }, [_c('p', [_vm._v(" model \"" + _vm._s(_vm.config_modelname) + "\" is different from \"" + _vm._s(_vm.server_modelname) + "\" ")]), _vm._v(" "), _c('p', [_vm._v(" You Need to choose which is correct ")])]), _vm._v(" "), _c('div', {
+  }, [_c('p', [_vm._v(" SILAHKAN PILIH MODEL YANG SAAT INI RUNNING  ")])]), _vm._v(" "), _c('div', {
     attrs: {
       "slot": "footer"
     },
     slot: "footer"
   }, [_c('button', {
-    staticClass: "btn btn-success",
+    staticClass: "btn btn-danger",
     on: {
       "click": _vm.configOnClick
     }
-  }, [_vm._v("\n\t\t\tconfig " + _vm._s(_vm.config_modelname) + "\n\t\t")]), _vm._v(" "), _c('button', {
-    staticClass: "btn btn-info",
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.config_modelname) + "\n\t\t")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-success",
     on: {
       "click": _vm.serverOnClick
     }
-  }, [_vm._v("\n\t\t\tserver " + _vm._s(_vm.server_modelname) + "\n\t\t")])])])
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.server_modelname) + "\n\t\t")])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
