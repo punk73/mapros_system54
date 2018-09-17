@@ -42,7 +42,7 @@
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
+                                    <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
                                 </div>
                             </div>
 
@@ -277,6 +277,16 @@
                     })
             },
 
+            filterBoard(evt){
+                let board_id = this.form.board_id;
+                if (board_id.includes('&')) {
+                    this.form.board_id = '';
+                    let el = document.querySelector( ':focus' );
+                    if( el ) el.blur();
+                    this.toggleModal('Information', 'HASIL SCAN MENGANDUNG "&" TOLONG ULANGI!')
+                }
+            },
+
             changesColor(color){
                 let yellow = {
                     backgroundColor : '#e5ff12',
@@ -325,10 +335,9 @@
             },
 
             boardOnFocus(){
-                console.log(this.$event)
-                return
-
-                this.$event.target.nextElementSibling.focus()
+                let boardInput = document.getElementById('board_id');
+                boardInput.focus()
+                console.log('board on focus triggered')
             },
 
             handleError(message, detailError = '' ){
@@ -423,6 +432,11 @@
                 this.showModal = !this.showModal
                 // this.showConfirm = !this.showConfirm;
                 // this.isLoading = !this.isLoading;
+                if(this.showModal === false ){
+                    // set focus on board id;
+                    this.boardOnFocus();
+                }
+
             },
 
             toggleConfirm(){

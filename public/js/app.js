@@ -14143,6 +14143,15 @@ var axios = __webpack_require__(7);
                 _this.handleError(message, data);
             });
         },
+        filterBoard: function filterBoard(evt) {
+            var board_id = this.form.board_id;
+            if (board_id.includes('&')) {
+                this.form.board_id = '';
+                var el = document.querySelector(':focus');
+                if (el) el.blur();
+                this.toggleModal('Information', 'HASIL SCAN MENGANDUNG "&" TOLONG ULANGI!');
+            }
+        },
         changesColor: function changesColor(color) {
             var yellow = {
                 backgroundColor: '#e5ff12',
@@ -14188,10 +14197,9 @@ var axios = __webpack_require__(7);
             }
         },
         boardOnFocus: function boardOnFocus() {
-            console.log(this.$event);
-            return;
-
-            this.$event.target.nextElementSibling.focus();
+            var boardInput = document.getElementById('board_id');
+            boardInput.focus();
+            console.log('board on focus triggered');
         },
         handleError: function handleError(message) {
             var detailError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -14285,6 +14293,10 @@ var axios = __webpack_require__(7);
             this.showModal = !this.showModal;
             // this.showConfirm = !this.showConfirm;
             // this.isLoading = !this.isLoading;
+            if (this.showModal === false) {
+                // set focus on board id;
+                this.boardOnFocus();
+            }
         },
         toggleConfirm: function toggleConfirm() {
             this.showConfirm = !this.showConfirm;
@@ -44998,10 +45010,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "value": (_vm.form.board_id)
     },
     on: {
-      "input": function($event) {
+      "input": [function($event) {
         if ($event.target.composing) { return; }
         _vm.$set(_vm.form, "board_id", $event.target.value)
-      }
+      }, _vm.filterBoard]
     }
   })])]), _vm._v(" "), (_vm.config.showSolder) ? _c('div', {
     staticClass: "form-group"
