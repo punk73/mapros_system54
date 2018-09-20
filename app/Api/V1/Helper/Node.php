@@ -749,6 +749,7 @@ class Node
 			}
 
 			$model = $model->delete();
+			return $model;
 		}
 	}
 
@@ -1176,8 +1177,15 @@ class Node
 
 	public function initCurrentPosition(){
 		if( is_null($this->process) ){
-			throw new StoreResourceFailedException("Process Not found", [
-                'message' => 'Process not found',
+			if ($this->getModelType() == 'board' ) {
+				$pwbname  = $this->board['pwbname'];
+			}else {
+				// disini kita harus determine wheter it is panel or mecha;
+				$pwbname  = $this->getIdType(); 
+			}
+
+			throw new StoreResourceFailedException("PENGATURAN PROSES TIDAK DITEMUKAN. klik see details untuk info lebih lanjut!", [
+                'message' => 'Pengaturan sequence dengan modelname = "'.$this->board['name'].'", pwbname="'.$pwbname.'", dan line_id="'.$this->scanner['line_id'].'" tidak ditemukan! tolong segera buat!',
                 'node'	  => json_decode( $this, true ),
             ]);
 		}

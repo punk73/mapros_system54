@@ -14,32 +14,12 @@
 
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading custom-color">
-                        <div class="row">
-                           <div class="col-md-6 col-sm-6 col-xs-7">
-                            LINE : <strong> {{ info.line }} </strong>
-                           </div>
-                           <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
-                               TYPE : {{ info.type }}
-                           </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 col-xs-7">
-                                PROCESS: <strong> {{info.process}} </strong>
-                            </div>
-                            <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
-                               STEP ID : {{ info.lineprocess_id }}
-                           </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                model: <strong> {{form.modelname}} </strong>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" @submit.prevent='onSubmit' >
+                            <div class="form-group text-center">
+                                <h3><strong>PLEASE SCAN DATA</strong></h3>
+                            </div>
                             <div class="form-group">
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
                                 <div class="col-md-6">
@@ -62,7 +42,7 @@
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" class="form-control" name="board_id"  required>
+                                    <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
                                 </div>
                             </div>
 
@@ -82,34 +62,41 @@
 
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
-                                    <div class="well">
-                                        <div class="custom-color text-center">
+                                    <div class="well" :style="styles" >
+                                        <div class="custom-color">
                                             <div class="row">
-                                               <div class="col-md-12 col-sm-12 col-xs-12">
+                                               <div class="col-md-6 col-sm-6 col-xs-7">
                                                 LINE : <strong> {{ info.line }} </strong>
+                                               </div>
+                                               <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
+                                                   TYPE : {{ info.type }}
                                                </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-md-6 col-sm-6 col-xs-7">
                                                     PROCESS: <strong> {{info.process}} </strong>
                                                 </div>
+                                                <div class="col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right">
+                                                   STEP ID : {{ info.lineprocess_id }}
+                                               </div>
                                             </div>
+
                                             <div class="row">
-                                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                                    model: <strong> {{form.modelname}} </strong>
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    MODEL : <strong> {{form.modelname}} </strong>
                                                 </div>
                                             </div>
                                             <hr class="black">
                                         </div>
                                         <div class="text-center">
-                                            information status: <br>
-                                            <div :class='{"text-danger": hasError, "text-success": !hasError }'>
+                                            Information Status: <br>
+                                            <!-- <div :class='{"text-danger": hasError, "text-success": !hasError }'> -->
                                                 <strong> {{error}} </strong>
-                                            </div>
+                                            <!-- </div> -->
+                                            <!-- :class='{"text-danger": hasError, "text-success": !hasError }' -->
+                                            <H2  ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
 
-                                            <H2 :class='{"text-danger": hasError, "text-success": !hasError }' ><strong>{{ (hasError) ? 'NG':'OK' }}</strong></H2>
-
-                                            <a class="text-danger" @click.prevent="showDetailError" >detail >></a>
+                                            <a :style='styles' @click.prevent="showDetailError" >See Details >></a>
                                         </div>
                                     </div>
                                 </div>
@@ -117,14 +104,15 @@
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-success" >
+                                    <button v-if='!config.isShowDeleteButton' type="submit" class="btn btn-success" >
                                         Submit <i class="fa fa-check float-right"></i>
                                     </button>
 
-                                    <button v-if='config.isShowDeleteButton' @click.prevent='deleteOnClick'  type="button" class="btn btn-danger">
-                                        Delete
+                                    <button v-if='config.isShowDeleteButton' @click.prevent='deleteOnClick'  type="submit" class="btn btn-danger">
+                                        Delete <i class="fa fa-trash float-right"></i>
                                     </button>
 
+                                    <!-- <button @click.prevent='changesColor' class="btn btn-info">change color</button> -->
                                 </div>
                             </div>
 
@@ -195,6 +183,13 @@
                     proces  : '',
                     type    : '',
                     lineprocess_id : '',
+                },
+
+                state : 'in',
+
+                styles : {
+                    // backgroundColor: '#ffffff',
+                    // color : '#eeeeee'
                 },
 
                 isLoading:false,
@@ -282,6 +277,44 @@
                     })
             },
 
+            filterBoard(evt){
+                let board_id = this.form.board_id;
+                if (board_id.includes('&')) {
+                    this.form.board_id = '';
+                    let el = document.querySelector( ':focus' );
+                    if( el ) el.blur();
+                    this.toggleModal('Information', 'HASIL SCAN MENGANDUNG "&" TOLONG ULANGI!')
+                }
+            },
+
+            changesColor(color){
+                let yellow = {
+                    backgroundColor : '#e5ff12',
+                    'border-color'    : '#888080',
+                }
+
+                let green = {
+                    backgroundColor : '#11b90e',
+                    color           : 'white',
+                    'border-color'    : '##819289'
+                }
+
+                let red  = {
+                    color : '#d2c6c6',
+                    backgroundColor : '#8e0d0d',
+                    'border-color' : '#888080'
+                }
+
+                if(color == 'red'){
+                    this.styles = red;
+                }else if (color == 'yellow'){
+                    this.styles = yellow;
+                }else{
+                    this.styles = green;
+                }
+
+            },
+
             download(data, filename, type) {
                 var file = new Blob([data], {type: type});
                 console.log('download');
@@ -302,16 +335,16 @@
             },
 
             boardOnFocus(){
-                console.log(this.$event)
-                return
-
-                this.$event.target.nextElementSibling.focus()
+                let boardInput = document.getElementById('board_id');
+                boardInput.focus()
+                console.log('board on focus triggered')
             },
 
             handleError(message, detailError = '' ){
                 this.error = message;
                 this.detailError = detailError;
                 this.hasError = true;
+                this.changesColor('red');
                 this.form.board_id='';
                 // this.toggleAlert();
                 // this.showAlert = true;
@@ -320,21 +353,31 @@
 
             handleSucces(response){
                 // set error to default value to show alert-success in alert
-                // console.log('handleSucces', response )
+                console.log('handleSucces', response )
                 let message = response.data.message;
                 this.hasError = false;
                 this.error = message;
+                this.detailError = message;
 
                 if(this.config.isGenerateFile){
-                    if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
-                    this.download(this.form.board_id, 'RUN_AVMT.txt' );
+                    if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
+                        this.download(this.form.board_id, 'RUN_AVMT.txt' );
+                    }
                 }
 
                 if( this.config.isSendAjax ){
                     if (response.data.node.status == 'IN') { 
                         //kalau dia bkn in, gausah download;
-                        this.sendAjax()    
+                        let data = response.data;
+                        // console.log(data, 'handleSucces sending ajax')
+                        this.sendAjax(data)    
                     }
+                }
+
+                if(message.includes('IN')){
+                    this.changesColor('yellow')
+                }else {
+                    this.changesColor('green')
                 }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
@@ -344,10 +387,12 @@
 
             deleteOnClick(){
                 let data = this.form;
+                console.log(data)
+                // return;
                 let self = this;
                 this.toggleLoading();
 
-                axios.delete('api/main', data )
+                axios.delete('api/main', {data : data } )
                     .then((response) => {
                         self.toggleLoading()
                         self.handleSucces(response)
@@ -387,6 +432,11 @@
                 this.showModal = !this.showModal
                 // this.showConfirm = !this.showConfirm;
                 // this.isLoading = !this.isLoading;
+                if(this.showModal === false ){
+                    // set focus on board id;
+                    this.boardOnFocus();
+                }
+
             },
 
             toggleConfirm(){
@@ -451,11 +501,24 @@
                 }
             },
 
-            sendAjax(){
-                console.log(this.config, 'sendAjax methods triggered')
+            sendAjax(responseData){
+                let scanner_id = responseData.node.scanner.id;
+                let guid;
+                let board_id = this.form.board_id;
+                if(responseData.node.guid_master != null ){
+                    guid = responseData.node.guid_master;
+                }else if (responseData.node.guid_ticket != null ){
+                    guid = responseData.node.guid_ticket;
+                }else {
+                    guid = 'noData';
+                }
+
+                let value = board_id + '_' + guid + '_' + scanner_id ;
+                // console.log({responseData, value}, 'sendAjax methods triggered')
+                
                 axios.get(this.config.uri, {
                     params : {
-                        valscan : this.form.board_id
+                        valscan : value
                     }
                 }).then( (response) => {
                     console.log('Success', response )
@@ -510,5 +573,13 @@
     .black {
         border-color: #636B6F;
         border-width: 2px;
+    }
+
+    .txt-color {
+        color: #ffffff;
+    }
+
+    .bg-color {
+        background-color: #edf108;
     }
 </style>

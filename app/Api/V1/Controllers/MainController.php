@@ -31,7 +31,8 @@ class MainController extends Controller
 
 	protected $returnValue = [
 		'success' => true,
-		'message' => 'data saved!',
+		// 'message' => 'data saved!',
+		'message' => ' 35 data tersimpan!', //Ario 20180915
 		'node'    => null
 	];
 
@@ -134,8 +135,15 @@ class MainController extends Controller
 	}
 
 	private function runNode($parameter){
+		if ( strlen($parameter['board_id']) == 16 ) {
+			if ( $parameter['board_id'][6] != 'A' ) {
+				throw new StoreResourceFailedException("TOLONG SCAN BARCODE SIDE A !!", [
+					'PARAMETER' => $parameter
+				]);
+			}
+		}
+
 		$node = new Node($parameter);
-		
 		// return $node;
 
 		$this->returnValue['node'] = $node;
@@ -167,8 +175,9 @@ class MainController extends Controller
 				$node->setStatus('IN');
 				$node->setJudge('OK');
 				if(!$node->save()){
-					throw new StoreResourceFailedException("Error Saving Progress", [
-						'message' => 'something went wrong with save method on model! ask your IT member'
+					// throw new StoreResourceFailedException("Error Saving Progress", [
+					throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
+						'message' => '172 : something went wrong with save method on model! ask your IT member'
 					]);
 				};
 
@@ -186,7 +195,8 @@ class MainController extends Controller
 				
 				if(($prevNode->getJudge() != 'SOLDER') && ($node->is_solder == true)){
 					throw new StoreResourceFailedException("HAPUS CHECKLIST SOLDER !!!", [
-						'message' => 'Scan in this process',
+						// 'message' => 'Scan in this process',
+						'message' => '192 Scan in this process',
 						'prevNode' => json_decode( $prevNode, true )
 					]);
 				}
@@ -211,8 +221,9 @@ class MainController extends Controller
 				$node->setStatus('IN');
 				$node->setJudge($judgement);
 				if(!$node->save()){
-					throw new StoreResourceFailedException("Error Saving Progress", [
-						'message' => 'something went wrong with save method on model! ask your IT member'
+					// throw new StoreResourceFailedException("Error Saving Progress", [
+					throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
+						'message' => '219 something went wrong with save method on model! ask your IT member'
 					]);
 				};
 				//$this->returnValue['node'] = $node;
@@ -228,7 +239,7 @@ class MainController extends Controller
 				if($prevNode->getModelType() !== 'board'){
 					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
 					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( ".$step." )", [
-						'message' => 'bukan board',
+						'message' => '235 bukan board',
 						'prevNode' => json_decode( $prevNode, true )
 					]);
 				}
@@ -241,7 +252,7 @@ class MainController extends Controller
 				
 				if(($prevNode->isExists('IN','SOLDER')) && ( $node->is_solder == false)){ //cek data solder dengan status out
 					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( SOLDER )", [
-						'message' => 'SCAN OUT SOLDER',
+						'message' => '248 SCAN OUT SOLDER',
 						'prevNode' => json_decode( $prevNode, true )
 					]);  
 				};
@@ -250,7 +261,7 @@ class MainController extends Controller
 				if (!$prevNode->is_solder) { //jika solder tidak diceklis, maka
 					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
 					throw new StoreResourceFailedException("DATA BELUM DI SCAN OUT DI PROSES SEBELUMNYA. ( ".$step." )", [
-						'message' => 'bukan solder',
+						'message' => '257 bukan solder',
 						'node' => json_decode( $prevNode, true )
 					]);    
 				}
@@ -267,8 +278,9 @@ class MainController extends Controller
 				$node->setStatus('OUT');
 				$node->setJudge('SOLDER');
 				if(!$node->save()){
-					throw new StoreResourceFailedException("Error Saving Progress", [
-						'message' => 'something went wrong with save method on model! ask your IT member'
+					// throw new StoreResourceFailedException("Error Saving Progress", [
+					throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
+						'message' => '276 something went wrong with save method on model! ask your IT member'
 					]);
 
 				};
@@ -295,8 +307,9 @@ class MainController extends Controller
 						$node->setStatus('IN');
 						$node->setJudge('REWORK');
 						if(!$node->save()){
-							throw new StoreResourceFailedException("Error Saving Progress", [
-								'message' => 'something went wrong with save method on model! ask your IT member'
+							// throw new StoreResourceFailedException("Error Saving Progress", [
+							throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
+								'message' => '305 something went wrong with save method on model! ask your IT member'
 							]);
 						}
 
@@ -318,8 +331,9 @@ class MainController extends Controller
 					$node->setStatus('IN');
 					$node->setJudge('OK');
 					if(!$node->save()){
-						throw new StoreResourceFailedException("Error Saving Progress", [
-							'message' => 'something went wrong with save method on model! ask your IT member'
+						// throw new StoreResourceFailedException("Error Saving Progress", [
+						throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [	//Ario 20180915
+							'message' => '329 something went wrong with save method on model! ask your IT member'
 						]);
 					}
 
@@ -349,8 +363,9 @@ class MainController extends Controller
 			$node->setStatus('IN');
 			$node->setJudge('SOLDER');
 			if(!$node->save()){
-				throw new StoreResourceFailedException("Error Saving Progress", [
-					'message' => 'something went wrong with save method on model! ask your IT member'
+				// throw new StoreResourceFailedException("Error Saving Progress", [
+				throw new StoreResourceFailedException("Error Saving Progress", [ //Ario 20180915 	
+					'message' => '361 something went wrong with save method on model! ask your IT member'
 				]);
 			}
 			//$this->returnValue['node'] = $node;
@@ -429,8 +444,9 @@ class MainController extends Controller
 			$node->setStatus('IN');
 			$node->setJudge('OK');
 			if(!$node->save()){
-				throw new StoreResourceFailedException("Error Saving Progress", [
-					'message' => 'something went wrong with save method on model! ask your IT member'
+				// throw new StoreResourceFailedException("Error Saving Progress", [
+				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
+					'message' => '442 something went wrong with save method on model! ask your IT member'
 				]);
 			}    
 
@@ -454,8 +470,9 @@ class MainController extends Controller
 			$node->setStatus('IN');
 			$node->setJudge('OK');
 			if(!$node->save()){
-				throw new StoreResourceFailedException("Error Saving Progress", [
-					'message' => 'something went wrong with save method on model! ask your IT member'
+				// throw new StoreResourceFailedException("Error Saving Progress", [
+				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
+					'message' => '468 something went wrong with save method on model! ask your IT member'
 				]);
 			}    
 
@@ -479,7 +496,8 @@ class MainController extends Controller
 		$parameter = $this->getParameter($request);
 		$node = new Node($parameter);
 
-		$this->returnValue['message'] = $node->delete() .' Data Deleted!!';
+		// $this->returnValue['message'] = $node->delete() .' Data Deleted!!';
+		$this->returnValue['message'] = $node->delete() .' Data Terhapus!!'; //Ario 20180915
 		return $this->returnValue;
 	}
 

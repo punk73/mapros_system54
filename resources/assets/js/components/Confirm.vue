@@ -4,15 +4,14 @@
 			<h4>Confirmation</h4>
 		</div>
 		<div slot='body'>
-			<p> model "{{ config_modelname }}" is different from "{{server_modelname}}" </p>
-			<p> You Need to choose which is correct </p>
+			<p> SILAHKAN PILIH MODEL YANG SAAT INI RUNNING  </p>
 		</div>
 		<div slot='footer'>
-			<button class="btn btn-success" @click='configOnClick' >
-				config {{config_modelname }}
+			<button class="btn btn-danger" @click='configOnClick' >
+				{{config_modelname }}
 			</button>
-			<button class="btn btn-info" @click='serverOnClick' >
-				server {{ server_modelname }}
+			<button class="btn btn-success" @click='serverOnClick' >
+				{{ server_modelname }}
 			</button>
 
 		</div>

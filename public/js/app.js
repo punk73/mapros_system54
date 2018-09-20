@@ -13669,7 +13669,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -13836,11 +13835,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
 		return {
-			source: '../storage/app/public/ajax-loader.gif'
+			source: '../storage/app/public/hourglass.svg'
+			// source:'../storage/app/public/ajax-loader.gif'
 		};
 	}
 });
@@ -13863,18 +13865,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Join___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__Join__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button__ = __webpack_require__(54);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -14062,6 +14052,13 @@ var axios = __webpack_require__(7);
                 lineprocess_id: ''
             },
 
+            state: 'in',
+
+            styles: {
+                // backgroundColor: '#ffffff',
+                // color : '#eeeeee'
+            },
+
             isLoading: false,
             showModal: false,
             showConfirm: false,
@@ -14146,6 +14143,41 @@ var axios = __webpack_require__(7);
                 _this.handleError(message, data);
             });
         },
+        filterBoard: function filterBoard(evt) {
+            var board_id = this.form.board_id;
+            if (board_id.includes('&')) {
+                this.form.board_id = '';
+                var el = document.querySelector(':focus');
+                if (el) el.blur();
+                this.toggleModal('Information', 'HASIL SCAN MENGANDUNG "&" TOLONG ULANGI!');
+            }
+        },
+        changesColor: function changesColor(color) {
+            var yellow = {
+                backgroundColor: '#e5ff12',
+                'border-color': '#888080'
+            };
+
+            var green = {
+                backgroundColor: '#11b90e',
+                color: 'white',
+                'border-color': '##819289'
+            };
+
+            var red = {
+                color: '#d2c6c6',
+                backgroundColor: '#8e0d0d',
+                'border-color': '#888080'
+            };
+
+            if (color == 'red') {
+                this.styles = red;
+            } else if (color == 'yellow') {
+                this.styles = yellow;
+            } else {
+                this.styles = green;
+            }
+        },
         download: function download(data, filename, type) {
             var file = new Blob([data], { type: type });
             console.log('download');
@@ -14165,10 +14197,9 @@ var axios = __webpack_require__(7);
             }
         },
         boardOnFocus: function boardOnFocus() {
-            console.log(this.$event);
-            return;
-
-            this.$event.target.nextElementSibling.focus();
+            var boardInput = document.getElementById('board_id');
+            boardInput.focus();
+            console.log('board on focus triggered');
         },
         handleError: function handleError(message) {
             var detailError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -14176,6 +14207,7 @@ var axios = __webpack_require__(7);
             this.error = message;
             this.detailError = detailError;
             this.hasError = true;
+            this.changesColor('red');
             this.form.board_id = '';
             // this.toggleAlert();
             // this.showAlert = true;
@@ -14183,21 +14215,32 @@ var axios = __webpack_require__(7);
         },
         handleSucces: function handleSucces(response) {
             // set error to default value to show alert-success in alert
-            // console.log('handleSucces', response )
+            console.log('handleSucces', response);
             var message = response.data.message;
             this.hasError = false;
             this.error = message;
+            this.detailError = message;
 
             if (this.config.isGenerateFile) {
-                if (response.data.node.status != 'IN') return; //kalau dia bkn in, gausah download;
-                this.download(this.form.board_id, 'RUN_AVMT.txt');
+                if (response.data.node.status == 'IN') {
+                    //kalau dia bkn in, gausah download;
+                    this.download(this.form.board_id, 'RUN_AVMT.txt');
+                }
             }
 
             if (this.config.isSendAjax) {
                 if (response.data.node.status == 'IN') {
                     //kalau dia bkn in, gausah download;
-                    this.sendAjax();
+                    var data = response.data;
+                    // console.log(data, 'handleSucces sending ajax')
+                    this.sendAjax(data);
                 }
+            }
+
+            if (message.includes('IN')) {
+                this.changesColor('yellow');
+            } else {
+                this.changesColor('green');
             }
             // this.toggleAlert('Success', message );
             // this.showAlert = true;
@@ -14208,10 +14251,12 @@ var axios = __webpack_require__(7);
             var _this2 = this;
 
             var data = this.form;
+            console.log(data);
+            // return;
             var self = this;
             this.toggleLoading();
 
-            axios.delete('api/main', data).then(function (response) {
+            axios.delete('api/main', { data: data }).then(function (response) {
                 self.toggleLoading();
                 self.handleSucces(response);
                 console.log(response);
@@ -14248,6 +14293,10 @@ var axios = __webpack_require__(7);
             this.showModal = !this.showModal;
             // this.showConfirm = !this.showConfirm;
             // this.isLoading = !this.isLoading;
+            if (this.showModal === false) {
+                // set focus on board id;
+                this.boardOnFocus();
+            }
         },
         toggleConfirm: function toggleConfirm() {
             this.showConfirm = !this.showConfirm;
@@ -14306,11 +14355,24 @@ var axios = __webpack_require__(7);
                 }
             }
         },
-        sendAjax: function sendAjax() {
-            console.log(this.config, 'sendAjax methods triggered');
+        sendAjax: function sendAjax(responseData) {
+            var scanner_id = responseData.node.scanner.id;
+            var guid = void 0;
+            var board_id = this.form.board_id;
+            if (responseData.node.guid_master != null) {
+                guid = responseData.node.guid_master;
+            } else if (responseData.node.guid_ticket != null) {
+                guid = responseData.node.guid_ticket;
+            } else {
+                guid = 'noData';
+            }
+
+            var value = board_id + '_' + guid + '_' + scanner_id;
+            // console.log({responseData, value}, 'sendAjax methods triggered')
+
             axios.get(this.config.uri, {
                 params: {
-                    valscan: this.form.board_id
+                    valscan: value
                 }
             }).then(function (response) {
                 console.log('Success', response);
@@ -16862,7 +16924,7 @@ if (typeof jQuery === 'undefined') {
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(5)();
-exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n}\n", ""]);
+exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n}\n.txt-color {\n    color: #ffffff;\n}\n.bg-color {\n    background-color: #edf108;\n}\n", ""]);
 
 /***/ }),
 /* 47 */
@@ -44834,24 +44896,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "panel panel-default"
   }, [_c('div', {
-    staticClass: "panel-heading custom-color"
-  }, [_c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-7"
-  }, [_vm._v("\n                          LINE : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
-  }, [_vm._v("\n                             TYPE : " + _vm._s(_vm.info.type) + "\n                         ")])]), _vm._v(" "), _c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-7"
-  }, [_vm._v("\n                              PROCESS: "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.process) + " ")])]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
-  }, [_vm._v("\n                             STEP ID : " + _vm._s(_vm.info.lineprocess_id) + "\n                         ")])]), _vm._v(" "), _c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-md-6 col-sm-6 col-xs-12"
-  }, [_vm._v("\n                              model: "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])])]), _vm._v(" "), _c('div', {
     staticClass: "panel-body"
   }, [_c('form', {
     staticClass: "form-horizontal",
@@ -44864,7 +44908,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.onSubmit($event)
       }
     }
-  }, [_c('div', {
+  }, [_vm._m(0), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label",
@@ -44966,10 +45010,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "value": (_vm.form.board_id)
     },
     on: {
-      "input": function($event) {
+      "input": [function($event) {
         if ($event.target.composing) { return; }
         _vm.$set(_vm.form, "board_id", $event.target.value)
-      }
+      }, _vm.filterBoard]
     }
   })])]), _vm._v(" "), (_vm.config.showSolder) ? _c('div', {
     staticClass: "form-group"
@@ -45000,49 +45044,53 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "col-md-12 col-xs-12"
   }, [_c('div', {
-    staticClass: "well"
+    staticClass: "well",
+    style: (_vm.styles)
   }, [_c('div', {
-    staticClass: "custom-color text-center"
+    staticClass: "custom-color"
   }, [_c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-12 col-sm-12 col-xs-12"
-  }, [_vm._v("\n                                              LINE : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-7"
+  }, [_vm._v("\n                                              LINE : "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.line) + " ")])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
+  }, [_vm._v("\n                                                 TYPE : " + _vm._s(_vm.info.type) + "\n                                             ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-12 col-sm-12 col-xs-12"
-  }, [_vm._v("\n                                                  PROCESS: "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.process) + " ")])])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-7"
+  }, [_vm._v("\n                                                  PROCESS: "), _c('strong', [_vm._v(" " + _vm._s(_vm.info.process) + " ")])]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6 col-sm-6 col-xs-5 text-right pull-right float-right"
+  }, [_vm._v("\n                                                 STEP ID : " + _vm._s(_vm.info.lineprocess_id) + "\n                                             ")])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-12 col-sm-12 col-xs-12"
-  }, [_vm._v("\n                                                  model: "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])]), _vm._v(" "), _c('hr', {
+    staticClass: "col-md-6 col-sm-6 col-xs-12"
+  }, [_vm._v("\n                                                  MODEL : "), _c('strong', [_vm._v(" " + _vm._s(_vm.form.modelname) + " ")])])]), _vm._v(" "), _c('hr', {
     staticClass: "black"
   })]), _vm._v(" "), _c('div', {
     staticClass: "text-center"
-  }, [_vm._v("\n                                          information status: "), _c('br'), _vm._v(" "), _c('div', {
-    class: {
-      "text-danger": _vm.hasError, "text-success": !_vm.hasError
-    }
-  }, [_c('strong', [_vm._v(" " + _vm._s(_vm.error) + " ")])]), _vm._v(" "), _c('H2', {
-    class: {
-      "text-danger": _vm.hasError, "text-success": !_vm.hasError
-    }
-  }, [_c('strong', [_vm._v(_vm._s((_vm.hasError) ? 'NG' : 'OK'))])]), _vm._v(" "), _c('a', {
-    staticClass: "text-danger",
+  }, [_vm._v("\n                                          Information Status: "), _c('br'), _vm._v(" "), _c('strong', [_vm._v(" " + _vm._s(_vm.error) + " ")]), _vm._v(" "), _c('H2', [_c('strong', [_vm._v(_vm._s((_vm.hasError) ? 'NG' : 'OK'))])]), _vm._v(" "), _c('a', {
+    style: (_vm.styles),
     on: {
       "click": function($event) {
         $event.preventDefault();
         return _vm.showDetailError($event)
       }
     }
-  }, [_vm._v("detail >>")])], 1)])])]), _vm._v(" "), _c('div', {
+  }, [_vm._v("See Details >>")])], 1)])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-6 col-md-offset-4"
-  }, [_vm._m(0), _vm._v(" "), (_vm.config.isShowDeleteButton) ? _c('button', {
+  }, [(!_vm.config.isShowDeleteButton) ? _c('button', {
+    staticClass: "btn btn-success",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("\n                                      Submit "), _c('i', {
+    staticClass: "fa fa-check float-right"
+  })]) : _vm._e(), _vm._v(" "), (_vm.config.isShowDeleteButton) ? _c('button', {
     staticClass: "btn btn-danger",
     attrs: {
-      "type": "button"
+      "type": "submit"
     },
     on: {
       "click": function($event) {
@@ -45050,7 +45098,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.deleteOnClick($event)
       }
     }
-  }, [_vm._v("\n                                      Delete\n                                  ")]) : _vm._e()])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  }, [_vm._v("\n                                      Delete "), _c('i', {
+    staticClass: "fa fa-trash float-right"
+  })]) : _vm._e()])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
@@ -45079,14 +45129,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }) : _vm._e()], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('button', {
-    staticClass: "btn btn-success",
-    attrs: {
-      "type": "submit"
-    }
-  }, [_vm._v("\n                                      Submit "), _c('i', {
-    staticClass: "fa fa-check float-right"
-  })])
+  return _c('div', {
+    staticClass: "form-group text-center"
+  }, [_c('h3', [_c('strong', [_vm._v("PLEASE SCAN DATA")])])])
 }]}
 module.exports.render._withStripped = true
 if (false) {
@@ -45590,22 +45635,22 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "slot": "body"
     },
     slot: "body"
-  }, [_c('p', [_vm._v(" model \"" + _vm._s(_vm.config_modelname) + "\" is different from \"" + _vm._s(_vm.server_modelname) + "\" ")]), _vm._v(" "), _c('p', [_vm._v(" You Need to choose which is correct ")])]), _vm._v(" "), _c('div', {
+  }, [_c('p', [_vm._v(" SILAHKAN PILIH MODEL YANG SAAT INI RUNNING  ")])]), _vm._v(" "), _c('div', {
     attrs: {
       "slot": "footer"
     },
     slot: "footer"
   }, [_c('button', {
-    staticClass: "btn btn-success",
+    staticClass: "btn btn-danger",
     on: {
       "click": _vm.configOnClick
     }
-  }, [_vm._v("\n\t\t\tconfig " + _vm._s(_vm.config_modelname) + "\n\t\t")]), _vm._v(" "), _c('button', {
-    staticClass: "btn btn-info",
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.config_modelname) + "\n\t\t")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-success",
     on: {
       "click": _vm.serverOnClick
     }
-  }, [_vm._v("\n\t\t\tserver " + _vm._s(_vm.server_modelname) + "\n\t\t")])])])
+  }, [_vm._v("\n\t\t\t" + _vm._s(_vm.server_modelname) + "\n\t\t")])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -45721,13 +45766,13 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('img', {
+  return _c('div', [_c('img', {
     staticClass: "img-fluid",
     attrs: {
       "src": _vm.source,
       "alt": "Responsive image"
     }
-  })
+  }), _vm._v(" LOADING ...\n")])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
