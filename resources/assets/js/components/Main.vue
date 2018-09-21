@@ -30,11 +30,19 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" hidden="true">
+                            <!-- <div class="form-group" hidden="true">
                                 <label for="name" class="col-md-4 control-label">IP Address</label>
 
                                 <div class="col-md-6">
                                     <input v-model='form.ip' id="ip_address" type="text" class="form-control" name="ip_address" required autofocus>
+                                </div>
+                            </div> -->
+
+                            <div class="form-group" v-if="config.isAutolinezero" >
+                                <label class="col-md-4 control-label">{{ label.serialAutolinezero }}</label>
+
+                                <div class="col-md-6">
+                                    <input  id="serialAutolinezero" ref='serialAutolinezero' v-model="serialAutolinezero" type="serialAutolinezero" class="form-control" name="serialAutolinezero"  required>
                                 </div>
                             </div>
 
@@ -42,7 +50,7 @@
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
+                                    <input  id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
                                 </div>
                             </div>
 
@@ -197,7 +205,8 @@
                 showConfirm:false,
 
                 label : {
-                    id : 'Board ID'
+                    id : 'Board ID',
+                    serialAutolinezero : 'Serial Set'
                 },
 
                 // it's basically will be override by getConfig method
@@ -206,10 +215,14 @@
                     ip       : '',
                     showSolder: true,
                     isGenerateFile : false,
+                    generatedFileName : 'something.txt',
                     isSendAjax : false,
                     isShowDeleteButton : false,
+                    isAutolinezero : false,
                     uri : '',
                 },
+
+                serialAutolinezero:'',
 
                 modal: {
                     header: 'Header',
@@ -337,7 +350,11 @@
             boardOnFocus(){
                 let boardInput = document.getElementById('board_id');
                 boardInput.focus()
-                console.log('board on focus triggered')
+                if(this.config.isGenerateFile){
+                    let serialAutolinezero = document.getElementById('serialAutolinezero');
+                    serialAutolinezero.focus();
+                }
+                // console.log('board on focus triggered')
             },
 
             handleError(message, detailError = '' ){
@@ -361,7 +378,10 @@
 
                 if(this.config.isGenerateFile){
                     if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
-                        this.download(this.form.board_id, 'RUN_AVMT.txt' );
+                        let content = this.form.board_id + '\n' + this.serialAutolinezero ;
+                        console.log(content)
+                        let filename = this.config.generatedFileName;
+                        this.download( content, filename );
                     }
                 }
 
@@ -381,8 +401,17 @@
                 }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
-                this.form.board_id = '';
+                this.clearForm();
+                this.boardOnFocus();
                 // set focus
+            },
+
+            clearForm(){
+                this.form.board_id = '';
+                if(this.config.isGenerateFile) {
+                    this.serialAutolinezero = '';
+                }
+
             },
 
             deleteOnClick(){
