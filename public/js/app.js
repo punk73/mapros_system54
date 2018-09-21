@@ -45410,6 +45410,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('toggle-button', {
     attrs: {
       "id": "showSolder",
+      "sync": true,
       "color": '#2ab27b',
       "labels": true
     },
@@ -45431,6 +45432,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('toggle-button', {
     attrs: {
       "id": "isGenerateFile",
+      "sync": true,
       "color": '#2ab27b',
       "labels": true
     },
@@ -45452,6 +45454,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('toggle-button', {
     attrs: {
       "id": "isSendAjax",
+      "sync": true,
       "color": '#2ab27b',
       "labels": true
     },
@@ -45503,6 +45506,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
   }, [_c('toggle-button', {
     attrs: {
+      "sync": true,
       "color": '#2ab27b',
       "labels": true
     },
