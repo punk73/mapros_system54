@@ -13524,6 +13524,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button__);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 //
@@ -13600,6 +13602,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
@@ -13615,6 +13624,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 		};
 	},
+
+
+	components: {
+		ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a
+	},
+
 	mounted: function mounted() {
 		this.getConfig();
 	},
@@ -45392,123 +45407,66 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
-  }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.config.showSolder),
-      expression: "config.showSolder"
-    }],
+  }, [_c('toggle-button', {
     attrs: {
-      "type": "checkbox",
-      "id": "showSolder"
+      "id": "showSolder",
+      "color": '#2ab27b',
+      "labels": true
     },
-    domProps: {
-      "checked": Array.isArray(_vm.config.showSolder) ? _vm._i(_vm.config.showSolder, null) > -1 : (_vm.config.showSolder)
-    },
-    on: {
-      "change": function($event) {
-        var $$a = _vm.config.showSolder,
-          $$el = $event.target,
-          $$c = $$el.checked ? (true) : (false);
-        if (Array.isArray($$a)) {
-          var $$v = null,
-            $$i = _vm._i($$a, $$v);
-          if ($$el.checked) {
-            $$i < 0 && (_vm.$set(_vm.config, "showSolder", $$a.concat([$$v])))
-          } else {
-            $$i > -1 && (_vm.$set(_vm.config, "showSolder", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
-          }
-        } else {
-          _vm.$set(_vm.config, "showSolder", $$c)
-        }
-      }
+    model: {
+      value: (_vm.config.showSolder),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "showSolder", $$v)
+      },
+      expression: "config.showSolder"
     }
   }), _vm._v(" "), _c('label', {
     attrs: {
       "for": "showSolder"
     }
-  }, [_vm._v(" show solder options ")])])]), _vm._v(" "), _c('div', {
+  }, [_vm._v(" show solder options ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
-  }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.config.isGenerateFile),
-      expression: "config.isGenerateFile"
-    }],
+  }, [_c('toggle-button', {
     attrs: {
-      "type": "checkbox",
-      "id": "isGenerateFile"
+      "id": "isGenerateFile",
+      "color": '#2ab27b',
+      "labels": true
     },
-    domProps: {
-      "checked": Array.isArray(_vm.config.isGenerateFile) ? _vm._i(_vm.config.isGenerateFile, null) > -1 : (_vm.config.isGenerateFile)
-    },
-    on: {
-      "change": function($event) {
-        var $$a = _vm.config.isGenerateFile,
-          $$el = $event.target,
-          $$c = $$el.checked ? (true) : (false);
-        if (Array.isArray($$a)) {
-          var $$v = null,
-            $$i = _vm._i($$a, $$v);
-          if ($$el.checked) {
-            $$i < 0 && (_vm.$set(_vm.config, "isGenerateFile", $$a.concat([$$v])))
-          } else {
-            $$i > -1 && (_vm.$set(_vm.config, "isGenerateFile", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
-          }
-        } else {
-          _vm.$set(_vm.config, "isGenerateFile", $$c)
-        }
-      }
+    model: {
+      value: (_vm.config.isGenerateFile),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isGenerateFile", $$v)
+      },
+      expression: "config.isGenerateFile"
     }
   }), _vm._v(" "), _c('label', {
     attrs: {
       "for": "isGenerateFile"
     }
-  }, [_vm._v(" Generate file on scan ")])])]), _vm._v(" "), _c('div', {
+  }, [_vm._v(" Generate file on scan ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
-  }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.config.isSendAjax),
-      expression: "config.isSendAjax"
-    }],
+  }, [_c('toggle-button', {
     attrs: {
-      "type": "checkbox",
-      "id": "isSendAjax"
+      "id": "isSendAjax",
+      "color": '#2ab27b',
+      "labels": true
     },
-    domProps: {
-      "checked": Array.isArray(_vm.config.isSendAjax) ? _vm._i(_vm.config.isSendAjax, null) > -1 : (_vm.config.isSendAjax)
-    },
-    on: {
-      "change": function($event) {
-        var $$a = _vm.config.isSendAjax,
-          $$el = $event.target,
-          $$c = $$el.checked ? (true) : (false);
-        if (Array.isArray($$a)) {
-          var $$v = null,
-            $$i = _vm._i($$a, $$v);
-          if ($$el.checked) {
-            $$i < 0 && (_vm.$set(_vm.config, "isSendAjax", $$a.concat([$$v])))
-          } else {
-            $$i > -1 && (_vm.$set(_vm.config, "isSendAjax", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
-          }
-        } else {
-          _vm.$set(_vm.config, "isSendAjax", $$c)
-        }
-      }
+    model: {
+      value: (_vm.config.isSendAjax),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isSendAjax", $$v)
+      },
+      expression: "config.isSendAjax"
     }
   }), _vm._v(" "), _c('label', {
     attrs: {
       "for": "isSendAjax"
     }
-  }, [_vm._v(" send data to avn test / avmt ")])])]), _vm._v(" "), (_vm.config.isSendAjax) ? _c('div', {
+  }, [_vm._v(" send data to avn test / avmt ")])], 1)]), _vm._v(" "), (_vm.config.isSendAjax) ? _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-3 control-label",
@@ -45543,42 +45501,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
-  }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.config.isShowDeleteButton),
-      expression: "config.isShowDeleteButton"
-    }],
+  }, [_c('toggle-button', {
     attrs: {
-      "type": "checkbox"
+      "color": '#2ab27b',
+      "labels": true
     },
-    domProps: {
-      "checked": Array.isArray(_vm.config.isShowDeleteButton) ? _vm._i(_vm.config.isShowDeleteButton, null) > -1 : (_vm.config.isShowDeleteButton)
-    },
-    on: {
-      "change": function($event) {
-        var $$a = _vm.config.isShowDeleteButton,
-          $$el = $event.target,
-          $$c = $$el.checked ? (true) : (false);
-        if (Array.isArray($$a)) {
-          var $$v = null,
-            $$i = _vm._i($$a, $$v);
-          if ($$el.checked) {
-            $$i < 0 && (_vm.$set(_vm.config, "isShowDeleteButton", $$a.concat([$$v])))
-          } else {
-            $$i > -1 && (_vm.$set(_vm.config, "isShowDeleteButton", $$a.slice(0, $$i).concat($$a.slice($$i + 1))))
-          }
-        } else {
-          _vm.$set(_vm.config, "isShowDeleteButton", $$c)
-        }
-      }
+    model: {
+      value: (_vm.config.isShowDeleteButton),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isShowDeleteButton", $$v)
+      },
+      expression: "config.isShowDeleteButton"
     }
   }), _vm._v(" "), _c('label', {
     attrs: {
       "for": "isShowDeleteButton"
     }
-  }, [_vm._v(" show delete button ")])])]), _vm._v(" "), _c('div', {
+  }, [_vm._v(" show delete button ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"

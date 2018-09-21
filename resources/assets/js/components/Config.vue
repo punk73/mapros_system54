@@ -24,21 +24,26 @@
 
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
-                                    <input type="checkbox" id="showSolder" v-model="config.showSolder">
+                                    <!-- <input type="checkbox" id="showSolder" v-model="config.showSolder"> -->
+                                    <toggle-button id="showSolder" v-model="config.showSolder"  :color="'#2ab27b'" :labels="true"/>
                                     <label for="showSolder"> show solder options </label>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
-                                    <input type="checkbox" id="isGenerateFile" v-model="config.isGenerateFile">
+                                    <!-- <input type="checkbox" id="isGenerateFile" v-model="config.isGenerateFile"> -->
+                                    <toggle-button id="isGenerateFile" v-model="config.isGenerateFile"  :color="'#2ab27b'" :labels="true"/>
+                                    
                                     <label for="isGenerateFile"> Generate file on scan </label>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
-                                    <input type="checkbox" id="isSendAjax" v-model="config.isSendAjax">
+                                    <!-- <input type="checkbox" id="isSendAjax" v-model="config.isSendAjax"> -->
+                                    <toggle-button id="isSendAjax" v-model="config.isSendAjax" :color="'#2ab27b'" :labels="true"/>
+
                                     <label for="isSendAjax"> send data to avn test / avmt </label>
                                 </div>
                             </div>
@@ -52,7 +57,8 @@
 
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
-                                    <input type="checkbox" v-model="config.isShowDeleteButton">
+                                    <!-- <input type="checkbox" v-model="config.isShowDeleteButton"> -->
+                                    <toggle-button v-model="config.isShowDeleteButton" :color="'#2ab27b'" :labels="true"/>
                                     <label for="isShowDeleteButton"> show delete button </label>
                                 </div>
                             </div>
@@ -73,6 +79,7 @@
 </template>
 
 <script>
+	import ToggleButton from 'vue-js-toggle-button/src/Button';
 	export default {
 		data(){
 			return {
@@ -86,6 +93,10 @@
 					uri : '',
 				},
 			}
+		},
+
+		components : {
+			ToggleButton
 		},
 
 		mounted(){
