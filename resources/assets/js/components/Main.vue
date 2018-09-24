@@ -350,7 +350,7 @@
             boardOnFocus(){
                 let boardInput = document.getElementById('board_id');
                 boardInput.focus()
-                if(this.config.isGenerateFile){
+                if(this.config.isGenerateFile && this.config.isAutolinezero ){
                     let serialAutolinezero = document.getElementById('serialAutolinezero');
                     serialAutolinezero.focus();
                 }

@@ -14283,7 +14283,7 @@ var axios = __webpack_require__(7);
         boardOnFocus: function boardOnFocus() {
             var boardInput = document.getElementById('board_id');
             boardInput.focus();
-            if (this.config.isGenerateFile) {
+            if (this.config.isGenerateFile && this.config.isAutolinezero) {
                 var serialAutolinezero = document.getElementById('serialAutolinezero');
                 serialAutolinezero.focus();
             }
