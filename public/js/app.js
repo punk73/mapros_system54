@@ -14160,7 +14160,7 @@ var axios = __webpack_require__(7);
                 uri: ''
             },
 
-            serialAutolinezero: '',
+            serialAutolinezero: '#NA', //default value of serial
 
             modal: {
                 header: 'Header',
@@ -14312,8 +14312,13 @@ var axios = __webpack_require__(7);
             if (this.config.isGenerateFile) {
                 if (response.data.node.status == 'IN') {
                     //kalau dia bkn in, gausah download;
+                    console.log({
+                        content: content,
+                        serialAutolinezero: this.serialAutolinezero,
+                        board: this.form.board_id
+                    });
+
                     var content = this.form.board_id + '\n' + this.serialAutolinezero;
-                    console.log(content);
                     var filename = this.config.generatedFileName;
                     this.download(content, filename);
                 }
