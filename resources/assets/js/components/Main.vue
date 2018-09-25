@@ -378,13 +378,15 @@
 
                 if(this.config.isGenerateFile){
                     if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
+                        if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
+                            this.serialAutolinezero = '#NA';
+                        }
+                        let content = this.form.board_id + '\n' + this.serialAutolinezero ;
                         console.log({
                             content,
                             serialAutolinezero : this.serialAutolinezero,
                             board : this.form.board_id
                         })
-                        
-                        let content = this.form.board_id + '\n' + this.serialAutolinezero ;
                         let filename = this.config.generatedFileName;
                         this.download( content, filename );
                     }

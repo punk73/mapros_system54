@@ -14312,13 +14312,15 @@ var axios = __webpack_require__(7);
             if (this.config.isGenerateFile) {
                 if (response.data.node.status == 'IN') {
                     //kalau dia bkn in, gausah download;
+                    if (typeof this.serialAutolinezero == 'undefined' || this.serialAutolinezero == '') {
+                        this.serialAutolinezero = '#NA';
+                    }
+                    var content = this.form.board_id + '\n' + this.serialAutolinezero;
                     console.log({
                         content: content,
                         serialAutolinezero: this.serialAutolinezero,
                         board: this.form.board_id
                     });
-
-                    var content = this.form.board_id + '\n' + this.serialAutolinezero;
                     var filename = this.config.generatedFileName;
                     this.download(content, filename);
                 }
