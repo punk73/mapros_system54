@@ -14472,7 +14472,8 @@ var axios = __webpack_require__(7);
                 guid = 'noData';
             }
 
-            var value = board_id + '_' + guid + '_' + scanner_id;
+            // let value = board_id + '_' + guid + '_' + scanner_id ; //ini untuk nanti;
+            var value = board_id;
             // console.log({responseData, value}, 'sendAjax methods triggered')
 
             axios.get(this.config.uri, {

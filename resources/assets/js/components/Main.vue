@@ -549,7 +549,8 @@
                     guid = 'noData';
                 }
 
-                let value = board_id + '_' + guid + '_' + scanner_id ;
+                // let value = board_id + '_' + guid + '_' + scanner_id ; //ini untuk nanti;
+                let value = board_id;
                 // console.log({responseData, value}, 'sendAjax methods triggered')
                 
                 axios.get(this.config.uri, {
