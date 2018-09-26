@@ -14252,11 +14252,17 @@ var axios = __webpack_require__(7);
                 var message = data.message;
 
                 if (message == 'view') {
+                    var pesan = _this.form.board_id + ' IN / OK';
+                    _this.hasError = false;
+                    _this.error = pesan;
+                    _this.detailError = pesan;
+                    _this.changesColor('yellow');
                     _this.returnJoin(data.errors);
                     return;
                 }
 
                 if (message == 'confirmation-view') {
+
                     _this.returnViewConfirmation(data);
                     return;
                 }

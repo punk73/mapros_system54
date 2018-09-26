@@ -289,11 +289,17 @@
                         let message = data.message;
                         
                         if(message == 'view'){
+                            let pesan = this.form.board_id + ' IN / OK';
+                            this.hasError = false;
+                            this.error = pesan;
+                            this.detailError = pesan;
+                            this.changesColor('yellow');
                             this.returnJoin(data.errors);
                             return;
                         }
 
                         if(message == 'confirmation-view'){
+
                             this.returnViewConfirmation(data);
                             return;
                         }
