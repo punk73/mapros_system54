@@ -890,7 +890,7 @@ class Node
 		$model = $model->first();
 
 		if ($model == null) {
-			throw new StoreResourceFailedException("Board not found", [
+			throw new StoreResourceFailedException("PENGATURAN DATA DENGAN NAMA MODEL '{$this->parameter['modelname']}' TIDAK DITEMUKAN! CEK CURRENT MODEL CONFIG!", [
 				'node' => json_decode($this, true )
 			]);
 

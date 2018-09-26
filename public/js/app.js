@@ -14454,6 +14454,7 @@ var axios = __webpack_require__(7);
             this.showAlert = !this.showAlert;
         },
         toggleJoin: function toggleJoin() {
+            this.boardOnFocus();
             this.showJoin = !this.showJoin;
         },
         getConfig: function getConfig() {

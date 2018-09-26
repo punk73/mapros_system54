@@ -506,6 +506,7 @@
             },
 
             toggleJoin(){
+                this.boardOnFocus();
                 this.showJoin = !this.showJoin
             },
 
