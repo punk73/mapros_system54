@@ -14194,7 +14194,7 @@ var axios = __webpack_require__(7);
         var self = this;
         this.$root.$on('GeneratedFile', function () {
             var dummy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'dummy_id_goes here';
-            var enter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : String.fromCharCode(10);
+            var enter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '\r\n';
             var serial = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'serial goes here';
 
             // your code goes here

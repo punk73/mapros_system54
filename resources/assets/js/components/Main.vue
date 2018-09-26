@@ -235,7 +235,7 @@
         mounted(){
             // setting event on root 
             let self = this;
-            this.$root.$on('GeneratedFile', ( dummy='dummy_id_goes here', enter=String.fromCharCode(10), serial = 'serial goes here') => {
+            this.$root.$on('GeneratedFile', ( dummy='dummy_id_goes here', enter='\r\n', serial = 'serial goes here') => {
                 // your code goes here
                 // let dummy = 'dummy_id_goes here';
                 // let serial = 'serial goes here ';
