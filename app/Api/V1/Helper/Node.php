@@ -1282,7 +1282,8 @@ class Node
 				// update yang guid ticket nya masih null;
 				// ketika join;
 				Board::where('guid_ticket', null )
-				->where('board_id', $this->parameter['board_id'] )
+				// ->where('board_id', $this->parameter['board_id'] )
+				->where( function($query){ $this->ignoreSideQuery($query); } )
 				->where('lotno', $this->lotno )
 				->update(['guid_ticket' => $this->guid_ticket ]);
 			}
@@ -1291,7 +1292,8 @@ class Node
 				// update yang guid ticket nya masih null;
 				// ketika join;
 				Board::where('guid_master', null )
-				->where('board_id', $this->parameter['board_id'] )
+				// ->where('board_id', $this->parameter['board_id'] )
+				->where( function($query){ $this->ignoreSideQuery($query); } )
 				->where('lotno', $this->lotno )
 				->update(['guid_master' => $this->guid_master ]);
 			}
