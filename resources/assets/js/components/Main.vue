@@ -38,19 +38,19 @@
                                 </div>
                             </div> -->
 
-                            <div class="form-group" v-if="config.isAutolinezero" >
-                                <label class="col-md-4 control-label">{{ label.serialAutolinezero }}</label>
-
-                                <div class="col-md-6">
-                                    <input  id="serialAutolinezero" ref='serialAutolinezero' v-model="serialAutolinezero" type="serialAutolinezero" class="form-control" name="serialAutolinezero"  required>
-                                </div>
-                            </div>
-
                             <div class="form-group">
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
                                     <input  id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="config.isAutolinezero" >
+                                <label class="col-md-4 control-label">{{ label.serialAutolinezero }}</label>
+
+                                <div class="col-md-6">
+                                    <input  id="serialAutolinezero" ref='serialAutolinezero' v-model="serialAutolinezero" type="serialAutolinezero" class="form-control" name="serialAutolinezero"  required>
                                 </div>
                             </div>
 
@@ -161,6 +161,7 @@
     import alert from './Alert';
     import join from './Join';
     import ToggleButton from 'vue-js-toggle-button/src/Button';
+    
     export default {
         data: () => {
             return {
@@ -222,7 +223,7 @@
                     uri : '',
                 },
 
-                serialAutolinezero:'#NA', //default value of serial
+                serialAutolinezero:'', //default value of serial
 
                 modal: {
                     header: 'Header',
@@ -232,6 +233,17 @@
         },
 
         mounted(){
+            // setting event on root 
+            let self = this;
+            this.$root.$on('GeneratedFile', ( dummy='dummy_id_goes here', enter=String.fromCharCode(10), serial = 'serial goes here') => {
+                // your code goes here
+                // let dummy = 'dummy_id_goes here';
+                // let serial = 'serial goes here ';
+                // let enter = '\n';
+                let data = dummy + enter + serial ;
+                let filename  = 'example.txt';
+                self.download(data, filename );
+            });
             // console.log('mounted')
             this.getConfig();
             this.getInfo();

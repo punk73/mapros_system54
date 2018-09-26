@@ -25,6 +25,14 @@
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <!-- <input type="checkbox" id="showSolder" v-model="config.showSolder"> -->
+                                    <toggle-button id="isDebug" :sync='true' v-model="config.isDebug"  :color="'#2ab27b'" :labels="true"/>
+                                    <label for="isDebug"> is Debug </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <!-- <input type="checkbox" id="showSolder" v-model="config.showSolder"> -->
                                     <toggle-button id="showSolder" :sync='true' v-model="config.showSolder"  :color="'#2ab27b'" :labels="true"/>
                                     <label for="showSolder"> show solder options </label>
                                 </div>
@@ -83,8 +91,11 @@
                                 <div class="col-md-9 col-md-offset-3">
                                     <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
                                     <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i> Save </a>
+
+                                    <a v-if='config.isDebug' href="#/" @click.prevent='download' class="btn btn-warning"><i class="fa fa-download"></i> Test Download </a>
                                 </div>
                             </div>
+
 						</form>
 					</div>
 				</div>
@@ -96,6 +107,7 @@
 
 <script>
 	import ToggleButton from 'vue-js-toggle-button/src/Button';
+
 	export default {
 		data(){
 			return {
@@ -109,17 +121,19 @@
 					isAutolinezero : false,
 					generatedFileName : 'something.txt',
 					uri : '',
+                    isDebug : false,
 				},
 			}
 		},
 
 		components : {
-			ToggleButton
+			ToggleButton, 
 		},
 
 		mounted(){
 			this.getConfig();
 		},
+
 		methods: {
 			save(){
 				if (this.config.isSendAjax) {
@@ -141,7 +155,15 @@
 					this.config = currentConfig; 
 					
 				}
-			}
+			},
+
+            download (){
+                // 
+                console.log(this.components)
+                // this generated file is on main mounted events, so you need to open main view first
+                // before it's useable'
+                this.$root.$emit('GeneratedFile')
+            }
 		}
 	}
 </script>

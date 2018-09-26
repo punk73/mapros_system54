@@ -13662,6 +13662,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -13676,7 +13688,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				isShowDeleteButton: false,
 				isAutolinezero: false,
 				generatedFileName: 'something.txt',
-				uri: ''
+				uri: '',
+				isDebug: false
 			}
 		};
 	},
@@ -13689,6 +13702,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	mounted: function mounted() {
 		this.getConfig();
 	},
+
 
 	methods: {
 		save: function save() {
@@ -13708,6 +13722,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				currentConfig = JSON.parse(currentConfig);
 				this.config = currentConfig;
 			}
+		},
+		download: function download() {
+			// 
+			console.log(this.components);
+			// this generated file is on main mounted events, so you need to open main view first
+			// before it's useable'
+			this.$root.$emit('GeneratedFile');
 		}
 	}
 });
@@ -14099,6 +14120,7 @@ var axios = __webpack_require__(7);
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
@@ -14160,7 +14182,7 @@ var axios = __webpack_require__(7);
                 uri: ''
             },
 
-            serialAutolinezero: '#NA', //default value of serial
+            serialAutolinezero: '', //default value of serial
 
             modal: {
                 header: 'Header',
@@ -14170,6 +14192,21 @@ var axios = __webpack_require__(7);
     },
 
     mounted: function mounted() {
+        // setting event on root 
+        var self = this;
+        this.$root.$on('GeneratedFile', function () {
+            var dummy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'dummy_id_goes here';
+            var enter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : String.fromCharCode(10);
+            var serial = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'serial goes here';
+
+            // your code goes here
+            // let dummy = 'dummy_id_goes here';
+            // let serial = 'serial goes here ';
+            // let enter = '\n';
+            var data = dummy + enter + serial;
+            var filename = 'example.txt';
+            self.download(data, filename);
+        });
         // console.log('mounted')
         this.getConfig();
         this.getInfo();
@@ -45017,37 +45054,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "nik", $event.target.value)
       }
     }
-  })])])]), _vm._v(" "), (_vm.config.isAutolinezero) ? _c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    staticClass: "col-md-4 control-label"
-  }, [_vm._v(_vm._s(_vm.label.serialAutolinezero))]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-6"
-  }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.serialAutolinezero),
-      expression: "serialAutolinezero"
-    }],
-    ref: "serialAutolinezero",
-    staticClass: "form-control",
-    attrs: {
-      "id": "serialAutolinezero",
-      "type": "serialAutolinezero",
-      "name": "serialAutolinezero",
-      "required": ""
-    },
-    domProps: {
-      "value": (_vm.serialAutolinezero)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.serialAutolinezero = $event.target.value
-      }
-    }
-  })])]) : _vm._e(), _vm._v(" "), _c('div', {
+  })])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label"
@@ -45077,7 +45084,37 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "board_id", $event.target.value)
       }, _vm.filterBoard]
     }
-  })])]), _vm._v(" "), (_vm.config.showSolder) ? _c('div', {
+  })])]), _vm._v(" "), (_vm.config.isAutolinezero) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-4 control-label"
+  }, [_vm._v(_vm._s(_vm.label.serialAutolinezero))]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.serialAutolinezero),
+      expression: "serialAutolinezero"
+    }],
+    ref: "serialAutolinezero",
+    staticClass: "form-control",
+    attrs: {
+      "id": "serialAutolinezero",
+      "type": "serialAutolinezero",
+      "name": "serialAutolinezero",
+      "required": ""
+    },
+    domProps: {
+      "value": (_vm.serialAutolinezero)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.serialAutolinezero = $event.target.value
+      }
+    }
+  })])]) : _vm._e(), _vm._v(" "), (_vm.config.showSolder) ? _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-6 col-md-offset-4"
@@ -45456,6 +45493,28 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
   }, [_c('toggle-button', {
     attrs: {
+      "id": "isDebug",
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.isDebug),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isDebug", $$v)
+      },
+      expression: "config.isDebug"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isDebug"
+    }
+  }, [_vm._v(" is Debug ")])], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
       "id": "showSolder",
       "sync": true,
       "color": '#2ab27b',
@@ -45638,7 +45697,20 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('i', {
     staticClass: "fa fa-save"
-  }), _vm._v(" Save ")])])])])])])])])])
+  }), _vm._v(" Save ")]), _vm._v(" "), (_vm.config.isDebug) ? _c('a', {
+    staticClass: "btn btn-warning",
+    attrs: {
+      "href": "#/"
+    },
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        return _vm.download($event)
+      }
+    }
+  }, [_c('i', {
+    staticClass: "fa fa-download"
+  }), _vm._v(" Test Download ")]) : _vm._e()])])])])])])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "bg-info panel-heading custom-heading"
