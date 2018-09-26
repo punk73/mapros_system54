@@ -13724,8 +13724,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 		},
 		download: function download() {
-			// 
-			console.log(this.components);
 			// this generated file is on main mounted events, so you need to open main view first
 			// before it's useable'
 			this.$root.$emit('GeneratedFile');
@@ -14307,7 +14305,7 @@ var axios = __webpack_require__(7);
         },
         download: function download(data, filename, type) {
             var file = new Blob([data], { type: type });
-            console.log('download');
+            console.log(data, 'download');
             if (window.navigator.msSaveOrOpenBlob) // IE10+
                 window.navigator.msSaveOrOpenBlob(file, filename);else {
                 // Others

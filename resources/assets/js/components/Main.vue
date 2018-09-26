@@ -348,7 +348,7 @@
 
             download(data, filename, type) {
                 var file = new Blob([data], {type: type});
-                console.log('download');
+                console.log(data ,'download');
                 if (window.navigator.msSaveOrOpenBlob) // IE10+
                     window.navigator.msSaveOrOpenBlob(file, filename);
                 else { // Others

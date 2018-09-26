@@ -158,8 +158,6 @@
 			},
 
             download (){
-                // 
-                console.log(this.components)
                 // this generated file is on main mounted events, so you need to open main view first
                 // before it's useable'
                 this.$root.$emit('GeneratedFile')
