@@ -30,6 +30,21 @@
                                 </div>
                             </div>
 
+                            <div class="form-group" v-if="config.isDebug">
+                                <label class="col-md-3 col-xs-3 control-label">Content</label>
+                                <div class="col-md-3 col-xs-3 col-sm-3">
+                                    <input  type="text" v-model='debug.content.dummy' placeholder="dummy" class="form-control" required autofocus>
+                                </div>
+                                <div class="col-md-3 col-xs-3 col-sm-3">
+                                    <!-- <input  type="text" v-model='debug.content.enter' placeholder="enter" class="form-control" required autofocus> -->
+                                    <label class="control-label">with enter</label>
+                                    <toggle-button v-model="debug.enterActive" :sync='true'  :color="'#2ab27b'" :labels="true"/>
+                                </div>
+                                <div class="col-md-3 col-xs-3 col-sm-3">
+                                    <input  type="text" v-model='debug.content.serial' placeholder="serialset" class="form-control" required autofocus>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <!-- <input type="checkbox" id="showSolder" v-model="config.showSolder"> -->
@@ -47,12 +62,13 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" v-if='config.isGenerateFile'>
+                            <!-- <div class="form-group" v-if='config.isGenerateFile'>
                                 <label for="uri" class="col-md-3 control-label">Generated File Name</label>
                                 <div class="col-md-9">
                                     <input  type="text" v-model='config.generatedFileName' class="form-control" required autofocus>
                                 </div>
-                            </div>
+                            </div> -->
+                            <generate-file-config :config='config' />
 
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
@@ -107,6 +123,7 @@
 
 <script>
 	import ToggleButton from 'vue-js-toggle-button/src/Button';
+    import GenerateFileConfig from './GenerateFileConfig';
 
 	export default {
 		data(){
@@ -123,11 +140,24 @@
 					uri : '',
                     isDebug : false,
 				},
+
+                debug : {
+                    enterActive : true,
+                    content : {
+                        dummy:'MAPNL01020001',
+                        serial:'#NA',
+                        enter : '\r\n',
+                    },
+                },
 			}
 		},
 
+        computed: {
+           
+        },
+
 		components : {
-			ToggleButton, 
+			ToggleButton, GenerateFileConfig, 
 		},
 
 		mounted(){
@@ -160,7 +190,13 @@
             download (){
                 // this generated file is on main mounted events, so you need to open main view first
                 // before it's useable'
-                this.$root.$emit('GeneratedFile')
+                let dummy = this.debug.content.dummy;
+                let enter = this.debug.content.enter;
+                let serial = this.debug.content.serial;
+                console.log({
+                    dummy, enter, serial
+                })
+                this.$root.$emit('GeneratedFile', dummy, enter, serial  )
             }
 		}
 	}

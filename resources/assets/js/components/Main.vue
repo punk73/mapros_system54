@@ -235,7 +235,7 @@
         mounted(){
             // setting event on root 
             let self = this;
-            this.$root.$on('GeneratedFile', ( dummy='dummy_id_goes here', enter='\r\n', serial = 'serial goes here') => {
+            this.$root.$once('GeneratedFile', ( dummy='MAMST', enter='\r\n', serial = '#NA') => {
                 // your code goes here
                 // let dummy = 'dummy_id_goes here';
                 // let serial = 'serial goes here ';
@@ -397,14 +397,17 @@
                 if(this.config.isGenerateFile){
                     if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
                         if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
-                            this.serialAutolinezero = '#NA';
+                            this.serialAutolinezero = 'NA';
                         }
-                        let content = this.form.board_id + '\r\n' + this.serialAutolinezero ;
+                        var enter = this.config.delimiter; //'';//'\r\n';
+                        let content = this.form.board_id + enter + this.serialAutolinezero ;
+                        
                         console.log({
                             content,
                             serialAutolinezero : this.serialAutolinezero,
                             board : this.form.board_id
                         })
+
                         let filename = this.config.generatedFileName;
                         this.download( content, filename );
                     }

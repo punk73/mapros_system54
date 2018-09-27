@@ -13564,6 +13564,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig__);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 //
@@ -13673,6 +13675,23 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -13690,13 +13709,24 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				generatedFileName: 'something.txt',
 				uri: '',
 				isDebug: false
+			},
+
+			debug: {
+				enterActive: true,
+				content: {
+					dummy: 'MAPNL01020001',
+					serial: '#NA',
+					enter: '\r\n'
+				}
 			}
 		};
 	},
 
 
+	computed: {},
+
 	components: {
-		ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a
+		ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a, GenerateFileConfig: __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig___default.a
 	},
 
 	mounted: function mounted() {
@@ -13726,7 +13756,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		download: function download() {
 			// this generated file is on main mounted events, so you need to open main view first
 			// before it's useable'
-			this.$root.$emit('GeneratedFile');
+			var dummy = this.debug.content.dummy;
+			var enter = this.debug.content.enter;
+			var serial = this.debug.content.serial;
+			console.log({
+				dummy: dummy, enter: enter, serial: serial
+			});
+			this.$root.$emit('GeneratedFile', dummy, enter, serial);
 		}
 	}
 });
@@ -14192,10 +14228,10 @@ var axios = __webpack_require__(7);
     mounted: function mounted() {
         // setting event on root 
         var self = this;
-        this.$root.$on('GeneratedFile', function () {
-            var dummy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'dummy_id_goes here';
+        this.$root.$once('GeneratedFile', function () {
+            var dummy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'MAMST';
             var enter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '\r\n';
-            var serial = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'serial goes here';
+            var serial = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '#NA';
 
             // your code goes here
             // let dummy = 'dummy_id_goes here';
@@ -14354,14 +14390,17 @@ var axios = __webpack_require__(7);
                 if (response.data.node.status == 'IN') {
                     //kalau dia bkn in, gausah download;
                     if (typeof this.serialAutolinezero == 'undefined' || this.serialAutolinezero == '') {
-                        this.serialAutolinezero = '#NA';
+                        this.serialAutolinezero = 'NA';
                     }
-                    var content = this.form.board_id + '\r\n' + this.serialAutolinezero;
+                    var enter = this.config.delimiter; //'';//'\r\n';
+                    var content = this.form.board_id + enter + this.serialAutolinezero;
+
                     console.log({
                         content: content,
                         serialAutolinezero: this.serialAutolinezero,
                         board: this.form.board_id
                     });
+
                     var filename = this.config.generatedFileName;
                     this.download(content, filename);
                 }
@@ -45514,7 +45553,78 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "for": "isDebug"
     }
-  }, [_vm._v(" is Debug ")])], 1)]), _vm._v(" "), _c('div', {
+  }, [_vm._v(" is Debug ")])], 1)]), _vm._v(" "), (_vm.config.isDebug) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 col-xs-3 control-label"
+  }, [_vm._v("Content")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-3 col-xs-3 col-sm-3"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.debug.content.dummy),
+      expression: "debug.content.dummy"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "placeholder": "dummy",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.debug.content.dummy)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.debug.content, "dummy", $event.target.value)
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-3 col-xs-3 col-sm-3"
+  }, [_c('label', {
+    staticClass: "control-label"
+  }, [_vm._v("with enter")]), _vm._v(" "), _c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.debug.enterActive),
+      callback: function($$v) {
+        _vm.$set(_vm.debug, "enterActive", $$v)
+      },
+      expression: "debug.enterActive"
+    }
+  })], 1), _vm._v(" "), _c('div', {
+    staticClass: "col-md-3 col-xs-3 col-sm-3"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.debug.content.serial),
+      expression: "debug.content.serial"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "placeholder": "serialset",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.debug.content.serial)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.debug.content, "serial", $event.target.value)
+      }
+    }
+  })])]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
@@ -45558,38 +45668,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "for": "isGenerateFile"
     }
-  }, [_vm._v(" Generate file on scan ")])], 1)]), _vm._v(" "), (_vm.config.isGenerateFile) ? _c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    staticClass: "col-md-3 control-label",
+  }, [_vm._v(" Generate file on scan ")])], 1)]), _vm._v(" "), _c('generate-file-config', {
     attrs: {
-      "for": "uri"
+      "config": _vm.config
     }
-  }, [_vm._v("Generated File Name")]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-9"
-  }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.config.generatedFileName),
-      expression: "config.generatedFileName"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      "type": "text",
-      "required": "",
-      "autofocus": ""
-    },
-    domProps: {
-      "value": (_vm.config.generatedFileName)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.$set(_vm.config, "generatedFileName", $event.target.value)
-      }
-    }
-  })])]) : _vm._e(), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
@@ -45715,7 +45798,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('i', {
     staticClass: "fa fa-download"
-  }), _vm._v(" Test Download ")]) : _vm._e()])])])])])])])])
+  }), _vm._v(" Test Download ")]) : _vm._e()])])], 1)])])])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "bg-info panel-heading custom-heading"
@@ -50251,6 +50334,251 @@ module.exports = function(module) {
 __webpack_require__(18);
 module.exports = __webpack_require__(19);
 
+
+/***/ }),
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ['config'],
+
+	components: {
+		ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a
+	},
+
+	methods: {
+		isEnterActiveOnChange: function isEnterActiveOnChange() {
+			if (this.config.isEnterActive) {
+				this.config.delimiter = '\r\n';
+			} else {
+				// set time out to wait to element exists
+				setTimeout(function () {
+					var delimiter = document.getElementById('delimiter');
+					// console.log(delimiter)
+					delimiter.focus();
+				}, 20);
+			}
+		}
+	}
+});
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/* styles */
+__webpack_require__(87)
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(83),
+  /* template */
+  __webpack_require__(85),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\GenerateFileConfig.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] GenerateFileConfig.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-311b3bce", Component.options)
+  } else {
+    hotAPI.reload("data-v-311b3bce", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return (_vm.config.isGenerateFile) ? _c('div', {
+    staticClass: "withBorder"
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label"
+  }, [_vm._v("Generated File Name")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.generatedFileName),
+      expression: "config.generatedFileName"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.config.generatedFileName)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.config, "generatedFileName", $event.target.value)
+      }
+    }
+  })])]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    on: {
+      "change": _vm.isEnterActiveOnChange
+    },
+    model: {
+      value: (_vm.config.isEnterActive),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isEnterActive", $$v)
+      },
+      expression: "config.isEnterActive"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isSendAjax"
+    }
+  }, [_vm._v(" Use Enter as Delimiter ")])], 1)]), _vm._v(" "), (!_vm.config.isEnterActive) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label"
+  }, [_vm._v("Delimiter")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.delimiter),
+      expression: "config.delimiter"
+    }],
+    ref: "delimiter",
+    staticClass: "form-control",
+    attrs: {
+      "id": "delimiter",
+      "type": "text",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.config.delimiter)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.config, "delimiter", $event.target.value)
+      }
+    }
+  })])]) : _vm._e()]) : _vm._e()
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-311b3bce", module.exports)
+  }
+}
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(5)();
+exports.push([module.i, "\n.withBorder {\n\tborder: solid;\n\tborder-color: #ddd;\n\tborder-width: 2px;\n\tpadding: 3px;\n\tmargin: 2px;\n}\n", ""]);
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(86);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(6)("0417a0c7", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-311b3bce\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GenerateFileConfig.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-311b3bce\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GenerateFileConfig.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
 
 /***/ })
 /******/ ]);
