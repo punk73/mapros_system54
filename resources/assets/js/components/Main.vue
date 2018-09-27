@@ -399,7 +399,7 @@
                         if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
                             this.serialAutolinezero = '#NA';
                         }
-                        let content = this.form.board_id + '\n' + this.serialAutolinezero ;
+                        let content = this.form.board_id + '\r\n' + this.serialAutolinezero ;
                         console.log({
                             content,
                             serialAutolinezero : this.serialAutolinezero,

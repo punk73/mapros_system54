@@ -14356,7 +14356,7 @@ var axios = __webpack_require__(7);
                     if (typeof this.serialAutolinezero == 'undefined' || this.serialAutolinezero == '') {
                         this.serialAutolinezero = '#NA';
                     }
-                    var content = this.form.board_id + '\n' + this.serialAutolinezero;
+                    var content = this.form.board_id + '\r\n' + this.serialAutolinezero;
                     console.log({
                         content: content,
                         serialAutolinezero: this.serialAutolinezero,
