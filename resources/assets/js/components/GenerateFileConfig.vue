@@ -16,9 +16,8 @@
                 	:color="'#2ab27b'" 
                 	:labels="true"
                 	@change='isEnterActiveOnChange'
-            />
-
-                <label for="isSendAjax"> Use Enter as Delimiter </label>
+            	/>
+            	<label for="isSendAjax"> Use Enter as Delimiter </label>
             </div>
         </div>
 
@@ -27,19 +26,41 @@
 		    <div class="col-md-9">
 		        <input id="delimiter" ref='delimiter' type="text" v-model='config.delimiter' class="form-control" required autofocus>
 		    </div>
-		</div>		
+		</div>
+
+		<div class="form-group">
+            <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                <toggle-button 
+                	v-model="isDebug" 
+                	:sync='true' 
+                	:color="'#2ab27b'" 
+                	:labels="true"
+            	/>
+            	<label> Debug </label>
+            </div>
+        </div>
+
+        <form-debug v-if='isDebug' :config='config' />
+
 	
 	</div>
 </template>
 
 <script>
 	import ToggleButton from 'vue-js-toggle-button/src/Button';
-	
+	import FormDebug from './FormDebug';
+
 	export default {
 		props : ['config'],
 
 		components : {
-			ToggleButton
+			ToggleButton, FormDebug
+		},
+
+		data(){
+			return {
+				isDebug : false,
+			}
 		},
 
 		methods : {

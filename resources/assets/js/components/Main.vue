@@ -3,15 +3,6 @@
     <div class="container">
         <div class="row">
 
-            <div v-if="showAlert" class="col-md-8 col-md-offset-2">
-                <alert  
-                    @showDetailError='showDetailError'
-                    @toggleAlert='toggleAlert'
-                    :message='error'
-                    :isDanger='hasError'
-                ></alert>
-            </div>
-
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     
@@ -29,14 +20,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- <div class="form-group" hidden="true">
-                                <label for="name" class="col-md-4 control-label">IP Address</label>
-
-                                <div class="col-md-6">
-                                    <input v-model='form.ip' id="ip_address" type="text" class="form-control" name="ip_address" required autofocus>
-                                </div>
-                            </div> -->
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
@@ -120,7 +103,7 @@
                                         Delete <i class="fa fa-trash float-right"></i>
                                     </button>
 
-                                    <!-- <button @click.prevent='changesColor' class="btn btn-info">change color</button> -->
+                                    <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN / OK') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
                                 </div>
                             </div>
 
@@ -173,6 +156,14 @@
                     is_solder:false,
                 },
 
+                oldForm : {
+                    ip: '',
+                    board_id: '',
+                    nik: '',
+                    modelname:'',
+                    is_solder:false,
+                },
+
                 server:{
                     modelname:''
                 },
@@ -196,11 +187,6 @@
 
                 state : 'in',
 
-                styles : {
-                    // backgroundColor: '#ffffff',
-                    // color : '#eeeeee'
-                },
-
                 isLoading:false,
                 showModal: false,
                 showConfirm:false,
@@ -209,6 +195,8 @@
                     id : 'Board ID',
                     serialAutolinezero : 'Serial Set'
                 },
+
+                styles : {}, //dipakai di warna well
 
                 // it's basically will be override by getConfig method
                 config : {
@@ -225,11 +213,43 @@
 
                 serialAutolinezero:'', //default value of serial
 
+                responseData: {
+                    success: true,
+                    message: '',
+                },
+
+                oldResponseData: {
+                    success: true,
+                    message: '',
+                },
+
+                downloadContent : null,
+
                 modal: {
                     header: 'Header',
                     message: 'message'
                 },
             }
+        },
+
+        watch:{
+            clonedForm: function(newVal, oldVal){
+              // console.log({newVal, oldVal})
+              this.oldForm = oldVal;
+            }, 
+
+            clonedResponseData(newVal, oldVal ){
+                this.oldResponseData = oldVal;
+            }
+        },
+        computed:{
+            clonedForm: function(){
+               return JSON.parse(JSON.stringify( this.form ))
+            },
+
+            clonedResponseData(){
+                return JSON.parse(JSON.stringify( this.responseData ))
+            },
         },
 
         mounted(){
@@ -285,6 +305,7 @@
                         }
 
                         let data = error.response.data;
+                        this.responseData = error.response.data;
                         console.log(data)
                         let message = data.message;
                         
@@ -381,44 +402,28 @@
                 this.hasError = true;
                 this.changesColor('red');
                 this.form.board_id='';
-                // this.toggleAlert();
-                // this.showAlert = true;
-                // this.$refs.board_id.$el.focus();
             },
 
             handleSucces(response){
                 // set error to default value to show alert-success in alert
                 console.log('handleSucces', response )
                 let message = response.data.message;
+                this.responseData = response.data;
                 this.hasError = false;
                 this.error = message;
                 this.detailError = message;
 
                 if(this.config.isGenerateFile){
                     if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
-                        if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
-                            this.serialAutolinezero = 'NA';
-                        }
-                        var enter = this.config.delimiter; //'';//'\r\n';
-                        let content = this.form.board_id + enter + this.serialAutolinezero ;
-                        
-                        console.log({
-                            content,
-                            serialAutolinezero : this.serialAutolinezero,
-                            board : this.form.board_id
-                        })
-
-                        let filename = this.config.generatedFileName;
-                        this.download( content, filename );
+                        this.generateFile();
                     }
                 }
 
                 if( this.config.isSendAjax ){
                     if (response.data.node.status == 'IN') { 
                         //kalau dia bkn in, gausah download;
-                        let data = response.data;
                         // console.log(data, 'handleSucces sending ajax')
-                        this.sendAjax(data)    
+                        this.sendAjax(this.responseData)    
                     }
                 }
 
@@ -439,7 +444,19 @@
                 if(this.config.isGenerateFile) {
                     this.serialAutolinezero = '';
                 }
+            },
 
+            generateFile(){
+                if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
+                    this.serialAutolinezero = 'NA';
+                }
+
+                var enter = this.config.delimiter; //'';//'\r\n';
+                this.downloadContent = this.form.board_id + enter + this.serialAutolinezero ;
+                
+
+                let filename = this.config.generatedFileName;
+                this.download( this.downloadContent, filename );
             },
 
             deleteOnClick(){
@@ -607,8 +624,28 @@
                 modal.header = 'ERROR';
                 console.log(error.response)
                 modal.message = error.response.data.message;
-                self.showModal = !self.showModal;
+                self.showModal = !self.showModal; 
+
               })
+            },
+
+            resendData(){
+                if( (this.config.isSendAjax) && ( this.responseData != null) ){
+                    this.sendAjax(this.responseData)
+                }
+
+                if(this.config.isGenerateFile){
+                    if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
+                        this.serialAutolinezero = 'NA';
+                    }
+
+                    var enter = this.config.delimiter; //'';//'\r\n';
+                    this.downloadContent = this.oldForm.board_id + enter + this.serialAutolinezero ;
+                    
+
+                    let filename = this.config.generatedFileName;
+                    this.download( this.downloadContent, filename );
+                }
             },
 
             toggleHasError(hasError = ''){
