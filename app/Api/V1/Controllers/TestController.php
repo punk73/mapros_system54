@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Sequence;
 use App\Api\V1\Traits\LoggerHelper;
 use GuzzleHttp\Client;
+use App\Mastermodel;
 
 class TestController extends Controller
 {	
@@ -26,7 +27,11 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		return $this->testGuzzle($request);
+		$master = new Mastermodel;
+		return [
+			'env_value' => env('DB_CONNECTION2'),
+			'master_table' => $master->all()
+		];
 	}
 
 	public function testNode(){
