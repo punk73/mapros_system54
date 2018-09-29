@@ -25,6 +25,20 @@
                             </div>
 
                             <div class="form-group">
+                                <label  class="col-md-3 control-label">Jumlah Join</label>
+                                <div class="col-md-9">
+                                    <input-number
+                                        :step="1"
+                                        :min="1"
+                                        :max="10"
+                                        v-model='config.jumlahJoin'
+                                        controls
+                                        inline
+                                    ></input-number>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <!-- <input type="checkbox" id="showSolder" v-model="config.showSolder"> -->
                                     <toggle-button id="showSolder" :sync='true' v-model="config.showSolder"  :color="'#2ab27b'" :labels="true"/>
@@ -96,6 +110,7 @@
 	import ToggleButton from 'vue-js-toggle-button/src/Button';
     import GenerateFileConfig from './GenerateFileConfig';
     import Alert from './Alert';
+    import InputNumber from '@chenfengyuan/vue-number-input';
 
 	export default {
 
@@ -130,7 +145,7 @@
         },
 
 		components : {
-			ToggleButton, GenerateFileConfig, Alert
+			ToggleButton, GenerateFileConfig, Alert, InputNumber
 		},
 
 		mounted(){

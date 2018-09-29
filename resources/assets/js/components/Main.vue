@@ -203,6 +203,8 @@
                     serialAutolinezero : 'Serial Set'
                 },
 
+                jumlahJoin: 0, //current jumlah join
+
                 styles : {}, //dipakai di warna well
 
                 // it's basically will be override by getConfig method
@@ -216,6 +218,7 @@
                     isShowDeleteButton : false,
                     isAutolinezero : false,
                     uri : '',
+                    jumlahJoin:1, //default value of jumlah join
                 },
 
                 serialAutolinezero:'', //default value of serial
@@ -421,17 +424,26 @@
                 this.error = message;
                 this.detailError = message;
 
-                if(this.config.isGenerateFile){
-                    if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
+                
+
+                if (response.data.node.status == 'IN') { 
+                    if( this.config.isSendAjax ){
+                        this.sendAjax(this.responseData)    
+                    }
+
+                    if(this.config.isGenerateFile){
                         this.generateFile();
                     }
-                }
 
-                if( this.config.isSendAjax ){
-                    if (response.data.node.status == 'IN') { 
-                        //kalau dia bkn in, gausah download;
-                        // console.log(data, 'handleSucces sending ajax')
-                        this.sendAjax(this.responseData)    
+                    // this code below is work because when view is return, it is throw error with message view
+                    // tambah counter jumlahJoin
+                    if(this.isJoin){
+                        this.jumlahJoin++;
+                        if(this.jumlahJoin == this.config.jumlahJoin){
+                            console.log('jumlahJoin tercapai')
+                            this.isJoin = false; //tutup join otomatis
+                            this.jumlahJoin=0; //back to default
+                        }
                     }
                 }
 
