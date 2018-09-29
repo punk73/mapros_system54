@@ -460,6 +460,18 @@ class MainController extends Controller
 			]);
 		};
 
+		//cek apakah ticket sudah punya anak;
+		if(!$node->hasChildren()){ //kalau belum, return view lagi;
+			throw new StoreResourceFailedException("view", [
+				'node' => json_decode($node, true ),
+				'nik' => $node->getNik(),
+				'ip' => $node->getScanner()['ip_address'],
+				'dummy_id' => $node->dummy_id, 
+				'guid'=> ( $isRunningMaster == false ) ? $node->getGuidTicket() : $node->getGuidMaster(),
+				'message' => 'runProcedureTicket',
+			]);
+		}
+
 		return $this->processBoard($node);
 
 	}
@@ -485,6 +497,18 @@ class MainController extends Controller
 				'message' => 'master procedures',
 			]);
 		};
+
+		// cek master sudah punya anak atau belum, kalau belum, return view lagi;
+		if(!$node->hasChildren()){
+			throw new StoreResourceFailedException("view", [
+				'node' => json_decode($node, true ),
+				'nik' => $node->getNik(),
+				'ip' => $node->getScanner()['ip_address'],
+				'dummy_id' => $node->dummy_id, 
+				'guid'=>    $node->getGuidMaster(),
+				'message' => 'master procedures',
+			]);	
+		}
 
 		$this->runProcedureTicket($node , true );
 		
