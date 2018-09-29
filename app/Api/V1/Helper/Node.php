@@ -209,10 +209,10 @@ class Node
 	}
 
 	public function initModelCode(){
-		if (count($this->parameter['board_id']) == 24 ) {
-			$this->model_code = substr($this->parameter['board_id'], 0, 10);
+		if (strlen($this->parameter['board_id']) == 24 ) {
+			$this->model_code = substr($this->parameter['board_id'], 0, 11 );
 			$this->setLotno($this->parameter['board_id']);
-		}else if(count($this->parameter['board_id']) <= 16){
+		}else if(strlen($this->parameter['board_id']) <= 16){
 			$this->model_code = substr($this->parameter['board_id'], 0, 5);
 			$this->setLotno($this->parameter['board_id']);
 		}else{
@@ -747,63 +747,6 @@ class Node
 		}
 	}
 
-	// no longer use due to huge latency
-	/*protected $big_url = 'http://136.198.117.48/big/public/api/models';
-	// no longer use due to huge latency
-	public function getBoardTypeCurl($board_id = null, $url=null){
-		// what if board id morethan 5 character ??
-		// what if board id null ??
-		if (is_null( $board_id)) {
-			$board_id = $this->dummy_id;
-			// get first 5 digit of char
-			$board_id =  substr($board_id, 0, 5);
-		}
-
-		// default value of url is $this->big_url, it is for testing purposes
-		if (is_null( $url)) {
-			$url = $this->big_url;
-		}
-
-		$parameter = '?code=' . $board_id;
-		// init curl
-		$curl = curl_init();
-
-		if($curl == false){
-            throw new HttpException(422);
-        }
-		// set opt
-		curl_setopt_array($curl, [
-		    CURLOPT_URL => $url . $parameter,
-		    CURLOPT_RETURNTRANSFER => true,
-		    CURLOPT_TIMEOUT => 30000,
-		    CURLOPT_HTTPGET => true,
-		    CURLOPT_HEADER => 0,
-		    CURLOPT_HTTPHEADER => array(
-		    	// Set Here Your Requesred Headers
-		        'Content-Type: application/json',
-		    ),
-		]);
-
-		// send curl
-		$response = curl_exec($curl);
-		$err = curl_error($curl);
-		curl_close($curl);
-
-		// what if error ??
-		if ($err) {
-			throw new HttpException(422);
-		}
-		// decode json text into associative array;
-		$result = json_decode($response, true);
-
-		// what if not found ??
-		if (count($result['data']) > 0) {
-			return $result['data'][0]['pwbname'];
-		}else{
-			throw new HttpException(422);
-		}
-	}*/
-
 	/*
 	* it's search board id type from table in big system 
 	* based on code = board_id;
@@ -817,11 +760,8 @@ class Node
 		}
 
 		if (is_null($board_id)) {
-			$board_id = $this->dummy_id;
-			// get first 5 digit of char
-
 			// it'll need to be changed due to changes in big system
-			$board_id = substr($board_id, 0, 5);
+			$board_id = $this->getModelCode();
 		}
 
 		$model = Mastermodel::select([
@@ -863,8 +803,8 @@ class Node
 					]);
 				}
 
-				// this will cause some trouble later;
-				$board_id = substr($boardPanel['board_id'], 0,5 );
+				// we substr based on length of $this->model_code; wheter it is 5 or 11;
+				$board_id = substr($boardPanel['board_id'], 0, strlen( $this->getModelCode() ) );
 				# code... 
 				$model = $model->where('code', $board_id );
 			}else {
