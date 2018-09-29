@@ -23,6 +23,7 @@ use App\Endpoint;
 class Node
 {
 	protected $model;
+	protected $model_code; // 5 char atau 11 char awal
 	protected $allowedStatus = [
 		'IN',
 		'OUT'
@@ -69,6 +70,8 @@ class Node
 		if (!$debug)
 		{
 			$this->parameter = $parameter;
+
+			$this->initModelCode(); //dependence to $this->parameter;
 			// setup model (board, ticket, or master)
 			$this->setModel($parameter);
 			// setup scanner_id;
@@ -205,40 +208,31 @@ class Node
 		return $this->id_type;
 	}
 
-	//triggered on instantiate 
-	public function setModel($parameter){
-		if (count($parameter['board_id']) == 24 ) {
-			$code = substr($parameter['board_id'], 0, 10);
-
-			$this->setLotno($parameter['board_id']);
-
-		}else if(count($parameter['board_id']) <= 16){
-			$code = substr($parameter['board_id'], 0, 5);
-			$this->setLotno($parameter['board_id']);
+	public function initModelCode(){
+		if (count($this->parameter['board_id']) == 24 ) {
+			$this->model_code = substr($this->parameter['board_id'], 0, 10);
+			$this->setLotno($this->parameter['board_id']);
+		}else if(count($this->parameter['board_id']) <= 16){
+			$this->model_code = substr($this->parameter['board_id'], 0, 5);
+			$this->setLotno($this->parameter['board_id']);
 		}else{
 			//ini untuk critical parts; gausah di substr dulu;
-			$code = $parameter['board_id'];
-		} 
+			$this->model_code = $this->parameter['board_id'];
+		}
+	}
 
-		/*if (in_array($code, $this->ticketCriteria )) {
-			// it is ticket, so we work with ticket
-			if($code == '_MST'){
-				$this->model = new Master;
-				$this->dummy_column = 'ticket_no_master';
-				$this->model_type = 'master';
-			}else {
-				$this->model = new Ticket;
-				$this->dummy_column = 'ticket_no';
-				$this->model_type = 'ticket';
-			}
-		}else {
-			// it is a board, we working with board;
-			$this->model = new Board;
-			$this->dummy_column = 'board_id';
-			$this->model_type = 'board';
-		}*/
+	public function getModelCode(){
+		return $this->model_code;
+	}
 
-		$setting = ColumnSetting::where('code_prefix', $code )->first();
+	public function setModelCode($code){
+		$this->model_code = $code;
+	}
+	//triggered on instantiate 
+	public function setModel($parameter){
+		
+
+		$setting = ColumnSetting::where('code_prefix', $this->model_code )->first();
 		if(!is_null($setting)){
 			$className = 'App\\' . studly_case(str_singular($setting->table_name));
 
@@ -754,7 +748,7 @@ class Node
 	}
 
 	// no longer use due to huge latency
-	protected $big_url = 'http://136.198.117.48/big/public/api/models';
+	/*protected $big_url = 'http://136.198.117.48/big/public/api/models';
 	// no longer use due to huge latency
 	public function getBoardTypeCurl($board_id = null, $url=null){
 		// what if board id morethan 5 character ??
@@ -762,7 +756,7 @@ class Node
 		if (is_null( $board_id)) {
 			$board_id = $this->dummy_id;
 			// get first 5 digit of char
-			$board_id = substr($board_id, 0, 5);
+			$board_id =  substr($board_id, 0, 5);
 		}
 
 		// default value of url is $this->big_url, it is for testing purposes
@@ -808,7 +802,7 @@ class Node
 		}else{
 			throw new HttpException(422);
 		}
-	}
+	}*/
 
 	/*
 	* it's search board id type from table in big system 
