@@ -448,8 +448,12 @@ class MainController extends Controller
 				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
 					'message' => '442 something went wrong with save method on model! ask your IT member'
 				]);
-			}    
+			}
+		};
 
+		//cek apakah ticket sudah punya anak;
+		if(!$node->hasChildren() && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){ 
+			//kalau belum, return view lagi;
 			throw new StoreResourceFailedException("view", [
 				'node' => json_decode($node, true ),
 				'nik' => $node->getNik(),
@@ -458,7 +462,7 @@ class MainController extends Controller
 				'guid'=> ( $isRunningMaster == false ) ? $node->getGuidTicket() : $node->getGuidMaster(),
 				'message' => 'runProcedureTicket',
 			]);
-		};
+		}
 
 		return $this->processBoard($node);
 
@@ -474,8 +478,11 @@ class MainController extends Controller
 				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
 					'message' => '468 something went wrong with save method on model! ask your IT member'
 				]);
-			}    
+			}
+		};
 
+		// cek master sudah punya anak atau belum, kalau belum, return view lagi;
+		if( (!$node->hasChildren()) && ( $node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 			throw new StoreResourceFailedException("view", [
 				'node' => json_decode($node, true ),
 				'nik' => $node->getNik(),
@@ -483,8 +490,8 @@ class MainController extends Controller
 				'dummy_id' => $node->dummy_id, 
 				'guid'=>    $node->getGuidMaster(),
 				'message' => 'master procedures',
-			]);
-		};
+			]);	
+		}
 
 		$this->runProcedureTicket($node , true );
 		
