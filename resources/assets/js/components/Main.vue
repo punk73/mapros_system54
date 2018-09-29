@@ -11,6 +11,7 @@
                             <div class="form-group text-center">
                                 <h3><strong>PLEASE SCAN DATA</strong></h3>
                             </div>
+
                             <div class="form-group">
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
                                 <div class="col-md-6">
@@ -27,6 +28,10 @@
                                 <div class="col-md-6">
                                     <input  id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
                                 </div>
+                            </div>
+
+                            <div class="form-group" v-if='isJoin'>
+                                <label class="col-md-offset-4 col-md-6"> Proses Join Active : <toggle-button v-model="isJoin" :color="'#2ab27b'" :labels="true" @change='isJoinOnChange' /></label>
                             </div>
 
                             <div class="form-group" v-if="config.isAutolinezero" >
@@ -156,6 +161,8 @@
                     is_solder:false,
                 },
 
+                isJoin : false,
+
                 oldForm : {
                     ip: '',
                     board_id: '',
@@ -242,6 +249,7 @@
                 this.oldResponseData = oldVal;
             }
         },
+
         computed:{
             clonedForm: function(){
                return JSON.parse(JSON.stringify( this.form ))
@@ -496,8 +504,22 @@
             },
 
             returnJoin(errors){
-                this.errors = errors
-                this.showJoin = true;
+                /*this.errors = errors
+                this.showJoin = true;*/
+                this.isJoin = true;
+                this.form.guid = errors['guid'][0];
+
+                this.clearForm();
+                this.boardOnFocus();
+            },
+
+
+            isJoinOnChange(){
+                if( this.isJoin == false ){
+                    delete this.form.guid //delete guid property from form;
+                }
+
+                this.boardOnFocus();
             },
 
             toggleModal(header = '', message = ''){
