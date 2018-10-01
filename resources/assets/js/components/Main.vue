@@ -31,7 +31,7 @@
                             </div>
 
                             <div class="form-group" v-if='isJoin'>
-                                <label class="col-md-offset-4 col-md-6"> Proses Join Active : <toggle-button v-model="isJoin" :color="'#2ab27b'" :labels="true" @change='isJoinOnChange' /></label>
+                                <label class="col-md-offset-4 col-md-6"> Proses Join Active : <toggle-button v-model="isJoin" :color="'#2ab27b'" :labels="true" /></label>
                             </div>
 
                             <div class="form-group" v-if="config.isAutolinezero" >
@@ -250,7 +250,11 @@
 
             clonedResponseData(newVal, oldVal ){
                 this.oldResponseData = oldVal;
-            }
+            },
+
+            isJoin(newVal, oldVal){
+                this.isJoinOnChange();
+            },
         },
 
         computed:{

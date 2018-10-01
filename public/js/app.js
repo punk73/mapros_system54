@@ -14780,6 +14780,9 @@ var axios = __webpack_require__(8);
 
         clonedResponseData: function clonedResponseData(newVal, oldVal) {
             this.oldResponseData = oldVal;
+        },
+        isJoin: function isJoin(newVal, oldVal) {
+            this.isJoinOnChange();
         }
     },
 
@@ -45769,9 +45772,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "color": '#2ab27b',
       "labels": true
-    },
-    on: {
-      "change": _vm.isJoinOnChange
     },
     model: {
       value: (_vm.isJoin),
