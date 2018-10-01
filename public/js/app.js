@@ -14065,15 +14065,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -14271,6 +14262,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__FormDebug__ = __webpack_require__(62);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__FormDebug___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__FormDebug__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -14930,11 +14930,15 @@ var axios = __webpack_require__(8);
             }
         },
         boardOnFocus: function boardOnFocus() {
-            var boardInput = document.getElementById('board_id');
-            boardInput.focus();
-            if (this.config.isGenerateFile && this.config.isAutolinezero) {
+
+            if (this.config.isGenerateFile && this.config.isAutolinezero && this.serialAutolinezero == '') {
                 var serialAutolinezero = document.getElementById('serialAutolinezero');
                 serialAutolinezero.focus();
+            }
+
+            if (this.form.board_id == '') {
+                var boardInput = document.getElementById('board_id');
+                boardInput.focus();
             }
             // console.log('board on focus triggered')
         },
@@ -14991,7 +14995,8 @@ var axios = __webpack_require__(8);
         clearForm: function clearForm() {
             this.form.board_id = '';
             if (this.config.isGenerateFile) {
-                this.serialAutolinezero = '';
+                // kalau IN jangan dulu dihapus;
+                if (!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
             }
         },
         generateFile: function generateFile() {
@@ -45969,6 +45974,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-control",
     attrs: {
       "type": "text",
+      "placeholder": "contoh : data.txt",
       "required": "",
       "autofocus": ""
     },
@@ -45982,6 +45988,28 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   })])]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "id": "isAutolinezero",
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.isAutolinezero),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isAutolinezero", $$v)
+      },
+      expression: "config.isAutolinezero"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isAutolinezero"
+    }
+  }, [_vm._v(" Show Serial Set Field  ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
@@ -46467,28 +46495,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "config": _vm.config
     }
   }), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
-  }, [_c('div', {
-    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
-  }, [_c('toggle-button', {
-    attrs: {
-      "id": "isAutolinezero",
-      "sync": true,
-      "color": '#2ab27b',
-      "labels": true
-    },
-    model: {
-      value: (_vm.config.isAutolinezero),
-      callback: function($$v) {
-        _vm.$set(_vm.config, "isAutolinezero", $$v)
-      },
-      expression: "config.isAutolinezero"
-    }
-  }), _vm._v(" "), _c('label', {
-    attrs: {
-      "for": "isAutolinezero"
-    }
-  }, [_vm._v(" Show Serial Set Field  ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"

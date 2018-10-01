@@ -402,11 +402,15 @@
             },
 
             boardOnFocus(){
-                let boardInput = document.getElementById('board_id');
-                boardInput.focus()
-                if(this.config.isGenerateFile && this.config.isAutolinezero ){
+
+                if(this.config.isGenerateFile && this.config.isAutolinezero && this.serialAutolinezero == '' ){
                     let serialAutolinezero = document.getElementById('serialAutolinezero');
                     serialAutolinezero.focus();
+                }
+
+                if(this.form.board_id == ''){
+                    let boardInput = document.getElementById('board_id');
+                    boardInput.focus()
                 }
                 // console.log('board on focus triggered')
             },
@@ -466,7 +470,8 @@
             clearForm(){
                 this.form.board_id = '';
                 if(this.config.isGenerateFile) {
-                    this.serialAutolinezero = '';
+                    // kalau IN jangan dulu dihapus;
+                    if(!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
                 }
             },
 
