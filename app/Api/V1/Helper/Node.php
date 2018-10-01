@@ -70,7 +70,7 @@ class Node
 		if (!$debug)
 		{
 			$this->parameter = $parameter;
-
+			//get first 5 or 11 character of this dummy id / parameter['board_id']
 			$this->initModelCode(); //dependence to $this->parameter;
 			// setup model (board, ticket, or master)
 			$this->setModel($parameter);
@@ -512,6 +512,25 @@ class Node
 		}
 	}
 
+
+	/*
+		@void, to verify if the parameter modelname sent by front end is correct by comparing the data with previous children board;
+	*/
+	public function verifyParameterModelname(){
+		$boardChildren = $this->getBoardChildren(); //ambil board anak;
+		
+		if( $boardChildren !== null ){
+			// compare antara pengaturan dengan board anak;
+			if( $boardChildren['modelname'] != $this->parameter['modelname'] ){
+				// get the board children to compare the model
+				throw new StoreResourceFailedException($this->confirmation_view_error, [
+					'node' => json_decode($this, true ),
+					'server-modelname' => $boardChildren['modelname']
+				]);
+			}
+		}
+	}
+
 	// only work for board because only 
 	public function hasTicketSibling(){
 		if( $this->getModelType() == 'board' ){
@@ -550,6 +569,26 @@ class Node
 			return Board::where('guid_ticket', $this->getGuidTicket() )
 			->where('scanner_id', $this->scanner_id )
 			->exists();
+		}		
+
+	}
+
+	public function getBoardChildren(){
+		if($this->getModelType() == 'board' ){
+			return null; // required due to caller if statement
+		}
+
+		if($this->getModelType() == 'master'){
+
+			$board = Board::where('guid_master', $this->getGuidMaster() )
+			->first();
+
+			return $board;
+		}
+
+		if($this->getModelType() == 'ticket'){
+			return Board::where('guid_ticket', $this->getGuidTicket() )
+			->first();
 		}		
 
 	}
@@ -808,12 +847,18 @@ class Node
 				# code... 
 				$model = $model->where('code', $board_id );
 			}else {
+
 				// kalau belum, kita setup model based on user parameter;
 				// ini untuk meng akomodir kebutuhan scan panel sebelumn proses join dengan board;
+				// detect model from dummy card;
+				$this->verifyParameterModelname();	
+
 				$model = $model->where('name', $this->parameter['modelname'] );
 			}
 
 		} else if($this->getModelType() == 'master') {
+			// detect model from dummy card;
+			$this->verifyParameterModelname();
 
 			$model = $model->where('name', $this->parameter['modelname'] );
 		}else{
