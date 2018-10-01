@@ -407,7 +407,7 @@ class MainController extends Controller
 			// we need to count how long it is between now and step->created_at
 			if( !$this->isMoreThanStdTime($currentStep)){
 				// belum mencapai std time
-				throw new StoreResourceFailedException("DATA SUDAH '".$node->getDummyId()."' SCAN IN! AND HARUS TUNGGU ". $currentStep['std_time']." DETIK", [
+				throw new StoreResourceFailedException("DATA {$node->getDummyId()} SUDAH SCAN IN! AND HARUS TUNGGU ". $currentStep['std_time']." DETIK", [
 					'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
 				]);
 			}
