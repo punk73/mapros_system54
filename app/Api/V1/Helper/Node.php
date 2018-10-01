@@ -822,7 +822,7 @@ class Node
 			}
 
 			// kalau sudah generated, dan proses nya adalah proses join, serta sudah ada proses In ;
-			if ($this->isGuidGenerated() && $this->isJoin() && $this->isIn() && $this->isSettingContainBoard() ) {
+			/*if ($this->isGuidGenerated() && $this->isJoin() && $this->isIn() && $this->isSettingContainBoard() ) {
 				// ambil dulu modelnya dari table board, kemudian pass hasilnya kesini;
 				$boardPanel = Board::select([
 					'board_id'
@@ -846,15 +846,17 @@ class Node
 				$board_id = substr($boardPanel['board_id'], 0, strlen( $this->getModelCode() ) );
 				# code... 
 				$model = $model->where('code', $board_id );
+
 			}else {
 
-				// kalau belum, kita setup model based on user parameter;
-				// ini untuk meng akomodir kebutuhan scan panel sebelumn proses join dengan board;
-				// detect model from dummy card;
-				$this->verifyParameterModelname();	
+			}*/
+			
+			// kalau belum, kita setup model based on user parameter;
+			// ini untuk meng akomodir kebutuhan scan panel sebelumn proses join dengan board;
+			// detect model from dummy card;
+			$this->verifyParameterModelname();	
 
-				$model = $model->where('name', $this->parameter['modelname'] );
-			}
+			$model = $model->where('name', $this->parameter['modelname'] );
 
 		} else if($this->getModelType() == 'master') {
 			// detect model from dummy card;
@@ -870,7 +872,8 @@ class Node
 
 		if ($model == null) {
 			throw new StoreResourceFailedException("ANDA SCAN '{$board_id}'. PENGATURAN DATA DENGAN NAMA MODEL '{$this->parameter['modelname']}' TIDAK DITEMUKAN DI BOARD ID GENERATOR SYSTEM! PASTIKAN CURRENT MODEL CONFIG BENAR!", [
-				'node' => json_decode($this, true )
+				'node' => json_decode($this, true ),
+				'model_type' => $board_id
 			]);
 
 		}
