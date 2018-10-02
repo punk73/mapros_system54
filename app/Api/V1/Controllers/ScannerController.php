@@ -31,4 +31,23 @@ class ScannerController extends Controller
 	public function __construct(){
 		$this->model = new Scanner;
 	}
+
+	public function all(Request $request ){
+		// to handle ip address selectbox;
+		$result = $this->model
+		->select([
+			'ip_address',
+			'lineprocesses.name'
+		])
+		->leftJoin('lineprocesses', 'lineprocesses.id', '=', 'Scanners.lineprocess_id' );
+
+		if( isset( $request->q ) ){
+			$q = $request->q;
+			$result = $result->where('lineprocesses.name', 'like', $q.'%' )
+							->orWhere('ip_address', 'like', $q.'%' );
+		}
+
+		return $result = $result->get();
+
+	}
 }

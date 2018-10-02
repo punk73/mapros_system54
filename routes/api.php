@@ -106,6 +106,8 @@ $api->version('v1', function (Router $api) {
 
         $api->group(['prefix' => 'scanners'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\ScannerController@index' );
+            $api->get('/all', 'App\\Api\\V1\\Controllers\\ScannerController@all' );
+
             $api->post('/', 'App\\Api\\V1\\Controllers\\ScannerController@store' );
             $api->put('/{id}', 'App\\Api\\V1\\Controllers\\ScannerController@update' );
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\ScannerController@delete' );
