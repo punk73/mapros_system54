@@ -34,6 +34,8 @@ class ScannerController extends Controller
 
 	public function all(Request $request ){
 		// to handle ip address selectbox;
+		$limit = (isset($request->limit)) ? $request->limit : 25;
+
 		$result = $this->model
 		->select([
 			'ip_address',
@@ -47,7 +49,7 @@ class ScannerController extends Controller
 							->orWhere('ip_address', 'like', $q.'%' );
 		}
 
-		return $result = $result->get();
+		return $result = $result->paginate($limit);
 
 	}
 }

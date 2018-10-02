@@ -16,11 +16,18 @@
                             </div>
 
 							<div class="form-group">
-                                <label for="nik" class="col-md-3 control-label">IP Address</label>
+                                <label for="ip_address" class="col-md-3 control-label">IP Address</label>
                                 <div class="col-md-9">
-                                    <!-- <input  type="checkbox" v-model='config.ip' class="form-control" required autofocus> -->
-                                    <v-select v-model='config.ip' :options="ipAddresses" @search="onSearch" />
-
+                                    <v-select 
+                                        v-model='config.ip' 
+                                        label="ip_address" 
+                                        :options="options"
+                                        index="ip_address"
+                                        @search="onSearch" >
+                                        <template slot="option" slot-scope="option">
+                                            {{ option.ip_address }} - {{ option.name }}
+                                        </template>
+                                    </v-select>
                                 </div>
                             </div>
 
@@ -146,13 +153,10 @@
                     },
                 },
 
-                ipAddresses: [],
+                options: [],
+
 			}
 		},
-
-        computed: {
-           
-        },
 
 		components : {
 			ToggleButton, GenerateFileConfig, Alert, InputNumber, vSelect
@@ -179,17 +183,29 @@
 
             onSearch(search, loading ){
                 loading(true);
-                console.log(search)
                 this.search(loading, search, this );
             },
 
             search: _.debounce((loading, search, vm) => {
-              fetch(
-                `https://api.github.com/search/repositories?q=${escape(search)}`
-              ).then(res => {
-                res.json().then(json => (vm.options = json.items));
+                var hostname = window.location.hostname;
+                const url = 'api/scanners/all';
+
+              axios.get(url, {
+                params : {
+                    q : search
+                }
+              })
+              .then(res => {
+                // res.json().then(json => (vm.options = json.items));
+                let response = res.data;
+                let data = response.data;
+                vm.options = data;
+                
+                console.log(data)
+
                 loading(false);
               });
+
             }, 350),
 
 			getConfig(){
