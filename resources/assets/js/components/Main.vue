@@ -45,7 +45,7 @@
                             <div v-if="config.showSolder" class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <!-- <input type="checkbox" id="checkbox" v-model="form.is_solder"> -->
-                                    <toggle-button v-model="form.is_solder" :color="'#2ab27b'" :labels="true"/>
+                                    <toggle-button v-model="form.is_solder" :color="'#2ab27b'" :sync='true' :labels="true"/>
                                     <label for="checkbox"> SOLDER </label>
                                 </div>
                             </div>  
@@ -290,6 +290,14 @@
 
         methods : {
             onSubmit(){
+
+                if(this.config.showSolder){
+                    if(this.form.board_id == this.config.toggleSolderMode ){
+                        this.form.is_solder = !this.form.is_solder;
+                        this.clearForm();
+                        return;
+                    }
+                }
 
                 let data = this.form;
                 // console.log(data);

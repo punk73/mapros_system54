@@ -14071,8 +14071,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
-//
-//
 
 
 
@@ -14839,6 +14837,14 @@ var axios = __webpack_require__(8);
     methods: {
         onSubmit: function onSubmit() {
             var _this = this;
+
+            if (this.config.showSolder) {
+                if (this.form.board_id == this.config.toggleSolderMode) {
+                    this.form.is_solder = !this.form.is_solder;
+                    this.clearForm();
+                    return;
+                }
+            }
 
             var data = this.form;
             // console.log(data);
@@ -45836,6 +45842,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('toggle-button', {
     attrs: {
       "color": '#2ab27b',
+      "sync": true,
       "labels": true
     },
     model: {
