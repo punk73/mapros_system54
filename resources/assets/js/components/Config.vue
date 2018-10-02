@@ -46,6 +46,14 @@
                                 </div>
                             </div>
 
+                            <div class="form-group" v-if="config.showSolder" >
+                                <label for="uri" class="col-md-3 control-label">toggle solder mode code</label>
+                                <div class="col-md-9">
+                                    <input type="input" class=" form-control " placeholder="solder_active" v-model="config.toggleSolderMode" required autofocus>
+                                </div>
+                                
+                            </div>
+
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <!-- <input type="checkbox" id="isGenerateFile" v-model="config.isGenerateFile"> -->
@@ -110,6 +118,12 @@
 				config : {
 					model:'',
 					ip:'',
+                    
+                    showSolder:false,
+                    toggleSolderMode:'',
+
+                    jumlahJoin:1,
+
 					showConfig: false,
 					isGenerateFile : false,
 					isSendAjax : false,

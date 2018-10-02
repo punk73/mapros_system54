@@ -14065,6 +14065,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -14077,6 +14085,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			config: {
 				model: '',
 				ip: '',
+
+				showSolder: false,
+				toggleSolderMode: '',
+
+				jumlahJoin: 1,
+
 				showConfig: false,
 				isGenerateFile: false,
 				isSendAjax: false,
@@ -46468,7 +46482,39 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "for": "showSolder"
     }
-  }, [_vm._v(" show solder options ")])], 1)]), _vm._v(" "), _c('div', {
+  }, [_vm._v(" show solder options ")])], 1)]), _vm._v(" "), (_vm.config.showSolder) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label",
+    attrs: {
+      "for": "uri"
+    }
+  }, [_vm._v("toggle solder mode code")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.toggleSolderMode),
+      expression: "config.toggleSolderMode"
+    }],
+    staticClass: " form-control ",
+    attrs: {
+      "type": "input",
+      "placeholder": "solder_active",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.config.toggleSolderMode)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.config, "toggleSolderMode", $event.target.value)
+      }
+    }
+  })])]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
