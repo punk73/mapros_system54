@@ -18,7 +18,9 @@
 							<div class="form-group">
                                 <label for="nik" class="col-md-3 control-label">IP Address</label>
                                 <div class="col-md-9">
-                                    <input  type="text" v-model='config.ip' class="form-control" required autofocus>
+                                    <!-- <input  type="checkbox" v-model='config.ip' class="form-control" required autofocus> -->
+                                    <v-select v-model='config.ip' :options="ipAddresses" @search="onSearch" />
+
                                 </div>
                             </div>
 
@@ -108,6 +110,9 @@
     import GenerateFileConfig from './GenerateFileConfig';
     import Alert from './Alert';
     import InputNumber from '@chenfengyuan/vue-number-input';
+    import vSelect from 'vue-select';
+    import _ from 'lodash';
+    import axios from 'axios';
 
 	export default {
 
@@ -140,6 +145,8 @@
                         enter : '\r\n',
                     },
                 },
+
+                ipAddresses: [],
 			}
 		},
 
@@ -148,11 +155,12 @@
         },
 
 		components : {
-			ToggleButton, GenerateFileConfig, Alert, InputNumber
+			ToggleButton, GenerateFileConfig, Alert, InputNumber, vSelect
 		},
 
 		mounted(){
 			this.getConfig();
+
 		},
 
 		methods: {
@@ -168,6 +176,21 @@
 				localStorage.setItem('config', JSON.stringify(this.config) )
 				this.$router.push('/');
 			},
+
+            onSearch(search, loading ){
+                loading(true);
+                console.log(search)
+                this.search(loading, search, this );
+            },
+
+            search: _.debounce((loading, search, vm) => {
+              fetch(
+                `https://api.github.com/search/repositories?q=${escape(search)}`
+              ).then(res => {
+                res.json().then(json => (vm.options = json.items));
+                loading(false);
+              });
+            }, 350),
 
 			getConfig(){
 				let currentConfig = localStorage.getItem('config')
