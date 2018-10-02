@@ -50,6 +50,13 @@
                                 </div>
                             </div>  
 
+                            <div v-if="config.showNgoption" class="form-group">
+                                <div class="col-md-6 col-md-offset-4">
+                                    <toggle-button v-model="isNG" :color="'#960a0a'" :sync='true' :labels="true"/>
+                                    <label for="checkbox"> NG </label>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <div class="col-md-3 col-md-offset-4">
                                     <loading v-if='isLoading' />
@@ -100,7 +107,10 @@
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button v-if='!config.isShowDeleteButton' type="submit" class="btn btn-success" >
+                                    <button 
+                                        v-if='!config.isShowDeleteButton' 
+                                        type="submit" 
+                                        :class="{btn:true, 'btn-success': !isNG, 'btn-danger':isNG }" >
                                         Submit <i class="fa fa-check float-right"></i>
                                     </button>
 
@@ -161,6 +171,7 @@
                     is_solder:false,
                 },
 
+                isNG : false,
                 isJoin : false,
 
                 oldForm : {
@@ -218,6 +229,8 @@
                     isShowDeleteButton : false,
                     isAutolinezero : false,
                     uri : '',
+                    showNgoption : false,
+                    toggleNgMode : '',
                     jumlahJoin:1, //default value of jumlah join
                 },
 
@@ -291,13 +304,9 @@
         methods : {
             onSubmit(){
 
-                if(this.config.showSolder){
-                    if(this.form.board_id == this.config.toggleSolderMode ){
-                        this.form.is_solder = !this.form.is_solder;
-                        this.clearForm();
-                        return;
-                    }
-                }
+                if( this.toggleMode() == 'break' ){
+                    return;
+                };
 
                 let data = this.form;
                 // console.log(data);
@@ -350,6 +359,24 @@
 
                         this.handleError(message, data );
                     })
+            },
+
+            toggleMode(){
+                if(this.config.showSolder){
+                    if(this.form.board_id == this.config.toggleSolderMode ){
+                        this.form.is_solder = !this.form.is_solder;
+                        this.clearForm();
+                    }
+                }
+
+                if(this.config.showNgoption){
+                    if(this.form.board_id == this.config.toggleNgMode ){
+                        this.isNG = !this.isNG;
+                        this.clearForm();
+                    }
+                }
+
+                return 'break';
             },
 
             filterBoard(evt){

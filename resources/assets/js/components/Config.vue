@@ -58,7 +58,6 @@
                                 <div class="col-md-9">
                                     <input type="input" class=" form-control " placeholder="solder_active" v-model="config.toggleSolderMode" required autofocus>
                                 </div>
-                                
                             </div>
 
                             <div class="form-group">
@@ -96,6 +95,20 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <toggle-button v-model="config.showNgoption" :sync='true' :color="'#960a0a'" :labels="true"/>
+                                    <label for="showNgoption"> show NG button </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="config.showNgoption" >
+                                <label for="uri" class="col-md-3 control-label"> NG mode code</label>
+                                <div class="col-md-9">
+                                    <input type="input" class=" form-control " placeholder="ng_active" v-model="config.toggleNgMode" required autofocus>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-9 col-md-offset-3">
                                     <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
@@ -130,7 +143,7 @@
 					ip:'',
                     
                     showSolder:false,
-                    toggleSolderMode:'',
+                    toggleSolderMode:'toggleSolderMode',
 
                     jumlahJoin:1,
 
@@ -142,6 +155,9 @@
 					generatedFileName : 'something.txt',
 					uri : '',
                     isDebug : false,
+
+                    showNgoption: false,
+                    toggleNgMode: 'toggleNgMode',
 				},
 
                 debug : {

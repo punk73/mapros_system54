@@ -31199,6 +31199,19 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -31216,7 +31229,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				ip: '',
 
 				showSolder: false,
-				toggleSolderMode: '',
+				toggleSolderMode: 'toggleSolderMode',
 
 				jumlahJoin: 1,
 
@@ -31227,7 +31240,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				isAutolinezero: false,
 				generatedFileName: 'something.txt',
 				uri: '',
-				isDebug: false
+				isDebug: false,
+
+				showNgoption: false,
+				toggleNgMode: 'toggleNgMode'
 			},
 
 			debug: {
@@ -31841,6 +31857,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(7);
 
@@ -31861,6 +31887,7 @@ var axios = __webpack_require__(7);
                 is_solder: false
             },
 
+            isNG: false,
             isJoin: false,
 
             oldForm: {
@@ -31918,6 +31945,8 @@ var axios = __webpack_require__(7);
                 isShowDeleteButton: false,
                 isAutolinezero: false,
                 uri: '',
+                showNgoption: false,
+                toggleNgMode: '',
                 jumlahJoin: 1 //default value of jumlah join
             },
 
@@ -31996,13 +32025,9 @@ var axios = __webpack_require__(7);
         onSubmit: function onSubmit() {
             var _this = this;
 
-            if (this.config.showSolder) {
-                if (this.form.board_id == this.config.toggleSolderMode) {
-                    this.form.is_solder = !this.form.is_solder;
-                    this.clearForm();
-                    return;
-                }
-            }
+            if (this.toggleMode() == 'break') {
+                return;
+            };
 
             var data = this.form;
             // console.log(data);
@@ -32053,6 +32078,23 @@ var axios = __webpack_require__(7);
 
                 _this.handleError(message, data);
             });
+        },
+        toggleMode: function toggleMode() {
+            if (this.config.showSolder) {
+                if (this.form.board_id == this.config.toggleSolderMode) {
+                    this.form.is_solder = !this.form.is_solder;
+                    this.clearForm();
+                }
+            }
+
+            if (this.config.showNgoption) {
+                if (this.form.board_id == this.config.toggleNgMode) {
+                    this.isNG = !this.isNG;
+                    this.clearForm();
+                }
+            }
+
+            return 'break';
         },
         filterBoard: function filterBoard(evt) {
             var board_id = this.form.board_id;
@@ -45901,7 +45943,28 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "for": "checkbox"
     }
-  }, [_vm._v(" SOLDER ")])], 1)]) : _vm._e(), _vm._v(" "), _c('div', {
+  }, [_vm._v(" SOLDER ")])], 1)]) : _vm._e(), _vm._v(" "), (_vm.config.showNgoption) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: "col-md-6 col-md-offset-4"
+  }, [_c('toggle-button', {
+    attrs: {
+      "color": '#960a0a',
+      "sync": true,
+      "labels": true
+    },
+    model: {
+      value: (_vm.isNG),
+      callback: function($$v) {
+        _vm.isNG = $$v
+      },
+      expression: "isNG"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "checkbox"
+    }
+  }, [_vm._v(" NG ")])], 1)]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-4"
@@ -45947,7 +46010,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "col-md-6 col-md-offset-4"
   }, [(!_vm.config.isShowDeleteButton) ? _c('button', {
-    staticClass: "btn btn-success",
+    class: {
+      btn: true, 'btn-success': !_vm.isNG, 'btn-danger': _vm.isNG
+    },
     attrs: {
       "type": "submit"
     }
@@ -46667,6 +46732,59 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "for": "isShowDeleteButton"
     }
   }, [_vm._v(" show delete button ")])], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#960a0a',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.showNgoption),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "showNgoption", $$v)
+      },
+      expression: "config.showNgoption"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "showNgoption"
+    }
+  }, [_vm._v(" show NG button ")])], 1)]), _vm._v(" "), (_vm.config.showNgoption) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label",
+    attrs: {
+      "for": "uri"
+    }
+  }, [_vm._v(" NG mode code")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.toggleNgMode),
+      expression: "config.toggleNgMode"
+    }],
+    staticClass: " form-control ",
+    attrs: {
+      "type": "input",
+      "placeholder": "ng_active",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.config.toggleNgMode)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.config, "toggleNgMode", $event.target.value)
+      }
+    }
+  })])]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"
