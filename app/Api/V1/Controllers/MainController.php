@@ -326,7 +326,7 @@ class MainController extends Controller
 					}
 				}
 
-				if($node->getJudge() == 'OK'){
+				if( ($node->getJudge() == 'OK') || ($node->getJudge() == 'NG') ){
 					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT DI PROSES INI!", [
 						'node' => json_decode( $node, true ),
 					]);
