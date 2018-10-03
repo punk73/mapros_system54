@@ -27,6 +27,7 @@ class MainController extends Controller
 		'guid',
 		'is_solder',
 		'modelname',
+		'status', // for OK / NG by QA
 	];
 
 	protected $returnValue = [

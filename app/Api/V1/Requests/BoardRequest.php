@@ -13,6 +13,7 @@ class BoardRequest extends FormRequest
             'board_id' => 'required',
             'nik' => 'required',
             'modelname' => 'required',
+            'status' => 'required | in:OK,NG', //'OK' or 'NG only'
             
         ];
     }
