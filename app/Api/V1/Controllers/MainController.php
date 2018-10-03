@@ -56,12 +56,13 @@ class MainController extends Controller
 	* $currentStep must contains created_at && std_time
 	*
 	*/
-	private function isMoreThanStdTime($currentStep){
+	private function isMoreThanStdTime($currentStep, $lineprocess ){
 		$now = Carbon::now();
 		$lastScanned = Carbon::parse($currentStep['created_at']);
 
 		// it'll return true if timeDiff is greater than std_time;
-		return ( $now->diffInSeconds($lastScanned) > $currentStep['std_time'] );
+		$result = ( $now->diffInSeconds($lastScanned) > $lineprocess['std_time'])?true:$now->diffInSeconds($lastScanned);
+		return $result;
 	}
 
 	public function store(BoardRequest $request ){
@@ -385,7 +386,6 @@ class MainController extends Controller
 		// return $node->getStatus();
 		if($node->getStatus() == 'IN'){
 
-			$currentStep = $node->getStep();
 			// if( ($node->is_solder == true) && ($node->getJudge() == 'SOLDER' ) ){
 			// 	throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
 			// 		'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
@@ -409,12 +409,26 @@ class MainController extends Controller
 				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT, LANJUTKAN PROSES BERIKUTNYA.",[
 					'message' => 'NEXT PROSES'
 				]);
-			}	
+			}
+			
+			$currentStep = $node->getStep();
+			$lineprocess = $node->getLineprocess();
+			$isMoreThanStdTime = $this->isMoreThanStdTime($currentStep, $lineprocess );
+			$selisih = ( (int) $lineprocess['std_time'] - (int) $isMoreThanStdTime);
+			
+			/*return [
+				'currentStep' => $currentStep,
+				'lineprocess' => $lineprocess,
+				'isMoreThanStdTime' => $isMoreThanStdTime,
+				'selisih' => $selisih,
+			];*/
+
 			// we need to count how long it is between now and step->created_at
-			if( !$this->isMoreThanStdTime($currentStep)){
+			if( $isMoreThanStdTime !== true ){
+				
 				// belum mencapai std time
-				throw new StoreResourceFailedException("DATA {$node->getDummyId()} SUDAH SCAN IN! AND HARUS TUNGGU ". $currentStep['std_time']." DETIK", [
-					'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
+				throw new StoreResourceFailedException("DATA {$node->getDummyId()} SUDAH SCAN IN ! COBA {$selisih} DETIK LAGI", [
+					'message' => 'you scan within std time '. $lineprocess['std_time']. ' try it again later'
 				]);
 			}
 
