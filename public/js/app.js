@@ -31884,7 +31884,8 @@ var axios = __webpack_require__(7);
                 board_id: '',
                 nik: '',
                 modelname: '',
-                is_solder: false
+                is_solder: false,
+                judge: 'OK' //default nya OK
             },
 
             isNG: false,
@@ -31982,6 +31983,15 @@ var axios = __webpack_require__(7);
         },
         isJoin: function isJoin(newVal, oldVal) {
             this.isJoinOnChange();
+        },
+        isNG: function isNG(_isNG, oldVal) {
+            var judge;
+            if (_isNG) {
+                judge = 'NG';
+            } else {
+                judge = 'OK';
+            }
+            this.form.judge = judge;
         }
     },
 
@@ -32084,6 +32094,7 @@ var axios = __webpack_require__(7);
                 if (this.form.board_id == this.config.toggleSolderMode) {
                     this.form.is_solder = !this.form.is_solder;
                     this.clearForm();
+                    return 'break';
                 }
             }
 
@@ -32091,10 +32102,9 @@ var axios = __webpack_require__(7);
                 if (this.form.board_id == this.config.toggleNgMode) {
                     this.isNG = !this.isNG;
                     this.clearForm();
+                    return 'break';
                 }
             }
-
-            return 'break';
         },
         filterBoard: function filterBoard(evt) {
             var board_id = this.form.board_id;
