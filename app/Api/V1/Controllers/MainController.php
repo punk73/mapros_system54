@@ -177,7 +177,7 @@ class MainController extends Controller
 			if ($node->isFirstSequence() ) {
 				// langsung input;
 				$node->setStatus('IN');
-				$node->setJudge($this->judge);
+				$node->setJudge('OK'); //kalau IN mah ga bisa NG
 				if(!$node->save()){
 					// throw new StoreResourceFailedException("Error Saving Progress", [
 					throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
@@ -205,7 +205,7 @@ class MainController extends Controller
 					]);
 				}
 
-				$judgement = $this->judge;
+				$judgement = 'OK'; //kalau IN mah ga bisa NG;
 				// we not sure if it calling prev() twice or not, hopefully it's not;
 				if($prevNode->getJudge() == 'NG'){                    
 					// kalau dia NG
