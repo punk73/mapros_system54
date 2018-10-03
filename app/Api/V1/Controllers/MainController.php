@@ -27,8 +27,10 @@ class MainController extends Controller
 		'guid',
 		'is_solder',
 		'modelname',
-		'status', // for OK / NG by QA
+		'judge',
 	];
+
+	protected $judge; // OK/NG only except from SOLDER;
 
 	protected $returnValue = [
 		'success' => true,
@@ -39,7 +41,8 @@ class MainController extends Controller
 
 	private function getParameter (BoardRequest $request){
 		$result = $request->only($this->allowedParameter);
-
+		// set judge based on user parameter on front end;
+		$this->judge = $request->judge;
 		// setup default value for ip 
 		$result['ip'] = (!isset($result['ip'] )) ? $request->ip() : $request->ip ;
 		// setup default value for is_solder is false;
@@ -174,7 +177,7 @@ class MainController extends Controller
 			if ($node->isFirstSequence() ) {
 				// langsung input;
 				$node->setStatus('IN');
-				$node->setJudge('OK');
+				$node->setJudge($this->judge);
 				if(!$node->save()){
 					// throw new StoreResourceFailedException("Error Saving Progress", [
 					throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
@@ -330,7 +333,7 @@ class MainController extends Controller
 				// kalau status skrg out & judge solder, itu artinya blm scan in proses terkini;
 				if($node->getJudge() == 'SOLDER'){
 					$node->setStatus('IN');
-					$node->setJudge('OK');
+					$node->setJudge($this->judge);
 					if(!$node->save()){
 						// throw new StoreResourceFailedException("Error Saving Progress", [
 						throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [	//Ario 20180915
@@ -443,7 +446,7 @@ class MainController extends Controller
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){
 
 			$node->setStatus('IN');
-			$node->setJudge('OK');
+			$node->setJudge($this->judge);
 			if(!$node->save()){
 				// throw new StoreResourceFailedException("Error Saving Progress", [
 				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
@@ -473,7 +476,7 @@ class MainController extends Controller
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 
 			$node->setStatus('IN');
-			$node->setJudge('OK');
+			$node->setJudge($this->judge);
 			if(!$node->save()){
 				// throw new StoreResourceFailedException("Error Saving Progress", [
 				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	

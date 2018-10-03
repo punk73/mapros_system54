@@ -169,7 +169,7 @@
                     nik: '',
                     modelname:'',
                     is_solder:false,
-                    status:'OK',
+                    judge : 'OK', //default nya OK
                 },
 
                 isNG : false,
@@ -270,15 +270,15 @@
                 this.isJoinOnChange();
             },
 
-            isNG(newVal, oldVal){
-
-                if(newVal == true )
-                {
-                    this.form.status = 'NG';
+            isNG(isNG, oldVal){
+                var judge;
+                if(isNG){
+                    judge = 'NG';
                 }else{
-                    this.form.status = 'OK';
-                } 
-            },
+                    judge = 'OK';
+                }
+                this.form.judge = judge;
+            }
         },
 
         computed:{

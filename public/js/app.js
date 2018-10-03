@@ -31885,7 +31885,7 @@ var axios = __webpack_require__(7);
                 nik: '',
                 modelname: '',
                 is_solder: false,
-                status: 'OK'
+                judge: 'OK' //default nya OK
             },
 
             isNG: false,
@@ -31984,13 +31984,14 @@ var axios = __webpack_require__(7);
         isJoin: function isJoin(newVal, oldVal) {
             this.isJoinOnChange();
         },
-        isNG: function isNG(newVal, oldVal) {
-
-            if (newVal == true) {
-                this.form.status = 'NG';
+        isNG: function isNG(_isNG, oldVal) {
+            var judge;
+            if (_isNG) {
+                judge = 'NG';
             } else {
-                this.form.status = 'OK';
+                judge = 'OK';
             }
+            this.form.judge = judge;
         }
     },
 
