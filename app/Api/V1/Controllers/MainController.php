@@ -205,16 +205,18 @@ class MainController extends Controller
 					]);
 				}
 
-				$judgement = 'OK';
+				$judgement = $this->judge;
 				// we not sure if it calling prev() twice or not, hopefully it's not;
 				if($prevNode->getJudge() == 'NG'){                    
 					// kalau dia NG
 					// cek di table repair, ada engga datanya.
 					if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
 						// kalau ga ada, maka throw error data is NG in prev stages! repair it first!
-						throw new StoreResourceFailedException("DATA ". $prevNode->getDummyId() ." ERROR DI PROSES SEBELUMNYA!", [
-							'prevnode' => json_decode( $prevNode, true),
-							'node'     => json_decode( $prevNode->next(), true) 
+						$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+						throw new StoreResourceFailedException("DATA ". $prevNode->getDummyId() ." ERROR DI PROSES SEBELUMNYA ( {$step} ) & BELUM DIPERBAIKI!", [
+							'message' => 'perbaiki dengan cara input data repair oleh teknisi',
+							// 'prevnode' => json_decode( $prevNode, true),
+							// 'node'     => json_decode( $prevNode->next(), true) 
 						]);
 					}else{
 						$judgement = 'REWORK';
@@ -420,8 +422,9 @@ class MainController extends Controller
 			// save
 			$node->setStatus('OUT');
 			// it's mean to get current in process judgement, so when it's rework; it'll get rework
-
-			$node->setJudge($node->getJudge());
+			// also, if its OK, it's get the users judge parameter;
+			$judge = ($node->getJudge() == 'OK')? $this->judge : $node->getJudge();
+			$node->setJudge($judge);
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [
 					'message' => 'something went wrong with save method on model! ask your IT member'
