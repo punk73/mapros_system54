@@ -32216,10 +32216,15 @@ var axios = __webpack_require__(7);
             } else {
                 this.changesColor('green');
             }
+
+            if (message.includes('NG')) {
+                this.changesColor('red');
+            }
             // this.toggleAlert('Success', message );
             // this.showAlert = true;
             this.clearForm();
             this.boardOnFocus();
+            this.isNG = false; //turn off toggle mode
             // set focus
         },
         clearForm: function clearForm() {

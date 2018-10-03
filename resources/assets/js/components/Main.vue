@@ -387,9 +387,7 @@
                         this.clearForm();
                         return 'break';
                     }
-                }
-
-                
+                }    
             },
 
             filterBoard(evt){
@@ -480,8 +478,6 @@
                 this.error = message;
                 this.detailError = message;
 
-                
-
                 if (response.data.node.status == 'IN') { 
                     if( this.config.isSendAjax ){
                         this.sendAjax(this.responseData)    
@@ -508,10 +504,15 @@
                 }else {
                     this.changesColor('green')
                 }
+
+                if(message.includes('NG')){
+                    this.changesColor('red')
+                }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
                 this.clearForm();
                 this.boardOnFocus();
+                this.isNG = false; //turn off toggle mode
                 // set focus
             },
 
