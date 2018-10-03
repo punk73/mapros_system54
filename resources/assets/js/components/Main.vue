@@ -169,6 +169,7 @@
                     nik: '',
                     modelname:'',
                     is_solder:false,
+                    status:'OK',
                 },
 
                 isNG : false,
@@ -268,6 +269,16 @@
             isJoin(newVal, oldVal){
                 this.isJoinOnChange();
             },
+
+            isNG(newVal, oldVal){
+
+                if(newVal == true )
+                {
+                    this.form.status = 'NG';
+                }else{
+                    this.form.status = 'OK';
+                } 
+            },
         },
 
         computed:{
@@ -366,6 +377,7 @@
                     if(this.form.board_id == this.config.toggleSolderMode ){
                         this.form.is_solder = !this.form.is_solder;
                         this.clearForm();
+                        return 'break';
                     }
                 }
 
@@ -373,10 +385,11 @@
                     if(this.form.board_id == this.config.toggleNgMode ){
                         this.isNG = !this.isNG;
                         this.clearForm();
+                        return 'break';
                     }
                 }
 
-                return 'break';
+                
             },
 
             filterBoard(evt){
