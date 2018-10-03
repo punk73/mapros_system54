@@ -10,10 +10,10 @@ class BoardRequest extends FormRequest
     public function rules()
     {
         return [
-            'board_id' => 'required',
-            'nik' => 'required',
+            'board_id'  => 'required',
+            'nik'       => 'required',
             'modelname' => 'required',
-            
+            'judge'     => 'required|in:OK,NG'
         ];
     }
 

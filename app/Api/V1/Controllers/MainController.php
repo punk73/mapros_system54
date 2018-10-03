@@ -27,7 +27,10 @@ class MainController extends Controller
 		'guid',
 		'is_solder',
 		'modelname',
+		'judge',
 	];
+
+	protected $judge; // OK/NG only except from SOLDER;
 
 	protected $returnValue = [
 		'success' => true,
