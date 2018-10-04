@@ -28,6 +28,7 @@ class MainController extends Controller
 		'is_solder',
 		'modelname',
 		'judge',
+		'symptom',
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;
