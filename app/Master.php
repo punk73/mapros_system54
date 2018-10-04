@@ -42,4 +42,8 @@ class Master extends Model
 
 		]);
 	}
+
+	public function symptoms(){
+		return $this->belongsToMany('App\Symptom');
+	}
 }
