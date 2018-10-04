@@ -56,7 +56,8 @@
                                     <label for="checkbox"> NG </label>
                                 </div>
                                 <div class="col-md-4" v-if='isNG'>
-                                    <v-select 
+                                    <v-select
+                                        multiple 
                                         v-model='form.symptom' 
                                         label="category" 
                                         :options="options"
