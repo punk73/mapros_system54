@@ -31714,6 +31714,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Join___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__Join__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_select__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_vue_select__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_lodash__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -31876,6 +31893,8 @@ var axios = __webpack_require__(7);
 
 
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
@@ -31886,9 +31905,11 @@ var axios = __webpack_require__(7);
                 modelname: '',
                 is_solder: false,
                 judge: 'OK' //default nya OK
+                // symptom: '', //default value for symptom is null;
             },
 
             isNG: false,
+            options: [],
             isJoin: false,
 
             oldForm: {
@@ -31990,6 +32011,7 @@ var axios = __webpack_require__(7);
                 judge = 'NG';
             } else {
                 judge = 'OK';
+                delete this.form.symptom;
             }
             this.form.judge = judge;
         }
@@ -32028,7 +32050,7 @@ var axios = __webpack_require__(7);
 
 
     components: {
-        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a, alert: __WEBPACK_IMPORTED_MODULE_3__Alert___default.a, join: __WEBPACK_IMPORTED_MODULE_4__Join___default.a, ToggleButton: __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button___default.a
+        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a, alert: __WEBPACK_IMPORTED_MODULE_3__Alert___default.a, join: __WEBPACK_IMPORTED_MODULE_4__Join___default.a, ToggleButton: __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button___default.a, vSelect: __WEBPACK_IMPORTED_MODULE_6_vue_select___default.a
     },
 
     methods: {
@@ -32115,6 +32137,32 @@ var axios = __webpack_require__(7);
                 this.toggleModal('Information', 'HASIL SCAN MENGANDUNG "&" TOLONG ULANGI!');
             }
         },
+        onSearch: function onSearch(search, loading) {
+            loading(true);
+            this.search(loading, search, this);
+        },
+
+
+        search: __WEBPACK_IMPORTED_MODULE_7_lodash___default.a.debounce(function (loading, search, vm) {
+            var hostname = window.location.hostname;
+            var url = 'api/symptoms/all';
+
+            axios.get(url, {
+                params: {
+                    q: search
+                }
+            }).then(function (res) {
+                // res.json().then(json => (vm.options = json.items));
+                var response = res.data;
+                var data = response.data;
+                vm.options = data;
+
+                console.log(data);
+
+                loading(false);
+            });
+        }, 350),
+
         changesColor: function changesColor(color) {
             var yellow = {
                 backgroundColor: '#e5ff12',
@@ -45961,7 +46009,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v(" SOLDER ")])], 1)]) : _vm._e(), _vm._v(" "), (_vm.config.showNgoption) ? _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
-    staticClass: "col-md-6 col-md-offset-4"
+    staticClass: "col-md-2 col-md-offset-4"
   }, [_c('toggle-button', {
     attrs: {
       "color": '#960a0a',
@@ -45979,7 +46027,31 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "for": "checkbox"
     }
-  }, [_vm._v(" NG ")])], 1)]) : _vm._e(), _vm._v(" "), _c('div', {
+  }, [_vm._v(" NG ")])], 1), _vm._v(" "), (_vm.isNG) ? _c('div', {
+    staticClass: "col-md-4"
+  }, [_c('v-select', {
+    attrs: {
+      "label": "category",
+      "options": _vm.options,
+      "index": "code"
+    },
+    on: {
+      "search": _vm.onSearch
+    },
+    scopedSlots: _vm._u([{
+      key: "option",
+      fn: function(option) {
+        return [_vm._v("\n                                          " + _vm._s(option.code) + " - " + _vm._s(option.category) + "\n                                      ")]
+      }
+    }]),
+    model: {
+      value: (_vm.form.symptom),
+      callback: function($$v) {
+        _vm.$set(_vm.form, "symptom", $$v)
+      },
+      expression: "form.symptom"
+    }
+  })], 1) : _vm._e()]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-4"

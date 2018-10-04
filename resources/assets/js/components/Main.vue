@@ -51,9 +51,22 @@
                             </div>  
 
                             <div v-if="config.showNgoption" class="form-group">
-                                <div class="col-md-6 col-md-offset-4">
+                                <div class="col-md-2 col-md-offset-4">
                                     <toggle-button v-model="isNG" :color="'#960a0a'" :sync='true' :labels="true"/>
                                     <label for="checkbox"> NG </label>
+                                </div>
+                                <div class="col-md-4" v-if='isNG'>
+                                    <v-select 
+                                        v-model='form.symptom' 
+                                        label="category" 
+                                        :options="options"
+                                        index="code"
+                                        @search="onSearch" >
+                                        <template slot="option" slot-scope="option">
+                                            {{ option.code }} - {{ option.category }}
+                                        </template>
+                                    </v-select>
+                                    <!-- <input type="text" class="form-control" name=""> -->
                                 </div>
                             </div>
 
@@ -159,6 +172,8 @@
     import alert from './Alert';
     import join from './Join';
     import ToggleButton from 'vue-js-toggle-button/src/Button';
+    import vSelect from 'vue-select';
+    import _ from 'lodash';
     
     export default {
         data: () => {
@@ -170,9 +185,11 @@
                     modelname:'',
                     is_solder:false,
                     judge : 'OK', //default nya OK
+                    // symptom: '', //default value for symptom is null;
                 },
 
                 isNG : false,
+                options : [], 
                 isJoin : false,
 
                 oldForm : {
@@ -276,6 +293,7 @@
                     judge = 'NG';
                 }else{
                     judge = 'OK';
+                    delete this.form.symptom;
                 }
                 this.form.judge = judge;
             }
@@ -309,7 +327,7 @@
         },
 
         components: {
-            modal, loading, confirm, alert, join, ToggleButton,
+            modal, loading, confirm, alert, join, ToggleButton, vSelect
         },
 
         methods : {
@@ -400,6 +418,33 @@
                 }
             },
 
+            onSearch(search, loading ){
+                loading(true);
+                this.search(loading, search, this );
+            },
+
+            search: _.debounce((loading, search, vm) => {
+                var hostname = window.location.hostname;
+                const url = 'api/symptoms/all';
+
+              axios.get(url, {
+                params : {
+                    q : search
+                }
+              })
+              .then(res => {
+                // res.json().then(json => (vm.options = json.items));
+                let response = res.data;
+                let data = response.data;
+                vm.options = data;
+                
+                console.log(data)
+
+                loading(false);
+              });
+
+            }, 350),
+
             changesColor(color){
                 let yellow = {
                     backgroundColor : '#e5ff12',
@@ -425,7 +470,6 @@
                 }else{
                     this.styles = green;
                 }
-
             },
 
             download(data, filename, type) {
