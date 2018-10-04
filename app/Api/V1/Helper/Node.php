@@ -19,6 +19,7 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Guid;
 use GuzzleHttp\Client;
 use App\Endpoint;
+use App\Symptom;
 
 class Node
 {
@@ -60,7 +61,8 @@ class Node
 	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
 	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type
 	protected $parameter;
-	protected $key; //array index of sequence  
+	protected $key; //array index of sequence
+	protected $symptom;
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
 	protected $firstSequence = false;
@@ -765,7 +767,21 @@ class Node
 
 		$this->updateGuidSibling();
 
-		return $model->save();
+		$isSaveSuccess = $model->save();
+		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) ){
+			$symptom = Symptom::select(['id'])
+			->whereIn('code', $this->parameter['symptom'] )
+			->get();
+			
+			$symptoms = [];
+			foreach ($symptom as $key => $value) {
+				$symptoms[] = $value['id'];
+			}
+
+			$model->symptoms()->sync($symptoms);
+		}
+
+		return $isSaveSuccess; //true or false;
 	}
 
 	public function delete(){
