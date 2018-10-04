@@ -32290,6 +32290,7 @@ var axios = __webpack_require__(7);
                 // kalau IN jangan dulu dihapus;
                 if (!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
             }
+            this.isNG = false;
         },
         generateFile: function generateFile() {
             if (typeof this.serialAutolinezero == 'undefined' || this.serialAutolinezero == '') {

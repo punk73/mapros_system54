@@ -567,6 +567,7 @@
                     // kalau IN jangan dulu dihapus;
                     if(!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
                 }
+                this.isNG = false;
             },
 
             generateFile(){
