@@ -464,7 +464,7 @@ class MainController extends Controller
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){
 
 			$node->setStatus('IN');
-			$node->setJudge($this->judge);
+			$node->setJudge("OK"); //in harus selalu OK, no matter what;
 			if(!$node->save()){
 				// throw new StoreResourceFailedException("Error Saving Progress", [
 				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
@@ -494,7 +494,7 @@ class MainController extends Controller
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 
 			$node->setStatus('IN');
-			$node->setJudge($this->judge);
+			$node->setJudge("OK"); //in harus selalu ok, no matter what;
 			if(!$node->save()){
 				// throw new StoreResourceFailedException("Error Saving Progress", [
 				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
