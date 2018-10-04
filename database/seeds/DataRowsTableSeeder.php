@@ -2689,6 +2689,38 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '',
                 'order' => 5,
             ),
+            167 => 
+            array (
+                'id' => 237,
+                'data_type_id' => 30,
+                'field' => 'symptom_belongstomany_master_relationship',
+                'type' => 'relationship',
+                'display_name' => 'masters',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"model":"App\\\\Master","table":"masters","type":"belongsToMany","column":"id","key":"id","label":"id","pivot_table":"master_symptom","pivot":"1","taggable":null}',
+                'order' => 6,
+            ),
+            168 => 
+            array (
+                'id' => 238,
+                'data_type_id' => 25,
+                'field' => 'master_belongstomany_symptom_relationship',
+                'type' => 'relationship',
+                'display_name' => 'symptoms',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"model":"App\\\\Symptom","table":"symptoms","type":"belongsToMany","column":"id","key":"id","label":"category","pivot_table":"master_symptom","pivot":"1","taggable":null}',
+                'order' => 11,
+            ),
         ));
         
         
