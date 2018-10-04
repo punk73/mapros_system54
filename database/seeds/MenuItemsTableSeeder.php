@@ -417,6 +417,38 @@ class MenuItemsTableSeeder extends Seeder
                 'route' => 'voyager.criticals.index',
                 'parameters' => 'null',
             ),
+            25 => 
+            array (
+                'id' => 29,
+                'menu_id' => 1,
+                'title' => 'Repairs',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-tools',
+                'color' => '#000000',
+                'parent_id' => NULL,
+                'order' => 23,
+                'created_at' => '2018-10-03 13:54:41',
+                'updated_at' => '2018-10-04 10:21:51',
+                'route' => 'voyager.repairs.index',
+                'parameters' => 'null',
+            ),
+            26 => 
+            array (
+                'id' => 30,
+                'menu_id' => 1,
+                'title' => 'Symptoms',
+                'url' => '',
+                'target' => '_self',
+                'icon_class' => 'voyager-params',
+                'color' => '#000000',
+                'parent_id' => NULL,
+                'order' => 24,
+                'created_at' => '2018-10-04 10:19:29',
+                'updated_at' => '2018-10-04 10:22:46',
+                'route' => 'voyager.symptoms.index',
+                'parameters' => 'null',
+            ),
         ));
         
         
