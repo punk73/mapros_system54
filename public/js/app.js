@@ -31220,6 +31220,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
 
 
 
@@ -31230,100 +31231,111 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	data: function data() {
-		return {
-			config: {
-				model: '',
-				ip: '',
+  data: function data() {
+    return {
+      config: {
+        model: '',
+        ip: '',
 
-				showSolder: false,
-				toggleSolderMode: 'toggleSolderMode',
+        showSolder: false,
+        toggleSolderMode: 'toggleSolderMode',
 
-				jumlahJoin: 1,
+        jumlahJoin: 1,
 
-				showConfig: false,
-				isGenerateFile: false,
-				isSendAjax: false,
-				isShowDeleteButton: false,
-				isAutolinezero: false,
-				generatedFileName: 'something.txt',
-				uri: '',
-				isDebug: false,
+        showConfig: false,
+        isGenerateFile: false,
+        isSendAjax: false,
+        isShowDeleteButton: false,
+        isAutolinezero: false,
+        generatedFileName: 'something.txt',
+        uri: '',
+        isDebug: false,
 
-				showNgoption: false,
-				toggleNgMode: 'toggleNgMode'
-			},
+        showNgoption: false,
+        toggleNgMode: 'toggleNgMode'
+      },
 
-			debug: {
-				enterActive: true,
-				content: {
-					dummy: 'MAPNL01020001',
-					serial: '#NA',
-					enter: '\r\n'
-				}
-			},
+      debug: {
+        enterActive: true,
+        content: {
+          dummy: 'MAPNL01020001',
+          serial: '#NA',
+          enter: '\r\n'
+        }
+      },
 
-			options: []
+      options: []
 
-		};
-	},
-
-
-	components: {
-		ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a, GenerateFileConfig: __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig___default.a, Alert: __WEBPACK_IMPORTED_MODULE_2__Alert___default.a, InputNumber: __WEBPACK_IMPORTED_MODULE_3__chenfengyuan_vue_number_input__["a" /* default */], vSelect: __WEBPACK_IMPORTED_MODULE_4_vue_select___default.a
-	},
-
-	mounted: function mounted() {
-		this.getConfig();
-	},
+    };
+  },
 
 
-	methods: {
-		save: function save() {
-			if (this.config.isSendAjax) {
-				if (_typeof(this.config.uri) == undefined) {
-					alert('you need to fill URI');
-					return;
-				}
-			}
+  components: {
+    ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a, GenerateFileConfig: __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig___default.a, Alert: __WEBPACK_IMPORTED_MODULE_2__Alert___default.a, InputNumber: __WEBPACK_IMPORTED_MODULE_3__chenfengyuan_vue_number_input__["a" /* default */], vSelect: __WEBPACK_IMPORTED_MODULE_4_vue_select___default.a
+  },
 
-			localStorage.setItem('config', JSON.stringify(this.config));
-			this.$router.push('/');
-		},
-		onSearch: function onSearch(search, loading) {
-			loading(true);
-			this.search(loading, search, this);
-		},
+  mounted: function mounted() {
+    this.getConfig();
+    this.fetchIpData();
+  },
 
 
-		search: __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.debounce(function (loading, search, vm) {
-			var hostname = window.location.hostname;
-			var url = 'api/scanners/all';
+  methods: {
+    save: function save() {
+      if (this.config.isSendAjax) {
+        if (_typeof(this.config.uri) == undefined) {
+          alert('you need to fill URI');
+          return;
+        }
+      }
 
-			__WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url, {
-				params: {
-					q: search
-				}
-			}).then(function (res) {
-				// res.json().then(json => (vm.options = json.items));
-				var response = res.data;
-				var data = response.data;
-				vm.options = data;
+      localStorage.setItem('config', JSON.stringify(this.config));
+      this.$router.push('/');
+    },
+    onSearch: function onSearch(search, loading) {
+      loading(true);
+      this.search(loading, search, this);
+    },
 
-				console.log(data);
 
-				loading(false);
-			});
-		}, 350),
+    search: __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.debounce(function (loading, search, vm) {
+      var url = 'api/scanners/all';
 
-		getConfig: function getConfig() {
-			var currentConfig = localStorage.getItem('config');
-			if (currentConfig != null) {
-				currentConfig = JSON.parse(currentConfig);
-				this.config = currentConfig;
-			}
-		}
-	}
+      __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url, {
+        params: {
+          q: search
+        }
+      }).then(function (res) {
+        // res.json().then(json => (vm.options = json.items));
+        var response = res.data;
+        var data = response.data;
+        vm.options = data;
+        loading(false);
+      }).catch(function (res) {
+        console.log(res);
+      });
+    }, 350),
+
+    fetchIpData: function fetchIpData() {
+      var _this = this;
+
+      var url = 'api/scanners/all';
+      __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url).then(function (res) {
+        var response = res.data;
+        var data = response.data;
+        _this.options = data;
+      }).catch(function (res) {
+        console.log(res);
+      });
+    },
+    getConfig: function getConfig() {
+      var currentConfig = localStorage.getItem('config');
+      if (currentConfig != null) {
+        currentConfig = JSON.parse(currentConfig);
+        this.config = currentConfig;
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -31893,6 +31905,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 var axios = __webpack_require__(7);
 
@@ -31913,8 +31927,8 @@ var axios = __webpack_require__(7);
                 nik: '',
                 modelname: '',
                 is_solder: false,
-                judge: 'OK' //default nya OK
-                // symptom: '', //default value for symptom is null;
+                judge: 'OK', //default nya OK
+                symptom: [] //default value for symptom is empty array;
             },
 
             isNG: false,
@@ -32018,6 +32032,7 @@ var axios = __webpack_require__(7);
             var judge;
             if (_isNG) {
                 judge = 'NG';
+                this.fetchSymptomCode();
             } else {
                 judge = 'OK';
                 delete this.form.symptom;
@@ -32153,7 +32168,6 @@ var axios = __webpack_require__(7);
 
 
         search: __WEBPACK_IMPORTED_MODULE_7_lodash___default.a.debounce(function (loading, search, vm) {
-            var hostname = window.location.hostname;
             var url = 'api/symptoms/all';
 
             axios.get(url, {
@@ -32172,6 +32186,21 @@ var axios = __webpack_require__(7);
             });
         }, 350),
 
+        fetchSymptomCode: function fetchSymptomCode() {
+            var _this2 = this;
+
+            //fetch data for selectbox;
+            var url = 'api/symptoms/all';
+
+            axios.get(url).then(function (res) {
+                // res.json().then(json => (vm.options = json.items));
+                var response = res.data;
+                var data = response.data;
+                _this2.options = data;
+            }).catch(function (res) {
+                console.log(res, 'error fetch data!');
+            });
+        },
         changesColor: function changesColor(color) {
             var yellow = {
                 backgroundColor: '#e5ff12',
@@ -32304,7 +32333,7 @@ var axios = __webpack_require__(7);
             this.download(this.downloadContent, filename);
         },
         deleteOnClick: function deleteOnClick() {
-            var _this2 = this;
+            var _this3 = this;
 
             var data = this.form;
             console.log(data);
@@ -32322,7 +32351,7 @@ var axios = __webpack_require__(7);
                 var message = data.message;
                 self.toggleLoading();
 
-                _this2.handleError(message, data);
+                _this3.handleError(message, data);
             });
         },
         returnViewConfirmation: function returnViewConfirmation(error) {
@@ -45898,6 +45927,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "form-control",
     attrs: {
+      "placeholder": "Scan NIK disini",
       "id": "nik",
       "type": "search",
       "maxlength": "10",
@@ -45935,6 +45965,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     ref: "board_id",
     staticClass: "form-control",
     attrs: {
+      "placeholder": 'Scan ' + _vm.label.id,
       "id": "board_id",
       "type": "board_id",
       "name": "board_id",
@@ -46041,7 +46072,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "col-md-4"
   }, [_c('v-select', {
     attrs: {
+      "placeholder": "ketik untuk kode symptom / kategori symptom",
       "multiple": "",
+      "maxHeight": "200px",
       "label": "category",
       "options": _vm.options,
       "index": "code"
@@ -46635,6 +46668,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('v-select', {
     attrs: {
       "label": "ip_address",
+      "maxHeight": "200px",
       "options": _vm.options,
       "index": "ip_address"
     },

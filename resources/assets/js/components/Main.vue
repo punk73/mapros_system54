@@ -16,7 +16,7 @@
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
                                 <div class="col-md-6">
                                     <div class="button-group">
-                                        <input id="nik" type="search" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
+                                        <input placeholder="Scan NIK disini" id="nik" type="search" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
                                         <!-- <span id="searchclear" class="fa fa-window-close"></span> -->
                                     </div>
                                 </div>
@@ -26,7 +26,7 @@
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
-                                    <input  id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
+                                    <input :placeholder="'Scan '+ label.id" id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
                                 </div>
                             </div>
 
@@ -57,8 +57,10 @@
                                 </div>
                                 <div class="col-md-4" v-if='isNG'>
                                     <v-select
+                                        placeholder='ketik untuk kode symptom / kategori symptom'
                                         multiple 
-                                        v-model='form.symptom' 
+                                        v-model='form.symptom'
+                                        :maxHeight='"200px"' 
                                         label="category" 
                                         :options="options"
                                         index="code"
@@ -186,7 +188,7 @@
                     modelname:'',
                     is_solder:false,
                     judge : 'OK', //default nya OK
-                    // symptom: '', //default value for symptom is null;
+                    symptom: [], //default value for symptom is empty array;
                 },
 
                 isNG : false,
@@ -292,6 +294,7 @@
                 var judge;
                 if(isNG){
                     judge = 'NG';
+                    this.fetchSymptomCode();
                 }else{
                     judge = 'OK';
                     delete this.form.symptom;
@@ -425,8 +428,7 @@
             },
 
             search: _.debounce((loading, search, vm) => {
-                var hostname = window.location.hostname;
-                const url = 'api/symptoms/all';
+              const url = 'api/symptoms/all';
 
               axios.get(url, {
                 params : {
@@ -445,6 +447,21 @@
               });
 
             }, 350),
+
+            fetchSymptomCode(){
+                //fetch data for selectbox;
+                const url = 'api/symptoms/all';
+
+              axios.get(url)
+              .then(res => {
+                // res.json().then(json => (vm.options = json.items));
+                let response = res.data;
+                let data = response.data;
+                this.options = data;
+              }).catch(res => {
+                console.log(res , 'error fetch data!')
+              });
+            },
 
             changesColor(color){
                 let yellow = {

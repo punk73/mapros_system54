@@ -21,6 +21,7 @@
                                     <v-select 
                                         v-model='config.ip' 
                                         label="ip_address" 
+                                        :maxHeight='"200px"'
                                         :options="options"
                                         index="ip_address"
                                         @search="onSearch" >
@@ -180,7 +181,7 @@
 
 		mounted(){
 			this.getConfig();
-
+            this.fetchIpData();
 		},
 
 		methods: {
@@ -203,8 +204,7 @@
             },
 
             search: _.debounce((loading, search, vm) => {
-                var hostname = window.location.hostname;
-                const url = 'api/scanners/all';
+              const url = 'api/scanners/all';
 
               axios.get(url, {
                 params : {
@@ -216,13 +216,24 @@
                 let response = res.data;
                 let data = response.data;
                 vm.options = data;
-                
-                console.log(data)
-
                 loading(false);
+              }).catch(res => {
+                console.log(res)
               });
 
             }, 350),
+
+            fetchIpData(){
+                const url = 'api/scanners/all';
+                axios.get(url)
+                  .then(res => {
+                    let response = res.data;
+                    let data = response.data;
+                    this.options = data;
+                  }).catch(res => {
+                    console.log(res)
+                  });
+            },
 
 			getConfig(){
 				let currentConfig = localStorage.getItem('config')
