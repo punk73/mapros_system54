@@ -14,7 +14,7 @@ class BoardRequest extends FormRequest
             'nik'       => 'required',
             'modelname' => 'required',
             'judge'     => 'required|in:OK,NG',
-            'symptom'   => 'required_if:judge,NG|numeric',
+            'symptom'   => 'required_if:judge,NG|array',
         ];
     }
 
