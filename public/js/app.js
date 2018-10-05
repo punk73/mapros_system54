@@ -32429,10 +32429,8 @@ var axios = __webpack_require__(7);
         // triggered by child view
         changeConfig: function changeConfig(serverModel) {
             this.form.modelname = serverModel;
-            var newConfig = {
-                model: serverModel,
-                ip: this.form.ip
-            };
+            var newConfig = this.config;
+            newConfig.model = serverModel;
 
             localStorage.setItem('config', JSON.stringify(newConfig));
             // changes localstorage

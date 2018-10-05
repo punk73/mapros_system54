@@ -705,10 +705,8 @@
             // triggered by child view
             changeConfig(serverModel){
                 this.form.modelname = serverModel;
-                let newConfig = {
-                    model: serverModel,
-                    ip : this.form.ip
-                }
+                let newConfig = this.config;
+                newConfig.model = serverModel;
 
                 localStorage.setItem('config', JSON.stringify(newConfig) );
                 // changes localstorage
