@@ -769,20 +769,7 @@ class Node
 
 		$isSaveSuccess = $model->save();
 		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
-			$symptom = Symptom::select(['id'])
-			->whereIn('code', $this->parameter['symptom'] )
-			->get();
-			
-			if($symptom->isEmpty()){
-				return true; // kalau empty data symptom yg di pass nya, langsung return saja;
-			}
-
-			$symptoms = [];
-			foreach ($symptom as $key => $value) {
-				$symptoms[] = $value['id'];
-			}
-
-			$model->symptoms()->sync($symptoms);
+			$this->insertSymptom($model);
 		}
 
 		return $isSaveSuccess; //true or false;
@@ -804,6 +791,23 @@ class Node
 			$model = $model->delete();
 			return $model;
 		}
+	}
+
+	public function insertSymptom($model){
+		$symptom = Symptom::select(['id'])
+		->whereIn('code', $this->parameter['symptom'] )
+		->get();
+		
+		if($symptom->isEmpty()){
+			return true; // kalau empty data symptom yg di pass nya, langsung return saja;
+		}
+
+		$symptoms = [];
+		foreach ($symptom as $key => $value) {
+			$symptoms[] = $value['id'];
+		}
+
+		$model->symptoms()->sync($symptoms);
 	}
 
 	/*
@@ -1304,8 +1308,14 @@ class Node
 		if($this->getModelType() == 'ticket'){
 			// get guid master;
 			if($this->guid_master != null){
-				// get board that has same guid ticket
+				// get ticket & board that has same guid ticket
+
+				// we need to check guid_ticket & guid_master berbeda;
 				Ticket::where('guid_master', null )
+				->where('guid_ticket', $this->guid_ticket )
+				->update(['guid_master' => $this->guid_master ]);
+
+				Board::where('guid_master', null )
 				->where('guid_ticket', $this->guid_ticket )
 				->update(['guid_master' => $this->guid_master ]);
 			}
