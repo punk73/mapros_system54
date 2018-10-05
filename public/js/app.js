@@ -46050,7 +46050,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v(" SOLDER ")])], 1)]) : _vm._e(), _vm._v(" "), (_vm.config.showNgoption) ? _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
-    staticClass: "col-md-2 col-md-offset-4"
+    class: {
+      'col-md-2': _vm.isNG, 'col-md-6': !_vm.isNG, 'col-md-offset-4': true
+    }
   }, [_c('toggle-button', {
     attrs: {
       "color": '#960a0a',

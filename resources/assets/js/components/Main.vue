@@ -51,7 +51,7 @@
                             </div>  
 
                             <div v-if="config.showNgoption" class="form-group">
-                                <div class="col-md-2 col-md-offset-4">
+                                <div :class="{'col-md-2':isNG, 'col-md-6':!isNG, 'col-md-offset-4': true }">
                                     <toggle-button v-model="isNG" :color="'#960a0a'" :sync='true' :labels="true"/>
                                     <label for="checkbox"> NG </label>
                                 </div>
