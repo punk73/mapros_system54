@@ -650,6 +650,9 @@
             isJoinOnChange(){
                 if( this.isJoin == false ){
                     delete this.form.guid //delete guid property from form;
+                    this.initLabel();
+                }else{
+                    this.label.id = 'BOARD / DUMMY TICKET';
                 }
 
                 this.boardOnFocus();
