@@ -768,11 +768,15 @@ class Node
 		$this->updateGuidSibling();
 
 		$isSaveSuccess = $model->save();
-		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) ){
+		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
 			$symptom = Symptom::select(['id'])
 			->whereIn('code', $this->parameter['symptom'] )
 			->get();
 			
+			if($symptom->isEmpty()){
+				return true; // kalau empty data symptom yg di pass nya, langsung return saja;
+			}
+
 			$symptoms = [];
 			foreach ($symptom as $key => $value) {
 				$symptoms[] = $value['id'];
