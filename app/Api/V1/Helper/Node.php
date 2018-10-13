@@ -364,8 +364,15 @@ class Node
 
 	public function getDummyParent(){
 		$tmp = str_split($this->dummy_id);
-		$tmp[7] = 0;
-		$tmp[8] = 0;
+
+		if(strlen($this->dummy_id) == 16 ){
+			$tmp[7] = 0;
+			$tmp[8] = 0;
+		}else if(strlen($this->dummy_id) == 24 ){
+			$tmp[12] = 0;
+			$tmp[13] = 0;
+		}
+
 		return implode('', $tmp );
 	}
 
@@ -374,27 +381,34 @@ class Node
 	}
 
 	public function ignoreSideQuery($query){
-		if(strlen($this->dummy_id) == 16 ){
-			if( $this->getModelType() == 'board' ){
-				$tmp = $this->getDummyParent();
+		if( $this->getModelType() == 'board' ){
+			
+			$tmp = $this->getDummyParent();
 				
-				$parentA = $tmp;
-				$parentA[6] = 'A';
-
-				$parentB = $tmp;
-				$parentB[6] = 'B';
-
-				$a = $this->dummy_id;
-				$a[6] = 'A';
-				$b = $this->dummy_id;
-				$b[6] = 'B';
-	
-				$query->where($this->dummy_column, $a )
-					->orWhere($this->dummy_column, $b )
-					->orWhere($this->dummy_column, $parentA )
-					->orWhere($this->dummy_column, $parentB );
-
+			if(strlen($this->dummy_id) == 16 ){
+				$sideIndex = 6;
+			}else if (strlen($this->dummy_id) == 24 ){
+				$sideIndex = 14;
+			}else{
+				// default side index yg sekarang adalah 14; karena ini yg berlaku;
+				$sideIndex = 14;
 			}
+			
+			$parentA = $tmp;
+			$parentA[$sideIndex] = 'A';
+
+			$parentB = $tmp;
+			$parentB[$sideIndex] = 'B';
+
+			$a = $this->dummy_id;
+			$a[$sideIndex] = 'A';
+			$b = $this->dummy_id;
+			$b[$sideIndex] = 'B';
+
+			$query->where($this->dummy_column, $a )
+				->orWhere($this->dummy_column, $b )
+				->orWhere($this->dummy_column, $parentA )
+				->orWhere($this->dummy_column, $parentB );
 		}else {
 			// ticket & master
 			$query->where( $this->dummy_column, $this->dummy_id );	
