@@ -214,7 +214,7 @@ class Node
 		if (strlen($this->parameter['board_id']) == 24 ) {
 			$this->model_code = substr($this->parameter['board_id'], 0, 11 );
 			$this->setLotno($this->parameter['board_id']);
-		}else if(strlen($this->parameter['board_id']) <= 16){
+		}else if(strlen($this->parameter['board_id']) <= 23){ //ini 23 untuk akomodir mecha serial yg 24 character
 			$this->model_code = substr($this->parameter['board_id'], 0, 5);
 			$this->setLotno($this->parameter['board_id']);
 		}else{
