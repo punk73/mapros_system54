@@ -51,11 +51,11 @@
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
                         @if (Auth::guest())
-                            <li><a href="{{ route('login') }}"><span class="fa door-open"></span> Login</a></li>
+                            <li><a href="{{ route('login') }}"><span class="fa fa-arrow-circle-right"></span> Login</a></li>
                             <li><a href="{{ route('register') }}"><span class="fa fa-user"></span> Register</a></li>
                             <li><a href="#/config"><span class="fa fa-cogs"> Config </span></a></li>
                         @else
-                            <li><a href="{{ url('/admin') }}">Admin Panel</a></li>
+                            <li><a href="{{ url('/admin') }}"><span class="fa fa-user-secret"></span> Admin Panel</a></li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     {{ Auth::user()->name }} <span class="caret"></span>
@@ -66,7 +66,7 @@
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                            Logout
+                                            <span class="fa fa-arrow-circle-left"></span> Logout
                                         </a>
 
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

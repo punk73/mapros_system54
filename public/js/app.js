@@ -31221,6 +31221,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -31252,7 +31266,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         isDebug: false,
 
         showNgoption: false,
-        toggleNgMode: 'toggleNgMode'
+        toggleNgMode: 'toggleNgMode',
+
+        checkEsd: true,
+        esdUri: 'http://136.198.117.48/esd/api/esd'
       },
 
       debug: {
@@ -31992,7 +32009,9 @@ var axios = __webpack_require__(7);
                 uri: '',
                 showNgoption: false,
                 toggleNgMode: '',
-                jumlahJoin: 1 //default value of jumlah join
+                jumlahJoin: 1, //default value of jumlah join
+                esdUri: '',
+                checkEsd: ''
             },
 
             serialAutolinezero: '', //default value of serial
@@ -32135,6 +32154,33 @@ var axios = __webpack_require__(7);
                 _this.handleError(message, data);
             });
         },
+        nikOnKeyup: function nikOnKeyup(e) {
+            if (this.config.checkEsd && this.form.nik.length >= 5) {
+                this.checkEsd(this);
+            }
+        },
+
+
+        checkEsd: __WEBPACK_IMPORTED_MODULE_7_lodash___default.a.debounce(function (self) {
+            var url = self.config.esdUri;
+            var nik = self.form.nik;
+
+            axios.get(url, {
+                params: {
+                    nik: nik
+                }
+            }).then(function (res) {
+                console.log('success', res);
+            }).catch(function (error) {
+                var data = error.response.data;
+                console.log(data);
+                // self.clearForm();
+                self.form.nik = '';
+
+                self.toggleModal('WARNING', data.message);
+            });
+        }, 350),
+
         toggleMode: function toggleMode() {
             if (this.config.showSolder) {
                 if (this.form.board_id == this.config.toggleSolderMode) {
@@ -32254,7 +32300,16 @@ var axios = __webpack_require__(7);
 
             if (this.form.board_id == '') {
                 var boardInput = document.getElementById('board_id');
-                boardInput.focus();
+                if (boardInput) {
+                    boardInput.focus();
+                }
+            }
+
+            if (this.form.nik == '') {
+                var nikInput = document.getElementById('nik');
+                if (nikInput) {
+                    nikInput.focus();
+                }
             }
             // console.log('board on focus triggered')
         },
@@ -32396,6 +32451,11 @@ var axios = __webpack_require__(7);
             if (this.showModal === false) {
                 // set focus on board id;
                 this.boardOnFocus();
+            } else {
+                var el = document.querySelector(':focus');
+                if (el) {
+                    el.blur();
+                } //no field focus
             }
         },
         toggleConfirm: function toggleConfirm() {
@@ -45940,11 +46000,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "value": (_vm.form.nik)
     },
     on: {
-      "keyup": function($event) {
+      "keyup": [_vm.nikOnKeyup, function($event) {
         if (!('button' in $event) && $event.keyCode !== 13) { return null; }
         $event.preventDefault();
         return _vm.boardOnFocus($event)
-      },
+      }],
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.$set(_vm.form, "nik", $event.target.value)
@@ -46389,7 +46449,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "close btn btn-danger",
     attrs: {
       "type": "button",
-      "data-dismiss": "modal",
       "aria-label": "Close"
     },
     on: {
@@ -46917,6 +46976,59 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.$set(_vm.config, "toggleNgMode", $event.target.value)
+      }
+    }
+  })])]) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.checkEsd),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "checkEsd", $$v)
+      },
+      expression: "config.checkEsd"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "checkEsd"
+    }
+  }, [_vm._v(" Check ESD ")])], 1)]), _vm._v(" "), (_vm.config.checkEsd) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label",
+    attrs: {
+      "for": "uri"
+    }
+  }, [_vm._v(" URL data ESD ")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.config.esdUri),
+      expression: "config.esdUri"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "input",
+      "placeholder": "http://136.198.117.48/esd/api/esd",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.config.esdUri)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.config, "esdUri", $event.target.value)
       }
     }
   })])]) : _vm._e(), _vm._v(" "), _c('div', {
