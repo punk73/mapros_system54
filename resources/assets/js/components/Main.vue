@@ -16,7 +16,7 @@
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
                                 <div class="col-md-6">
                                     <div class="button-group">
-                                        <input placeholder="Scan NIK disini" id="nik" type="search" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
+                                        <input placeholder="Scan NIK disini" id="nik" type="search" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup='nikOnKeyup' @keyup.13.prevent='boardOnFocus'>
                                         <!-- <span id="searchclear" class="fa fa-window-close"></span> -->
                                     </div>
                                 </div>
@@ -253,6 +253,8 @@
                     showNgoption : false,
                     toggleNgMode : '',
                     jumlahJoin:1, //default value of jumlah join
+                    esdUri: '',
+                    checkEsd:'',
                 },
 
                 serialAutolinezero:'', //default value of serial
@@ -394,6 +396,35 @@
                     })
             },
 
+            nikOnKeyup(e){
+                if(this.config.checkEsd && ( this.form.nik.length >= 5 ) ){
+                   this.checkEsd(this)
+                }
+            },
+
+            checkEsd : _.debounce(( self ) => {
+              const url = self.config.esdUri;
+              const nik = self.form.nik;
+
+              axios.get(url, {
+                params : {
+                    nik : nik
+                }
+              })
+              .then((res) => {
+                console.log('success', res)  
+              }).catch((error) => {
+                let data = error.response.data;
+                console.log(data)
+                // self.clearForm();
+                self.form.nik = '';
+
+                self.toggleModal('WARNING', data.message );
+
+              });
+
+            }, 350),
+
             toggleMode(){
                 if(this.config.showSolder){
                     if(this.form.board_id == this.config.toggleSolderMode ){
@@ -518,7 +549,16 @@
 
                 if(this.form.board_id == ''){
                     let boardInput = document.getElementById('board_id');
-                    boardInput.focus()
+                    if(boardInput){
+                        boardInput.focus()
+                    }
+                }
+
+                if(this.form.nik == ''){
+                    let nikInput = document.getElementById('nik');
+                    if(nikInput){
+                        nikInput.focus();
+                    }
                 }
                 // console.log('board on focus triggered')
             },
@@ -667,8 +707,10 @@
                 if(this.showModal === false ){
                     // set focus on board id;
                     this.boardOnFocus();
+                }else{
+                    let el = document.querySelector(':focus');
+                    if(el){ el.blur() } //no field focus
                 }
-
             },
 
             toggleConfirm(){

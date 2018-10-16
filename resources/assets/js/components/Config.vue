@@ -110,6 +110,20 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <toggle-button v-model="config.checkEsd" :sync='true' :color="'#2ab27b'" :labels="true"/>
+                                    <label for="checkEsd"> Check ESD </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="config.checkEsd" >
+                                <label for="uri" class="col-md-3 control-label"> URL data ESD </label>
+                                <div class="col-md-9">
+                                    <input type="input" placeholder="http://136.198.117.48/esd/api/esd" class="form-control" v-model="config.esdUri" required autofocus>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-9 col-md-offset-3">
                                     <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
@@ -159,6 +173,9 @@
 
                     showNgoption: false,
                     toggleNgMode: 'toggleNgMode',
+
+                    checkEsd : true,
+                    esdUri : 'http://136.198.117.48/esd/api/esd',
 				},
 
                 debug : {
