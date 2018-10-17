@@ -59,7 +59,7 @@ class Node
 	protected $step; // step is contain data in table boads, tickets, or master based on modeltype
 	protected $column_setting;
 	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
-	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type
+	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type for repair purposes
 	protected $parameter;
 	protected $key; //array index of sequence
 	protected $symptom;
@@ -348,7 +348,10 @@ class Node
 				 		$this->setGuidTicket($guid);
 				 	}				 
 				 };
-			};
+			}else{
+				$guid = $this->dummy_id; //untuk board yg NG sebelum join; guidnya kita ganti dummy id
+				// supaya bisa dapet ketika dicari di table repair;
+			}
 		}
 
 		$this->setUniqueId($guid);
