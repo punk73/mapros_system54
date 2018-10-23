@@ -1182,6 +1182,7 @@ class Node
 			'type',
 			'std_time',
 			'endpoint_id',
+			'join_qty',
 		])->find($lineprocess_id);
 
 		if($lineprocess == null){

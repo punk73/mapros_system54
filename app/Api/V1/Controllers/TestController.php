@@ -11,6 +11,7 @@ use App\Sequence;
 use App\Api\V1\Traits\LoggerHelper;
 use GuzzleHttp\Client;
 use App\Mastermodel;
+use App\Api\V1\Helper\Node;
 
 class TestController extends Controller
 {	
@@ -27,15 +28,16 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		$master = new Mastermodel;
-		return [
-			'env_value' => env('DB_CONNECTION2'),
-			'master_table' => $master->all()
-		];
+		return 'hai';
 	}
 
 	public function testNode(){
 		return 'wawa';
+	}
+
+	public function store(Request $request){
+		$node = new Node($request->all());
+		return $node;
 	}
 
 	public function testGuzzle(Request $request){
