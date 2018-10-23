@@ -85,19 +85,19 @@ return [
             // 'server' => env('DB_SERVER2', 'svrdbs\sa'),
             'host' => env('DB_HOST1', '136.198.117.48'), 
             'port' => env('DB_PORT1', '1433'),
-            'database' => env('DB_DATABASE1', 'forge'),
+            'database' => env('DB_DATABASE1', 'SMTPROS'),
             'username' => env('DB_USERNAME1', 'sa'),
             'password' => env('DB_PASSWORD1', 'password'),
             'prefix' => '',
 
         ],
-
+        // connection for bigs
         'sqlsrv1' => [
             'driver' => 'sqlsrv',
             // 'server' => env('DB_SERVER2', 'svrdbs\sa'),
             'host' => env('DB_HOST2', '136.198.117.48'), 
             'port' => env('DB_PORT2', '1433'),
-            'database' => env('DB_DATABASE2', 'forge'),
+            'database' => env('DB_DATABASE2', 'SMTPROS'),
             'username' => env('DB_USERNAME2', 'sa'),
             'password' => env('DB_PASSWORD2', 'password'),
             'prefix' => '',
