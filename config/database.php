@@ -51,7 +51,7 @@ return [
             'database' => database_path('database.sqlite'), //env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
         ],
-
+        // main program env connection
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
@@ -65,7 +65,7 @@ return [
             'strict' => true,
             'engine' => null,
         ],
-
+        // connection for bigs in local env
         'mysql2' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST2', '127.0.0.1'),
