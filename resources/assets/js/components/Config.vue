@@ -32,7 +32,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label  class="col-md-3 control-label">Jumlah Join</label>
                                 <div class="col-md-9">
                                     <input-number
@@ -44,7 +44,7 @@
                                         inline
                                     ></input-number>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
@@ -160,7 +160,7 @@
                     showSolder:false,
                     toggleSolderMode:'toggleSolderMode',
 
-                    jumlahJoin:1,
+                    // jumlahJoin:1, //will deleted soon due to move to server
 
 					showConfig: false,
 					isGenerateFile : false,

@@ -63,6 +63,7 @@ class Node
 	protected $parameter;
 	protected $key; //array index of sequence
 	protected $symptom;
+	protected $joinTimesLeft = 0; //jumlah sisa join, always update when hasChildren triggered
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
 	protected $firstSequence = false;
@@ -567,29 +568,75 @@ class Node
 		}
 	}
 
+	/*
+		bool @hasChildren() 
+		comparing current children qty with $this->lineprocess->joinQty
+	*/
 	public function hasChildren(){
 		if($this->getModelType() == 'board' ){
 			return false;
 		}
 
+		$joinQty = $this->getLineprocess()->join_qty;
+		$totalChildren = 0; //default value of total children
+
 		if($this->getModelType() == 'master'){
-			$ticket = Ticket::where('guid_master', $this->getGuidMaster() )
-			->where('scanner_id', $this->scanner_id )
-			->exists();
+			$guid_master = $this->getGuidMaster();
 
-			$board = Board::where('guid_master', $this->getGuidMaster() )
+			$ticket = Ticket::distinct()
+			->where('guid_master', $guid_master )
 			->where('scanner_id', $this->scanner_id )
-			->exists();
+			->count('ticket_no');
 
-			return ( $ticket || $board );
+			$board = Board::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('board_id');
+
+			$totalChildren = $ticket + $board;
+
+			/*return [
+				'ticket' => $ticket,
+				'board' => $board,
+				'totalChildren' => $totalChildren,
+				'join_qty' => $joinQty,
+				'hasChildren' => ( $totalChildren >= $joinQty ),
+				'guid_master' => $this->guid_master,
+			];*/
 		}
 
-		if($this->getModelType() == 'ticket'){
-			return Board::where('guid_ticket', $this->getGuidTicket() )
+		if($this->getModelType() == 'ticket' && ($this->isSettingContain('master') === false ) ){
+			/* 
+				betul ga ini beneran anak dari ticket itu sendiri ??
+				jangan2 yg masuk kesini itu master yg sedang scan anaknya yaitu tickets;
+	
+			*/
+			$totalChildren = Board::distinct()
+			->where('guid_ticket', $this->getGuidTicket() )
 			->where('scanner_id', $this->scanner_id )
-			->exists();
-		}		
+			->count('board_id');
+		}else{
+			$guid_master = $this->getGuidMaster();
 
+			$ticket = Ticket::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('ticket_no');
+
+			$board = Board::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('board_id');
+
+			$totalChildren = $ticket + $board;
+		}
+
+		$this->joinTimesLeft = $joinQty - $totalChildren;
+		return ( $totalChildren >= $joinQty );
+	}
+
+	public function getJoinTimesLeft(){
+		return $this->joinTimesLeft;
 	}
 
 	public function getBoardChildren(){
@@ -1182,6 +1229,7 @@ class Node
 			'type',
 			'std_time',
 			'endpoint_id',
+			'join_qty', //added to get in hasChildren
 		])->find($lineprocess_id);
 
 		if($lineprocess == null){
@@ -1413,17 +1461,19 @@ class Node
 					->first();
 
 				if($ticket != null ){
-					$newTicket = new Ticket([
-				    	'ticket_no' => $ticket->ticket_no,
-				    	'guid_master' => $ticket->guid_master,
-				    	'guid_ticket' => $ticket->guid_ticket,
-				    	'scanner_id' => $this->scanner_id,
-				    	'status' => 'OUT',
-				    	'judge' => 'OK',
-				    	'scan_nik' => $this->parameter['nik'],
-				    ]);
-
-				    $newTicket->save();
+					if($ticket->status == 'IN'){
+						$newTicket = new Ticket([
+					    	'ticket_no' => $ticket->ticket_no,
+					    	'guid_master' => $ticket->guid_master,
+					    	'guid_ticket' => $ticket->guid_ticket,
+					    	'scanner_id' => $this->scanner_id,
+					    	'status' => 'OUT',
+					    	'judge' => 'OK',
+					    	'scan_nik' => $this->parameter['nik'],
+					    ]);
+	
+					    $newTicket->save();
+					}
 				}
 			}
 		}

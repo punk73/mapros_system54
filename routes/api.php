@@ -56,6 +56,8 @@ $api->version('v1', function (Router $api) {
     });    
 
     $api->get('/test', 'App\\Api\\V1\\Controllers\\TestController@index' );
+    $api->post('/test', 'App\\Api\\V1\\Controllers\\TestController@store' );
+
     $api->get('/aoies', 'App\\Api\\V1\\Controllers\\AoiController@index' );
 
 

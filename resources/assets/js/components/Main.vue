@@ -592,8 +592,9 @@
                     // this code below is work because when view is return, it is throw error with message view
                     // tambah counter jumlahJoin
                     if(this.isJoin){
+                        // this.jumlahJoin = response.node.
                         this.jumlahJoin++;
-                        if(this.jumlahJoin == this.config.jumlahJoin){
+                        if(this.jumlahJoin >= this.config.jumlahJoin){
                             console.log('jumlahJoin tercapai')
                             this.isJoin = false; //tutup join otomatis
                             this.jumlahJoin=0; //back to default
@@ -681,7 +682,8 @@
                 this.showJoin = true;*/
                 this.isJoin = true;
                 this.form.guid = errors['guid'][0];
-
+                // update sisa join times on first scan parents
+                this.config.jumlahJoin = errors['join_times_left'][0];
                 this.clearForm();
                 this.boardOnFocus();
             },
@@ -756,7 +758,7 @@
             },
 
             initLabel(){
-                console.log(this.info, 'set label method')
+                // console.log(this.info, 'set label method')
                 if( this.info.lineprocess != undefined ){
                     if(this.info.lineprocess.column_settings != undefined){
                         let column_settings = this.info.lineprocess.column_settings;
@@ -814,7 +816,9 @@
                 }
               }).then((response) => {
                 console.log(response)
-                self.info = response.data.data;
+                var data = response.data.data;
+                self.info = data;
+                self.config.jumlahJoin = data.lineprocess.join_qty;
                 self.initLabel();
               })
               .catch((error)=> {

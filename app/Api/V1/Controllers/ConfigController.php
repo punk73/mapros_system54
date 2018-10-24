@@ -17,8 +17,9 @@ class ConfigController extends Controller
     		'lineprocesses.name as process',
     		'lineprocesses.type',
             'lineprocesses.id as lineprocess_id',
+            // 'lineprocesses.join_qty',
     	])->with(['lineprocess' => function ($lineprocess){
-            $lineprocess->select(['id','name'])
+            $lineprocess->select(['id','name', 'join_qty'])
                 ->with(['columnSettings' => function ($columnSettings){
                     $columnSettings->select(['name', 'table_name']);
                 }]);
