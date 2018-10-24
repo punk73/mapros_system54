@@ -572,14 +572,24 @@ class Node
 			return false;
 		}
 
+		$joinQty = $this->getLineprocess()->join_qty;
+
+
 		if($this->getModelType() == 'master'){
-			$ticket = Ticket::where('guid_master', $this->getGuidMaster() )
+			$ticket = Ticket::select(['ticket_no_master'])
+			->where('guid_master', $this->getGuidMaster() )
 			->where('scanner_id', $this->scanner_id )
-			->exists();
+			->count();
 
 			$board = Board::where('guid_master', $this->getGuidMaster() )
 			->where('scanner_id', $this->scanner_id )
-			->exists();
+			->count();
+
+			return [
+				'ticket' => $ticket,
+				'board' => $board,
+				'join_qty' => $joinQty
+			];
 
 			return ( $ticket || $board );
 		}
@@ -1182,7 +1192,7 @@ class Node
 			'type',
 			'std_time',
 			'endpoint_id',
-			'join_qty',
+			'join_qty', //added to get in hasChildren
 		])->find($lineprocess_id);
 
 		if($lineprocess == null){
