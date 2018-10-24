@@ -1439,17 +1439,19 @@ class Node
 					->first();
 
 				if($ticket != null ){
-					$newTicket = new Ticket([
-				    	'ticket_no' => $ticket->ticket_no,
-				    	'guid_master' => $ticket->guid_master,
-				    	'guid_ticket' => $ticket->guid_ticket,
-				    	'scanner_id' => $this->scanner_id,
-				    	'status' => 'OUT',
-				    	'judge' => 'OK',
-				    	'scan_nik' => $this->parameter['nik'],
-				    ]);
-
-				    $newTicket->save();
+					if($ticket->status == 'IN'){
+						$newTicket = new Ticket([
+					    	'ticket_no' => $ticket->ticket_no,
+					    	'guid_master' => $ticket->guid_master,
+					    	'guid_ticket' => $ticket->guid_ticket,
+					    	'scanner_id' => $this->scanner_id,
+					    	'status' => 'OUT',
+					    	'judge' => 'OK',
+					    	'scan_nik' => $this->parameter['nik'],
+					    ]);
+	
+					    $newTicket->save();
+					}
 				}
 			}
 		}
