@@ -14,7 +14,7 @@ class AlterTableLineprocesses extends Migration
     public function up()
     {
         Schema::table('lineprocesses', function (Blueprint $table) {
-            $table->integer('join_qty')->unsigned()->default(0);
+            $table->integer('join_qty')->unsigned()->default(1);
         });
     }
 
