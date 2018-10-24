@@ -605,11 +605,30 @@ class Node
 			];*/
 		}
 
-		if($this->getModelType() == 'ticket'){
+		if($this->getModelType() == 'ticket' && ($this->isSettingContain('master') === false ) ){
+			/* 
+				betul ga ini beneran anak dari ticket itu sendiri ??
+				jangan2 yg masuk kesini itu master yg sedang scan anaknya yaitu tickets;
+	
+			*/
 			$totalChildren = Board::distinct()
 			->where('guid_ticket', $this->getGuidTicket() )
 			->where('scanner_id', $this->scanner_id )
 			->count('board_id');
+		}else{
+			$guid_master = $this->getGuidMaster();
+
+			$ticket = Ticket::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('ticket_no');
+
+			$board = Board::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('board_id');
+
+			$totalChildren = $ticket + $board;
 		}
 
 		$this->joinTimesLeft = $joinQty - $totalChildren;
