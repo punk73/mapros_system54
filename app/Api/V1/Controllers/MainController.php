@@ -482,6 +482,7 @@ class MainController extends Controller
 				'ip' => $node->getScanner()['ip_address'],
 				'dummy_id' => $node->dummy_id, 
 				'guid'=> ( $isRunningMaster == false ) ? $node->getGuidTicket() : $node->getGuidMaster(),
+				'join_times_left' => $node->getJoinTimesLeft(),
 				'message' => 'runProcedureTicket',
 			]);
 		}
@@ -511,6 +512,7 @@ class MainController extends Controller
 				'ip' => $node->getScanner()['ip_address'],
 				'dummy_id' => $node->dummy_id, 
 				'guid'=>    $node->getGuidMaster(),
+				'join_times_left' => $node->getJoinTimesLeft(),
 				'message' => 'master procedures',
 			]);	
 		}

@@ -63,6 +63,7 @@ class Node
 	protected $parameter;
 	protected $key; //array index of sequence
 	protected $symptom;
+	protected $joinTimesLeft = 0; //jumlah sisa join, always update when hasChildren triggered
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
 	protected $firstSequence = false;
@@ -577,7 +578,7 @@ class Node
 		}
 
 		$joinQty = $this->getLineprocess()->join_qty;
-
+		$totalChildren = 0; //default value of total children
 
 		if($this->getModelType() == 'master'){
 			$guid_master = $this->getGuidMaster();
@@ -602,19 +603,21 @@ class Node
 				'hasChildren' => ( $totalChildren >= $joinQty ),
 				'guid_master' => $this->guid_master,
 			];*/
-
-			return ( $totalChildren >= $joinQty );
 		}
 
 		if($this->getModelType() == 'ticket'){
-			$boards = Board::distinct()
+			$totalChildren = Board::distinct()
 			->where('guid_ticket', $this->getGuidTicket() )
 			->where('scanner_id', $this->scanner_id )
 			->count('board_id');
+		}
 
-			return ( $boards >= $joinQty );
-		}		
+		$this->joinTimesLeft = $joinQty - $totalChildren;
+		return ( $totalChildren >= $joinQty );
+	}
 
+	public function getJoinTimesLeft(){
+		return $this->joinTimesLeft;
 	}
 
 	public function getBoardChildren(){
