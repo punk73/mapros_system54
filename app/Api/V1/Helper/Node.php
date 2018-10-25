@@ -525,15 +525,20 @@ class Node
 				->first();
 		}
 
-		if( $prevBoard->modelname != $this->modelname ){
-			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. KLIK DETAIL UNTUK INFO LEBIH LANJUT!", [
+		// due to circular dependencies, we cannot use $this->modelname here, instead, we use user parameter;
+		$modelname = (isset($this->modelname)) ? $this->modelname : $this->parameter['modelname'];
+
+		if( $prevBoard->modelname != $modelname ){
+			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. BOARD MODEL SEKARANG = '{$modelname}' , BOARD MODEL SEBELUMNYA '{$prevBoard->modelname}' !", [
+				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
 		}
 
 		if( $prevBoard->lotno != $this->lotno ){
-			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA.", [
+			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
+				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
