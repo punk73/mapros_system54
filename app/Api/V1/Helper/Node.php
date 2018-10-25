@@ -529,10 +529,12 @@ class Node
 		$modelname = (isset($this->modelname)) ? $this->modelname : $this->parameter['modelname'];
 
 		if( $prevBoard->modelname != $modelname ){
-			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. BOARD MODEL SEKARANG = '{$modelname}' , BOARD MODEL SEBELUMNYA '{$prevBoard->modelname}' !", [
-				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
+			// if current model sent by user is different from previous insalled board model, return confirmation view
+			throw new StoreResourceFailedException($this->confirmation_view_error, [
+				'message' => "BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. BOARD MODEL SEKARANG = '{$modelname}' , BOARD MODEL SEBELUMNYA '{$prevBoard->modelname}'!",
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
+				'server-modelname' => $prevBoard->modelname,
 			]);
 		}
 
