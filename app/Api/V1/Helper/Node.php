@@ -335,10 +335,11 @@ class Node
 		if($this->getModelType() == 'board'){
 			// cek column setting, this step is join atau bkn,
 			if($this->isJoin()){
-				$settings = $this->getColumnSetting();
+				// $settings = $this->getColumnSetting();
 
-				// kalo join, apa dengan apa;
-				foreach ($settings as $key => $setting ) {
+				// kalo join, apa dengan apa; 
+				// this code causing guid_model & guid master same. we need to re think about it.
+				/*foreach ($settings as $key => $setting ) {
 				 	$settingName = str_singular($setting['table_name']);
 
 				 	if( $settingName == 'master' ){
@@ -348,7 +349,14 @@ class Node
 					if( $settingName == 'ticket' ){
 				 		$this->setGuidTicket($guid);
 				 	}				 
-				 };
+				};*/
+				/*this changes is to avoid same guid_master & guid_ticket in input 1 audio which is obiously data anomaly*/
+				if( $this->isSettingContain('master') ){
+			 		$this->setGuidMaster($guid);
+				}else{
+					$this->setGuidTicket($guid);
+				}
+
 			}else{
 				$guid = $this->dummy_id; //untuk board yg NG sebelum join; guidnya kita ganti dummy id
 				// supaya bisa dapet ketika dicari di table repair;
@@ -517,15 +525,20 @@ class Node
 				->first();
 		}
 
-		if( $prevBoard->modelname != $this->modelname ){
-			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. KLIK DETAIL UNTUK INFO LEBIH LANJUT!", [
+		// due to circular dependencies, we cannot use $this->modelname here, instead, we use user parameter;
+		$modelname = (isset($this->modelname)) ? $this->modelname : $this->parameter['modelname'];
+
+		if( $prevBoard->modelname != $modelname ){
+			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. BOARD MODEL SEKARANG = '{$modelname}' , BOARD MODEL SEBELUMNYA '{$prevBoard->modelname}' !", [
+				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
 		}
 
 		if( $prevBoard->lotno != $this->lotno ){
-			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA.", [
+			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
+				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
@@ -639,6 +652,10 @@ class Node
 		return $this->joinTimesLeft;
 	}
 
+	/*
+		board getBoardChildren() will return boards with the same guid with current node;
+		it is required guid in order to run
+	*/
 	public function getBoardChildren(){
 		if($this->getModelType() == 'board' ){
 			return null; // required due to caller if statement
