@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use App\Sequence;
 use App\Api\V1\Traits\LoggerHelper;
 use GuzzleHttp\Client;
+use App\Mastermodel;
+use App\Api\V1\Helper\Node;
 
 class TestController extends Controller
 {	
@@ -26,11 +28,17 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		return $this->testGuzzle($request);
+		return 'hai';
 	}
 
 	public function testNode(){
 		return 'wawa';
+	}
+
+	public function store(Request $request){
+		$node = new Node($request->all());
+		return $node->hasChildren();
+		return $response = ($node->hasChildren()) ? 'has children true': 'has children false';
 	}
 
 	public function testGuzzle(Request $request){

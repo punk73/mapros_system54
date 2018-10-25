@@ -27,7 +27,11 @@ class MainController extends Controller
 		'guid',
 		'is_solder',
 		'modelname',
+		'judge',
+		'symptom',
 	];
+
+	protected $judge; // OK/NG only except from SOLDER;
 
 	protected $returnValue = [
 		'success' => true,
@@ -38,7 +42,8 @@ class MainController extends Controller
 
 	private function getParameter (BoardRequest $request){
 		$result = $request->only($this->allowedParameter);
-
+		// set judge based on user parameter on front end;
+		$this->judge = $request->judge;
 		// setup default value for ip 
 		$result['ip'] = (!isset($result['ip'] )) ? $request->ip() : $request->ip ;
 		// setup default value for is_solder is false;
@@ -52,12 +57,13 @@ class MainController extends Controller
 	* $currentStep must contains created_at && std_time
 	*
 	*/
-	private function isMoreThanStdTime($currentStep){
+	private function isMoreThanStdTime($currentStep, $lineprocess ){
 		$now = Carbon::now();
 		$lastScanned = Carbon::parse($currentStep['created_at']);
 
 		// it'll return true if timeDiff is greater than std_time;
-		return ( $now->diffInSeconds($lastScanned) > $currentStep['std_time'] );
+		$result = ( $now->diffInSeconds($lastScanned) > $lineprocess['std_time'])?true:$now->diffInSeconds($lastScanned);
+		return $result;
 	}
 
 	public function store(BoardRequest $request ){
@@ -135,13 +141,13 @@ class MainController extends Controller
 	}
 
 	private function runNode($parameter){
-		if ( strlen($parameter['board_id']) == 16 ) {
+		/*if ( strlen($parameter['board_id']) == 16 ) {
 			if ( $parameter['board_id'][6] != 'A' ) {
 				throw new StoreResourceFailedException("TOLONG SCAN BARCODE SIDE A !!", [
 					'PARAMETER' => $parameter
 				]);
 			}
-		}
+		}*/
 
 		$node = new Node($parameter);
 		// return $node;
@@ -173,7 +179,7 @@ class MainController extends Controller
 			if ($node->isFirstSequence() ) {
 				// langsung input;
 				$node->setStatus('IN');
-				$node->setJudge('OK');
+				$node->setJudge('OK'); //kalau IN mah ga bisa NG
 				if(!$node->save()){
 					// throw new StoreResourceFailedException("Error Saving Progress", [
 					throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
@@ -201,16 +207,18 @@ class MainController extends Controller
 					]);
 				}
 
-				$judgement = 'OK';
+				$judgement = 'OK'; //kalau IN mah ga bisa NG;
 				// we not sure if it calling prev() twice or not, hopefully it's not;
 				if($prevNode->getJudge() == 'NG'){                    
 					// kalau dia NG
 					// cek di table repair, ada engga datanya.
 					if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
 						// kalau ga ada, maka throw error data is NG in prev stages! repair it first!
-						throw new StoreResourceFailedException("DATA ". $prevNode->getDummyId() ." ERROR DI PROSES SEBELUMNYA!", [
-							'prevnode' => json_decode( $prevNode, true),
-							'node'     => json_decode( $prevNode->next(), true) 
+						$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+						throw new StoreResourceFailedException("DATA ". $prevNode->getDummyId() ." ERROR DI PROSES SEBELUMNYA ( {$step} ) & BELUM DIPERBAIKI!", [
+							'message' => 'perbaiki dengan cara input data repair oleh teknisi',
+							// 'prevnode' => json_decode( $prevNode, true),
+							// 'node'     => json_decode( $prevNode->next(), true) 
 						]);
 					}else{
 						$judgement = 'REWORK';
@@ -320,7 +328,7 @@ class MainController extends Controller
 					}
 				}
 
-				if($node->getJudge() == 'OK'){
+				if( ($node->getJudge() == 'OK') || ($node->getJudge() == 'NG') ){
 					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT DI PROSES INI!", [
 						'node' => json_decode( $node, true ),
 					]);
@@ -329,7 +337,7 @@ class MainController extends Controller
 				// kalau status skrg out & judge solder, itu artinya blm scan in proses terkini;
 				if($node->getJudge() == 'SOLDER'){
 					$node->setStatus('IN');
-					$node->setJudge('OK');
+					$node->setJudge($this->judge);
 					if(!$node->save()){
 						// throw new StoreResourceFailedException("Error Saving Progress", [
 						throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [	//Ario 20180915
@@ -379,7 +387,6 @@ class MainController extends Controller
 		// return $node->getStatus();
 		if($node->getStatus() == 'IN'){
 
-			$currentStep = $node->getStep();
 			// if( ($node->is_solder == true) && ($node->getJudge() == 'SOLDER' ) ){
 			// 	throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN IN SOLDER! SCAN OUT SOLDER DENGAN SCANNER BERIKUTNYA!",[
 			// 		'message' => 'SCAN SOLDER DENGAN PROSES BERIKUTNYA'
@@ -403,12 +410,26 @@ class MainController extends Controller
 				throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH SCAN OUT, LANJUTKAN PROSES BERIKUTNYA.",[
 					'message' => 'NEXT PROSES'
 				]);
-			}	
+			}
+			
+			$currentStep = $node->getStep();
+			$lineprocess = $node->getLineprocess();
+			$isMoreThanStdTime = $this->isMoreThanStdTime($currentStep, $lineprocess );
+			$selisih = ( (int) $lineprocess['std_time'] - (int) $isMoreThanStdTime);
+			
+			/*return [
+				'currentStep' => $currentStep,
+				'lineprocess' => $lineprocess,
+				'isMoreThanStdTime' => $isMoreThanStdTime,
+				'selisih' => $selisih,
+			];*/
+
 			// we need to count how long it is between now and step->created_at
-			if( !$this->isMoreThanStdTime($currentStep)){
+			if( $isMoreThanStdTime !== true ){
+				
 				// belum mencapai std time
-				throw new StoreResourceFailedException("DATA SUDAH '".$node->getDummyId()."' SCAN IN! AND HARUS TUNGGU ". $currentStep['std_time']." DETIK", [
-					'message' => 'you scan within std time '. $currentStep['std_time']. ' try it again later'
+				throw new StoreResourceFailedException("DATA {$node->getDummyId()} SUDAH SCAN IN ! COBA {$selisih} DETIK LAGI", [
+					'message' => 'you scan within std time '. $lineprocess['std_time']. ' try it again later'
 				]);
 			}
 
@@ -416,8 +437,9 @@ class MainController extends Controller
 			// save
 			$node->setStatus('OUT');
 			// it's mean to get current in process judgement, so when it's rework; it'll get rework
-
-			$node->setJudge($node->getJudge());
+			// also, if its OK, it's get the users judge parameter;
+			$judge = ($node->getJudge() == 'OK')? $this->judge : $node->getJudge();
+			$node->setJudge($judge);
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [
 					'message' => 'something went wrong with save method on model! ask your IT member'
@@ -442,23 +464,28 @@ class MainController extends Controller
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){
 
 			$node->setStatus('IN');
-			$node->setJudge('OK');
+			$node->setJudge("OK"); //in harus selalu OK, no matter what;
 			if(!$node->save()){
 				// throw new StoreResourceFailedException("Error Saving Progress", [
 				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915
 					'message' => '442 something went wrong with save method on model! ask your IT member'
 				]);
-			}    
+			}
+		};
 
+		//cek apakah ticket sudah punya anak;
+		if(!$node->hasChildren() && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){ 
+			//kalau belum, return view lagi;
 			throw new StoreResourceFailedException("view", [
 				'node' => json_decode($node, true ),
 				'nik' => $node->getNik(),
 				'ip' => $node->getScanner()['ip_address'],
 				'dummy_id' => $node->dummy_id, 
 				'guid'=> ( $isRunningMaster == false ) ? $node->getGuidTicket() : $node->getGuidMaster(),
+				'join_times_left' => $node->getJoinTimesLeft(),
 				'message' => 'runProcedureTicket',
 			]);
-		};
+		}
 
 		return $this->processBoard($node);
 
@@ -468,23 +495,27 @@ class MainController extends Controller
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 
 			$node->setStatus('IN');
-			$node->setJudge('OK');
+			$node->setJudge("OK"); //in harus selalu ok, no matter what;
 			if(!$node->save()){
 				// throw new StoreResourceFailedException("Error Saving Progress", [
 				throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
 					'message' => '468 something went wrong with save method on model! ask your IT member'
 				]);
-			}    
+			}
+		};
 
+		// cek master sudah punya anak atau belum, kalau belum, return view lagi;
+		if( (!$node->hasChildren()) && ( $node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 			throw new StoreResourceFailedException("view", [
 				'node' => json_decode($node, true ),
 				'nik' => $node->getNik(),
 				'ip' => $node->getScanner()['ip_address'],
 				'dummy_id' => $node->dummy_id, 
 				'guid'=>    $node->getGuidMaster(),
+				'join_times_left' => $node->getJoinTimesLeft(),
 				'message' => 'master procedures',
-			]);
-		};
+			]);	
+		}
 
 		$this->runProcedureTicket($node , true );
 		

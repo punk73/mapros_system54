@@ -3,15 +3,6 @@
     <div class="container">
         <div class="row">
 
-            <div v-if="showAlert" class="col-md-8 col-md-offset-2">
-                <alert  
-                    @showDetailError='showDetailError'
-                    @toggleAlert='toggleAlert'
-                    :message='error'
-                    :isDanger='hasError'
-                ></alert>
-            </div>
-
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     
@@ -20,21 +11,14 @@
                             <div class="form-group text-center">
                                 <h3><strong>PLEASE SCAN DATA</strong></h3>
                             </div>
+
                             <div class="form-group">
                                 <label for="nik" class="col-md-4 control-label">NIK</label>
                                 <div class="col-md-6">
                                     <div class="button-group">
-                                        <input id="nik" type="search" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup.13.prevent='boardOnFocus'>
+                                        <input placeholder="Scan NIK disini" id="nik" type="search" maxlength="10" class="form-control" name="nik" v-model='form.nik' required autofocus @keyup='nikOnKeyup' @keyup.13.prevent='boardOnFocus'>
                                         <!-- <span id="searchclear" class="fa fa-window-close"></span> -->
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group" hidden="true">
-                                <label for="name" class="col-md-4 control-label">IP Address</label>
-
-                                <div class="col-md-6">
-                                    <input v-model='form.ip' id="ip_address" type="text" class="form-control" name="ip_address" required autofocus>
                                 </div>
                             </div>
 
@@ -42,17 +26,52 @@
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
+                                    <input :placeholder="'Scan '+ label.id" id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if='isJoin'>
+                                <label class="col-md-offset-4 col-md-6"> Proses Join Active : <toggle-button v-model="isJoin" :color="'#2ab27b'" :labels="true" /></label>
+                            </div>
+
+                            <div class="form-group" v-if="config.isAutolinezero" >
+                                <label class="col-md-4 control-label">{{ label.serialAutolinezero }}</label>
+
+                                <div class="col-md-6">
+                                    <input  id="serialAutolinezero" ref='serialAutolinezero' v-model="serialAutolinezero" type="serialAutolinezero" class="form-control" name="serialAutolinezero"  required>
                                 </div>
                             </div>
 
                             <div v-if="config.showSolder" class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <!-- <input type="checkbox" id="checkbox" v-model="form.is_solder"> -->
-                                    <toggle-button v-model="form.is_solder" :color="'#2ab27b'" :labels="true"/>
+                                    <toggle-button v-model="form.is_solder" :color="'#2ab27b'" :sync='true' :labels="true"/>
                                     <label for="checkbox"> SOLDER </label>
                                 </div>
                             </div>  
+
+                            <div v-if="config.showNgoption" class="form-group">
+                                <div :class="{'col-md-2':isNG, 'col-md-6':!isNG, 'col-md-offset-4': true }">
+                                    <toggle-button v-model="isNG" :color="'#960a0a'" :sync='true' :labels="true"/>
+                                    <label for="checkbox"> NG </label>
+                                </div>
+                                <div class="col-md-4" v-if='isNG'>
+                                    <v-select
+                                        placeholder='ketik untuk kode symptom / kategori symptom'
+                                        multiple 
+                                        v-model='form.symptom'
+                                        :maxHeight='"200px"' 
+                                        label="category" 
+                                        :options="options"
+                                        index="code"
+                                        @search="onSearch" >
+                                        <template slot="option" slot-scope="option">
+                                            {{ option.code }} - {{ option.category }}
+                                        </template>
+                                    </v-select>
+                                    <!-- <input type="text" class="form-control" name=""> -->
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <div class="col-md-3 col-md-offset-4">
@@ -104,7 +123,10 @@
                             
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button v-if='!config.isShowDeleteButton' type="submit" class="btn btn-success" >
+                                    <button 
+                                        v-if='!config.isShowDeleteButton' 
+                                        type="submit" 
+                                        :class="{btn:true, 'btn-success': !isNG, 'btn-danger':isNG }" >
                                         Submit <i class="fa fa-check float-right"></i>
                                     </button>
 
@@ -112,7 +134,7 @@
                                         Delete <i class="fa fa-trash float-right"></i>
                                     </button>
 
-                                    <!-- <button @click.prevent='changesColor' class="btn btn-info">change color</button> -->
+                                    <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN / OK') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
                                 </div>
                             </div>
 
@@ -153,10 +175,27 @@
     import alert from './Alert';
     import join from './Join';
     import ToggleButton from 'vue-js-toggle-button/src/Button';
+    import vSelect from 'vue-select';
+    import _ from 'lodash';
+    
     export default {
         data: () => {
             return {
                 form : {
+                    ip: '',
+                    board_id: '',
+                    nik: '',
+                    modelname:'',
+                    is_solder:false,
+                    judge : 'OK', //default nya OK
+                    symptom: [], //default value for symptom is empty array;
+                },
+
+                isNG : false,
+                options : [], 
+                isJoin : false,
+
+                oldForm : {
                     ip: '',
                     board_id: '',
                     nik: '',
@@ -187,18 +226,18 @@
 
                 state : 'in',
 
-                styles : {
-                    // backgroundColor: '#ffffff',
-                    // color : '#eeeeee'
-                },
-
                 isLoading:false,
                 showModal: false,
                 showConfirm:false,
 
                 label : {
-                    id : 'Board ID'
+                    id : 'Board ID',
+                    serialAutolinezero : 'Serial Set'
                 },
+
+                jumlahJoin: 0, //current jumlah join
+
+                styles : {}, //dipakai di warna well
 
                 // it's basically will be override by getConfig method
                 config : {
@@ -206,10 +245,31 @@
                     ip       : '',
                     showSolder: true,
                     isGenerateFile : false,
+                    generatedFileName : 'something.txt',
                     isSendAjax : false,
                     isShowDeleteButton : false,
+                    isAutolinezero : false,
                     uri : '',
+                    showNgoption : false,
+                    toggleNgMode : '',
+                    jumlahJoin:1, //default value of jumlah join
+                    esdUri: '',
+                    checkEsd:'',
                 },
+
+                serialAutolinezero:'', //default value of serial
+
+                responseData: {
+                    success: true,
+                    message: '',
+                },
+
+                oldResponseData: {
+                    success: true,
+                    message: '',
+                },
+
+                downloadContent : null,
 
                 modal: {
                     header: 'Header',
@@ -218,18 +278,70 @@
             }
         },
 
+        watch:{
+            clonedForm: function(newVal, oldVal){
+              // console.log({newVal, oldVal})
+              this.oldForm = oldVal;
+            }, 
+
+            clonedResponseData(newVal, oldVal ){
+                this.oldResponseData = oldVal;
+            },
+
+            isJoin(newVal, oldVal){
+                this.isJoinOnChange();
+            },
+
+            isNG(isNG, oldVal){
+                var judge;
+                if(isNG){
+                    judge = 'NG';
+                    this.fetchSymptomCode();
+                }else{
+                    judge = 'OK';
+                    delete this.form.symptom;
+                }
+                this.form.judge = judge;
+            }
+        },
+
+        computed:{
+            clonedForm: function(){
+               return JSON.parse(JSON.stringify( this.form ))
+            },
+
+            clonedResponseData(){
+                return JSON.parse(JSON.stringify( this.responseData ))
+            },
+        },
+
         mounted(){
+            // setting event on root 
+            let self = this;
+            this.$root.$once('GeneratedFile', ( dummy='MAMST', enter='\r\n', serial = '#NA') => {
+                // your code goes here
+                // let dummy = 'dummy_id_goes here';
+                // let serial = 'serial goes here ';
+                // let enter = '\n';
+                let data = dummy + enter + serial ;
+                let filename  = 'example.txt';
+                self.download(data, filename );
+            });
             // console.log('mounted')
             this.getConfig();
             this.getInfo();
         },
 
         components: {
-            modal, loading, confirm, alert, join, ToggleButton,
+            modal, loading, confirm, alert, join, ToggleButton, vSelect
         },
 
         methods : {
             onSubmit(){
+
+                if( this.toggleMode() == 'break' ){
+                    return;
+                };
 
                 let data = this.form;
                 // console.log(data);
@@ -260,21 +372,75 @@
                         }
 
                         let data = error.response.data;
+                        this.responseData = error.response.data;
                         console.log(data)
                         let message = data.message;
                         
                         if(message == 'view'){
+                            let pesan = this.form.board_id + ' IN / OK';
+                            this.hasError = false;
+                            this.error = pesan;
+                            this.detailError = pesan;
+                            this.changesColor('yellow');
                             this.returnJoin(data.errors);
                             return;
                         }
 
                         if(message == 'confirmation-view'){
+
                             this.returnViewConfirmation(data);
                             return;
                         }
 
                         this.handleError(message, data );
                     })
+            },
+
+            nikOnKeyup(e){
+                if(this.config.checkEsd && ( this.form.nik.length >= 5 ) ){
+                   this.checkEsd(this)
+                }
+            },
+
+            checkEsd : _.debounce(( self ) => {
+              const url = self.config.esdUri;
+              const nik = self.form.nik;
+
+              axios.get(url, {
+                params : {
+                    nik : nik
+                }
+              })
+              .then((res) => {
+                console.log('success', res)  
+              }).catch((error) => {
+                let data = error.response.data;
+                console.log(data)
+                // self.clearForm();
+                self.form.nik = '';
+
+                self.toggleModal('WARNING', data.message );
+
+              });
+
+            }, 350),
+
+            toggleMode(){
+                if(this.config.showSolder){
+                    if(this.form.board_id == this.config.toggleSolderMode ){
+                        this.form.is_solder = !this.form.is_solder;
+                        this.clearForm();
+                        return 'break';
+                    }
+                }
+
+                if(this.config.showNgoption){
+                    if(this.form.board_id == this.config.toggleNgMode ){
+                        this.isNG = !this.isNG;
+                        this.clearForm();
+                        return 'break';
+                    }
+                }    
             },
 
             filterBoard(evt){
@@ -285,6 +451,47 @@
                     if( el ) el.blur();
                     this.toggleModal('Information', 'HASIL SCAN MENGANDUNG "&" TOLONG ULANGI!')
                 }
+            },
+
+            onSearch(search, loading ){
+                loading(true);
+                this.search(loading, search, this );
+            },
+
+            search: _.debounce((loading, search, vm) => {
+              const url = 'api/symptoms/all';
+
+              axios.get(url, {
+                params : {
+                    q : search
+                }
+              })
+              .then(res => {
+                // res.json().then(json => (vm.options = json.items));
+                let response = res.data;
+                let data = response.data;
+                vm.options = data;
+                
+                console.log(data)
+
+                loading(false);
+              });
+
+            }, 350),
+
+            fetchSymptomCode(){
+                //fetch data for selectbox;
+                const url = 'api/symptoms/all';
+
+              axios.get(url)
+              .then(res => {
+                // res.json().then(json => (vm.options = json.items));
+                let response = res.data;
+                let data = response.data;
+                this.options = data;
+              }).catch(res => {
+                console.log(res , 'error fetch data!')
+              });
             },
 
             changesColor(color){
@@ -312,12 +519,11 @@
                 }else{
                     this.styles = green;
                 }
-
             },
 
             download(data, filename, type) {
                 var file = new Blob([data], {type: type});
-                console.log('download');
+                console.log(data ,'download');
                 if (window.navigator.msSaveOrOpenBlob) // IE10+
                     window.navigator.msSaveOrOpenBlob(file, filename);
                 else { // Others
@@ -335,9 +541,26 @@
             },
 
             boardOnFocus(){
-                let boardInput = document.getElementById('board_id');
-                boardInput.focus()
-                console.log('board on focus triggered')
+
+                if(this.config.isGenerateFile && this.config.isAutolinezero && this.serialAutolinezero == '' ){
+                    let serialAutolinezero = document.getElementById('serialAutolinezero');
+                    serialAutolinezero.focus();
+                }
+
+                if(this.form.board_id == ''){
+                    let boardInput = document.getElementById('board_id');
+                    if(boardInput){
+                        boardInput.focus()
+                    }
+                }
+
+                if(this.form.nik == ''){
+                    let nikInput = document.getElementById('nik');
+                    if(nikInput){
+                        nikInput.focus();
+                    }
+                }
+                // console.log('board on focus triggered')
             },
 
             handleError(message, detailError = '' ){
@@ -346,31 +569,36 @@
                 this.hasError = true;
                 this.changesColor('red');
                 this.form.board_id='';
-                // this.toggleAlert();
-                // this.showAlert = true;
-                // this.$refs.board_id.$el.focus();
             },
 
             handleSucces(response){
                 // set error to default value to show alert-success in alert
                 console.log('handleSucces', response )
                 let message = response.data.message;
+                this.responseData = response.data;
                 this.hasError = false;
                 this.error = message;
                 this.detailError = message;
 
-                if(this.config.isGenerateFile){
-                    if (response.data.node.status == 'IN') { //kalau dia bkn in, gausah download;
-                        this.download(this.form.board_id, 'RUN_AVMT.txt' );
+                if (response.data.node.status == 'IN') { 
+                    if( this.config.isSendAjax ){
+                        this.sendAjax(this.responseData)    
                     }
-                }
 
-                if( this.config.isSendAjax ){
-                    if (response.data.node.status == 'IN') { 
-                        //kalau dia bkn in, gausah download;
-                        let data = response.data;
-                        // console.log(data, 'handleSucces sending ajax')
-                        this.sendAjax(data)    
+                    if(this.config.isGenerateFile){
+                        this.generateFile();
+                    }
+
+                    // this code below is work because when view is return, it is throw error with message view
+                    // tambah counter jumlahJoin
+                    if(this.isJoin){
+                        // this.jumlahJoin = response.node.
+                        this.jumlahJoin++;
+                        if(this.jumlahJoin >= this.config.jumlahJoin){
+                            console.log('jumlahJoin tercapai')
+                            this.isJoin = false; //tutup join otomatis
+                            this.jumlahJoin=0; //back to default
+                        }
                     }
                 }
 
@@ -379,10 +607,38 @@
                 }else {
                     this.changesColor('green')
                 }
+
+                if(message.includes('NG')){
+                    this.changesColor('red')
+                }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
-                this.form.board_id = '';
+                this.clearForm();
+                this.boardOnFocus();
+                this.isNG = false; //turn off toggle mode
                 // set focus
+            },
+
+            clearForm(){
+                this.form.board_id = '';
+                if(this.config.isGenerateFile) {
+                    // kalau IN jangan dulu dihapus;
+                    if(!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
+                }
+                this.isNG = false;
+            },
+
+            generateFile(){
+                if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
+                    this.serialAutolinezero = 'NA';
+                }
+
+                var enter = this.config.delimiter; //'';//'\r\n';
+                this.downloadContent = this.form.board_id + enter + this.serialAutolinezero ;
+                
+
+                let filename = this.config.generatedFileName;
+                this.download( this.downloadContent, filename );
             },
 
             deleteOnClick(){
@@ -422,8 +678,26 @@
             },
 
             returnJoin(errors){
-                this.errors = errors
-                this.showJoin = true;
+                /*this.errors = errors
+                this.showJoin = true;*/
+                this.isJoin = true;
+                this.form.guid = errors['guid'][0];
+                // update sisa join times on first scan parents
+                this.config.jumlahJoin = errors['join_times_left'][0];
+                this.clearForm();
+                this.boardOnFocus();
+            },
+
+
+            isJoinOnChange(){
+                if( this.isJoin == false ){
+                    delete this.form.guid //delete guid property from form;
+                    this.initLabel();
+                }else{
+                    this.label.id = 'BOARD / DUMMY TICKET';
+                }
+
+                this.boardOnFocus();
             },
 
             toggleModal(header = '', message = ''){
@@ -435,8 +709,10 @@
                 if(this.showModal === false ){
                     // set focus on board id;
                     this.boardOnFocus();
+                }else{
+                    let el = document.querySelector(':focus');
+                    if(el){ el.blur() } //no field focus
                 }
-
             },
 
             toggleConfirm(){
@@ -452,6 +728,7 @@
             },
 
             toggleJoin(){
+                this.boardOnFocus();
                 this.showJoin = !this.showJoin
             },
 
@@ -472,10 +749,8 @@
             // triggered by child view
             changeConfig(serverModel){
                 this.form.modelname = serverModel;
-                let newConfig = {
-                    model: serverModel,
-                    ip : this.form.ip
-                }
+                let newConfig = this.config;
+                newConfig.model = serverModel;
 
                 localStorage.setItem('config', JSON.stringify(newConfig) );
                 // changes localstorage
@@ -483,7 +758,7 @@
             },
 
             initLabel(){
-                console.log(this.info, 'set label method')
+                // console.log(this.info, 'set label method')
                 if( this.info.lineprocess != undefined ){
                     if(this.info.lineprocess.column_settings != undefined){
                         let column_settings = this.info.lineprocess.column_settings;
@@ -513,7 +788,8 @@
                     guid = 'noData';
                 }
 
-                let value = board_id + '_' + guid + '_' + scanner_id ;
+                // let value = board_id + '_' + guid + '_' + scanner_id ; //ini untuk nanti;
+                let value = board_id;
                 // console.log({responseData, value}, 'sendAjax methods triggered')
                 
                 axios.get(this.config.uri, {
@@ -540,7 +816,9 @@
                 }
               }).then((response) => {
                 console.log(response)
-                self.info = response.data.data;
+                var data = response.data.data;
+                self.info = data;
+                self.config.jumlahJoin = data.lineprocess.join_qty;
                 self.initLabel();
               })
               .catch((error)=> {
@@ -548,8 +826,28 @@
                 modal.header = 'ERROR';
                 console.log(error.response)
                 modal.message = error.response.data.message;
-                self.showModal = !self.showModal;
+                self.showModal = !self.showModal; 
+
               })
+            },
+
+            resendData(){
+                if( (this.config.isSendAjax) && ( this.responseData != null) ){
+                    this.sendAjax(this.responseData)
+                }
+
+                if(this.config.isGenerateFile){
+                    if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
+                        this.serialAutolinezero = 'NA';
+                    }
+
+                    var enter = this.config.delimiter; //'';//'\r\n';
+                    this.downloadContent = this.oldForm.board_id + enter + this.serialAutolinezero ;
+                    
+
+                    let filename = this.config.generatedFileName;
+                    this.download( this.downloadContent, filename );
+                }
             },
 
             toggleHasError(hasError = ''){

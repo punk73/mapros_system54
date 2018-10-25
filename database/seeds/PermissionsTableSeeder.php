@@ -785,6 +785,86 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2018-08-30 14:39:25',
                 'updated_at' => '2018-08-30 14:39:25',
             ),
+            96 => 
+            array (
+                'id' => 127,
+                'key' => 'browse_repairs',
+                'table_name' => 'repairs',
+                'created_at' => '2018-09-05 09:54:58',
+                'updated_at' => '2018-09-05 09:54:58',
+            ),
+            97 => 
+            array (
+                'id' => 128,
+                'key' => 'read_repairs',
+                'table_name' => 'repairs',
+                'created_at' => '2018-09-05 09:54:58',
+                'updated_at' => '2018-09-05 09:54:58',
+            ),
+            98 => 
+            array (
+                'id' => 129,
+                'key' => 'edit_repairs',
+                'table_name' => 'repairs',
+                'created_at' => '2018-09-05 09:54:58',
+                'updated_at' => '2018-09-05 09:54:58',
+            ),
+            99 => 
+            array (
+                'id' => 130,
+                'key' => 'add_repairs',
+                'table_name' => 'repairs',
+                'created_at' => '2018-09-05 09:54:58',
+                'updated_at' => '2018-09-05 09:54:58',
+            ),
+            100 => 
+            array (
+                'id' => 131,
+                'key' => 'delete_repairs',
+                'table_name' => 'repairs',
+                'created_at' => '2018-09-05 09:54:58',
+                'updated_at' => '2018-09-05 09:54:58',
+            ),
+            101 => 
+            array (
+                'id' => 132,
+                'key' => 'browse_symptoms',
+                'table_name' => 'symptoms',
+                'created_at' => '2018-10-04 10:19:29',
+                'updated_at' => '2018-10-04 10:19:29',
+            ),
+            102 => 
+            array (
+                'id' => 133,
+                'key' => 'read_symptoms',
+                'table_name' => 'symptoms',
+                'created_at' => '2018-10-04 10:19:29',
+                'updated_at' => '2018-10-04 10:19:29',
+            ),
+            103 => 
+            array (
+                'id' => 134,
+                'key' => 'edit_symptoms',
+                'table_name' => 'symptoms',
+                'created_at' => '2018-10-04 10:19:29',
+                'updated_at' => '2018-10-04 10:19:29',
+            ),
+            104 => 
+            array (
+                'id' => 135,
+                'key' => 'add_symptoms',
+                'table_name' => 'symptoms',
+                'created_at' => '2018-10-04 10:19:29',
+                'updated_at' => '2018-10-04 10:19:29',
+            ),
+            105 => 
+            array (
+                'id' => 136,
+                'key' => 'delete_symptoms',
+                'table_name' => 'symptoms',
+                'created_at' => '2018-10-04 10:19:29',
+                'updated_at' => '2018-10-04 10:19:29',
+            ),
         ));
         
         

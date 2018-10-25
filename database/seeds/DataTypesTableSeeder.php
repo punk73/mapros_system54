@@ -105,7 +105,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 02:38:11',
-                'updated_at' => '2018-08-16 12:01:51',
+                'updated_at' => '2018-09-24 16:34:17',
             ),
             5 => 
             array (
@@ -123,7 +123,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-04 03:31:01',
-                'updated_at' => '2018-08-29 12:03:46',
+                'updated_at' => '2018-09-18 11:55:21',
             ),
             6 => 
             array (
@@ -228,10 +228,10 @@ class DataTypesTableSeeder extends Seeder
                 'controller' => '',
                 'description' => '',
                 'generate_permissions' => 1,
-                'server_side' => 0,
+                'server_side' => 1,
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-08 09:50:17',
-                'updated_at' => '2018-08-25 11:54:36',
+                'updated_at' => '2018-09-16 07:37:40',
             ),
             12 => 
             array (
@@ -322,6 +322,42 @@ class DataTypesTableSeeder extends Seeder
                 'details' => '{"order_column":"","order_display_column":""}',
                 'created_at' => '2018-08-30 14:39:25',
                 'updated_at' => '2018-08-30 14:39:25',
+            ),
+            17 => 
+            array (
+                'id' => 28,
+                'name' => 'repairs',
+                'slug' => 'repairs',
+                'display_name_singular' => 'Repair',
+                'display_name_plural' => 'Repairs',
+                'icon' => '',
+                'model_name' => 'App\\Repair',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":"id"}',
+                'created_at' => '2018-10-03 13:54:41',
+                'updated_at' => '2018-10-03 13:54:41',
+            ),
+            18 => 
+            array (
+                'id' => 30,
+                'name' => 'symptoms',
+                'slug' => 'symptoms',
+                'display_name_singular' => 'Symptom',
+                'display_name_plural' => 'Symptoms',
+                'icon' => '',
+                'model_name' => 'App\\Symptom',
+                'policy_name' => '',
+                'controller' => '',
+                'description' => '',
+                'generate_permissions' => 1,
+                'server_side' => 1,
+                'details' => '{"order_column":"","order_display_column":"id"}',
+                'created_at' => '2018-10-04 10:19:29',
+                'updated_at' => '2018-10-04 10:19:29',
             ),
         ));
         

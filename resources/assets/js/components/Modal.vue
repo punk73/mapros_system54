@@ -9,7 +9,7 @@
 	        <!-- <h5 class="modal-title" id="exampleModalLongTitle">{{header}}</h5> -->
 	        <slot name="header">
 	          	<h3 class="modal-title">{{header}}</h3>
-		        <button @click="$emit('toggleModal')" type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+		        <button @click="$emit('toggleModal')" type="button" class="close btn btn-danger"  aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 	        </slot>

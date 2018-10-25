@@ -19,10 +19,12 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Guid;
 use GuzzleHttp\Client;
 use App\Endpoint;
+use App\Symptom;
 
 class Node
 {
 	protected $model;
+	protected $model_code; // 5 char atau 11 char awal
 	protected $allowedStatus = [
 		'IN',
 		'OUT'
@@ -57,9 +59,11 @@ class Node
 	protected $step; // step is contain data in table boads, tickets, or master based on modeltype
 	protected $column_setting;
 	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
-	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type
+	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type for repair purposes
 	protected $parameter;
-	protected $key; //array index of sequence  
+	protected $key; //array index of sequence
+	protected $symptom;
+	protected $joinTimesLeft = 0; //jumlah sisa join, always update when hasChildren triggered
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
 	protected $firstSequence = false;
@@ -69,6 +73,8 @@ class Node
 		if (!$debug)
 		{
 			$this->parameter = $parameter;
+			//get first 5 or 11 character of this dummy id / parameter['board_id']
+			$this->initModelCode(); //dependence to $this->parameter;
 			// setup model (board, ticket, or master)
 			$this->setModel($parameter);
 			// setup scanner_id;
@@ -205,40 +211,31 @@ class Node
 		return $this->id_type;
 	}
 
-	//triggered on instantiate 
-	public function setModel($parameter){
-		if (count($parameter['board_id']) == 24 ) {
-			$code = substr($parameter['board_id'], 0, 10);
-
-			$this->setLotno($parameter['board_id']);
-
-		}else if(count($parameter['board_id']) <= 16){
-			$code = substr($parameter['board_id'], 0, 5);
-			$this->setLotno($parameter['board_id']);
+	public function initModelCode(){
+		if (strlen($this->parameter['board_id']) == 24 ) {
+			$this->model_code = substr($this->parameter['board_id'], 0, 11 );
+			$this->setLotno($this->parameter['board_id']);
+		}else if(strlen($this->parameter['board_id']) <= 23){ //ini 23 untuk akomodir mecha serial yg 24 character
+			$this->model_code = substr($this->parameter['board_id'], 0, 5);
+			$this->setLotno($this->parameter['board_id']);
 		}else{
 			//ini untuk critical parts; gausah di substr dulu;
-			$code = $parameter['board_id'];
-		} 
+			$this->model_code = $this->parameter['board_id'];
+		}
+	}
 
-		/*if (in_array($code, $this->ticketCriteria )) {
-			// it is ticket, so we work with ticket
-			if($code == '_MST'){
-				$this->model = new Master;
-				$this->dummy_column = 'ticket_no_master';
-				$this->model_type = 'master';
-			}else {
-				$this->model = new Ticket;
-				$this->dummy_column = 'ticket_no';
-				$this->model_type = 'ticket';
-			}
-		}else {
-			// it is a board, we working with board;
-			$this->model = new Board;
-			$this->dummy_column = 'board_id';
-			$this->model_type = 'board';
-		}*/
+	public function getModelCode(){
+		return $this->model_code;
+	}
 
-		$setting = ColumnSetting::where('code_prefix', $code )->first();
+	public function setModelCode($code){
+		$this->model_code = $code;
+	}
+	//triggered on instantiate 
+	public function setModel($parameter){
+		
+
+		$setting = ColumnSetting::where('code_prefix', $this->model_code )->first();
 		if(!is_null($setting)){
 			$className = 'App\\' . studly_case(str_singular($setting->table_name));
 
@@ -338,10 +335,11 @@ class Node
 		if($this->getModelType() == 'board'){
 			// cek column setting, this step is join atau bkn,
 			if($this->isJoin()){
-				$settings = $this->getColumnSetting();
+				// $settings = $this->getColumnSetting();
 
-				// kalo join, apa dengan apa;
-				foreach ($settings as $key => $setting ) {
+				// kalo join, apa dengan apa; 
+				// this code causing guid_model & guid master same. we need to re think about it.
+				/*foreach ($settings as $key => $setting ) {
 				 	$settingName = str_singular($setting['table_name']);
 
 				 	if( $settingName == 'master' ){
@@ -351,8 +349,18 @@ class Node
 					if( $settingName == 'ticket' ){
 				 		$this->setGuidTicket($guid);
 				 	}				 
-				 };
-			};
+				};*/
+				/*this changes is to avoid same guid_master & guid_ticket in input 1 audio which is obiously data anomaly*/
+				if( $this->isSettingContain('master') ){
+			 		$this->setGuidMaster($guid);
+				}else{
+					$this->setGuidTicket($guid);
+				}
+
+			}else{
+				$guid = $this->dummy_id; //untuk board yg NG sebelum join; guidnya kita ganti dummy id
+				// supaya bisa dapet ketika dicari di table repair;
+			}
 		}
 
 		$this->setUniqueId($guid);
@@ -368,8 +376,15 @@ class Node
 
 	public function getDummyParent(){
 		$tmp = str_split($this->dummy_id);
-		$tmp[7] = 0;
-		$tmp[8] = 0;
+
+		if(strlen($this->dummy_id) == 16 ){
+			$tmp[7] = 0;
+			$tmp[8] = 0;
+		}else if(strlen($this->dummy_id) == 24 ){
+			$tmp[12] = 0;
+			$tmp[13] = 0;
+		}
+
 		return implode('', $tmp );
 	}
 
@@ -378,27 +393,34 @@ class Node
 	}
 
 	public function ignoreSideQuery($query){
-		if(strlen($this->dummy_id) == 16 ){
-			if( $this->getModelType() == 'board' ){
-				$tmp = $this->getDummyParent();
+		if( $this->getModelType() == 'board' ){
+			
+			$tmp = $this->getDummyParent();
 				
-				$parentA = $tmp;
-				$parentA[6] = 'A';
-
-				$parentB = $tmp;
-				$parentB[6] = 'B';
-
-				$a = $this->dummy_id;
-				$a[6] = 'A';
-				$b = $this->dummy_id;
-				$b[6] = 'B';
-	
-				$query->where($this->dummy_column, $a )
-					->orWhere($this->dummy_column, $b )
-					->orWhere($this->dummy_column, $parentA )
-					->orWhere($this->dummy_column, $parentB );
-
+			if(strlen($this->dummy_id) == 16 ){
+				$sideIndex = 6;
+			}else if (strlen($this->dummy_id) == 24 ){
+				$sideIndex = 14;
+			}else{
+				// default side index yg sekarang adalah 14; karena ini yg berlaku;
+				$sideIndex = 14;
 			}
+			
+			$parentA = $tmp;
+			$parentA[$sideIndex] = 'A';
+
+			$parentB = $tmp;
+			$parentB[$sideIndex] = 'B';
+
+			$a = $this->dummy_id;
+			$a[$sideIndex] = 'A';
+			$b = $this->dummy_id;
+			$b[$sideIndex] = 'B';
+
+			$query->where($this->dummy_column, $a )
+				->orWhere($this->dummy_column, $b )
+				->orWhere($this->dummy_column, $parentA )
+				->orWhere($this->dummy_column, $parentB );
 		}else {
 			// ticket & master
 			$query->where( $this->dummy_column, $this->dummy_id );	
@@ -503,18 +525,42 @@ class Node
 				->first();
 		}
 
-		if( $prevBoard->modelname != $this->modelname ){
-			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. KLIK DETAIL UNTUK INFO LEBIH LANJUT!", [
+		// due to circular dependencies, we cannot use $this->modelname here, instead, we use user parameter;
+		$modelname = (isset($this->modelname)) ? $this->modelname : $this->parameter['modelname'];
+
+		if( $prevBoard->modelname != $modelname ){
+			throw new StoreResourceFailedException("BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. BOARD MODEL SEKARANG = '{$modelname}' , BOARD MODEL SEBELUMNYA '{$prevBoard->modelname}' !", [
+				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
 		}
 
 		if( $prevBoard->lotno != $this->lotno ){
-			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA.", [
+			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
+				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
 			]);
+		}
+	}
+
+
+	/*
+		@void, to verify if the parameter modelname sent by front end is correct by comparing the data with previous children board;
+	*/
+	public function verifyParameterModelname(){
+		$boardChildren = $this->getBoardChildren(); //ambil board anak;
+		
+		if( $boardChildren !== null ){
+			// compare antara pengaturan dengan board anak;
+			if( $boardChildren['modelname'] != $this->parameter['modelname'] ){
+				// get the board children to compare the model
+				throw new StoreResourceFailedException($this->confirmation_view_error, [
+					'node' => json_decode($this, true ),
+					'server-modelname' => $boardChildren['modelname']
+				]);
+			}
 		}
 	}
 
@@ -535,27 +581,97 @@ class Node
 		}
 	}
 
+	/*
+		bool @hasChildren() 
+		comparing current children qty with $this->lineprocess->joinQty
+	*/
 	public function hasChildren(){
 		if($this->getModelType() == 'board' ){
 			return false;
 		}
 
+		$joinQty = $this->getLineprocess()->join_qty;
+		$totalChildren = 0; //default value of total children
+
 		if($this->getModelType() == 'master'){
-			$ticket = Ticket::where('guid_master', $this->getGuidMaster() )
+			$guid_master = $this->getGuidMaster();
+
+			$ticket = Ticket::distinct()
+			->where('guid_master', $guid_master )
 			->where('scanner_id', $this->scanner_id )
-			->exists();
+			->count('ticket_no');
+
+			$board = Board::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('board_id');
+
+			$totalChildren = $ticket + $board;
+
+			/*return [
+				'ticket' => $ticket,
+				'board' => $board,
+				'totalChildren' => $totalChildren,
+				'join_qty' => $joinQty,
+				'hasChildren' => ( $totalChildren >= $joinQty ),
+				'guid_master' => $this->guid_master,
+			];*/
+		}
+
+		if($this->getModelType() == 'ticket' && ($this->isSettingContain('master') === false ) ){
+			/* 
+				betul ga ini beneran anak dari ticket itu sendiri ??
+				jangan2 yg masuk kesini itu master yg sedang scan anaknya yaitu tickets;
+	
+			*/
+			$totalChildren = Board::distinct()
+			->where('guid_ticket', $this->getGuidTicket() )
+			->where('scanner_id', $this->scanner_id )
+			->count('board_id');
+		}else{
+			$guid_master = $this->getGuidMaster();
+
+			$ticket = Ticket::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('ticket_no');
+
+			$board = Board::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('board_id');
+
+			$totalChildren = $ticket + $board;
+		}
+
+		$this->joinTimesLeft = $joinQty - $totalChildren;
+		return ( $totalChildren >= $joinQty );
+	}
+
+	public function getJoinTimesLeft(){
+		return $this->joinTimesLeft;
+	}
+
+	/*
+		board getBoardChildren() will return boards with the same guid with current node;
+		it is required guid in order to run
+	*/
+	public function getBoardChildren(){
+		if($this->getModelType() == 'board' ){
+			return null; // required due to caller if statement
+		}
+
+		if($this->getModelType() == 'master'){
 
 			$board = Board::where('guid_master', $this->getGuidMaster() )
-			->where('scanner_id', $this->scanner_id )
-			->exists();
+			->first();
 
-			return ( $ticket || $board );
+			return $board;
 		}
 
 		if($this->getModelType() == 'ticket'){
 			return Board::where('guid_ticket', $this->getGuidTicket() )
-			->where('scanner_id', $this->scanner_id )
-			->exists();
+			->first();
 		}		
 
 	}
@@ -732,7 +848,12 @@ class Node
 
 		$this->updateGuidSibling();
 
-		return $model->save();
+		$isSaveSuccess = $model->save();
+		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
+			$this->insertSymptom($model);
+		}
+
+		return $isSaveSuccess; //true or false;
 	}
 
 	public function delete(){
@@ -753,61 +874,21 @@ class Node
 		}
 	}
 
-	// no longer use due to huge latency
-	protected $big_url = 'http://136.198.117.48/big/public/api/models';
-	// no longer use due to huge latency
-	public function getBoardTypeCurl($board_id = null, $url=null){
-		// what if board id morethan 5 character ??
-		// what if board id null ??
-		if (is_null( $board_id)) {
-			$board_id = $this->dummy_id;
-			// get first 5 digit of char
-			$board_id = substr($board_id, 0, 5);
+	public function insertSymptom($model){
+		$symptom = Symptom::select(['id'])
+		->whereIn('code', $this->parameter['symptom'] )
+		->get();
+		
+		if($symptom->isEmpty()){
+			return true; // kalau empty data symptom yg di pass nya, langsung return saja;
 		}
 
-		// default value of url is $this->big_url, it is for testing purposes
-		if (is_null( $url)) {
-			$url = $this->big_url;
+		$symptoms = [];
+		foreach ($symptom as $key => $value) {
+			$symptoms[] = $value['id'];
 		}
 
-		$parameter = '?code=' . $board_id;
-		// init curl
-		$curl = curl_init();
-
-		if($curl == false){
-            throw new HttpException(422);
-        }
-		// set opt
-		curl_setopt_array($curl, [
-		    CURLOPT_URL => $url . $parameter,
-		    CURLOPT_RETURNTRANSFER => true,
-		    CURLOPT_TIMEOUT => 30000,
-		    CURLOPT_HTTPGET => true,
-		    CURLOPT_HEADER => 0,
-		    CURLOPT_HTTPHEADER => array(
-		    	// Set Here Your Requesred Headers
-		        'Content-Type: application/json',
-		    ),
-		]);
-
-		// send curl
-		$response = curl_exec($curl);
-		$err = curl_error($curl);
-		curl_close($curl);
-
-		// what if error ??
-		if ($err) {
-			throw new HttpException(422);
-		}
-		// decode json text into associative array;
-		$result = json_decode($response, true);
-
-		// what if not found ??
-		if (count($result['data']) > 0) {
-			return $result['data'][0]['pwbname'];
-		}else{
-			throw new HttpException(422);
-		}
+		$model->symptoms()->sync($symptoms);
 	}
 
 	/*
@@ -823,11 +904,8 @@ class Node
 		}
 
 		if (is_null($board_id)) {
-			$board_id = $this->dummy_id;
-			// get first 5 digit of char
-
 			// it'll need to be changed due to changes in big system
-			$board_id = substr($board_id, 0, 5);
+			$board_id = $this->getModelCode();
 		}
 
 		$model = Mastermodel::select([
@@ -849,7 +927,7 @@ class Node
 			}
 
 			// kalau sudah generated, dan proses nya adalah proses join, serta sudah ada proses In ;
-			if ($this->isGuidGenerated() && $this->isJoin() && $this->isIn() && $this->isSettingContainBoard() ) {
+			/*if ($this->isGuidGenerated() && $this->isJoin() && $this->isIn() && $this->isSettingContainBoard() ) {
 				// ambil dulu modelnya dari table board, kemudian pass hasilnya kesini;
 				$boardPanel = Board::select([
 					'board_id'
@@ -869,17 +947,25 @@ class Node
 					]);
 				}
 
-				// this will cause some trouble later;
-				$board_id = substr($boardPanel['board_id'], 0,5 );
+				// we substr based on length of $this->model_code; wheter it is 5 or 11;
+				$board_id = substr($boardPanel['board_id'], 0, strlen( $this->getModelCode() ) );
 				# code... 
 				$model = $model->where('code', $board_id );
+
 			}else {
-				// kalau belum, kita setup model based on user parameter;
-				// ini untuk meng akomodir kebutuhan scan panel sebelumn proses join dengan board;
-				$model = $model->where('name', $this->parameter['modelname'] );
-			}
+
+			}*/
+			
+			// kalau belum, kita setup model based on user parameter;
+			// ini untuk meng akomodir kebutuhan scan panel sebelumn proses join dengan board;
+			// detect model from dummy card;
+			$this->verifyParameterModelname();	
+
+			$model = $model->where('name', $this->parameter['modelname'] );
 
 		} else if($this->getModelType() == 'master') {
+			// detect model from dummy card;
+			$this->verifyParameterModelname();
 
 			$model = $model->where('name', $this->parameter['modelname'] );
 		}else{
@@ -890,8 +976,9 @@ class Node
 		$model = $model->first();
 
 		if ($model == null) {
-			throw new StoreResourceFailedException("Board not found", [
-				'node' => json_decode($this, true )
+			throw new StoreResourceFailedException("ANDA SCAN '{$board_id}'. PENGATURAN DATA DENGAN NAMA MODEL '{$this->parameter['modelname']}' TIDAK DITEMUKAN DI BOARD ID GENERATOR SYSTEM! PASTIKAN CURRENT MODEL CONFIG BENAR!", [
+				'node' => json_decode($this, true ),
+				'model_type' => $board_id
 			]);
 
 		}
@@ -1159,6 +1246,7 @@ class Node
 			'type',
 			'std_time',
 			'endpoint_id',
+			'join_qty', //added to get in hasChildren
 		])->find($lineprocess_id);
 
 		if($lineprocess == null){
@@ -1282,7 +1370,8 @@ class Node
 				// update yang guid ticket nya masih null;
 				// ketika join;
 				Board::where('guid_ticket', null )
-				->where('board_id', $this->parameter['board_id'] )
+				// ->where('board_id', $this->parameter['board_id'] )
+				->where( function($query){ $this->ignoreSideQuery($query); } )
 				->where('lotno', $this->lotno )
 				->update(['guid_ticket' => $this->guid_ticket ]);
 			}
@@ -1291,7 +1380,8 @@ class Node
 				// update yang guid ticket nya masih null;
 				// ketika join;
 				Board::where('guid_master', null )
-				->where('board_id', $this->parameter['board_id'] )
+				// ->where('board_id', $this->parameter['board_id'] )
+				->where( function($query){ $this->ignoreSideQuery($query); } )
 				->where('lotno', $this->lotno )
 				->update(['guid_master' => $this->guid_master ]);
 			}
@@ -1300,8 +1390,14 @@ class Node
 		if($this->getModelType() == 'ticket'){
 			// get guid master;
 			if($this->guid_master != null){
-				// get board that has same guid ticket
+				// get ticket & board that has same guid ticket
+
+				// we need to check guid_ticket & guid_master berbeda;
 				Ticket::where('guid_master', null )
+				->where('guid_ticket', $this->guid_ticket )
+				->update(['guid_master' => $this->guid_master ]);
+
+				Board::where('guid_master', null )
 				->where('guid_ticket', $this->guid_ticket )
 				->update(['guid_master' => $this->guid_master ]);
 			}
@@ -1382,17 +1478,19 @@ class Node
 					->first();
 
 				if($ticket != null ){
-					$newTicket = new Ticket([
-				    	'ticket_no' => $ticket->ticket_no,
-				    	'guid_master' => $ticket->guid_master,
-				    	'guid_ticket' => $ticket->guid_ticket,
-				    	'scanner_id' => $this->scanner_id,
-				    	'status' => 'OUT',
-				    	'judge' => 'OK',
-				    	'scan_nik' => $this->parameter['nik'],
-				    ]);
-
-				    $newTicket->save();
+					if($ticket->status == 'IN'){
+						$newTicket = new Ticket([
+					    	'ticket_no' => $ticket->ticket_no,
+					    	'guid_master' => $ticket->guid_master,
+					    	'guid_ticket' => $ticket->guid_ticket,
+					    	'scanner_id' => $this->scanner_id,
+					    	'status' => 'OUT',
+					    	'judge' => 'OK',
+					    	'scan_nik' => $this->parameter['nik'],
+					    ]);
+	
+					    $newTicket->save();
+					}
 				}
 			}
 		}
