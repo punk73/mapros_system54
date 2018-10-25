@@ -32,6 +32,8 @@
 
                             <div class="form-group" v-if='isJoin'>
                                 <label class="col-md-offset-4 col-md-6"> Proses Join Active : <toggle-button v-model="isJoin" :color="'#2ab27b'" :labels="true" /></label>
+
+                                <label class="col-md-offset-4 col-md-6"> Join Ke {{ computedJumlahJoin }} dari {{config.jumlahJoin}}</label>
                             </div>
 
                             <div class="form-group" v-if="config.isAutolinezero" >
@@ -73,15 +75,15 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" v-if='isLoading' >
                                 <div class="col-md-3 col-md-offset-4">
-                                    <loading v-if='isLoading' />
+                                    <loading />
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
-                                    <div class="well" :style="styles" >
+                                    <div class="well no-bottom-margin" :style="styles" >
                                         <div class="custom-color">
                                             <div class="row">
                                                <div class="col-md-6 col-sm-6 col-xs-7">
@@ -312,6 +314,10 @@
 
             clonedResponseData(){
                 return JSON.parse(JSON.stringify( this.responseData ))
+            },
+
+            computedJumlahJoin(){
+                return this.jumlahJoin + 1;
             },
         },
 
@@ -871,6 +877,8 @@
     .black {
         border-color: #636B6F;
         border-width: 2px;
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 
     .txt-color {
@@ -879,5 +887,14 @@
 
     .bg-color {
         background-color: #edf108;
+    }
+
+    h1, h2, h3, h4 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .no-bottom-margin {
+        margin-bottom: auto;
     }
 </style>

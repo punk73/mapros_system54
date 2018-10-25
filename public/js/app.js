@@ -31924,6 +31924,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 var axios = __webpack_require__(7);
 
@@ -32067,6 +32069,9 @@ var axios = __webpack_require__(7);
 
         clonedResponseData: function clonedResponseData() {
             return JSON.parse(JSON.stringify(this.responseData));
+        },
+        computedJumlahJoin: function computedJumlahJoin() {
+            return this.jumlahJoin + 1;
         }
     },
 
@@ -35105,7 +35110,7 @@ if (typeof jQuery === 'undefined') {
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(2)();
-exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n}\n.txt-color {\n    color: #ffffff;\n}\n.bg-color {\n    background-color: #edf108;\n}\n", ""]);
+exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.txt-color {\n    color: #ffffff;\n}\n.bg-color {\n    background-color: #edf108;\n}\nh1, h2, h3, h4 {\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.no-bottom-margin {\n    margin-bottom: auto;\n}\n", ""]);
 
 /***/ }),
 /* 54 */
@@ -46061,7 +46066,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "isJoin"
     }
-  })], 1)]) : _vm._e(), _vm._v(" "), (_vm.config.isAutolinezero) ? _c('div', {
+  })], 1), _vm._v(" "), _c('label', {
+    staticClass: "col-md-offset-4 col-md-6"
+  }, [_vm._v(" Join Ke " + _vm._s(_vm.computedJumlahJoin) + " dari " + _vm._s(_vm.config.jumlahJoin))])]) : _vm._e(), _vm._v(" "), (_vm.config.isAutolinezero) ? _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label"
@@ -46162,16 +46169,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "form.symptom"
     }
-  })], 1) : _vm._e()]) : _vm._e(), _vm._v(" "), _c('div', {
+  })], 1) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.isLoading) ? _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-4"
-  }, [(_vm.isLoading) ? _c('loading') : _vm._e()], 1)]), _vm._v(" "), _c('div', {
+  }, [_c('loading')], 1)]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-12 col-xs-12"
   }, [_c('div', {
-    staticClass: "well",
+    staticClass: "well no-bottom-margin",
     style: (_vm.styles)
   }, [_c('div', {
     staticClass: "custom-color"
