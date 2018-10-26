@@ -32334,7 +32334,7 @@ var axios = __webpack_require__(7);
             this.responseData = response.data;
             this.hasError = false;
             this.error = message;
-            this.detailError = message;
+            this.detailError = this.responseData; //message;
 
             if (response.data.node.status == 'IN') {
                 if (this.config.isSendAjax) {
@@ -32423,7 +32423,12 @@ var axios = __webpack_require__(7);
         showDetailError: function showDetailError() {
             // show modal containing the error 
             console.log(this.detailError);
-            var errors = this.detailError.errors;
+            var errors = void 0;
+            if (this.detailError.errors) {
+                errors = this.detailError.errors;
+            } else {
+                errors = this.detailError;
+            }
             this.toggleModal('Information', errors);
         },
         returnJoin: function returnJoin(errors) {

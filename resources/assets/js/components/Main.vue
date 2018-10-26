@@ -584,7 +584,7 @@
                 this.responseData = response.data;
                 this.hasError = false;
                 this.error = message;
-                this.detailError = message;
+                this.detailError = this.responseData; //message;
 
                 if (response.data.node.status == 'IN') { 
                     if( this.config.isSendAjax ){
@@ -679,7 +679,12 @@
             showDetailError(){
                 // show modal containing the error 
                 console.log(this.detailError )
-                let errors = this.detailError.errors
+                let errors;
+                if(this.detailError.errors){
+                    errors = this.detailError.errors
+                }else{
+                    errors = this.detailError
+                }
                 this.toggleModal('Information', errors )
             },
 
