@@ -77,6 +77,8 @@ class Node
 			$this->initModelCode(); //dependence to $this->parameter;
 			// setup model (board, ticket, or master)
 			$this->setModel($parameter);
+			// setup lot no
+			$this->setLotno($parameter['board_id']);
 			// setup scanner_id;
 			$ip = $parameter['ip'];
 			$this->setScannerId($ip);
@@ -214,10 +216,8 @@ class Node
 	public function initModelCode(){
 		if (strlen($this->parameter['board_id']) == 24 ) {
 			$this->model_code = substr($this->parameter['board_id'], 0, 11 );
-			$this->setLotno($this->parameter['board_id']);
 		}else if(strlen($this->parameter['board_id']) <= 23){ //ini 23 untuk akomodir mecha serial yg 24 character
 			$this->model_code = substr($this->parameter['board_id'], 0, 5);
-			$this->setLotno($this->parameter['board_id']);
 		}else{
 			//ini untuk critical parts; gausah di substr dulu;
 			$this->model_code = $this->parameter['board_id'];
@@ -467,13 +467,13 @@ class Node
 	public function setGuidTicket($guid){
 		if ($this->getModelType() == 'board') {
 			// if it has a sibling, then
-			if( $this->hasTicketSibling() ){
+			if( $this->hasTicketSibling($guid) ){
 				//verify it has same modelname and lotno
 				$this->verifyModelnameAndLotno('ticket');
 				// if failed, throw error that the previous board has different modelname & lotno
 			}
 
-			if($this->hasMasterSibling() ){
+			if($this->hasMasterSibling($guid) ){
 				// verify it has same modelname and lotno
 				$this->verifyModelnameAndLotno('master');
 				// if failed, throw error that the previous board has different modelname & lotno
@@ -485,14 +485,15 @@ class Node
 
 	public function setGuidMaster($guid){
 		if ($this->getModelType() == 'board') {
+
 			// if it has a sibling, then
-			if( $this->hasTicketSibling() ){
+			if( $this->hasTicketSibling($guid) ){
 				//verify it has same modelname and lotno
 				$this->verifyModelnameAndLotno('ticket');
 				// if failed, throw error that the previous board has different modelname & lotno
 			}
 
-			if($this->hasMasterSibling() ){
+			if($this->hasMasterSibling($guid) ){
 				// verify it has same modelname and lotno
 				$this->verifyModelnameAndLotno('master');
 				// if failed, throw error that the previous board has different modelname & lotno
@@ -514,14 +515,14 @@ class Node
 	public function verifyModelnameAndLotno($type = 'ticket'){
 		// get board based on guid; wheter it is 
 		if($type == 'ticket'){
-			$prevBoard = Board::where( 'guid_ticket' , '!=', null )
-				->where( 'guid_ticket' , $this->guid_ticket )
+			$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_ticket' , $this->guid_ticket )
+				->orderBy('created_at', 'desc')
 				->first();
 		}
 
 		if($type == 'master'){
-			$prevBoard = Board::where( 'guid_master' , '!=', null )
-				->where( 'guid_master' , $this->guid_master )
+			$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_master' , $this->guid_master )
+				->orderBy('created_at', 'desc')
 				->first();
 		}
 
@@ -567,18 +568,21 @@ class Node
 	}
 
 	// only work for board because only 
-	public function hasTicketSibling(){
+	public function hasTicketSibling($guidParam = null ){
+		$guid = ( !is_null( $guidParam)) ? $guidParam : $this->getGuidTicket();
 		if( $this->getModelType() == 'board' ){
 			return Board::where('guid_ticket', '!=', null )
-			->where('guid_ticket', $this->guid_ticket )
+			->where('guid_ticket', $guid )
 			->exists();
 		}
 	}
 	// only work for board
-	public function hasMasterSibling(){
+	public function hasMasterSibling($guidParam = null){
+		$guid = ( !is_null( $guidParam)) ? $guidParam : $this->getGuidMaster();
+		
 		if( $this->getModelType() == 'board' ){
 			return Board::where('guid_master', '!=', null )
-			->where('guid_master', $this->guid_master )
+			->where('guid_master', $guid )
 			->exists();
 		}
 	}
@@ -1027,11 +1031,11 @@ class Node
 			return;
 		}
 
-		if( count($parameterBoardId) <= 16 ){
-			$lotno = substr($parameterBoardId, 9, 3);
+		if( strlen($parameterBoardId) <= 24 ){
+			$lotno = substr($parameterBoardId, 16, 4);
 		}else{
 			// untuk 24 char
-			$lotno = substr($parameterBoardId, 16, 4);
+			$lotno = substr($parameterBoardId, 9, 3);
 		}
 		// kalau hasil substr ga ketemu, dia bakal return false;
 		// untuk mengatasi itu, maka simpan saja empty string instead of 0;
