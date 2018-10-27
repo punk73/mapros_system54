@@ -541,7 +541,7 @@ class Node
 		}
 
 		if( $prevBoard->lotno != $this->lotno ){
-			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ADA SCAN BERBEDA DENGAN LOT NUMBER SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
+			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ANDA SCAN BERBEDA DENGAN LOT NUMBER BOARD SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
 				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
 				'node' => json_decode($this, true ),
 				'prevBoard' => $prevBoard,
