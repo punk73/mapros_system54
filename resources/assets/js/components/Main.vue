@@ -190,7 +190,7 @@
                     modelname:'',
                     is_solder:false,
                     judge : 'OK', //default nya OK
-                    symptom: [{code:99, category: 'OTHER'}], //default value for symptom is empty array;
+                    symptom: [], //default value for symptom is empty array;
                 },
 
                 isNG : false,
@@ -298,6 +298,7 @@
                 var judge;
                 if(isNG){
                     judge = 'NG';
+                    this.form.symptom = [{code:99, category: 'OTHER'}]; //DEFAULT VALUE
                     this.fetchSymptomCode();
                 }else{
                     judge = 'OK';
