@@ -37,8 +37,7 @@ class TestController extends Controller
 
 	public function store(Request $request){
 		$node = new Node($request->all());
-		return $node->hasChildren();
-		return $response = ($node->hasChildren()) ? 'has children true': 'has children false';
+		return ($node->verifyModelnameAndLotno()) ? 'true' : 'false' ;
 	}
 
 	public function testGuzzle(Request $request){

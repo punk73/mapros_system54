@@ -513,39 +513,46 @@ class Node
 	* this method called in setGuidMaster & setGuidTicket for verification
 	* guid parameter is a must since this method called before initGuid finish
 	*/
-	public function verifyModelnameAndLotno($type = 'ticket', $guid ){
-		// get board based on guid; wheter it is 
-		if($type == 'ticket'){
-			$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_ticket' , $guid )
-				->orderBy('created_at', 'desc')
-				->first();
-		}
+	public function verifyModelnameAndLotno($type = 'ticket', $guid = null ){
+		// return setting('admin.strict_checking');
+		if(function_exists('setting')){
+			// jika pengaturan admin.strict_checking == false, maka method ini langsung return saja, gausah dilanjut.
+			// atau dengan kata lain, jangan test
+			if (setting('admin.strict_checking')) {
+				// get board based on guid; wheter it is 
+				if($type == 'ticket'){
+					$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_ticket' , $guid )
+						->orderBy('created_at', 'desc')
+						->first();
+				}
 
-		if($type == 'master'){
-			$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_master' , $guid )
-				->orderBy('created_at', 'desc')
-				->first();
-		}
+				if($type == 'master'){
+					$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_master' , $guid )
+						->orderBy('created_at', 'desc')
+						->first();
+				}
 
-		// due to circular dependencies, we cannot use $this->modelname here, instead, we use user parameter;
-		$modelname = (isset($this->modelname)) ? $this->modelname : $this->parameter['modelname'];
+				// due to circular dependencies, we cannot use $this->modelname here, instead, we use user parameter;
+				$modelname = (isset($this->modelname)) ? $this->modelname : $this->parameter['modelname'];
 
-		if( $prevBoard->modelname != $modelname ){
-			// if current model sent by user is different from previous insalled board model, return confirmation view
-			throw new StoreResourceFailedException($this->confirmation_view_error, [
-				'message' => "BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. BOARD MODEL SEKARANG = '{$modelname}' , BOARD MODEL SEBELUMNYA '{$prevBoard->modelname}'!",
-				'node' => json_decode($this, true ),
-				'prevBoard' => $prevBoard,
-				'server-modelname' => $prevBoard->modelname,
-			]);
-		}
+				if( $prevBoard->modelname != $modelname ){
+					// if current model sent by user is different from previous insalled board model, return confirmation view
+					throw new StoreResourceFailedException($this->confirmation_view_error, [
+						'message' => "BOARD MODEL YANG ANDA SCAN BERBEDA DENGAN BOARD MODEL SEBELUMNYA. BOARD MODEL SEKARANG = '{$modelname}' , BOARD MODEL SEBELUMNYA '{$prevBoard->modelname}'!",
+						'node' => json_decode($this, true ),
+						'prevBoard' => $prevBoard,
+						'server-modelname' => $prevBoard->modelname,
+					]);
+				}
 
-		if( $prevBoard->lotno != $this->lotno ){
-			throw new StoreResourceFailedException("LOT NUMBER BOARD YG ANDA SCAN BERBEDA DENGAN LOT NUMBER BOARD SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
-				'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
-				'node' => json_decode($this, true ),
-				'prevBoard' => $prevBoard,
-			]);
+				if( $prevBoard->lotno != $this->lotno ){
+					throw new StoreResourceFailedException("LOT NUMBER BOARD YG ANDA SCAN BERBEDA DENGAN LOT NUMBER BOARD SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
+						'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
+						'node' => json_decode($this, true ),
+						'prevBoard' => $prevBoard,
+					]);
+				}		
+			}
 		}
 	}
 
