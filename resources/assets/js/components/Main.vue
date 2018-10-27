@@ -190,7 +190,7 @@
                     modelname:'',
                     is_solder:false,
                     judge : 'OK', //default nya OK
-                    symptom: [], //default value for symptom is empty array;
+                    symptom: [{code:99, category: 'OTHER'}], //default value for symptom is empty array;
                 },
 
                 isNG : false,
