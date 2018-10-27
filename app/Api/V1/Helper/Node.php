@@ -469,13 +469,13 @@ class Node
 			// if it has a sibling, then
 			if( $this->hasTicketSibling($guid) ){
 				//verify it has same modelname and lotno
-				$this->verifyModelnameAndLotno('ticket');
+				$this->verifyModelnameAndLotno('ticket', $guid);
 				// if failed, throw error that the previous board has different modelname & lotno
 			}
 
 			if($this->hasMasterSibling($guid) ){
 				// verify it has same modelname and lotno
-				$this->verifyModelnameAndLotno('master');
+				$this->verifyModelnameAndLotno('master', $guid);
 				// if failed, throw error that the previous board has different modelname & lotno
 			}
 		}
@@ -489,13 +489,13 @@ class Node
 			// if it has a sibling, then
 			if( $this->hasTicketSibling($guid) ){
 				//verify it has same modelname and lotno
-				$this->verifyModelnameAndLotno('ticket');
+				$this->verifyModelnameAndLotno('ticket', $guid);
 				// if failed, throw error that the previous board has different modelname & lotno
 			}
 
 			if($this->hasMasterSibling($guid) ){
 				// verify it has same modelname and lotno
-				$this->verifyModelnameAndLotno('master');
+				$this->verifyModelnameAndLotno('master', $guid);
 				// if failed, throw error that the previous board has different modelname & lotno
 			}
 		}
@@ -511,17 +511,18 @@ class Node
 	/*
 	* @parameter = 'ticket' or 'master'
 	* this method called in setGuidMaster & setGuidTicket for verification
+	* guid parameter is a must since this method called before initGuid finish
 	*/
-	public function verifyModelnameAndLotno($type = 'ticket'){
+	public function verifyModelnameAndLotno($type = 'ticket', $guid ){
 		// get board based on guid; wheter it is 
 		if($type == 'ticket'){
-			$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_ticket' , $this->guid_ticket )
+			$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_ticket' , $guid )
 				->orderBy('created_at', 'desc')
 				->first();
 		}
 
 		if($type == 'master'){
-			$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_master' , $this->guid_master )
+			$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_master' , $guid )
 				->orderBy('created_at', 'desc')
 				->first();
 		}
