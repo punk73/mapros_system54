@@ -1025,6 +1025,31 @@ class Node
 		return $result;
 	}
 
+	/*
+	* bool isSettingContainChildrenOf();
+	*
+	*/
+	public function isSettingContainChildrenOf($parent = 'master'){
+		$tableName = $parent.'s';
+		$level = ColumnSetting::select(['level'])->where('table_name', $tableName )->first();
+		
+		if (!$level) {
+			throw new StoreResourceFailedException("column setting dengan table_name = {$tableName} tidak ditemukan.", [
+
+			]);
+		}
+
+		$level = $level['level'];
+		$result = false;
+		foreach ($this->column_setting as $key => $setting) {
+			$settingLevel = $setting['level'];
+			if($settingLevel < $level){
+				return $result = true;
+			}
+		}
+		return $result;
+	}
+
 	public function setModelname($modelname){
 		$this->modelname = $modelname;
 	}
