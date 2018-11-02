@@ -58,6 +58,11 @@ class MainController extends Controller
 	*
 	*/
 	private function isMoreThanStdTime($currentStep, $lineprocess ){
+		if( !isset( $currentStep['created_at']) ){
+			//kalau currentStep nya ga contain created_at, return true untuk handle type node baru, lcd part
+			return true; 
+		}
+
 		$now = Carbon::now();
 		$lastScanned = Carbon::parse($currentStep['created_at']);
 
@@ -168,6 +173,8 @@ class MainController extends Controller
 		if($node->getModelType() == 'master'){
 			return $this->runProcedureMaster($node);
 		}
+
+		return $this->runProcedureMaster($node);	
 	}
 
 	private function processBoard(Node $node){
@@ -461,7 +468,7 @@ class MainController extends Controller
 
 	private function runProcedureTicket(Node $node, $isRunningMaster=false ){
 		// memastikan proses ini belum In && join proses
-		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainChildrenOf('ticket')) && ($node->isSettingContain('ticket')) ){
 
 			$node->setStatus('IN');
 			$node->setJudge("OK"); //in harus selalu OK, no matter what;
@@ -474,7 +481,7 @@ class MainController extends Controller
 		};
 
 		//cek apakah ticket sudah punya anak;
-		if(!$node->hasChildren() && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){ 
+		if(!$node->hasChildren() && ($node->isSettingContainChildrenOf('ticket')) && ($node->isSettingContain('ticket')) ){ 
 			//kalau belum, return view lagi;
 			throw new StoreResourceFailedException("view", [
 				'node' => json_decode($node, true ),

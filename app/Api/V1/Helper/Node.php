@@ -272,7 +272,7 @@ class Node
 
 			if($this->getModelType() == 'ticket'){
 				// join dan column setting tidak contain board;
-				if( $this->isJoin() && !$this->isSettingContain('board') ){
+				if( $this->isJoin() && $this->isSettingContain('master') ){
 					// cek apakah guid master sudah di generated based on ticket;
 					// untuk cek guid master sudah generate atau belum dari ticket, masih kesulitan, jadi diganti dengan
 					// cek apakah ini join & seting tidak contain board, karena kalau dia join dan tidak kontain board, maka pasti dia contain master; that's why langkah ini harus punya guidParam as guid_master nya;
@@ -328,28 +328,13 @@ class Node
 			// if not, 
 		}
 
-		if($this->getModelType() == 'master'){
+		else if($this->getModelType() == 'master'){
 			$this->setGuidMaster($guid);
 		}
 
-		if($this->getModelType() == 'board'){
+		else /*($this->getModelType() == 'board')*/{
 			// cek column setting, this step is join atau bkn,
 			if($this->isJoin()){
-				// $settings = $this->getColumnSetting();
-
-				// kalo join, apa dengan apa; 
-				// this code causing guid_model & guid master same. we need to re think about it.
-				/*foreach ($settings as $key => $setting ) {
-				 	$settingName = str_singular($setting['table_name']);
-
-				 	if( $settingName == 'master' ){
-				 		$this->setGuidMaster($guid);
-				 	}
-
-					if( $settingName == 'ticket' ){
-				 		$this->setGuidTicket($guid);
-				 	}				 
-				};*/
 				/*this changes is to avoid same guid_master & guid_ticket in input 1 audio which is obiously data anomaly*/
 				if( $this->isSettingContain('master') ){
 			 		$this->setGuidMaster($guid);
@@ -933,43 +918,13 @@ class Node
 			'side',
 		]);
 
-		if($this->getModelType() == 'ticket'){
+		/*if($this->getModelType() == 'ticket'){
 			if (is_null($this->guid_ticket)) {
 				throw new StoreResourceFailedException("guid ticket is null", [
 					'node' => json_decode($this, true),
 				]);
 			}
-
-			// kalau sudah generated, dan proses nya adalah proses join, serta sudah ada proses In ;
-			/*if ($this->isGuidGenerated() && $this->isJoin() && $this->isIn() && $this->isSettingContainBoard() ) {
-				// ambil dulu modelnya dari table board, kemudian pass hasilnya kesini;
-				$boardPanel = Board::select([
-					'board_id'
-				])->where('guid_ticket', $this->guid_ticket )
-				->orderBy('id', 'desc')
-				->first();
-
-				if (is_null($boardPanel)) {
-					// it's mean the operator not scan the board after it; so, it need to return view of join;
-					throw new StoreResourceFailedException("view", [
-						'message' => "board with guid_ticket ".$this->guid_ticket." not found! this is join process you need to scan the board first",
-						'node' => json_decode($this, true ),
-						'nik' => $this->getNik(),
-						'ip' => $this->getScanner()['ip_address'],
-						'dummy_id' => $this->dummy_id, 
-						'guid'=>    $this->getGuidTicket(),
-					]);
-				}
-
-				// we substr based on length of $this->model_code; wheter it is 5 or 11;
-				$board_id = substr($boardPanel['board_id'], 0, strlen( $this->getModelCode() ) );
-				# code... 
-				$model = $model->where('code', $board_id );
-
-			}else {
-
-			}*/
-			
+	
 			// kalau belum, kita setup model based on user parameter;
 			// ini untuk meng akomodir kebutuhan scan panel sebelumn proses join dengan board;
 			// detect model from dummy card;
@@ -985,6 +940,18 @@ class Node
 		}else{
 			// this is from bigs db
 			$model = $model->where('code', $board_id );
+		}*/
+		if($this->getModelType() == 'board'){
+			$model = $model->where('code', $board_id );
+		}else{
+			if (is_null($this->guid_ticket) && ($this->getModelType() == 'ticket') ) {
+				throw new StoreResourceFailedException("guid ticket is null", [
+					'node' => json_decode($this, true),
+				]);
+			}
+
+			$this->verifyParameterModelname();
+			$model = $model->where('name', $this->parameter['modelname'] );
 		}
 
 		$model = $model->first();
@@ -992,7 +959,8 @@ class Node
 		if ($model == null) {
 			throw new StoreResourceFailedException("ANDA SCAN '{$board_id}'. PENGATURAN DATA DENGAN NAMA MODEL '{$this->parameter['modelname']}' TIDAK DITEMUKAN DI BOARD ID GENERATOR SYSTEM! PASTIKAN CURRENT MODEL CONFIG BENAR!", [
 				'node' => json_decode($this, true ),
-				'model_type' => $board_id
+				'model_type' => $this->getModelType(),
+				'scanned_value' => $board_id,
 			]);
 
 		}
@@ -1027,7 +995,8 @@ class Node
 
 	/*
 	* bool isSettingContainChildrenOf();
-	*
+	* level 1 adalah yg paling tinggi. 
+	* level 2, adalah anaknya level 1;
 	*/
 	public function isSettingContainChildrenOf($parent = 'master'){
 		$tableName = $parent.'s';
@@ -1040,10 +1009,11 @@ class Node
 		}
 
 		$level = $level['level'];
+		// return $level;
 		$result = false;
 		foreach ($this->column_setting as $key => $setting) {
 			$settingLevel = $setting['level'];
-			if($settingLevel < $level){
+			if($settingLevel > $level){
 				return $result = true;
 			}
 		}
