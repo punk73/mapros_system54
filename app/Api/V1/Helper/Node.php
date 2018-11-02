@@ -6,6 +6,7 @@
 namespace App\Api\V1\Helper;
 use App\Model;
 use App\Board;
+use App\Part;
 use App\Ticket;
 use App\Critical;
 use App\Scanner;
@@ -606,28 +607,26 @@ class Node
 			->count('board_id');
 
 			$totalChildren = $ticket + $board;
-
-			/*return [
-				'ticket' => $ticket,
-				'board' => $board,
-				'totalChildren' => $totalChildren,
-				'join_qty' => $joinQty,
-				'hasChildren' => ( $totalChildren >= $joinQty ),
-				'guid_master' => $this->guid_master,
-			];*/
 		}
 
 		if($this->getModelType() == 'ticket' && ($this->isSettingContain('master') === false ) ){
 			/* 
 				betul ga ini beneran anak dari ticket itu sendiri ??
 				jangan2 yg masuk kesini itu master yg sedang scan anaknya yaitu tickets;
-	
 			*/
-			$totalChildren = Board::distinct()
+			$boards = Board::distinct()
 			->where('guid_ticket', $this->getGuidTicket() )
 			->where('scanner_id', $this->scanner_id )
-			->count('board_id');
+			->count("board_id");
+
+			$parts = Part::distinct()
+			->where('guid_ticket', $this->getGuidTicket() )
+			->where('scanner_id', $this->scanner_id )
+			->count("barcode");
+
+			$totalChildren = $boards + $parts;
 		}else{
+			// ini ticket yg contain master. ticket as children
 			$guid_master = $this->getGuidMaster();
 
 			$ticket = Ticket::distinct()

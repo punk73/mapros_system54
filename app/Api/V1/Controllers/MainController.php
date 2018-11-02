@@ -163,9 +163,6 @@ class MainController extends Controller
 			return $this->processBoard($node);
 		}
 
-		/*if($node->getModelType() == 'board'){
-			return 'critical';
-		}*/ 
 		if($node->getModelType() == 'ticket'){
 			return $this->runProcedureTicket($node);
 		}
@@ -174,10 +171,11 @@ class MainController extends Controller
 			return $this->runProcedureMaster($node);
 		}
 
-		return $this->runProcedureMaster($node);	
+		return $this->processBoard($node); //lcd atau parts
 	}
 
 	private function processBoard(Node $node){
+
 		// cek current is null;
 		// cek kondisi sebelumnya is null
 		if(!$node->isExists()){ //board null
@@ -467,9 +465,10 @@ class MainController extends Controller
 	}
 
 	private function runProcedureTicket(Node $node, $isRunningMaster=false ){
+
 		// memastikan proses ini belum In && join proses
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainChildrenOf('ticket')) && ($node->isSettingContain('ticket')) ){
-
+			// lcd in nya dari sini, that's why ketika masuk processBoard, dia langsung out;
 			$node->setStatus('IN');
 			$node->setJudge("OK"); //in harus selalu OK, no matter what;
 			if(!$node->save()){
@@ -499,6 +498,7 @@ class MainController extends Controller
 	}
 
 	private function runProcedureMaster(Node $node){
+
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 
 			$node->setStatus('IN');
@@ -524,10 +524,10 @@ class MainController extends Controller
 			]);	
 		}
 
-		$this->runProcedureTicket($node , true );
+		return $this->runProcedureTicket($node , true );
 		
-		$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
-		return $this->returnValue;
+		// $this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
+		// return $this->returnValue;
 	}
 
 	public function destroy(BoardRequest $request){
