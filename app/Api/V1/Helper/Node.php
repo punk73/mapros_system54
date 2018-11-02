@@ -21,9 +21,14 @@ use App\Guid;
 use GuzzleHttp\Client;
 use App\Endpoint;
 use App\Symptom;
+use App\Api\V1\Interfaces\ColumnSettingInterface;
+use App\Api\V1\Traits\ColumnSettingTrait;
 
-class Node
+
+class Node implements ColumnSettingInterface
 {
+	use ColumnSettingTrait;
+
 	protected $model;
 	protected $model_code; // 5 char atau 11 char awal
 	protected $allowedStatus = [
@@ -58,7 +63,7 @@ class Node
 	protected $model_type; // it's board, ticket, or master
 	protected $id_type; //board, panel, master or mecha;
 	protected $step; // step is contain data in table boads, tickets, or master based on modeltype
-	protected $column_setting;
+	//protected $column_setting; //move to column setting trait
 	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
 	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type for repair purposes
 	protected $parameter;
@@ -174,14 +179,6 @@ class Node
 		$this->scanner_id = $scanner['id'];
 	}
 
-	public function isJoin(){
-		if ($this->column_setting == null ) {
-			$this->column_setting = [];
-		}
-
-		return (count($this->column_setting) > 1 );
-	}
-
 	public function initColumnSetting(){
 		if ($this->lineprocess == null ) {
 			throw new StoreResourceFailedException("Lineprocess Tidak Ditemukan", [
@@ -195,14 +192,6 @@ class Node
 
 	public function setDummyId($dummy_id){
 		$this->dummy_id = $dummy_id;
-	}
-
-	public function getColumnSetting(){
-		return $this->column_setting;
-	}
-
-	public function setColumnSetting( $columnSetting = null ){
-		$this->column_setting = $columnSetting;
 	}
 
 	// dipanggil di setmodel
@@ -236,7 +225,8 @@ class Node
 	public function setModel($parameter){
 		
 
-		$setting = ColumnSetting::where('code_prefix', $this->model_code )->first();
+		$setting = $this->getColumnSettingWhereCodePrefix($this->model_code);
+		// ColumnSetting::where('code_prefix', $this->model_code )->first();
 		if(!is_null($setting)){
 			$className = 'App\\' . studly_case(str_singular($setting->table_name));
 
@@ -249,7 +239,7 @@ class Node
 			}
 
 		}else{
-			$setting = ColumnSetting::where('code_prefix', null )->first();
+			// $setting = ColumnSetting::where('code_prefix', null )->first();
 			// fwrite(STDOUT, print_r($setting));
 			$model = new Board;
 			$dummy_column = 'board_id';
@@ -987,33 +977,6 @@ class Node
 			$settingTable = str_singular( $setting['table_name'] );
 			if($settingTable == $modelType ){
 				$result = true;
-			}
-		}
-		return $result;
-	}
-
-	/*
-	* bool isSettingContainChildrenOf();
-	* level 1 adalah yg paling tinggi. 
-	* level 2, adalah anaknya level 1;
-	*/
-	public function isSettingContainChildrenOf($parent = 'master'){
-		$tableName = $parent.'s';
-		$level = ColumnSetting::select(['level'])->where('table_name', $tableName )->first();
-		
-		if (!$level) {
-			throw new StoreResourceFailedException("column setting dengan table_name = {$tableName} tidak ditemukan.", [
-
-			]);
-		}
-
-		$level = $level['level'];
-		// return $level;
-		$result = false;
-		foreach ($this->column_setting as $key => $setting) {
-			$settingLevel = $setting['level'];
-			if($settingLevel > $level){
-				return $result = true;
 			}
 		}
 		return $result;

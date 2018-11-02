@@ -48,7 +48,7 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'database' => database_path('database.sqlite'), //env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => ':memory:', //database_path('database.sqlite'), //env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
         ],
         // main program env connection
