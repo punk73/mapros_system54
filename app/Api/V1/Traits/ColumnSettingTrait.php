@@ -33,15 +33,9 @@ trait ColumnSettingTrait {
 	* level 1 adalah yg paling tinggi. 
 	* level 2, adalah anaknya level 1;
 	*/
-	public function isSettingContainChildrenOf($parent = 'master', $columnSettingClass = 'App\\ColumnSetting'){
+	public function isSettingContainChildrenOf($parent = 'master'){
 		$tableName = $parent.'s';
-		if(!class_exists($columnSettingClass)){
-			throw new StoreResourceFailedException("class {$columnSettingClass} not found", [
-				'message' => 'class model tidak ditemukan'
-			]);
-		}
-		$class = new $columnSettingClass;
-		$level = $class->select(['level'])->where('table_name', $tableName )->first();
+		$level = ColumnSetting::select(['level'])->where('table_name', $tableName )->first();
 		
 		if (!$level) {
 			throw new StoreResourceFailedException("column setting dengan table_name = {$tableName} tidak ditemukan.", [
