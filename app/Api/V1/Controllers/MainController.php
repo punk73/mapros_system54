@@ -58,6 +58,11 @@ class MainController extends Controller
 	*
 	*/
 	private function isMoreThanStdTime($currentStep, $lineprocess ){
+		if( !isset( $currentStep['created_at']) ){
+			//kalau currentStep nya ga contain created_at, return true untuk handle type node baru, lcd part
+			return true; 
+		}
+
 		$now = Carbon::now();
 		$lastScanned = Carbon::parse($currentStep['created_at']);
 
@@ -158,9 +163,6 @@ class MainController extends Controller
 			return $this->processBoard($node);
 		}
 
-		/*if($node->getModelType() == 'board'){
-			return 'critical';
-		}*/ 
 		if($node->getModelType() == 'ticket'){
 			return $this->runProcedureTicket($node);
 		}
@@ -168,9 +170,12 @@ class MainController extends Controller
 		if($node->getModelType() == 'master'){
 			return $this->runProcedureMaster($node);
 		}
+
+		return $this->processBoard($node); //lcd atau parts
 	}
 
 	private function processBoard(Node $node){
+
 		// cek current is null;
 		// cek kondisi sebelumnya is null
 		if(!$node->isExists()){ //board null
@@ -460,9 +465,10 @@ class MainController extends Controller
 	}
 
 	private function runProcedureTicket(Node $node, $isRunningMaster=false ){
-		// memastikan proses ini belum In && join proses
-		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){
 
+		// memastikan proses ini belum In && join proses
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainChildrenOf('ticket')) && ($node->isSettingContain('ticket')) ){
+			// lcd in nya dari sini, that's why ketika masuk processBoard, dia langsung out;
 			$node->setStatus('IN');
 			$node->setJudge("OK"); //in harus selalu OK, no matter what;
 			if(!$node->save()){
@@ -474,7 +480,7 @@ class MainController extends Controller
 		};
 
 		//cek apakah ticket sudah punya anak;
-		if(!$node->hasChildren() && ($node->isSettingContainBoard()) && ($node->isSettingContain('ticket')) ){ 
+		if(!$node->hasChildren() && ($node->isSettingContainChildrenOf('ticket')) && ($node->isSettingContain('ticket')) ){ 
 			//kalau belum, return view lagi;
 			throw new StoreResourceFailedException("view", [
 				'node' => json_decode($node, true ),
@@ -492,6 +498,7 @@ class MainController extends Controller
 	}
 
 	private function runProcedureMaster(Node $node){
+
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 
 			$node->setStatus('IN');
@@ -517,10 +524,10 @@ class MainController extends Controller
 			]);	
 		}
 
-		$this->runProcedureTicket($node , true );
+		return $this->runProcedureTicket($node , true );
 		
-		$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
-		return $this->returnValue;
+		// $this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
+		// return $this->returnValue;
 	}
 
 	public function destroy(BoardRequest $request){
