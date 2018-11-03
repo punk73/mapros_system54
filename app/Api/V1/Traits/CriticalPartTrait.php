@@ -14,12 +14,13 @@ trait CriticalPartTrait {
 	public function setCriticalPart($criticalParts){
 		$this->criticalParts = $criticalParts;
 	}
+	
 	public function getCriticalPart(){
 		return $this->criticalParts;
 	}
 	
 	public function extractCriticalPart($criticalPart){
-		$board_id = $criticalParts;
+		$board_id = $criticalPart;
 		$result = [];
 		$result['part_no'] 	= substr($board_id, 0, 15);
 		$result['po'] 		= trim( substr($board_id, 16, 7));
