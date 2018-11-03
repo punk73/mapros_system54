@@ -1,0 +1,12 @@
+<?php
+namespace App\Api\V1\Interfaces;
+
+interface CriticalPartInterface {
+	public function save();
+	public function setCriticalPart($criticalPart);
+	public function getCriticalPart();
+	public function isCriticalPart($criticalPart);
+	public function isCriticalExists($result);
+	public function insertIntoCritical($criticalPart);
+	public function extractCriticalPart($criticalPart);
+}

@@ -29,6 +29,7 @@ class MainController extends Controller
 		'modelname',
 		'judge',
 		'symptom',
+		'critical_part', //new due to critical part scan;
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;
@@ -73,7 +74,7 @@ class MainController extends Controller
 
 	public function store(BoardRequest $request ){
 		$parameter = $this->getParameter($request);
-		
+		/*isset($parameter['critical_part'])*/
 		if( strlen($parameter['board_id']) >= 80 ){
 			return $this->runCritical($parameter);
 		}else{

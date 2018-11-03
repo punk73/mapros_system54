@@ -22,12 +22,13 @@ use GuzzleHttp\Client;
 use App\Endpoint;
 use App\Symptom;
 use App\Api\V1\Interfaces\ColumnSettingInterface;
+use App\Api\V1\Interfaces\CriticalPartInterface;
 use App\Api\V1\Traits\ColumnSettingTrait;
+use App\Api\V1\Traits\CriticalPartTrait;
 
-
-class Node implements ColumnSettingInterface
+class Node implements ColumnSettingInterface, CriticalPartInterface
 {
-	use ColumnSettingTrait;
+	use ColumnSettingTrait, CriticalPartTrait;
 
 	protected $model;
 	protected $model_code; // 5 char atau 11 char awal
@@ -72,6 +73,7 @@ class Node implements ColumnSettingInterface
 	protected $joinTimesLeft = 0; //jumlah sisa join, always update when hasChildren triggered
 	// for conditional error view;
 	protected $confirmation_view_error = 'confirmation-view';
+	// protected $criticalParts; //dari CriticalPartTrait
 	protected $firstSequence = false;
 
 	function __construct($parameter, $debug = false ){
@@ -118,6 +120,8 @@ class Node implements ColumnSettingInterface
 			$this->loadStep();
 			// set $key as current node positions
 			$this->initCurrentPosition();
+			// set the critical parts;
+			$this->initCriticalPart();
 		}
 	}
 
@@ -187,7 +191,13 @@ class Node implements ColumnSettingInterface
 		}
 
 		$this->setColumnSetting( $this->lineprocess->columnSettings );
+	}
 
+	public function initCriticalPart(){
+		$critical = (isset($this->parameter['critical_parts'])) ? $this->parameter['critical_parts'] : null;
+		if(!is_null($critical)){
+			$this->setCriticalPart($critical);
+		}
 	}
 
 	public function setDummyId($dummy_id){
@@ -839,6 +849,14 @@ class Node implements ColumnSettingInterface
 		$isSaveSuccess = $model->save();
 		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
 			$this->insertSymptom($model);
+		}
+
+		if ($isSaveSuccess) {
+			# insert the to critical parts;
+			$criticalParts = $this->criticalParts;
+			if(method_exists($this, 'insertIntoCritical')){
+				$this->insertIntoCritical($criticalParts);
+			}
 		}
 
 		return $isSaveSuccess; //true or false;
