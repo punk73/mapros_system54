@@ -153,6 +153,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 			'column_setting'=> $this->column_setting,
 			'modelname'		=> $this->modelname,
 			'lotno'			=> $this->lotno,
+			'critical_parts' => $this->criticalParts,
 			'parameter'		=> $this->parameter,
 		]);
 	}

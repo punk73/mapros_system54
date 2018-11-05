@@ -63,7 +63,6 @@ class CriticalPartTraitTest extends TestCase
         foreach ($contains as $key => $value) {
             $this->assertArrayHasKey($value, $extracted );
         }
-
     }
 
     public function testIsCriticalExists(){
@@ -73,5 +72,33 @@ class CriticalPartTraitTest extends TestCase
         $isExists = $mock->isCriticalExists($data);
         $this->assertFalse($isExists);
     }
-    public function testInsertIntoCritical(){}
+    public function testInsertIntoCritical(){
+        // $mock = $this->getMock();
+        // $data = $this->getDummyData();
+        // $mock->insertIntoCritical($data);
+    }
+
+    public function testIsCriticalPartExtracted(){
+        $mock = $this->getMock();
+        $data = $this->getDummyData();
+        $this->assertFalse( $mock->isCriticalPartExtracted($data));
+    }
+
+    public function testIsCriticalPartExtractedWithParameterArray(){
+        $mock = $this->getMock();
+        $data = $this->getDummyData();
+        $this->assertFalse( $mock->isCriticalPartExtracted([$data]) ); 
+    }
+
+    public function testIsCriticalPartExtractedWithParameterArrayReturnTrue(){
+        $mock = $this->getMock();
+        $data = $mock->extractCriticalPart( $this->getDummyData() );
+        $this->assertTrue( $mock->isCriticalPartExtracted($data) );
+    }
+
+    public function testIsCriticalPartExtractedReturnTrue(){
+        $mock = $this->getMock();
+        $data = $mock->extractCriticalPart( $this->getDummyData() );
+        $this->assertTrue( $mock->isCriticalPartExtracted([$data]) );
+    }
 }
