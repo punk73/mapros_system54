@@ -466,6 +466,23 @@ class MainController extends Controller
 	}
 
 	private function runProcedureTicket(Node $node, $isRunningMaster=false ){
+		// cek current node exists atau ngga 
+		if( $node->isExists() === false && $isRunningMaster === false ){
+			// kalau node ini first sequences, gausah cek ke belakang.
+			if($node->isFirstSequence() == false){
+				$prevNode = $node->prev();
+				// cek prev node sudah out atau belum
+				if ($prevNode->getStatus() !== 'OUT') {
+					// jika get status bukan in atau out maka throw error
+					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+					throw new StoreResourceFailedException("DATA BELUM DI SCAN DI PROSES SEBELUMNYA. ( ".$step." )", [
+						'node' => json_decode( $prevNode, true )
+					]);
+				}
+				// go back to where it is;
+				$node = $node->next();
+			}
+		}
 
 		// memastikan proses ini belum In && join proses
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContainChildrenOf('ticket')) && ($node->isSettingContain('ticket')) ){
@@ -499,6 +516,23 @@ class MainController extends Controller
 	}
 
 	private function runProcedureMaster(Node $node){
+		// cek prev node on master
+		if( $node->isExists() === false ){
+			// kalau node ini first sequences, gausah cek ke belakang.
+			if($node->isFirstSequence() == false){
+				$prevNode = $node->prev();
+				// cek prev node sudah out atau belum
+				if ($prevNode->getStatus() !== 'OUT') {
+					// jika get status bukan in atau out maka throw error
+					$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+					throw new StoreResourceFailedException("DATA BELUM DI SCAN DI PROSES SEBELUMNYA. ( ".$step." )", [
+						'node' => json_decode( $prevNode, true )
+					]);
+				}
+				// go back to where it is;
+				$node = $node->next();
+			}
+		}
 
 		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
 
