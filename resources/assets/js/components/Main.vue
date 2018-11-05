@@ -298,6 +298,7 @@
                 var judge;
                 if(isNG){
                     judge = 'NG';
+                    this.form.symptom = [{code:99, category: 'OTHER'}]; //DEFAULT VALUE
                     this.fetchSymptomCode();
                 }else{
                     judge = 'OK';

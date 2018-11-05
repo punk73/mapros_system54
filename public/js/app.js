@@ -32053,6 +32053,7 @@ var axios = __webpack_require__(7);
             var judge;
             if (_isNG) {
                 judge = 'NG';
+                this.form.symptom = [{ code: 99, category: 'OTHER' }]; //DEFAULT VALUE
                 this.fetchSymptomCode();
             } else {
                 judge = 'OK';
