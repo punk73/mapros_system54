@@ -13,9 +13,10 @@ class CreateTablePivorCriticalNode extends Migration
      */
     public function up()
     {
-        Schema::create('critial_node', function (Blueprint $table){
+        Schema::create('critical_node', function (Blueprint $table){
             $table->unsignedInteger('critical_id'); //foreign of critical id
             $table->string('unique_id'); //contain board_id, guid_master or guid_ticket;
+            $table->timestamps();
         });
     }
 
@@ -26,6 +27,6 @@ class CreateTablePivorCriticalNode extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('critial_node');
+        Schema::dropIfExists('critical_node');
     }
 }
