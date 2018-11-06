@@ -5,10 +5,12 @@ namespace App\Functional\Api\V1\Controllers;
 use App\NewTestCase as TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Dingo\Api\Exception\StoreResourceFailedException;
+use Illuminate\Support\Facades\Artisan;
 
 class CriticalPartTraitTest extends TestCase
 {
     protected $mock;
+    
     protected function getDummyData(){
         $data = 'B46-0825-00     2629991 200   I10775 B46-0825-00    201809021630379758000001          14124313451435435435465654645';
         return $data;
@@ -93,9 +95,18 @@ class CriticalPartTraitTest extends TestCase
     }
 
     public function testInsertIntoCritical(){
-        // $mock = $this->getMock();
-        // $data = $this->getDummyData();
-        // $mock->insertIntoCritical($data);
+        $mock = $this->getMock();
+        $data = [$this->getDummyData()];
+        $unique_id = 'boards-id';
+        $criticalScannerData = [
+            "line_id" =>  2,
+            "lineprocess_id" =>  55,
+            "scan_nik" =>  "39597"
+        ];
+
+        $mock->insertIntoCritical($data, $unique_id, $criticalScannerData );
+
+        $this->assertDatabaseHas('criticals', $mock->extractCriticalPart($this->getDummyData()) );
     }
 
     public function testIsCriticalPartExtracted(){
@@ -121,4 +132,19 @@ class CriticalPartTraitTest extends TestCase
         $data = $mock->extractCriticalPart( $this->getDummyData() );
         $this->assertTrue( $mock->isCriticalPartExtracted([$data]) );
     }
+
+    public function testSaveToPivot(){
+        $mock = $this->getMock();
+        $criticalId = 1;
+        $unique_id = '9EB02277-8732-4C43-A9A2-D3E38A70105E';
+        $mock->saveToPivot($criticalId, $unique_id);
+
+        // assert database with specific record exists
+        $this->assertDatabaseHas('critical_node', [
+            'critical_id'=> $criticalId,
+            'unique_id'=> $unique_id,
+        ]);
+    }
+
+
 }

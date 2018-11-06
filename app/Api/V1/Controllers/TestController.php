@@ -41,7 +41,7 @@ class TestController extends Controller
 			'node' => $node,
 			'critical_parts' => $node->getCriticalPart(),
 			'extracted' => $node->getExtractedCriticalParts(),
-			'isCritical' => $node->isCriticalPart($node->getCriticalPart())
+			'insertIntoCritical' => $node->insertIntoCritical($node->getExtractedCriticalParts(), $node->getUniqueId() )
 		];
 		// return $node->isSettingContainChildrenOf('ticket');
 		// return ($node->isExists()) ? 'true' : 'false' ;

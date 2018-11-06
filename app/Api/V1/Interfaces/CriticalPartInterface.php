@@ -7,6 +7,6 @@ interface CriticalPartInterface {
 	public function getCriticalPart();
 	public function isCriticalPart($criticalPart);
 	public function isCriticalExists($result);
-	public function insertIntoCritical($criticalPart);
+	public function insertIntoCritical($extractedCriticalParts, $uniqueId, $criticalScannerData );
 	public function extractCriticalPart($criticalPart);
 }

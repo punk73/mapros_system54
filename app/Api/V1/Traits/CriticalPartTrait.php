@@ -4,6 +4,7 @@ namespace App\Api\V1\Traits;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Critical;
 use App\CriticalNode;
+use App\Scanner;
 
 trait CriticalPartTrait {
 	protected $criticalParts; //it is string or array of string; but mostly it will array
@@ -155,15 +156,32 @@ trait CriticalPartTrait {
 		->exists();
 	}
 
-	public function insertIntoCritical($extractedCriticalParts, $uniqueId = null ){
+	public function insertIntoCritical($extractedCriticalParts, $uniqueId = null , $criticalScannerData = null ){
 		
 		if (is_null($extractedCriticalParts)) {
 			$extractedCriticalParts = $this->extractedCriticalParts;
 		}
 
-		# cek if its assoc array
+		if (!$this->isCriticalPartExtracted( $extractedCriticalParts)) {
+			$extractedCriticalParts = $this->extractCriticalPart($extractedCriticalParts);
+		}
+
+		/*default value for criticalScannerData */
+		if (is_null($criticalScannerData)) {
+			$ipScanner = (isset($this->parameter)) ? $this->parameter : ['ip' => '17DA14']; //default value
+			$criticalScannerData = $this->getCriticalScannerData($ipScanner);
+			$criticalScannerData = $criticalScannerData->toArray();
+			$criticalScannerData['scan_nik'] = (isset($ipScanner['nik'])) ? $ipScanner['nik'] : 'nik_tmp';
+		}
+		
+		if (is_null($uniqueId) ) {
+			$uniqueId = $this->getUniqueId(); //dari node
+		}
+
+		# cek if its not assoc array
 		if (!$this->isAssoc($extractedCriticalParts) ) {
-			foreach ($extractedCriticalParts as $key => $extracted ) {
+			foreach ($extractedCriticalParts as $key => $extractedValue ) {
+				$extracted = array_merge($extractedValue, $criticalScannerData);
 				// cek apakah critical parts sudah di save atau baru.
 				$critical = Critical::firstOrNew($extracted);
 				if (!$critical->exists) {
@@ -171,14 +189,31 @@ trait CriticalPartTrait {
 					$critical->save();
 				}
 
-				$criticalId = $critial->id;
+				$criticalId = $critical->id;
 				$this->saveToPivot($criticalId, $uniqueId);
 
 			}
 		}
 	}
 
-	protected function saveToPivot($criticalPartId, $uniqueId){
+	private function getCriticalScannerData($parameter, $debug = false){
+		if (!$debug) {
+			/*its for real purposes*/
+			return Scanner::select([
+				// 'scanners.id',
+				'lines.id as line_id',
+				'lineprocesses.id as lineprocess_id',
+			])
+			->where('ip_address', $parameter['ip'])
+			->leftJoin('lines', 'scanners.line_id', '=', 'lines.id')
+			->leftJoin('lineprocesses', 'scanners.lineprocess_id', '=', 'lineprocesses.id')
+			->first();
+		}else{
+			return $parameter;
+		}
+	}
+
+	public function saveToPivot($criticalPartId, $uniqueId){
 		$pivot = CriticalNode::firstOrNew([
 			'critical_id' => $criticalPartId,
 			'unique_id' => $uniqueId,
