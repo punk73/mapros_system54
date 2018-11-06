@@ -5,6 +5,7 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Critical;
 use App\CriticalNode;
 use App\Scanner;
+use DB;
 
 trait CriticalPartTrait {
 	protected $criticalParts; //it is string or array of string; but mostly it will array
@@ -214,6 +215,10 @@ trait CriticalPartTrait {
 	}
 
 	public function saveToPivot($criticalPartId, $uniqueId){
+		if( $this->isRunOut($criticalPartId) ){
+			return;
+		}
+
 		$pivot = CriticalNode::firstOrNew([
 			'critical_id' => $criticalPartId,
 			'unique_id' => $uniqueId,
@@ -222,5 +227,18 @@ trait CriticalPartTrait {
 		if (!$pivot->exists) {
 			$pivot->save();
 		}
+	}
+
+	/*cek apakah masih ada sisa*/
+	public function isRunOut($criticalPartId){
+		// Critical::select('qty')
+		$result = CriticalNode::select(DB::raw('( COUNT(critical_node.critical_id) >= criticals.qty ) as isRunOut'))
+		->join('criticals', 'criticals.id','=','critical_node.critical_id')
+		->where('critical_id', $criticalPartId )
+		->groupBy('critical_id', 'qty')
+		->first();
+
+		/*jika isRunOut === 1, maka sudah habis, dan sebaliknya*/
+		return ($result['isRunOut'] === 1);
 	}
 }
