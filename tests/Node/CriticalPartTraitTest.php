@@ -35,6 +35,13 @@ class CriticalPartTraitTest extends TestCase
         $this->assertTrue( $mock->isCriticalPartExtracted( $mock->getExtractedCriticalParts() ) );
     }
 
+    public function testSetCriticalPartErrorWhenSettingNonCriticalPart(){
+        $mock = $this->getMock();
+        $nonCriticalPart = ['B46-0825-00     2629991 12    I10775 B46-0825-00    201809021630107354000002          '];
+        $this->expectException(StoreResourceFailedException::class); //exeption expected cuz the parameter not critical parts;
+        $mock->setCriticalPart($nonCriticalPart);
+    }
+
     public function testIsCriticalPartReturnTrue(){
         $mock = $this->getMock();
         $data = $this->getDummyData();

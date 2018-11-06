@@ -854,9 +854,12 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 
 		if ($isSaveSuccess) {
 			# insert the to critical parts;
-			$criticalParts = $this->criticalParts;
-			if(method_exists($this, 'insertIntoCritical')){
-				$this->insertIntoCritical($criticalParts);
+			if (!is_null($this->getCriticalPart())) {
+				# code...
+				$criticalParts = $this->getExtractedCriticalParts();
+				if(method_exists($this, 'insertIntoCritical')){
+					$this->insertIntoCritical($criticalParts, $this->getUniqueId() );
+				}
 			}
 		}
 

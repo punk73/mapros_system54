@@ -3,6 +3,7 @@
 namespace App\Api\V1\Traits;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Critical;
+use App\CriticalNode;
 
 trait CriticalPartTrait {
 	protected $criticalParts; //it is string or array of string; but mostly it will array
@@ -139,6 +140,7 @@ trait CriticalPartTrait {
 	}
 
 	protected function isCritical($extracted){
+		// salah satu ada, maka critical parts;
 		return ( $extracted['production_date'] !='' || $extracted['lotno'] !='' );
 	}
 
@@ -153,7 +155,7 @@ trait CriticalPartTrait {
 		->exists();
 	}
 
-	public function insertIntoCritical($extractedCriticalParts, $uniqueId ){
+	public function insertIntoCritical($extractedCriticalParts, $uniqueId = null ){
 		
 		if (is_null($extractedCriticalParts)) {
 			$extractedCriticalParts = $this->extractedCriticalParts;
@@ -163,8 +165,27 @@ trait CriticalPartTrait {
 		if (!$this->isAssoc($extractedCriticalParts) ) {
 			foreach ($extractedCriticalParts as $key => $extracted ) {
 				// cek apakah critical parts sudah di save atau baru.
-				$critical = new Critical($extracted);
+				$critical = Critical::firstOrNew($extracted);
+				if (!$critical->exists) {
+					# if it's not exists yet
+					$critical->save();
+				}
+
+				$criticalId = $critial->id;
+				$this->saveToPivot($criticalId, $uniqueId);
+
 			}
+		}
+	}
+
+	protected function saveToPivot($criticalPartId, $uniqueId){
+		$pivot = CriticalNode::firstOrNew([
+			'critical_id' => $criticalPartId,
+			'unique_id' => $uniqueId,
+		]);
+		/*save hanya jika critical & unique_id is not exists before;*/
+		if (!$pivot->exists) {
+			$pivot->save();
 		}
 	}
 }
