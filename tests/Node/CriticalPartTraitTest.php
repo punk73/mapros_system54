@@ -31,6 +31,8 @@ class CriticalPartTraitTest extends TestCase
         $data = $this->getDummyData();
         $mock->setCriticalPart($data);
         $this->assertEquals($data,  $mock->getCriticalPart() );
+        $this->assertNotNull( $mock->getExtractedCriticalParts() );
+        $this->assertTrue( $mock->isCriticalPartExtracted( $mock->getExtractedCriticalParts() ) );
     }
 
     public function testIsCriticalPartReturnTrue(){
@@ -43,6 +45,9 @@ class CriticalPartTraitTest extends TestCase
         $mock = $this->getMock();
         $data = 'B46-0825-00     2629991 12    I10775 B46-0825-00    201809021630107354000002          ';
         $this->assertFalse( $mock->isCriticalPart($data) );
+        $data = ['B46-0825-00     2629991 12    I10775 B46-0825-00    201809021630107354000002          '];
+        $this->assertFalse( $mock->isCriticalPart($data) );
+
     }
 
     public function testExtractCriticalPart(){
@@ -72,6 +77,14 @@ class CriticalPartTraitTest extends TestCase
         $isExists = $mock->isCriticalExists($data);
         $this->assertFalse($isExists);
     }
+
+    public function testIsCriticalExistsWithStringParameter(){
+        $data = $this->getDummyData();
+        $mock = $this->getMock();
+        $isExists = $mock->isCriticalExists($data);
+        $this->assertFalse($isExists);
+    }
+
     public function testInsertIntoCritical(){
         // $mock = $this->getMock();
         // $data = $this->getDummyData();
