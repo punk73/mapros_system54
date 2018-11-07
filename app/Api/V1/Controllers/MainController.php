@@ -29,7 +29,7 @@ class MainController extends Controller
 		'modelname',
 		'judge',
 		'symptom',
-		'critical_part', //new due to critical part scan;
+		'critical_parts', //new due to critical part scan;
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;
