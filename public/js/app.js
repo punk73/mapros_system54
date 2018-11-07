@@ -32094,7 +32094,7 @@ var axios = __webpack_require__(7);
             } else {
                 delete this.form.critical_parts;
             }
-            console.log('showCritical watch called', this.form, newVal);
+            // console.log('showCritical watch called', this.form, newVal )
         }
     },
 
@@ -32110,7 +32110,7 @@ var axios = __webpack_require__(7);
             return this.jumlahJoin + 1;
         },
         computedShowCritical: function computedShowCritical() {
-            console.log('showCritical computed called', this.config.showCritical);
+            // console.log('showCritical computed called', this.config.showCritical )
             return this.config.showCritical;
         }
     },
@@ -32227,13 +32227,20 @@ var axios = __webpack_require__(7);
         }, 350),
 
         addCritical: function addCritical() {
-            console.log('addCritical triggered');
+            // console.log('addCritical triggered')
             this.form.critical_parts.push('');
         },
         minusCritical: function minusCritical(index) {
-            console.log('minusCritical triggered');
+            // console.log('minusCritical triggered')
             if (this.form.critical_parts.length != 1) {
                 this.form.critical_parts.splice(index, 1);
+            } else {
+                this.form.critical_parts = ['']; //make textfield empty
+                console.log(this.$refs);
+                var el = this.$refs['critical_parts_' + index][0];
+                if (el) {
+                    el.focus();
+                }
             }
         },
         changesCriticalCounter: function changesCriticalCounter($i) {
@@ -46096,6 +46103,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         value: (_vm.form.critical_parts[index]),
         expression: "form.critical_parts[index]"
       }],
+      ref: 'critical_parts_' + index,
+      refInFor: true,
       staticClass: "form-control",
       attrs: {
         "id": 'critical_parts_' + index,

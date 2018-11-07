@@ -25,7 +25,7 @@
                                 <label for="critical_parts" class="col-md-4 control-label">Critical Part</label>
                                 <div class="col-md-6" >
                                     <div class="input-group">
-                                        <input :id="'critical_parts_' + index" placeholder="Scan Critical Part disini" class="form-control" name="critical_parts" v-model='form.critical_parts[index]' required autofocus>        
+                                        <input :id="'critical_parts_' + index" :ref="'critical_parts_' + index" placeholder="Scan Critical Part disini" class="form-control" name="critical_parts" v-model='form.critical_parts[index]' required autofocus>        
 
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-success" @click.prevent='addCritical' ><span class="fa fa-plus"></span> </button>
@@ -330,7 +330,7 @@
                 }else{
                     delete this.form.critical_parts;
                 }
-                console.log('showCritical watch called', this.form, newVal )
+                // console.log('showCritical watch called', this.form, newVal )
             },            
         },
 
@@ -348,7 +348,7 @@
             },
 
             computedShowCritical(){
-                console.log('showCritical computed called', this.config.showCritical )
+                // console.log('showCritical computed called', this.config.showCritical )
                 return this.config.showCritical 
             }
         },
@@ -464,14 +464,21 @@
             }, 350),
 
             addCritical(){
-                console.log('addCritical triggered')
+                // console.log('addCritical triggered')
                 this.form.critical_parts.push('');
             },
 
             minusCritical(index){
-                console.log('minusCritical triggered')
+                // console.log('minusCritical triggered')
                 if (this.form.critical_parts.length != 1) {
                     this.form.critical_parts.splice(index, 1);
+                }else{
+                    this.form.critical_parts = ['']; //make textfield empty
+                    console.log( this.$refs )
+                    var el = this.$refs['critical_parts_'+index][0];
+                    if (el) {
+                        el.focus()
+                    }
                 }
             },
 
