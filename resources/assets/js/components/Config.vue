@@ -63,6 +63,13 @@
 
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <toggle-button id="showCritical" :sync='true' v-model="config.showCritical"  :color="'#2ab27b'" :labels="true"/>
+                                    <label for="showCritical"> show critical textfield </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <!-- <input type="checkbox" id="isGenerateFile" v-model="config.isGenerateFile"> -->
                                     <toggle-button id="isGenerateFile" v-model="config.isGenerateFile" :sync='true'  :color="'#2ab27b'" :labels="true"/>
                                     
@@ -159,6 +166,9 @@
                     
                     showSolder:false,
                     toggleSolderMode:'toggleSolderMode',
+
+                    showCritical: false,
+                    criticals:[{index:0}],
 
                     // jumlahJoin:1, //will deleted soon due to move to server
 

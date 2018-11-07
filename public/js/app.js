@@ -503,7 +503,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\node_modules\\vue-js-toggle-button\\src\\Button.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\node_modules\\vue-js-toggle-button\\src\\Button.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Button.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -541,7 +541,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Modal.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Modal.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Modal.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -18497,7 +18497,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Alert.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Alert.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Alert.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -18531,7 +18531,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Join.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Join.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Join.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -18565,7 +18565,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Loading.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Loading.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Loading.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -31235,6 +31235,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -31253,6 +31260,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
         showSolder: false,
         toggleSolderMode: 'toggleSolderMode',
+
+        showCritical: false,
+        criticals: [{ index: 0 }],
 
         // jumlahJoin:1, //will deleted soon due to move to server
 
@@ -31926,6 +31936,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(7);
 
@@ -31948,6 +31971,7 @@ var axios = __webpack_require__(7);
                 is_solder: false,
                 judge: 'OK', //default nya OK
                 symptom: [] //default value for symptom is empty array;
+                // critical_parts:[''],
             },
 
             isNG: false,
@@ -32002,6 +32026,10 @@ var axios = __webpack_require__(7);
             config: {
                 modelname: '',
                 ip: '',
+
+                showCritical: false,
+                criticalCounter: 1,
+
                 showSolder: true,
                 isGenerateFile: false,
                 generatedFileName: 'something.txt',
@@ -32060,6 +32088,13 @@ var axios = __webpack_require__(7);
                 delete this.form.symptom;
             }
             this.form.judge = judge;
+        },
+        computedShowCritical: function computedShowCritical(newVal, oldVal) {
+            if (newVal) {
+                this.form.critical_parts = [''];
+            } else {
+                delete this.form.critical_parts;
+            }
         }
     },
 
@@ -32073,6 +32108,9 @@ var axios = __webpack_require__(7);
         },
         computedJumlahJoin: function computedJumlahJoin() {
             return this.jumlahJoin + 1;
+        },
+        computedShowCritical: function computedShowCritical() {
+            return this.config.showCritical;
         }
     },
 
@@ -32187,6 +32225,17 @@ var axios = __webpack_require__(7);
             });
         }, 350),
 
+        addCritical: function addCritical() {
+            this.form.critical_parts.push('');
+        },
+        minusCritical: function minusCritical(index) {
+            if (this.form.critical_parts.length != 1) {
+                this.form.critical_parts.splice(index, 1);
+            }
+        },
+        changesCriticalCounter: function changesCriticalCounter($i) {
+            this.config.criticalCounter = this.config.criticalCounter + $i;
+        },
         toggleMode: function toggleMode() {
             if (this.config.showSolder) {
                 if (this.form.board_id == this.config.toggleSolderMode) {
@@ -35116,7 +35165,7 @@ if (typeof jQuery === 'undefined') {
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(2)();
-exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.txt-color {\n    color: #ffffff;\n}\n.bg-color {\n    background-color: #edf108;\n}\nh1, h2, h3, h4 {\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.no-bottom-margin {\n    margin-bottom: auto;\n}\n", ""]);
+exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.txt-color {\n    color: #ffffff;\n}\n.bg-color {\n    background-color: #edf108;\n}\nh1, h2, h3, h4 {\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.no-bottom-margin {\n    margin-bottom: auto;\n}\n.no-left-margin {\n    margin-left: 0px;\n}\n", ""]);
 
 /***/ }),
 /* 54 */
@@ -45793,7 +45842,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Config.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Config.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Config.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -45827,7 +45876,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Confirm.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Confirm.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Confirm.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -45861,7 +45910,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\FormDebug.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\FormDebug.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] FormDebug.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -45899,7 +45948,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\GenerateFileConfig.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\GenerateFileConfig.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GenerateFileConfig.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -45937,7 +45986,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Main.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Main.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Main.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -46025,7 +46074,72 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "nik", $event.target.value)
       }
     }
-  })])])]), _vm._v(" "), _c('div', {
+  })])])]), _vm._v(" "), _vm._l((_vm.form.critical_parts), function(critical, index) {
+    return (_vm.config.showCritical) ? _c('div', {
+      staticClass: "form-group"
+    }, [_c('label', {
+      staticClass: "col-md-4 control-label",
+      attrs: {
+        "for": "critical_parts"
+      }
+    }, [_vm._v("Critical Part")]), _vm._v(" "), _c('div', {
+      staticClass: "col-md-6"
+    }, [_c('div', {
+      staticClass: "input-group"
+    }, [_c('input', {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: (_vm.form.critical_parts[index]),
+        expression: "form.critical_parts[index]"
+      }],
+      staticClass: "form-control",
+      attrs: {
+        "id": 'critical_parts_' + index,
+        "placeholder": "Scan Critical Part disini",
+        "name": "critical_parts",
+        "required": "",
+        "autofocus": ""
+      },
+      domProps: {
+        "value": (_vm.form.critical_parts[index])
+      },
+      on: {
+        "input": function($event) {
+          if ($event.target.composing) { return; }
+          _vm.$set(_vm.form.critical_parts, index, $event.target.value)
+        }
+      }
+    }), _vm._v(" "), _c('span', {
+      staticClass: "input-group-btn"
+    }, [_c('button', {
+      staticClass: "btn btn-success",
+      attrs: {
+        "type": "button"
+      },
+      on: {
+        "click": function($event) {
+          $event.preventDefault();
+          return _vm.addCritical($event)
+        }
+      }
+    }, [_c('span', {
+      staticClass: "fa fa-plus"
+    })]), _vm._v(" "), _c('button', {
+      staticClass: "btn btn-danger",
+      attrs: {
+        "type": "button"
+      },
+      on: {
+        "click": function($event) {
+          $event.preventDefault();
+          _vm.minusCritical(index)
+        }
+      }
+    }, [_c('span', {
+      staticClass: "fa fa-minus"
+    })])])])])]) : _vm._e()
+  }), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label"
@@ -46252,7 +46366,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Resend Data "), _c('i', {
     staticClass: "fa fa-arrow-right"
-  })]) : _vm._e()])])])])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  })]) : _vm._e()])])], 2)])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
@@ -46822,6 +46936,28 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   })])]) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "id": "showCritical",
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.showCritical),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "showCritical", $$v)
+      },
+      expression: "config.showCritical"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "showCritical"
+    }
+  }, [_vm._v(" show critical textfield ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"
