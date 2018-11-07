@@ -10,7 +10,7 @@ use DB;
 trait CriticalPartTrait {
 	protected $criticalParts; //it is string or array of string; but mostly it will array
 	protected $extractedCriticalParts; //array of extracted critical parts
-
+	protected $errorIndex;
 	/*public function save(){
 	}*/
 
@@ -31,6 +31,14 @@ trait CriticalPartTrait {
 	
 	public function getCriticalPart(){
 		return $this->criticalParts;
+	}
+
+	public function setErrorIndex($index){
+		$this->errorIndex = $index;
+	}
+
+	public function getErrorIndex(){
+		return $this->errorIndex;
 	}
 
 	public function getExtractedCriticalParts(){
@@ -196,6 +204,7 @@ trait CriticalPartTrait {
 				$criticalId = $critical->id;
 				$saveResult = $this->saveToPivot($criticalId, $uniqueId);
 				if($saveResult == false){
+					$this->setErrorIndex($key);
 					return false;
 				}
 			}
@@ -215,6 +224,8 @@ trait CriticalPartTrait {
 			$criticalId = $critical->id;
 			$saveResult = $this->saveToPivot($criticalId, $uniqueId);
 			if($saveResult == false){
+				/*because it's not array, I wonder what to put here;*/
+				$this->setErrorIndex(0);
 				return false;
 			}
 		}
