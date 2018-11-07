@@ -39,9 +39,7 @@ class TestController extends Controller
 		$node = new Node($request->all());
 		return [
 			'node' => $node,
-			'critical_parts' => $node->getCriticalPart(),
-			'extracted' => $node->getExtractedCriticalParts(),
-			'insertIntoCritical' => $node->insertIntoCritical($node->getExtractedCriticalParts(), $node->getUniqueId() )
+			'isRunOut' => $node->isRunOut(8)
 		];
 		// return $node->isSettingContainChildrenOf('ticket');
 		// return ($node->isExists()) ? 'true' : 'false' ;

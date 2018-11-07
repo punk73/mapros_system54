@@ -6,6 +6,7 @@ use App\NewTestCase as TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Illuminate\Support\Facades\Artisan;
+use DB;
 
 class CriticalPartTraitTest extends TestCase
 {
@@ -144,6 +145,48 @@ class CriticalPartTraitTest extends TestCase
             'critical_id'=> $criticalId,
             'unique_id'=> $unique_id,
         ]);
+    }
+
+    private function seedCriticalDb($qty = 1 ){
+        /*insert into db critical*/
+        DB::table('criticals')->insert([
+            #id, line_id, lineprocess_id, unique_id, supp_code, part_no, po, production_date, lotno, qty, scan_nik, created_at, updated_at
+            'id'    => 1,
+            'line_id' => '1',
+            'lineprocess_id' => '12',
+            'unique_id' => 'I10775 B46-0825-00    201809021634487676000001',
+            'supp_code' => '10775',
+            'part_no' => 'B46-0825-00    ',
+            'po' => '2629991',
+            'production_date' => '20180902',
+            'lotno' => '1341243115345456',
+            'qty' => $qty,
+            'scan_nik' => '0037299U',
+            'created_at' => '2018-09-02 16:35:59',
+            'updated_at' => '2018-09-02 16:35:59'
+        ]);
+        /*insert into db critical_node*/
+        DB::table('critical_node')->insert([
+            'critical_id' =>1,
+            'unique_id' => 'some-dummy-unique-id'
+        ]);
+    }
+
+    public function testIsRunOutReturnFalse(){
+        $mock = $this->getMock();
+        $this->seedCriticalDb(200);
+        // run isRunOut method with critical_id = 1
+        $isRunOut = $mock->isRunOut(1);
+        $this->assertFalse($isRunOut);
+    }
+
+    public function testIsRunOutReturnTrue(){
+        $mock = $this->getMock();
+        $this->seedCriticalDb(1);
+        $this->assertDatabaseHas('criticals', ['qty' => 1] );
+        // run isRunOut method with critical_id = 1
+        $isRunOut = $mock->isRunOut(1);
+        $this->assertTrue($isRunOut);    
     }
 
 

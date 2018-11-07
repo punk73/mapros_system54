@@ -847,20 +847,18 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 
 		$this->updateGuidSibling();
 
+		# insert the to critical parts jika critical parts tidak null;
+		if (!is_null($this->getCriticalPart())) {
+			# code...
+			$criticalParts = $this->getExtractedCriticalParts();
+			if(method_exists($this, 'insertIntoCritical')){
+				$this->insertIntoCritical($criticalParts, $this->getUniqueId() );
+			}
+		}
+
 		$isSaveSuccess = $model->save();
 		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
 			$this->insertSymptom($model);
-		}
-
-		if ($isSaveSuccess) {
-			# insert the to critical parts;
-			if (!is_null($this->getCriticalPart())) {
-				# code...
-				$criticalParts = $this->getExtractedCriticalParts();
-				if(method_exists($this, 'insertIntoCritical')){
-					$this->insertIntoCritical($criticalParts, $this->getUniqueId() );
-				}
-			}
 		}
 
 		return $isSaveSuccess; //true or false;

@@ -235,10 +235,10 @@ trait CriticalPartTrait {
 		$result = CriticalNode::select(DB::raw('( COUNT(critical_node.critical_id) >= criticals.qty ) as isRunOut'))
 		->join('criticals', 'criticals.id','=','critical_node.critical_id')
 		->where('critical_id', $criticalPartId )
-		->groupBy('critical_id', 'qty')
+		->groupBy('critical_id', 'criticals.qty')
 		->first();
 
-		/*jika isRunOut === 1, maka sudah habis, dan sebaliknya*/
-		return ($result['isRunOut'] === 1);
+		/*jika isRunOut == 1, maka sudah habis, dan sebaliknya*/
+		return ($result['isRunOut'] == 1);
 	}
 }
