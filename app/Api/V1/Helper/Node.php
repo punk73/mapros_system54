@@ -852,7 +852,12 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 			# code...
 			$criticalParts = $this->getExtractedCriticalParts();
 			if(method_exists($this, 'insertIntoCritical')){
-				$this->insertIntoCritical($criticalParts, $this->getUniqueId() );
+				$insertIntoCritical = $this->insertIntoCritical($criticalParts, $this->getUniqueId() );
+				if ($insertIntoCritical == false) {
+					throw new StoreResourceFailedException("Critical Part habis. Mohon scan ulang barcode baru.", [
+						'node' => json_decode($this, true),
+					]);
+				}
 			}
 		}
 

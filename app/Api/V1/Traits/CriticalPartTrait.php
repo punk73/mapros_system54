@@ -164,10 +164,13 @@ trait CriticalPartTrait {
 		}
 
 		if (!$this->isCriticalPartExtracted( $extractedCriticalParts)) {
+			/*kalau belum di extract, extract dulu */
+			/*string jadi associative array*/
 			$extractedCriticalParts = $this->extractCriticalPart($extractedCriticalParts);
 		}
 
-		/*default value for criticalScannerData */
+		/*default value for criticalScannerData, mostly akabn masuk sini. */
+		/*ini dibuat parameter untuk automatic testing*/
 		if (is_null($criticalScannerData)) {
 			$ipScanner = (isset($this->parameter)) ? $this->parameter : ['ip' => '17DA14']; //default value
 			$criticalScannerData = $this->getCriticalScannerData($ipScanner);
@@ -179,7 +182,7 @@ trait CriticalPartTrait {
 			$uniqueId = $this->getUniqueId(); //dari node
 		}
 
-		# cek if its not assoc array
+		# cek if its not assoc array ( array of extracted critical parts )
 		if (!$this->isAssoc($extractedCriticalParts) ) {
 			foreach ($extractedCriticalParts as $key => $extractedValue ) {
 				$extracted = array_merge($extractedValue, $criticalScannerData);
@@ -191,10 +194,32 @@ trait CriticalPartTrait {
 				}
 
 				$criticalId = $critical->id;
-				$this->saveToPivot($criticalId, $uniqueId);
+				$saveResult = $this->saveToPivot($criticalId, $uniqueId);
+				if($saveResult == false){
+					return false;
+				}
+			}
+		}else{
+			/*
+				kalau masuk sini, artinya critical part itu cuman satu. dan sudah di extract;
+				bukan array dari extracted critical part jadi tidak harus pakai foreach;
+			*/
+			$extracted = array_merge($extractedCriticalParts, $criticalScannerData);
+			// cek apakah critical parts sudah di save atau baru.
+			$critical = Critical::firstOrNew($extracted);
+			if (!$critical->exists) {
+				# if it's not exists yet
+				$critical->save();
+			}
 
+			$criticalId = $critical->id;
+			$saveResult = $this->saveToPivot($criticalId, $uniqueId);
+			if($saveResult == false){
+				return false;
 			}
 		}
+
+		return true; //save method run expectedly;
 	}
 
 	private function getCriticalScannerData($parameter, $debug = false){
@@ -216,7 +241,7 @@ trait CriticalPartTrait {
 
 	public function saveToPivot($criticalPartId, $uniqueId){
 		if( $this->isRunOut($criticalPartId) ){
-			return;
+			return false; // jika habis, return false sebagai indikasi bahwa ada error;
 		}
 
 		$pivot = CriticalNode::firstOrNew([
