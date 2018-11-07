@@ -204,7 +204,7 @@
                     is_solder:false,
                     judge : 'OK', //default nya OK
                     symptom: [], //default value for symptom is empty array;
-                    // critical_parts:[''],
+                    critical_parts:[], //default value for critical_parts empty array
                 },
 
                 isNG : false,
@@ -260,9 +260,8 @@
                     modelname: '',
                     ip       : '',
                     
-                    showCritical : false,
-                    criticalCounter:1,
-
+                    // showCritical : false, //it cannot have default value, otherwise, wathc will not called; let it be;
+                    
                     showSolder: true,
                     isGenerateFile : false,
                     generatedFileName : 'something.txt',
@@ -326,11 +325,12 @@
             },
 
             computedShowCritical(newVal, oldVal){
-                if (newVal) {
+                if (newVal == true) {
                     this.form.critical_parts = [''];
                 }else{
                     delete this.form.critical_parts;
                 }
+                console.log('showCritical watch called', this.form, newVal )
             },            
         },
 
@@ -348,6 +348,7 @@
             },
 
             computedShowCritical(){
+                console.log('showCritical computed called', this.config.showCritical )
                 return this.config.showCritical 
             }
         },
@@ -463,10 +464,12 @@
             }, 350),
 
             addCritical(){
+                console.log('addCritical triggered')
                 this.form.critical_parts.push('');
             },
 
             minusCritical(index){
+                console.log('minusCritical triggered')
                 if (this.form.critical_parts.length != 1) {
                     this.form.critical_parts.splice(index, 1);
                 }

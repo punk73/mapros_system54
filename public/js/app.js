@@ -31970,8 +31970,8 @@ var axios = __webpack_require__(7);
                 modelname: '',
                 is_solder: false,
                 judge: 'OK', //default nya OK
-                symptom: [] //default value for symptom is empty array;
-                // critical_parts:[''],
+                symptom: [], //default value for symptom is empty array;
+                critical_parts: [] //default value for critical_parts empty array
             },
 
             isNG: false,
@@ -32027,8 +32027,7 @@ var axios = __webpack_require__(7);
                 modelname: '',
                 ip: '',
 
-                showCritical: false,
-                criticalCounter: 1,
+                // showCritical : false, //it cannot have default value, otherwise, wathc will not called; let it be;
 
                 showSolder: true,
                 isGenerateFile: false,
@@ -32090,11 +32089,12 @@ var axios = __webpack_require__(7);
             this.form.judge = judge;
         },
         computedShowCritical: function computedShowCritical(newVal, oldVal) {
-            if (newVal) {
+            if (newVal == true) {
                 this.form.critical_parts = [''];
             } else {
                 delete this.form.critical_parts;
             }
+            console.log('showCritical watch called', this.form, newVal);
         }
     },
 
@@ -32110,6 +32110,7 @@ var axios = __webpack_require__(7);
             return this.jumlahJoin + 1;
         },
         computedShowCritical: function computedShowCritical() {
+            console.log('showCritical computed called', this.config.showCritical);
             return this.config.showCritical;
         }
     },
@@ -32226,9 +32227,11 @@ var axios = __webpack_require__(7);
         }, 350),
 
         addCritical: function addCritical() {
+            console.log('addCritical triggered');
             this.form.critical_parts.push('');
         },
         minusCritical: function minusCritical(index) {
+            console.log('minusCritical triggered');
             if (this.form.critical_parts.length != 1) {
                 this.form.critical_parts.splice(index, 1);
             }
