@@ -135,7 +135,7 @@ trait CriticalPartTrait {
 		}else{
 			$extracted = $criticalPart;
 		}
-		/*$extracted pasti array, don't need to make else statement*/
+		/*$extracted pasti array, karena sudah di extract. don't need to make else statement*/
 		if (is_array($extracted)) {
 			if (!$this->isAssoc($extracted)) {
 				$result = true;
@@ -273,6 +273,13 @@ trait CriticalPartTrait {
 
 	/*cek apakah masih ada sisa*/
 	public function isRunOut($criticalPartId){
+		/*cek if critical with specific id exists, */
+		if ( Critical::where('id', $criticalPartId)->first() === null ) {
+			# kalau masuk sini artinya critical_node dengan critical_id = $criticalPartId tidak ditemukan;
+			throw new StoreResourceFailedException("Critical parts dengan id = {$criticalPartId} tidak ditemukan", [
+				'critical_parts' => $this->getCriticalPart(),
+			]);
+		}
 		// Critical::select('qty')
 		$result = CriticalNode::select(DB::raw('( COUNT(critical_node.critical_id) >= criticals.qty ) as isRunOut'))
 		->join('criticals', 'criticals.id','=','critical_node.critical_id')
@@ -282,15 +289,9 @@ trait CriticalPartTrait {
 
 		/*jika isRunOut == 1, maka sudah habis, dan sebaliknya*/
 		/*
-		is null ditambahkan, karena mungkin juga hasil query nya null karena critical_partnya tidak ketemu misalnya.
-		oleh sebab itu, ketika query return null, is run out harusnya return true; ( error has occured )
+			kalau result return null, artinya critical_node masih kosong;
 		*/
-		if (is_null($result['isRunOut'])) {
-			# kalau masuk sini artinya critical_node dengan critical_id = $criticalPartId tidak ditemukan;
-			throw new StoreResourceFailedException("Critical parts dengan id = {$criticalPartId} tidak ditemukan", [
-				'critical_parts' => $this->getCriticalPart(),
-			]);
-		}
+		
 
 		return ($result['isRunOut'] == 1 );
 	}

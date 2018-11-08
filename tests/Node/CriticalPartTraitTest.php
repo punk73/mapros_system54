@@ -99,6 +99,9 @@ class CriticalPartTraitTest extends TestCase
         $mock = $this->getMock();
         $data = [$this->getDummyData()];
         $unique_id = 'boards-id';
+        /*seed the database*/
+        $this->seedCriticalDb(3);
+
         $criticalScannerData = [
             "line_id" =>  2,
             "lineprocess_id" =>  55,
@@ -108,6 +111,9 @@ class CriticalPartTraitTest extends TestCase
         $mock->insertIntoCritical($data, $unique_id, $criticalScannerData );
 
         $this->assertDatabaseHas('criticals', $mock->extractCriticalPart($this->getDummyData()) );
+        $this->assertDatabaseHas('critical_node', [
+            'unique_id' => $unique_id
+        ]);
     }
 
     public function testIsCriticalPartExtracted(){
