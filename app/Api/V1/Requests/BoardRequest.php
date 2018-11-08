@@ -15,6 +15,7 @@ class BoardRequest extends FormRequest
             'modelname' => 'required',
             'judge'     => 'required|in:OK,NG',
             'symptom'   => 'required_if:judge,NG|array',
+            // 'critical_part' => '',
         ];
     }
 
