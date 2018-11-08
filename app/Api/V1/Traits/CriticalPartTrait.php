@@ -20,8 +20,9 @@ trait CriticalPartTrait {
 			$this->extractedCriticalParts = $this->extractCriticalPart($criticalParts);
 			if ($this->isCriticalPart($this->extractedCriticalParts) == false ) {
 				# kalau bukan critical parts, throw error
-				throw new StoreResourceFailedException("this is not critical parts", [
-					'criticalParts' => $this->criticalParts,
+				$critical = json_encode($criticalParts);
+				throw new StoreResourceFailedException("{$critical} BUKAN CRITICAL PARTS, TIDAK UDAH SCAN.", [
+					'criticalParts' => $criticalParts,
 					'extractedCriticalParts' => $this->extractedCriticalParts,
 				]);
 			}
