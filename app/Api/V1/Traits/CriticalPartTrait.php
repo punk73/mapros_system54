@@ -202,11 +202,9 @@ trait CriticalPartTrait {
 				}
 
 				$criticalId = $critical->id;
+				$this->setErrorIndex($key); //it'll always have a value; 
 				$saveResult = $this->saveToPivot($criticalId, $uniqueId);
-				if($saveResult == false){
-					$this->setErrorIndex($key);
-					return false;
-				}
+				
 			}
 		}else{
 			/*
@@ -222,12 +220,9 @@ trait CriticalPartTrait {
 			}
 
 			$criticalId = $critical->id;
+			$this->setErrorIndex(0); //we need to determines
 			$saveResult = $this->saveToPivot($criticalId, $uniqueId);
-			if($saveResult == false){
-				/*because it's not array, I wonder what to put here;*/
-				$this->setErrorIndex(0);
-				return false;
-			}
+			
 		}
 
 		return true; //save method run expectedly;
@@ -252,7 +247,16 @@ trait CriticalPartTrait {
 
 	public function saveToPivot($criticalPartId, $uniqueId){
 		if( $this->isRunOut($criticalPartId) ){
-			return false; // jika habis, return false sebagai indikasi bahwa ada error;
+			// return false; // jika habis, return false sebagai indikasi bahwa ada error;
+			$errorIndex = $this->getErrorIndex();
+			$criticals = $this->getCriticalPart(); //it can be string or array
+			$criticalPartError = ( is_array( $criticals ) )? $criticals[$errorIndex] : $criticals ;
+			throw new StoreResourceFailedException("Critical Part habis. Mohon ganti No Critical Part berikut : '{$criticalPartError}'. ", [
+				'critical_parts' => $this->getExtractedCriticalParts(),
+				'critical_error' => $criticalPartError,
+				'critical_error_index' => $errorIndex,
+				// 'node' => json_decode($this, true),
+			]);
 		}
 
 		$pivot = CriticalNode::firstOrNew([
@@ -260,6 +264,7 @@ trait CriticalPartTrait {
 			'unique_id' => $uniqueId,
 		]);
 		/*save hanya jika critical & unique_id is not exists before;*/
+		/*kalau ga gini, nanti pas scan out ke save lagi, jdnya salah.*/
 		if (!$pivot->exists) {
 			$pivot->save();
 		}
@@ -275,6 +280,17 @@ trait CriticalPartTrait {
 		->first();
 
 		/*jika isRunOut == 1, maka sudah habis, dan sebaliknya*/
-		return ($result['isRunOut'] == 1);
+		/*
+		is null ditambahkan, karena mungkin juga hasil query nya null karena critical_partnya tidak ketemu misalnya.
+		oleh sebab itu, ketika query return null, is run out harusnya return true; ( error has occured )
+		*/
+		if (is_null($result['isRunOut'])) {
+			# kalau masuk sini artinya critical_node dengan critical_id = $criticalPartId tidak ditemukan;
+			throw new StoreResourceFailedException("Critical parts dengan id = {$criticalPartId} tidak ditemukan", [
+				'critical_parts' => $this->getCriticalPart(),
+			]);
+		}
+
+		return ($result['isRunOut'] == 1 );
 	}
 }

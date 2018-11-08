@@ -138,6 +138,11 @@ class CriticalPartTraitTest extends TestCase
         $mock = $this->getMock();
         $criticalId = 1;
         $unique_id = '9EB02277-8732-4C43-A9A2-D3E38A70105E';
+
+        $this->seedCriticalDb(2);
+        /*make sure criticals dengan id 1 is exists*/
+        $this->assertDatabaseHas('criticals', ['id'=>1]);
+
         $mock->saveToPivot($criticalId, $unique_id);
 
         // assert database with specific record exists
@@ -145,6 +150,17 @@ class CriticalPartTraitTest extends TestCase
             'critical_id'=> $criticalId,
             'unique_id'=> $unique_id,
         ]);
+    }
+
+    public function testSaveToPivotError(){
+        $mock = $this->getMock();
+        $this->seedCriticalDb(1);
+        
+        $criticalId = 1;
+        $unique_id = '9EB02277-8732-4C43-A9A2-D3E38A70105E';
+        $this->expectException(StoreResourceFailedException::class); //exeption expected cuz the parameter not critical parts;
+        $mock->saveToPivot($criticalId, $unique_id);
+
     }
 
     private function seedCriticalDb($qty = 1 ){
@@ -186,8 +202,10 @@ class CriticalPartTraitTest extends TestCase
         $this->assertDatabaseHas('criticals', ['qty' => 1] );
         // run isRunOut method with critical_id = 1
         $isRunOut = $mock->isRunOut(1);
-        $this->assertTrue($isRunOut);    
+        $this->assertTrue($isRunOut);
     }
+
+    // public function test
 
 
 }
