@@ -17,6 +17,9 @@ class CreateTablePivorCriticalNode extends Migration
             $table->unsignedInteger('critical_id'); //foreign of critical id
             $table->string('unique_id'); //contain board_id, guid_master or guid_ticket;
             $table->timestamps();
+
+            $table->foreign('critical_id')->references('id')->on('criticals')->onDelete('cascade');
+            
         });
     }
 
