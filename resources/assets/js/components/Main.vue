@@ -845,7 +845,16 @@
             sendAjax(responseData){
                 let scanner_id = responseData.node.scanner.id;
                 let guid;
-                let board_id = this.form.board_id;
+                
+                if ( this.form.board_id != '' ) {
+                    /*pertama kali jalan*/
+                    console.log('tidak ')
+                    var board_id = this.form.board_id;
+                }else{
+                    /*pas mau resend data*/
+                    var board_id = this.oldForm.board_id;
+                }
+
                 if(responseData.node.guid_master != null ){
                     guid = responseData.node.guid_master;
                 }else if (responseData.node.guid_ticket != null ){

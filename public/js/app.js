@@ -32589,7 +32589,16 @@ var axios = __webpack_require__(7);
         sendAjax: function sendAjax(responseData) {
             var scanner_id = responseData.node.scanner.id;
             var guid = void 0;
-            var board_id = this.form.board_id;
+
+            if (this.form.board_id != '') {
+                /*pertama kali jalan*/
+                console.log('tidak ');
+                var board_id = this.form.board_id;
+            } else {
+                /*pas mau resend data*/
+                var board_id = this.oldForm.board_id;
+            }
+
             if (responseData.node.guid_master != null) {
                 guid = responseData.node.guid_master;
             } else if (responseData.node.guid_ticket != null) {
