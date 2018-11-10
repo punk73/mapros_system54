@@ -155,7 +155,8 @@ trait CriticalPartTrait {
 		return ( $extracted['production_date'] !='' || $extracted['lotno'] !='' );
 	}
 
-	public function isCriticalExists($criticalPart){
+	/*no longer need it because it is using firstOrNew() */
+	/*public function isCriticalExists($criticalPart){
 		if (!$this->isCriticalPartExtracted($criticalPart)) {
 			$criticalPart = $this->extractCriticalPart($criticalPart);
 		}
@@ -164,7 +165,7 @@ trait CriticalPartTrait {
 		->where('part_no', $criticalPart['part_no'])
 		->where('po', $criticalPart['po'])
 		->exists();
-	}
+	}*/
 
 	public function insertIntoCritical($extractedCriticalParts, $uniqueId = null , $criticalScannerData = null ){
 		
