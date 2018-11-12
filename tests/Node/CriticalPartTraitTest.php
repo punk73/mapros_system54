@@ -88,12 +88,12 @@ class CriticalPartTraitTest extends TestCase
         $this->assertFalse($isExists);
     }*/
 
-    public function testIsCriticalExistsWithStringParameter(){
+    /*public function testIsCriticalExistsWithStringParameter(){
         $data = $this->getDummyData();
         $mock = $this->getMock();
         $isExists = $mock->isCriticalExists($data);
         $this->assertFalse($isExists);
-    }
+    }*/
 
     public function testInsertIntoCritical(){
         $mock = $this->getMock();
