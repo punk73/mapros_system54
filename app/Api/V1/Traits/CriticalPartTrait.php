@@ -248,7 +248,9 @@ trait CriticalPartTrait {
 	}
 
 	public function saveToPivot($criticalPartId, $uniqueId){
-		if( $this->isRunOut($criticalPartId) ){
+		$status = (isset($this->status )) ? $this->getStatus() : 'IN'; //default nya IN
+
+		if( $this->isRunOut($criticalPartId, $status ) ){
 			// return false; // jika habis, return false sebagai indikasi bahwa ada error;
 			$errorIndex = $this->getErrorIndex();
 			$criticals = $this->getCriticalPart(); //it can be string or array
@@ -273,7 +275,10 @@ trait CriticalPartTrait {
 	}
 
 	/*cek apakah masih ada sisa*/
-	public function isRunOut($criticalPartId){
+	public function isRunOut($criticalPartId, $status = 'OUT'){
+		if ($status == 'OUT') {
+			return false;
+		}
 		/*cek if critical with specific id exists, */
 		if ( Critical::where('id', $criticalPartId)->first() === null ) {
 			# kalau masuk sini artinya critical_node dengan critical_id = $criticalPartId tidak ditemukan;

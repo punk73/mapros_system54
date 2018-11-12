@@ -207,7 +207,7 @@ class CriticalPartTraitTest extends TestCase
         $this->seedCriticalDb(1);
         $this->assertDatabaseHas('criticals', ['qty' => 1] );
         // run isRunOut method with critical_id = 1
-        $isRunOut = $mock->isRunOut(1);
+        $isRunOut = $mock->isRunOut(1, 'IN');
         $this->assertTrue($isRunOut);
     }
 
