@@ -5,12 +5,12 @@ use Tymon\JWTAuth\JWTAuth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
-use App\Api\V1\Traits\LoggerHelper;
+// use App\Api\V1\Traits\LoggerHelper;
 use DB;
 
 trait CrudHelper {
 
-    use LoggerHelper;
+    // use LoggerHelper;
 	// the controller should always have model var
 	// protected $model;
 
@@ -26,7 +26,7 @@ trait CrudHelper {
     }
 
     public function store(Request $request ){
-        DB::enableQueryLog();
+        // DB::enableQueryLog();
         /*you are doing it */
         $rules = (isset($this->rules)) ? $this->rules : [];
         $this->validate($request, $rules );
@@ -38,7 +38,7 @@ trait CrudHelper {
 
         $model->save();
 
-        $this->postLog($request, 'Create' );
+        // $this->postLog($request, 'Create' );
 
         return [
             'success' => true,
@@ -47,7 +47,7 @@ trait CrudHelper {
     }
 
     public function update($id,Request $request){
-        DB::enableQueryLog();
+        // DB::enableQueryLog();
         $model = $this->model->find($id);
 
         if ( is_null($model) || $model == null ) {
@@ -68,7 +68,7 @@ trait CrudHelper {
 
         $model->save();
 
-        $this->postLog($request, 'Update');
+        // $this->postLog($request, 'Update');
         
         return [
             'success' => true,
@@ -77,7 +77,7 @@ trait CrudHelper {
     }
 
     public function delete($id, Request $request){
-        DB::enableQueryLog();
+        // DB::enableQueryLog();
         $model = $this->model->find($id);
 
         if ( is_null($model) || $model == null ) {
@@ -91,7 +91,7 @@ trait CrudHelper {
 
         $model->delete();
 
-        $this->postLog($request, 'Delete');
+        // $this->postLog($request, 'Delete');
 
         return [
             'success' => true

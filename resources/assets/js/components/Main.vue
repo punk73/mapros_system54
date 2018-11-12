@@ -2,7 +2,6 @@
   <div>
     <div class="container">
         <div class="row">
-
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     
@@ -21,6 +20,20 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group" v-if='config.showCritical' v-for="(critical, index ) in form.critical_parts" >
+                                <label for="critical_parts" class="col-md-4 control-label">Critical Part</label>
+                                <div class="col-md-6" >
+                                    <div class="input-group">
+                                        <input :id="'critical_parts_' + index" :ref="'critical_parts_' + index" placeholder="Scan Critical Part disini" class="form-control" name="critical_parts" v-model='form.critical_parts[index]' required autofocus>        
+
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success" @click.prevent='addCritical' ><span class="fa fa-plus"></span> </button>
+                                            <button type="button" class="btn btn-danger" @click.prevent='minusCritical(index)' ><span class="fa fa-minus"></span> </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>                            
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
@@ -191,6 +204,7 @@
                     is_solder:false,
                     judge : 'OK', //default nya OK
                     symptom: [], //default value for symptom is empty array;
+                    critical_parts:[], //default value for critical_parts empty array
                 },
 
                 isNG : false,
@@ -245,6 +259,9 @@
                 config : {
                     modelname: '',
                     ip       : '',
+                    
+                    // showCritical : false, //it cannot have default value, otherwise, wathc will not called; let it be;
+                    
                     showSolder: true,
                     isGenerateFile : false,
                     generatedFileName : 'something.txt',
@@ -305,7 +322,16 @@
                     delete this.form.symptom;
                 }
                 this.form.judge = judge;
-            }
+            },
+
+            computedShowCritical(newVal, oldVal){
+                if (newVal == true) {
+                    this.form.critical_parts = [''];
+                }else{
+                    delete this.form.critical_parts;
+                }
+                // console.log('showCritical watch called', this.form, newVal )
+            },            
         },
 
         computed:{
@@ -320,6 +346,11 @@
             computedJumlahJoin(){
                 return this.jumlahJoin + 1;
             },
+
+            computedShowCritical(){
+                // console.log('showCritical computed called', this.config.showCritical )
+                return this.config.showCritical 
+            }
         },
 
         mounted(){
@@ -431,6 +462,29 @@
               });
 
             }, 350),
+
+            addCritical(){
+                // console.log('addCritical triggered')
+                this.form.critical_parts.push('');
+            },
+
+            minusCritical(index){
+                // console.log('minusCritical triggered')
+                if (this.form.critical_parts.length != 1) {
+                    this.form.critical_parts.splice(index, 1);
+                }else{
+                    this.form.critical_parts = ['']; //make textfield empty
+                    console.log( this.$refs )
+                    var el = this.$refs['critical_parts_'+index][0];
+                    if (el) {
+                        el.focus()
+                    }
+                }
+            },
+
+            changesCriticalCounter($i){
+                this.config.criticalCounter = this.config.criticalCounter + $i;
+            },
 
             toggleMode(){
                 if(this.config.showSolder){
@@ -911,5 +965,9 @@
 
     .no-bottom-margin {
         margin-bottom: auto;
+    }
+
+    .no-left-margin {
+        margin-left: 0px;
     }
 </style>
