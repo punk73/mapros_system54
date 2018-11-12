@@ -852,7 +852,10 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 			# code...
 			$criticalParts = $this->getExtractedCriticalParts();
 			if(method_exists($this, 'insertIntoCritical')){
-				$this->insertIntoCritical($criticalParts, $this->getUniqueId() );
+				if ($this->getStatus() == 'IN') {
+					# only run this method when it's IN. // if it's OUT, gausah.
+					$this->insertIntoCritical($criticalParts, $this->getUniqueId() );
+				}
 			}
 		}
 
