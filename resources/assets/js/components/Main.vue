@@ -686,7 +686,8 @@
                     // kalau IN jangan dulu dihapus;
                     if(!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
                 }
-                this.isNG = false;
+                /*kalau config showNgOption itu false, baru jalankan*/
+                if (!this.config.showNgoption) { this.isNG = false; }
             },
 
             generateFile(){
