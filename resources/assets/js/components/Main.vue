@@ -204,7 +204,7 @@
                     is_solder:false,
                     judge : 'OK', //default nya OK
                     symptom: [], //default value for symptom is empty array;
-                    critical_parts:[''], //default value for critical_parts empty array
+                    // critical_parts:[''], //default value for critical_parts empty array
                 },
 
                 isNG : false,
