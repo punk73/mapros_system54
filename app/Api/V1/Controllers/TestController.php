@@ -39,7 +39,7 @@ class TestController extends Controller
 		$node = new Node($request->all());
 		return [
 			'node' => $node,
-			'isRunOut' => $node->isRunOut(8)
+			'isRunOut' => $node->getStartId()
 		];
 		// return $node->isSettingContainChildrenOf('ticket');
 		// return ($node->isExists()) ? 'true' : 'false' ;

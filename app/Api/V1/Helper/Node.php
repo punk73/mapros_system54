@@ -1254,6 +1254,15 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 	}
 
 	public function getLineprocess(){
+		/*return array of lineprocess*/
+		/*
+			'id',
+			'name',
+			'type',
+			'std_time',
+			'endpoint_id',
+			'join_qty', //added to get in hasChildren
+		*/
 		return $this->lineprocess;
 	}
 
@@ -1503,5 +1512,13 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 
 	public function next(){
 		return $this->move(1);
+	}
+
+	public function getStartId(){
+		// return
+		$id = $this->getLineprocess()['id'];
+
+		$data = Lineprocess::find($id)->startId();
+		return $data;
 	}
 }
