@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogsActivityInterface;
 use Spatie\Activitylog\LogsActivity;
+use App\LineprocessStart;
 
 class Lineprocess extends Model implements LogsActivityInterface
 {
@@ -38,5 +39,14 @@ class Lineprocess extends Model implements LogsActivityInterface
 
 	public function columnSettings(){
 		return $this->belongsToMany('App\ColumnSetting');
+	}
+
+	public function startId(){
+		$start_id = LineprocessStart::select('start_id')->where('lineprocess_id', $this->id )->first();
+		if (!$start_id) { //if doesn't exists;
+			return null;
+		}else{
+			return $start_id['start_id'];
+		}
 	}
 }
