@@ -31970,8 +31970,8 @@ var axios = __webpack_require__(7);
                 modelname: '',
                 is_solder: false,
                 judge: 'OK', //default nya OK
-                symptom: [], //default value for symptom is empty array;
-                critical_parts: [] //default value for critical_parts empty array
+                symptom: [] //default value for symptom is empty array;
+                // critical_parts:[], //default value for critical_parts empty array
             },
 
             isNG: false,
