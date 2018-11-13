@@ -215,7 +215,7 @@ class MainController extends Controller
 
 				$judgement = 'OK'; //kalau IN mah ga bisa NG;
 				// we not sure if it calling prev() twice or not, hopefully it's not;
-				if($prevNode->getJudge() == 'NG'){                    
+				if($prevNode->getJudge() == 'NG'){ //kita bisa tambah or $prevNode->getJudge() == 'REWORK'                   
 					// kalau dia NG
 					// cek di table repair, ada engga datanya.
 					if( !$prevNode->isRepaired()){ //kalau ga ada, masuk sini
@@ -318,19 +318,51 @@ class MainController extends Controller
 				// cek current judge
 				if($node->getJudge() != 'REWORK'){
 					if($node->isRepaired()){
-						$node->setStatus('IN');
-						$node->setJudge('REWORK');
-						if(!$node->save()){
-							// throw new StoreResourceFailedException("Error Saving Progress", [
-							throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
-								'message' => '305 something went wrong with save method on model! ask your IT member'
-							]);
+						// cek apakah $node->getLineprocess()->id == $node->getStartingPoints();
+						if ($node->getLineprocess()['id'] == $node->getStartId() ) {
+							# code...
+							$node->setStatus('IN');
+							$node->setJudge('REWORK');
+							if(!$node->save()){
+								// throw new StoreResourceFailedException("Error Saving Progress", [
+								throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
+									'message' => '305 something went wrong with save method on model! ask your IT member'
+								]);
+							}
+
+							$this->returnValue['line_code'] = 278;
+							$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus().' / '. $node->getJudge();
+
+							return $this->returnValue;
+						}else{
+							// cek prev node nya;
+							$prevNode = $node->prev();
+							$prevIsExists = $prevNode->isExists('OUT', 'REWORK');
+							if ($prevIsExists) {
+								# kalau prev node nya exists, boleh input di current positions;
+								$node->next(); // maju
+								$node->setStatus('IN');
+								$node->setJudge('REWORK');
+								if(!$node->save()){
+									// throw new StoreResourceFailedException("Error Saving Progress", [
+									throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
+										'message' => '305 something went wrong with save method on model! ask your IT member'
+									]);
+								}
+
+								$this->returnValue['line_code'] = 352;
+								$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus().' / '. $node->getJudge();
+
+								return $this->returnValue;
+							}else{
+								// selain itu error data belum di scan di process sebelumnya;
+								$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+								throw new StoreResourceFailedException("DATA BELUM DI SCAN DI PROSES SEBELUMNYA. ( ".$step." )", [
+									'message' => '235 bukan board',
+									'prevNode' => json_decode( $prevNode, true )
+								]);
+							}
 						}
-
-						$this->returnValue['line_code'] = 278;
-						$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus() . ' / ' . $node->getJudge() ;
-
-						return $this->returnValue;
 					}
 				}
 
