@@ -357,7 +357,7 @@ class MainController extends Controller
 							}else{
 								// selain itu error data belum di scan di process sebelumnya;
 								$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
-								throw new StoreResourceFailedException("DATA BELUM DI SCAN DI PROSES SEBELUMNYA. ( ".$step." )", [
+								throw new StoreResourceFailedException("DATA BELUM DI SCAN REWORK DI PROSES SEBELUMNYA. ( ".$step." )", [
 									'message' => '235 bukan board',
 									'prevNode' => json_decode( $prevNode, true )
 								]);
@@ -366,8 +366,9 @@ class MainController extends Controller
 					}
 				}
 
-				if( ($node->getJudge() == 'OK') || ($node->getJudge() == 'NG') ){
-					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT DI PROSES INI!", [
+				$getJudge = $node->getJudge();
+				if( ( $getJudge == 'OK') || ($getJudge == 'NG') || ( $getJudge == 'REWORK') ){
+					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT {$getJudge} DI PROSES INI!", [
 						'node' => json_decode( $node, true ),
 					]);
 				}
