@@ -39,7 +39,8 @@ class TestController extends Controller
 		$node = new Node($request->all());
 		return [
 			'node' => $node,
-			'isRunOut' => $node->getStartId()
+			'getLineprocessNg' => $node->getLineprocessNg(),
+			'isRepaired' => $node->isRepaired(),
 		];
 		// return $node->isSettingContainChildrenOf('ticket');
 		// return ($node->isExists()) ? 'true' : 'false' ;
