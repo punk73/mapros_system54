@@ -1,5 +1,6 @@
 <?php
 namespace App\Api\V1\Interfaces;
+use Illuminate\Database\Eloquent\Model;
 
 interface RepairableInterface {
 	/*required to implemented in node class */
@@ -10,7 +11,7 @@ interface RepairableInterface {
 
 	/*end*/
 
-	public function getLineprocessNg();
+	public function getLineprocessNg(Model $model, $uniqueColumn, $uniqueId);
 	public function isAfterNgProcess();
 
 
