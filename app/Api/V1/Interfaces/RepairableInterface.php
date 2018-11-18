@@ -6,6 +6,8 @@ interface RepairableInterface {
 	public function getModel();
 	public function getUniqueColumn();
 	public function getUniqueId();
+	public function getProcess();
+
 	/*end*/
 
 	public function getLineprocessNg();
