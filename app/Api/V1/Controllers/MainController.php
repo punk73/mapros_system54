@@ -335,6 +335,12 @@ class MainController extends Controller
 
 							return $this->returnValue;
 						}else{
+							// add more if statement here.
+							/*
+								check if current process is after ng_lineprocess_id;
+								if true, run current code.
+								if not, let it to shows error 'data sudah di scan out di proses ini.'
+							*/
 							// cek prev node nya;
 							$prevNode = $node->prev();
 							$prevIsExists = $prevNode->isExists('OUT', 'REWORK');
