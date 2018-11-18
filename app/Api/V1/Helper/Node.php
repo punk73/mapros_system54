@@ -23,14 +23,16 @@ use App\Endpoint;
 use App\Symptom;
 use App\Api\V1\Interfaces\ColumnSettingInterface;
 use App\Api\V1\Interfaces\CriticalPartInterface;
+use App\Api\V1\Interfaces\RepairableInterface;
 use App\Api\V1\Traits\ColumnSettingTrait;
 use App\Api\V1\Traits\CriticalPartTrait;
+use App\Api\V1\Traits\RepairableTrait;
 
-class Node implements ColumnSettingInterface, CriticalPartInterface
+class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface
 {
-	use ColumnSettingTrait, CriticalPartTrait;
+	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait;
 
-	protected $model;
+	protected $model; // App\Board, App\Master , App\Ticket, or App\Part;
 	protected $model_code; // 5 char atau 11 char awal
 	protected $allowedStatus = [
 		'IN',
