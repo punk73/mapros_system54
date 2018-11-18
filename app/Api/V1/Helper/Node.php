@@ -363,6 +363,10 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		return $this->unique_id;
 	}
 
+	public function getUniqueColumn(){
+		return $this->unique_column;
+	}
+
 	public function getDummyParent(){
 		$tmp = str_split($this->dummy_id);
 
