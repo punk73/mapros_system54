@@ -6,8 +6,8 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 trait RepairableTrait {
 	
 	public function getLineprocessNg(){
-		return $this->model
-		->where($this->unique_column, $this->unique_id )
+		return $this->getModel()
+		->where( $this->getUniqueColumn() , $this->$this->getUniqueId() )
 		->where('judge', 'NG')->orderBy('created_at', 'desc')
 		->first();
 	}
