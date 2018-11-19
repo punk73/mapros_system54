@@ -98,4 +98,19 @@ trait RepairableTrait {
 		$data = Lineprocess::find($id)->startId();
 		return $data;
 	}
+
+	/*
+	* isRepaired is function to check data in table repair;
+	* the return value is boolean;
+	*/
+	public function isRepaired($uniqueIdParam = null,bool $lineprocessNgExists = null ){
+		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
+
+		$repairExists = Repair::where('unique_id', $uniqueId )
+		->exists();
+
+		$lineprocessNg = (is_null($lineprocessNgExists)) ? ( is_null($this->getLineprocessNg()) === false ) : $lineprocessNgExists ;
+
+		return ($repairExists && $lineprocessNg );
+	}
 }

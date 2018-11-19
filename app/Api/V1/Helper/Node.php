@@ -738,15 +738,6 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		return $this->model;
 	}
 
-	/*
-	* isRepaired is function to check data in table repair;
-	* the return value is boolean;
-	*/
-	public function isRepaired(){
-		return Repair::where('unique_id', $this->unique_id )
-		->exists();
-	}
-
 	public function getModelType(){
 		return $this->model_type;
 	}
