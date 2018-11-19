@@ -84,4 +84,18 @@ trait RepairableTrait {
 		/*akan return true kalau lineprocess index lebih besar dari lineprocess NG*/
 		return ( $lineprocess_index > $ng_process_index );
 	}
+
+	public function getStartId($idParam = null ){
+		// Start id yg di return adalah start id dari process dimana si NG itu terjadi.
+		// bukan dari current lineprocess.
+		/*
+			contoh : NG terjadi di inspect 3. maka start id yg di return adalah start id inspect 3.
+			bukan start id current lineprocess.
+		*/
+
+		$id = (is_null($idParam))? $this->getLineprocessNg() :$idParam;
+
+		$data = Lineprocess::find($id)->startId();
+		return $data;
+	}
 }

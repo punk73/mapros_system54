@@ -1519,12 +1519,4 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	public function next(){
 		return $this->move(1);
 	}
-
-	public function getStartId(){
-		// return
-		$id = $this->getLineprocess()['id'];
-
-		$data = Lineprocess::find($id)->startId();
-		return $data;
-	}
 }
