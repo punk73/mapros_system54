@@ -36,11 +36,16 @@ class TestController extends Controller
 	}
 
 	public function store(Request $request){
+		$a = [1,2,3];
+		$val = 5;
+		$arraySearch = array_search($val, $a);
+
 		$node = new Node($request->all());
 		return [
-			'node' => $node,
+			// 'node' => $node,
+			'arraySearch' => $arraySearch,
 			'getLineprocessNg' => $node->getLineprocessNg(),
-			'isRepaired' => $node->isRepaired(),
+			'isAfterNgProcess' => $node->isAfterNgProcess('1,2,3,4,5', 4, 1),
 		];
 		// return $node->isSettingContainChildrenOf('ticket');
 		// return ($node->isExists()) ? 'true' : 'false' ;

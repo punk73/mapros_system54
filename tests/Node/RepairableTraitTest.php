@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Master;
+use App\Scanner;
+use App\Lineprocess;
 
 class RepairableTraitTest extends TestCase
 {
@@ -51,10 +53,57 @@ class RepairableTraitTest extends TestCase
         return $mock;
     }
 
-    public function testGetLineprocessNgReturnNull(){
+    public function seedTableMaster(){
+        $scanners = factory(Scanner::class, 2 )
+        ->create([
+            'lineprocess_id' => function (){
+                return factory(Lineprocess::class)->create()->id;
+            }
+        ]);
+        
+        $master = new Master;
+        $master->ticket_no_master = 'MAMSTTESTING';
+        $master->guid_master = 'some-guid-master-temp';
+        $master->status = 'OUT';
+        $master->scanner_id = 1; //we'll need to specify this scanner;
+        $master->scan_nik = '39597';
+        $master->judge = 'NG';
+        $master->save();
+    }
+
+    public function testGetLineprocessNgThrowException(){
         $mock = $this->getMock();
         $master = new Master;
-        $this->assertNull( $mock->getLineprocessNg( $master , 'guid_master', 'someguimaster') );
+        $this->expectException(StoreResourceFailedException::class); 
+        $mock->getLineprocessNg( $master , 'guid_master', 'someguimaster') ;
     }
-    public function testIsAfterNgProcess(){}
+
+    public function testGetLineprocessNgReturnLineprocessId(){
+        $mock = $this->getMock();
+        
+        // jalankan seeder
+        $this->seedTableMaster();
+        $master = new Master;
+        $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
+        $this->assertNotNull( $lineprocessNg );
+        $this->assertInternalType('int', $lineprocessNg );
+    }
+
+    public function testGetJoinQuery(){
+        $mock = $this->getMock();
+        $master = new Master;
+        $data = $mock->getJoinQuery($master);
+        $this->assertInstanceOf('Illuminate\Database\Eloquent\Builder', $data );    
+    }
+
+    public function testIsAfterNgProcess(){
+        $mock = $this->getMock();
+        $this->seedTableMaster();
+        /*parameters : process, lineprocess_id, lineprocessNg*/
+        $true = $mock->isAfterNgProcess('1,2,3,4,5', 4, 1 );
+        $this->assertTrue($true);
+
+        $false = $mock->isAfterNgProcess('1,2,3,4,5', 2, 4 );
+        $this->assertFalse($false);
+    }
 }

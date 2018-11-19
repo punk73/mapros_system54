@@ -41,13 +41,12 @@ trait RepairableTrait {
 		return $result['id'];
 	}
 
-
 	/*
 		it's should return boolean
 		the parameter is not necesarry, it is for testing purpose. called dependecies injections;
 	*/
-	public function isAfterNgProcess($processParam = null, $lineprocessId = null , $lineprocessNg = null ){
-		$lineprocessNg = (is_null($lineprocessNg)) ? $this->getLineprocessNg() : $lineprocessNg;
+	public function isAfterNgProcess($processParam = null, $lineprocessId = null , $lineprocessNgParam = null ){
+		$lineprocessNg = (is_null($lineprocessNgParam)) ? $this->getLineprocessNg() : $lineprocessNgParam;
 
 		$lineprocess = (is_null($lineprocessId))? $this->getLineprocess()->id : $lineprocessId ;
 
@@ -55,7 +54,8 @@ trait RepairableTrait {
 		$process = explode(',', $process );
 
 		$lineprocess_index = array_search($lineprocess, $process);
-		if (!$lineprocess_index) {
+		/* === is necesarry due to we sometimes used 1 as parameter */
+		if ( $lineprocess_index === false ) {
 			# lineprocess index tidak ditemukan di process
 			throw new StoreResourceFailedException("lineprocess id tidak ditemukan di proses. klik detail untuk info selengkapnya", [
 				'lineprocess' => $lineprocess,
@@ -64,7 +64,8 @@ trait RepairableTrait {
 		}
 
 		$ng_process_index  = array_search($lineprocessNg, $process);
-		if (!$ng_process_index) {
+		/* === is necesarry due to we sometimes used 1 as parameter */
+		if ($ng_process_index === false ) {
 			# ng process tidak ditemukan di array process;
 			throw new StoreResourceFailedException("lineprocess NG tidak ditemukan di proses. klik detail untuk info selengkapnya", [
 				'lineprocess_ng' => $lineprocessNg,
