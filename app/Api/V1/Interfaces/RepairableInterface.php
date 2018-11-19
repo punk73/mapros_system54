@@ -12,7 +12,7 @@ interface RepairableInterface {
 	/*end*/
 
 	public function getLineprocessNg(Model $model, $uniqueColumn, $uniqueId);
-	public function isAfterNgProcess();
+	public function isAfterNgProcess($processParam = null, $lineprocessId =null, $lineprocessNg = null);
 
 
 }
