@@ -326,7 +326,11 @@ class MainController extends Controller
 				// cek current judge
 				if($node->getJudge() != 'REWORK'){
 					if($node->isRepaired()){
-						// cek apakah $node->getLineprocess()->id == $node->getStartingPoints();
+						// cek apakah Start Id == Current lineprocess;
+						/*
+							getStartId return start_id dari lineprocessNg, bukan lagi dari 
+							current lineprocess;
+						*/
 						if ($node->getLineprocess()['id'] == $node->getStartId() ) {
 							# code...
 							$node->setStatus('IN');
