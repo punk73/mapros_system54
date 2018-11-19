@@ -10,6 +10,7 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Master;
 use App\Scanner;
 use App\Lineprocess;
+use App\LineprocessStart;
 
 class RepairableTraitTest extends TestCase
 {
@@ -112,6 +113,28 @@ class RepairableTraitTest extends TestCase
         $this->expectException(StoreResourceFailedException::class);
         /*parameters : process, lineprocess_id, lineprocessNg*/
         $true = $mock->isAfterNgProcess('1,2,3,4,5', 7, 1 );
-        
+    }
+
+    protected function seedLineprocessStart(){
+        factory(Lineprocess::class, 2)->create();
+
+        $lineprocessStart = new LineprocessStart([
+            'lineprocess_id' => 1,
+            'start_id' => 2,
+        ]);
+
+        $lineprocessStart->save();
+    }
+
+    public function testGetStartId(){
+        $mock = $this->getMock();
+        $this->seedLineprocessStart();
+        $lineprocessId = 1;
+        $result = $mock->getStartId($lineprocessId);
+        $this->assertEquals($result, 2); //2 is filled in seedLineprocessStart method;
+    }
+
+    public function testIsRepaired(){
+
     }
 }

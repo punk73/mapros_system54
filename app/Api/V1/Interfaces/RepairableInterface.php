@@ -8,9 +8,10 @@ interface RepairableInterface {
 	public function getUniqueColumn();
 	public function getUniqueId();
 	public function getProcess();
-
 	/*end*/
-
+	public function getJoinQuery(Model $modelParam = null);
+	public function getStartId($idParam = null );
+	public function isRepaired($uniqueIdParam = null, $lineprocessNgExists = null );
 	public function getLineprocessNg(Model $model, $uniqueColumn, $uniqueId);
 	public function isAfterNgProcess($processParam = null, $lineprocessId =null, $lineprocessNg = null);
 

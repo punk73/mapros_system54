@@ -3,10 +3,10 @@
 namespace App\Api\V1\Traits;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Lineprocess;
 
 trait RepairableTrait {
-	
+
 	public function getJoinQuery(Model $modelParam = null){
 		$model = (is_null($modelParam)) ? $this->getModel() : $modelParam ;
 
@@ -37,7 +37,7 @@ trait RepairableTrait {
 				'node' => json_decode(json_encode( $this), true ),
 			]);
 		}
-	
+
 		return $result['id'];
 	}
 
@@ -95,7 +95,15 @@ trait RepairableTrait {
 
 		$id = (is_null($idParam))? $this->getLineprocessNg() :$idParam;
 
-		$data = Lineprocess::find($id)->startId();
+		$data = Lineprocess::find($id);
+
+		if (is_null($data)) {
+			throw new StoreResourceFailedException("Lineprocess with id = {$id} is not found.", [
+				'lineprocess_id' => $id,
+			]);
+		}
+
+		$data = $data->startId();
 		return $data;
 	}
 
@@ -103,13 +111,13 @@ trait RepairableTrait {
 	* isRepaired is function to check data in table repair;
 	* the return value is boolean;
 	*/
-	public function isRepaired($uniqueIdParam = null,bool $lineprocessNgExists = null ){
+	public function isRepaired($uniqueIdParam = null, $isLineprocessNgExists = null ){
 		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
 
 		$repairExists = Repair::where('unique_id', $uniqueId )
 		->exists();
 
-		$lineprocessNg = (is_null($lineprocessNgExists)) ? ( is_null($this->getLineprocessNg()) === false ) : $lineprocessNgExists ;
+		$lineprocessNg = (is_null($isLineprocessNgExists))?(is_null($this->getLineprocessNg())===false):$isLineprocessNgExists;
 
 		return ($repairExists && $lineprocessNg );
 	}
