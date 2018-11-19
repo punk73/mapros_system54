@@ -11,6 +11,7 @@ use App\Master;
 use App\Scanner;
 use App\Lineprocess;
 use App\LineprocessStart;
+use App\Repair;
 
 class RepairableTraitTest extends TestCase
 {
@@ -134,7 +135,30 @@ class RepairableTraitTest extends TestCase
         $this->assertEquals($result, 2); //2 is filled in seedLineprocessStart method;
     }
 
-    public function testIsRepaired(){
+    public function testGetStartIdReturnException(){
+        $mock = $this->getMock();
+        /*getStartId jika dipanggil dengan lineprocess yg belum diisi / tidak ditemukan akan return exception*/
+        $this->expectException(StoreResourceFailedException::class);
+        $mock->getStartId(1);
+    }
 
+    protected function seedRepairTable(){
+        $repair = new Repair([
+            'unique_id' => 'someuniqueid',
+            'dummy_id' => 'somedummy'
+        ]);
+
+        $repair->save();
+    }
+
+    public function testIsRepaired(){
+        $mock = $this->getMock();
+        $this->seedRepairTable(); //seed the table
+        // unique_id & isNgRecordExists;
+        $true = $mock->isRepaired('someuniqueid', true );
+        $this->assertTrue($true);
+
+        $false = $mock->isRepaired('anotherUniquerId', true );
+        $this->assertFalse($false);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Api\V1\Traits;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Illuminate\Database\Eloquent\Model;
 use App\Lineprocess;
-
+use App\Repair;
 trait RepairableTrait {
 
 	public function getJoinQuery(Model $modelParam = null){

@@ -325,6 +325,11 @@ class MainController extends Controller
 			if($node->is_solder == false){
 				// cek current judge
 				if($node->getJudge() != 'REWORK'){
+					/*
+						isRepaired harusnya verify juga bahwa current node punya record NG.
+						untuk pengamanan in case someone input into table repair without input 
+						record NG. that would be huge pain.
+					*/
 					if($node->isRepaired()){
 						// cek apakah Start Id == Current lineprocess;
 						/*
