@@ -98,12 +98,20 @@ class RepairableTraitTest extends TestCase
 
     public function testIsAfterNgProcess(){
         $mock = $this->getMock();
-        $this->seedTableMaster();
         /*parameters : process, lineprocess_id, lineprocessNg*/
         $true = $mock->isAfterNgProcess('1,2,3,4,5', 4, 1 );
         $this->assertTrue($true);
 
         $false = $mock->isAfterNgProcess('1,2,3,4,5', 2, 4 );
         $this->assertFalse($false);
+    }
+
+    public function testIsAfterNgProcessError(){
+        $mock = $this->getMock();
+        /*below exeption will be thrown*/
+        $this->expectException(StoreResourceFailedException::class);
+        /*parameters : process, lineprocess_id, lineprocessNg*/
+        $true = $mock->isAfterNgProcess('1,2,3,4,5', 7, 1 );
+        
     }
 }
