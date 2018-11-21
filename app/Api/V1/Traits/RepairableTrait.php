@@ -32,11 +32,11 @@ trait RepairableTrait {
 		->first();
 
 		if (!$result) {
-			// return null;
+			return null;
 			/*disini result bernilai false, artinya record dengan judge NG tidak ditemukan*/
-			throw new StoreResourceFailedException("Record NG tidak ditemukan. klik detail untuk info selengkapnya", [
+			/*throw new StoreResourceFailedException("Record NG tidak ditemukan. klik detail untuk info selengkapnya", [
 				'node' => json_decode(json_encode( $this), true ),
-			]);
+			]);*/
 		}
 
 		return $result['id'];
@@ -132,7 +132,12 @@ trait RepairableTrait {
 		->exists();
 
 		$lineprocessNg = (is_null($isLineprocessNgExists))?(is_null($this->getLineprocessNg())===false):$isLineprocessNgExists;
-
+		
+		/*return [
+			'repairExists' => $repairExists,
+			'lineprocessNg' => $lineprocessNg,
+		];*/
+		
 		return ($repairExists && $lineprocessNg );
 	}
 

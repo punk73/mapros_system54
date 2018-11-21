@@ -73,11 +73,12 @@ class RepairableTraitTest extends TestCase
         $master->save();
     }
 
-    public function testGetLineprocessNgThrowException(){
+    public function testGetLineprocessNgReturnNull(){
         $mock = $this->getMock();
         $master = new Master;
-        $this->expectException(StoreResourceFailedException::class); 
-        $mock->getLineprocessNg( $master , 'guid_master', 'someguimaster') ;
+        // $this->expectException(StoreResourceFailedException::class); 
+        $null = $mock->getLineprocessNg( $master , 'guid_master', 'someguimaster') ;
+        $this->assertNull($null);
     }
 
     public function testGetLineprocessNgReturnLineprocessId(){
@@ -121,7 +122,7 @@ class RepairableTraitTest extends TestCase
 
         /*seeding to lineprocessStart no longer needed due to we already setup event & listener in lineprocess model*/
         /*so every time lineprocess has new record, it will automatically insert into lineprocessStart too*/
-        
+
         /*$lineprocessStart = new LineprocessStart([
             'lineprocess_id' => 1,
             'start_id' => 2,
