@@ -9,13 +9,14 @@ trait RepairableTrait {
 
 	public function getJoinQuery(Model $modelParam = null){
 		$model = (is_null($modelParam)) ? $this->getModel() : $modelParam ;
+		$table = $model->getTable(); //it get table name from the models; it can be masters, boards, or tickets;
 
 		$query = $model->select([
 			'lineprocesses.id'
 		])
 		->join('scanners', 'scanners.id','=','scanner_id')
-		->leftJoin('lineprocesses', 'lineprocesses.id', '=', 'lineprocess_id');
-		// ->orderBy('created_at', 'desc');
+		->leftJoin('lineprocesses', 'lineprocesses.id', '=', 'lineprocess_id')
+		->orderBy( $table.'.created_at', 'desc'); //return yg paling baru dibuat record NG nya (in case ada lebih dari satu);
 		return $query;
 	}
 
@@ -133,5 +134,38 @@ trait RepairableTrait {
 		$lineprocessNg = (is_null($isLineprocessNgExists))?(is_null($this->getLineprocessNg())===false):$isLineprocessNgExists;
 
 		return ($repairExists && $lineprocessNg );
+	}
+
+	public function isBeforeStartId($processParam = null , $lineprocessId = null, $startIdParam = null){
+		/*setup default value of the parameter*/
+			/*the parameter is use in unit testing. it's called dependencies injections*/
+			$process = (is_null($processParam)) ? $this->getProcess() : $processParam;
+			$process = explode(',', $process );
+
+			$lineprocess = (is_null($lineprocessId))? $this->getLineprocess()->id : $lineprocessId ;
+			$startId = (is_null($startIdParam)) ? $this->getStartId() : $startIdParam;
+		/*end*/
+		$lineprocess_index = array_search($lineprocess, $process);
+		/* === is necesarry due to we sometimes used 1 as parameter */
+		if ( $lineprocess_index === false ) {
+			# lineprocess index tidak ditemukan di process
+			throw new StoreResourceFailedException("lineprocess id tidak ditemukan di proses. klik detail untuk info selengkapnya", [
+				'lineprocess' => $lineprocess,
+				'process' => $process
+			]);
+		}
+
+		$startid_index = array_search($startId, $process);
+		if ($startid_index === false) {
+			# code...
+			throw new StoreResourceFailedException("start id '{$startId}' tidak ditemukan di proses. klik detail untuk info selengkapnya", [
+				'start_id' => $startId,
+				'process' => $process
+			]);
+		}
+
+		/*will return true if lineprocess_index kurang dari startid_index*/
+		return ($lineprocess_index < $startid_index );
+
 	}
 }

@@ -187,4 +187,19 @@ class RepairableTraitTest extends TestCase
         $this->expectException(StoreResourceFailedException::class);
         $result = $mock->getLineprocessNgName(1);
     }
+
+    public function testIsBeforeStartIdReturnTrue(){
+        $mock = $this->getMock();
+        $result = $mock->isBeforeStartId('1,2,3,4', 2, 3);
+        $this->assertTrue($result);
+    }
+
+    public function testIsBeforeStartIdReturnFalse(){
+        $mock = $this->getMock();
+        $false1 = $mock->isBeforeStartId('1,2,3,4', 3, 3);
+        $false2 = $mock->isBeforeStartId('1,2,3,4', 4, 3);
+        $this->assertFalse($false1);
+        $this->assertFalse($false2);
+
+    }    
 }
