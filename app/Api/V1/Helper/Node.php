@@ -23,14 +23,16 @@ use App\Endpoint;
 use App\Symptom;
 use App\Api\V1\Interfaces\ColumnSettingInterface;
 use App\Api\V1\Interfaces\CriticalPartInterface;
+use App\Api\V1\Interfaces\RepairableInterface;
 use App\Api\V1\Traits\ColumnSettingTrait;
 use App\Api\V1\Traits\CriticalPartTrait;
+use App\Api\V1\Traits\RepairableTrait;
 
-class Node implements ColumnSettingInterface, CriticalPartInterface
+class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface
 {
-	use ColumnSettingTrait, CriticalPartTrait;
+	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait;
 
-	protected $model;
+	protected $model; // App\Board, App\Master , App\Ticket, or App\Part;
 	protected $model_code; // 5 char atau 11 char awal
 	protected $allowedStatus = [
 		'IN',
@@ -359,6 +361,10 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 
 	public function getUniqueId(){
 		return $this->unique_id;
+	}
+
+	public function getUniqueColumn(){
+		return $this->unique_column;
 	}
 
 	public function getDummyParent(){
@@ -730,15 +736,6 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 
 	public function getModel(){
 		return $this->model;
-	}
-
-	/*
-	* isRepaired is function to check data in table repair;
-	* the return value is boolean;
-	*/
-	public function isRepaired(){
-		return Repair::where('unique_id', $this->unique_id )
-		->exists();
 	}
 
 	public function getModelType(){
@@ -1512,13 +1509,5 @@ class Node implements ColumnSettingInterface, CriticalPartInterface
 
 	public function next(){
 		return $this->move(1);
-	}
-
-	public function getStartId(){
-		// return
-		$id = $this->getLineprocess()['id'];
-
-		$data = Lineprocess::find($id)->startId();
-		return $data;
 	}
 }
