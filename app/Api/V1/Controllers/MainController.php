@@ -328,7 +328,7 @@ class MainController extends Controller
 					/*
 						isRepaired harusnya verify juga bahwa current node punya record NG.
 						untuk pengamanan in case someone input into table repair without input 
-						record NG. that would be huge pain.
+						record NG. that would be huge pain. --> Done!! (2018-11-19)
 					*/
 					if($node->isRepaired()){
 						// cek apakah Start Id == Current lineprocess;
@@ -360,6 +360,13 @@ class MainController extends Controller
 							*/
 							if ($node->isAfterNgProcess() == false ) {
 								# code...
+								$isNodeBeforeStartId = $node->isBeforeStartId();
+								if ($isNodeBeforeStartId) {
+									# kalau node adalah first sequences, kita harus ambil NG nya dimana.
+									# untuk memunculkan pesan error yg benar.
+									$step = $node->getLineprocessNgName();
+									$errorMessages = "DATA HARUS SCAN REWORK MULAI DARI PROSES ( ".$step." )";
+								}
 								// cek prev node nya;
 								$prevNode = $node->prev();
 								$prevIsExists = $prevNode->isExists('OUT', 'REWORK');
@@ -381,9 +388,15 @@ class MainController extends Controller
 									return $this->returnValue;
 								}else{
 									// selain itu error data belum di scan di process sebelumnya;
-									$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
-									throw new StoreResourceFailedException("DATA BELUM DI SCAN REWORK DI PROSES SEBELUMNYA. ( ".$step." )", [
-										'message' => '235 bukan board',
+									if (!$isNodeBeforeStartId) {
+										#jika isNodeFirstSequence false, maka error message nya masuk sini.
+										# selain itu, $step & $errorMessages sudah di declare sebelumnya.
+										$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+										$errorMessages = "DATA BELUM DI SCAN REWORK DI PROSES SEBELUMNYA. ( ".$step." )";
+									}
+
+									throw new StoreResourceFailedException( $errorMessages , [
+										// 'message' => 'bukan board',
 										'prevNode' => json_decode( $prevNode, true )
 									]);
 								}
