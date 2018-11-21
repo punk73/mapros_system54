@@ -154,11 +154,37 @@ class RepairableTraitTest extends TestCase
     public function testIsRepaired(){
         $mock = $this->getMock();
         $this->seedRepairTable(); //seed the table
-        // unique_id & isNgRecordExists;
+        // unique_id & isNgRecordExists; true && true
         $true = $mock->isRepaired('someuniqueid', true );
         $this->assertTrue($true);
 
+        /*true && false*/
+        $false = $mock->isRepaired('someuniqueid', false );
+        $this->assertFalse($false);
+        
+        /*false && true*/
         $false = $mock->isRepaired('anotherUniquerId', true );
         $this->assertFalse($false);
+
+        /*false && false*/
+        $false = $mock->isRepaired('anotherUniquerId', false );
+        $this->assertFalse($false);
+
+    }
+
+    public function testGetLineprocessNgName(){
+        $mock = $this->getMock();
+        /*seed lineprocess dengan name 'proses 1' */
+        $lineprocess = factory(Lineprocess::class)->create(['name' => 'proses 1']);
+        $result = $mock->getLineprocessNgName(1);
+
+        $this->assertEquals('proses 1', $result );
+    }
+
+    public function testGetLineprocessNgNameReturnException(){
+        $mock = $this->getMock();
+        /*seed lineprocess dengan name 'proses 1' */
+        $this->expectException(StoreResourceFailedException::class);
+        $result = $mock->getLineprocessNgName(1);
     }
 }

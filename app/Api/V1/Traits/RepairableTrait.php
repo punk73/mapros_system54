@@ -41,6 +41,19 @@ trait RepairableTrait {
 		return $result['id'];
 	}
 
+	public function getLineprocessNgName($idParam = null ){
+		$id = (is_null($idParam)) ? $this->getLineprocessNg() : $idParam;
+		$lineprocess = Lineprocess::select(['name'])->find($id);
+		if (!$lineprocess) {
+			# code...
+			throw new StoreResourceFailedException("lineprocess dengan id = '{$id}' tidak ditemukan.", [
+				'id' => $id,
+			]);
+		}
+
+		return $lineprocess['name'];
+	}
+
 	/*
 		it's should return boolean
 		the parameter is not necesarry, it is for testing purpose. called dependecies injections;
