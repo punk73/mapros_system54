@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Lineprocess;
+use App\Observers\LineprocessObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        //register lineprocess observer
+        Lineprocess::observe(LineprocessObserver::class);
     }
 
     /**
