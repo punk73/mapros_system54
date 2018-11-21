@@ -119,12 +119,15 @@ class RepairableTraitTest extends TestCase
     protected function seedLineprocessStart(){
         factory(Lineprocess::class, 2)->create();
 
-        $lineprocessStart = new LineprocessStart([
+        /*seeding to lineprocessStart no longer needed due to we already setup event & listener in lineprocess model*/
+        /*so every time lineprocess has new record, it will automatically insert into lineprocessStart too*/
+        
+        /*$lineprocessStart = new LineprocessStart([
             'lineprocess_id' => 1,
             'start_id' => 2,
         ]);
 
-        $lineprocessStart->save();
+        $lineprocessStart->save();*/
     }
 
     public function testGetStartId(){
@@ -132,7 +135,7 @@ class RepairableTraitTest extends TestCase
         $this->seedLineprocessStart();
         $lineprocessId = 1;
         $result = $mock->getStartId($lineprocessId);
-        $this->assertEquals($result, 2); //2 is filled in seedLineprocessStart method;
+        $this->assertEquals($result, 1); //1 is filled in seedLineprocessStart method;
     }
 
     public function testGetStartIdReturnException(){
