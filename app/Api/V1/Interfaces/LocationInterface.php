@@ -5,4 +5,6 @@ interface LocationInterface {
 	public function insertLocation(Array $locations);
 	public function verifyLocations($locations);
 	public function decodeLocations($locations);
+	public function setLocations($locations);
+	public function getLocations();
 }
