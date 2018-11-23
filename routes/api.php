@@ -65,6 +65,10 @@ $api->version('v1', function (Router $api) {
         $api->get('/', 'App\\Api\\V1\\Controllers\\ConfigController@index' );
     });
 
+    $api->group(['prefix' => 'locations'], function (Router $api) {
+        $api->get('/', 'App\\Api\\V1\\Controllers\\LocationController@index' );
+    });
+
     $api->group(['prefix' => 'symptoms'], function (Router $api) {
         $api->get('/all', 'App\\Api\\V1\\Controllers\\SymptomController@all' );
     });
