@@ -12,7 +12,8 @@
                                 label="ref_no" 
                                 :maxHeight='"200px"'
                                 :options="locations"
-                                
+                                :ref="'ref_number'"
+                                required
                                 @search="onSearch" 
 	          				>
 	          					<template slot="option" slot-scope="option">
@@ -29,7 +30,8 @@
 		                        :maxHeight='"200px"' 
 		                        label="category" 
 		                        :options="symptoms"
-		                        
+		                        :ref="'symptoms'"
+		                        required
 		                        @search="onSearch" >
 		                        <template slot="option" slot-scope="option">
 		                            {{ option.code }} - {{ option.category }}
@@ -40,9 +42,11 @@
                 			<button class="btn btn-success" @click="addOnClick">ADD</button>
                 		</div>
 
-                		<table >
-                			
-                		</table>
+                		 <b-table striped hover :fields="fields" :items="stores">
+                		 	<template slot="button" slot-scope="data">
+						      <button class="btn btn-danger">Delete</button>
+						    </template>
+                		 </b-table>
                 	</div>
                 </div>
             </div>
@@ -60,10 +64,12 @@
 			return {
 				locations:[],
 				symptoms :[],
+				fields : ['ref_number','symptoms', 'button'],
 				model: {
 					ref_number: null,
 					symptoms: [],
-				}
+				},
+				stores:[],
 			}
 		},
 
@@ -82,6 +88,28 @@
 				}
 
 				return result;
+			},
+
+			row(){
+				let ref_number = null;
+				let symptoms = null;
+
+				if (this.model.ref_number !== null ) {
+					ref_number = this.model.ref_number.ref_no
+				}
+
+				if (this.model.symptoms.length > 0) {
+					let arraySymptomsName = this.model.symptoms.map(function(symptom){
+						return symptom['category']
+					});
+
+					symptoms = arraySymptomsName.toString();
+				}
+
+				return {
+					ref_number : ref_number,
+					symptoms : symptoms
+				}
 			}
 		},
 
@@ -102,8 +130,44 @@
 			addOnClick(){
 				console.log('model', this.model)
 				console.log('form', this.form)
+				if (this.verifyForm() == false) {
+					// stop the code here
+					return;
+				}
+				this.stores.push( this.row )
+				this.clear()
+
 			},
 
+			verifyForm(){
+				var result = true;
+				if (this.row.ref_number == null) {
+					// console.log(this.$refs , "aku ref")
+					let el = this.$refs['ref_number'];
+					if(el){
+						el.select();
+					}
+					result = false;
+				}
+
+				if (this.row.symptoms == null) {
+					let el = this.$refs['symptoms'];
+					if (el) {
+						el.select()
+					}
+					result = false;
+				}
+
+				return result;
+			},
+
+			clear(){
+				this.model =  {
+					ref_number: null,
+					symptoms: [],
+				}
+			},
+			
 			fetchLocations(){
 				const url = 'api/locations';
 				axios.get(url)
