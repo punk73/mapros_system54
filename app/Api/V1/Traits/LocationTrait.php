@@ -9,10 +9,10 @@ trait LocationTrait {
 	/*
 	* the parameter sent from front_end will be
 	* locations : [{
-			id : 1,
+			ref_number_id : 1,
 			symptoms_id:[1,2,3]
 		},{
-			id : 2,
+			ref_number_id : 2,
 			symptoms_id: [2,3]
 		}]
 	*/
@@ -24,7 +24,7 @@ trait LocationTrait {
 		$result = true;
 		foreach ($locations as $key => $location) {
 			# code...
-			$locationId = $location['id'];
+			$locationId = $location['ref_number_id'];
 			$locationSymptoms = $location['symptoms_id'];
 
 			if ( is_null($locationSymptoms)) {

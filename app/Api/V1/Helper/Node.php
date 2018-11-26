@@ -24,13 +24,15 @@ use App\Symptom;
 use App\Api\V1\Interfaces\ColumnSettingInterface;
 use App\Api\V1\Interfaces\CriticalPartInterface;
 use App\Api\V1\Interfaces\RepairableInterface;
+use App\Api\V1\Interfaces\LocationInterface;
 use App\Api\V1\Traits\ColumnSettingTrait;
 use App\Api\V1\Traits\CriticalPartTrait;
 use App\Api\V1\Traits\RepairableTrait;
+use App\Api\V1\Traits\LocationTrait;
 
-class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface
+class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface, LocationInterface
 {
-	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait;
+	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait, LocationTrait;
 
 	protected $model; // App\Board, App\Master , App\Ticket, or App\Part;
 	protected $model_code; // 5 char atau 11 char awal
@@ -77,6 +79,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	protected $confirmation_view_error = 'confirmation-view';
 	// protected $criticalParts; //dari CriticalPartTrait
 	protected $firstSequence = false;
+	protected $locations;
 
 	function __construct($parameter, $debug = false ){
 		// kalau sedang debugging, maka gausah run construct

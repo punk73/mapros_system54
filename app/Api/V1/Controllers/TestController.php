@@ -44,7 +44,8 @@ class TestController extends Controller
 		return [
 			// 'node' => $node,
 			'arraySearch' => $arraySearch,
-			'getLineprocessNg' => $node->getLineprocessNg(),
+			// 'getLineprocessNg' => $node->getLineprocessNg(),
+			'node' => $node,
 			// 'isAfterNgProcess' => $node->isAfterNgProcess('1,2,3,4,5', 4, 1),
 			'isRepaired' => $node->isRepaired(),
 		];
