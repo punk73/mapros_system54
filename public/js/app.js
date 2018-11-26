@@ -39834,6 +39834,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -39863,6 +39870,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         isSendAjax: false,
         isShowDeleteButton: false,
         isAutolinezero: false,
+        isTouchUp: false,
         generatedFileName: 'something.txt',
         uri: '',
         isDebug: false,
@@ -40357,6 +40365,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_vue_select__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__location_Location_vue__ = __webpack_require__(242);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__location_Location_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__location_Location_vue__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -40552,6 +40574,7 @@ var axios = __webpack_require__(20);
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
@@ -40562,8 +40585,9 @@ var axios = __webpack_require__(20);
                 modelname: '',
                 is_solder: false,
                 judge: 'OK', //default nya OK
-                symptom: [] //default value for symptom is empty array;
-                // critical_parts:[''], //default value for critical_parts empty array
+                symptom: [], //default value for symptom is empty array;
+                critical_parts: [], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
+                locations: []
             },
 
             isNG: false,
@@ -40730,7 +40754,7 @@ var axios = __webpack_require__(20);
 
 
     components: {
-        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a, alert: __WEBPACK_IMPORTED_MODULE_3__Alert___default.a, join: __WEBPACK_IMPORTED_MODULE_4__Join___default.a, ToggleButton: __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button___default.a, vSelect: __WEBPACK_IMPORTED_MODULE_6_vue_select___default.a
+        modal: __WEBPACK_IMPORTED_MODULE_0__Modal___default.a, loading: __WEBPACK_IMPORTED_MODULE_1__Loading___default.a, confirm: __WEBPACK_IMPORTED_MODULE_2__Confirm___default.a, alert: __WEBPACK_IMPORTED_MODULE_3__Alert___default.a, join: __WEBPACK_IMPORTED_MODULE_4__Join___default.a, ToggleButton: __WEBPACK_IMPORTED_MODULE_5_vue_js_toggle_button_src_Button___default.a, vSelect: __WEBPACK_IMPORTED_MODULE_6_vue_select___default.a, Location: __WEBPACK_IMPORTED_MODULE_8__location_Location_vue___default.a
     },
 
     methods: {
@@ -40741,6 +40765,11 @@ var axios = __webpack_require__(20);
                 return;
             };
 
+            var locationData = this.getLocationData();
+            var locationDataIsNotEmpty = locationData.length > 0;
+            if (locationDataIsNotEmpty) {
+                this.form.locations = locationData;
+            }
             var data = this.form;
             // console.log(data);
             var self = this;
@@ -40748,10 +40777,15 @@ var axios = __webpack_require__(20);
             axios.post('api/main', data).then(function (response) {
                 self.toggleLoading();
                 self.handleSucces(response);
+                if (locationDataIsNotEmpty) {
+                    self.clearLocationData();
+                }
                 console.log(response);
             }).catch(function (error) {
                 self.toggleLoading();
-
+                if (locationDataIsNotEmpty) {
+                    self.clearLocationData();
+                }
                 if (error == undefined) {
                     _this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {});
                     return;
@@ -40795,6 +40829,22 @@ var axios = __webpack_require__(20);
             if (this.config.checkEsd && this.form.nik.length >= 5) {
                 this.checkEsd(this);
             }
+        },
+        getLocationData: function getLocationData() {
+            var location = this.$refs.location;
+            if (location) {
+                return location.form;
+            } else {
+                return []; //empty array
+            }
+        },
+        clearLocationData: function clearLocationData() {
+            var location = this.$refs.location;
+            if (location) {
+                location.clearAll();
+            }
+
+            this.form.locations = [];
         },
 
 
@@ -41408,6 +41458,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -41415,20 +41475,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
 		return {
-			locations: [],
-			symptoms: [],
+			locations: [], //for checkbox options
+			symptoms: [], //for checkbox options
 			fields: ['ref_number', 'symptoms', 'button'],
 			model: {
 				ref_number: null,
 				symptoms: []
 			},
-			stores: []
+			stores: [],
+			form: []
 		};
 	},
 
 
 	computed: {
-		form: function form() {
+		newForm: function newForm() {
 			var result = {};
 			if (this.model.ref_number !== null) {
 				result.ref_number = this.model.ref_number.id;
@@ -41480,12 +41541,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		onSearch: function onSearch() {},
 		addOnClick: function addOnClick() {
 			console.log('model', this.model);
-			console.log('form', this.form);
+			console.log('newForm', this.newForm);
 			if (this.verifyForm() == false) {
 				// stop the code here
 				return;
 			}
 			this.stores.push(this.row);
+			this.addForm(this.newForm);
 			this.clear();
 		},
 		verifyForm: function verifyForm() {
@@ -41509,11 +41571,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 			return result;
 		},
+		addForm: function addForm(newForm) {
+			this.form.push(newForm);
+		},
+		btnDeleteOnClick: function btnDeleteOnClick(row) {
+			console.log(row, "btn delete on click");
+			var index = row.index;
+			this.removeRow(index);
+		},
+		removeRow: function removeRow(index) {
+			this.stores.splice(index, 1);
+			this.form.splice(index, 1);
+		},
 		clear: function clear() {
 			this.model = {
 				ref_number: null,
 				symptoms: []
 			};
+		},
+
+
+		/*called from parent component to clear all data here*/
+		clearAll: function clearAll() {
+			this.model = {
+				ref_number: null,
+				symptoms: []
+			};
+
+			this.stores = [];
+			this.form = [];
 		},
 		fetchLocations: function fetchLocations() {
 			var _this = this;
@@ -65526,6 +65612,10 @@ module.exports = Component.exports
 /* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
+
+/* styles */
+__webpack_require__(271)
+
 var Component = __webpack_require__(8)(
   /* script */
   __webpack_require__(113),
@@ -65624,7 +65714,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "nik", $event.target.value)
       }
     }
-  })])])]), _vm._v(" "), _vm._l((_vm.form.critical_parts), function(critical, index) {
+  })])])]), _vm._v(" "), (_vm.config.isTouchUp && _vm.responseData.message.includes('IN / OK')) ? _c('location', {
+    ref: "location"
+  }) : _vm._e(), _vm._v(" "), _vm._l((_vm.form.critical_parts), function(critical, index) {
     return (_vm.config.showCritical) ? _c('div', {
       staticClass: "form-group"
     }, [_c('label', {
@@ -66716,6 +66808,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   })])]) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.isTouchUp),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isTouchUp", $$v)
+      },
+      expression: "config.isTouchUp"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isTouchUp"
+    }
+  }, [_vm._v(" is Touch Up Process ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"
@@ -66904,19 +67017,28 @@ if (false) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "container"
+    staticClass: "container-fluid"
   }, [_c('div', {
     staticClass: "row"
   }, [_c('div', {
-    staticClass: "col-md-8 col-md-offset-2"
+    staticClass: "col-md-10 col-md-offset-1"
   }, [_c('div', {
     staticClass: "panel panel-default"
   }, [_c('div', {
     staticClass: "panel-body"
+  }, [_c('form', {
+    staticClass: "form-horizontal",
+    attrs: {
+      "role": "form"
+    }
   }, [_c('div', {
     staticClass: "form-group"
-  }, [_c('label', [_vm._v(" Ref Number ")]), _vm._v(" "), _c('v-select', {
-    ref: 'ref_number',
+  }, [_c('label', {
+    staticClass: "col-md-4 control-label"
+  }, [_vm._v(" Ref Number ")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-8"
+  }, [_c('v-select', {
+    ref: 'ref_noumber',
     attrs: {
       "placeholder": "Ketik untuk mencari ref number",
       "label": "ref_no",
@@ -66930,7 +67052,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     scopedSlots: _vm._u([{
       key: "option",
       fn: function(option) {
-        return [_vm._v("\n                                    " + _vm._s(option.modelname) + " - " + _vm._s(option.pwbname) + " - " + _vm._s(option.ref_no) + "\n                                ")]
+        return [_vm._v("\n\t\t                                    " + _vm._s(option.modelname) + " - " + _vm._s(option.pwbname) + " - " + _vm._s(option.ref_no) + "\n\t\t                                ")]
       }
     }]),
     model: {
@@ -66940,13 +67062,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "model.ref_number"
     }
-  })], 1), _vm._v(" "), _c('div', {
+  })], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
+    staticClass: "col-md-4 control-label",
     attrs: {
       "for": "symptoms"
     }
-  }, [_vm._v("Symptoms")]), _vm._v(" "), _c('v-select', {
+  }, [_vm._v("Symptoms")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-8"
+  }, [_c('v-select', {
     ref: 'symptoms',
     attrs: {
       "placeholder": "ketik untuk kode symptom / kategori symptom",
@@ -66962,7 +67087,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     scopedSlots: _vm._u([{
       key: "option",
       fn: function(option) {
-        return [_vm._v("\n\t\t                            " + _vm._s(option.code) + " - " + _vm._s(option.category) + "\n\t\t                        ")]
+        return [_vm._v("\n\t\t\t\t                            " + _vm._s(option.code) + " - " + _vm._s(option.category) + "\n\t\t\t\t                        ")]
       }
     }]),
     model: {
@@ -66972,15 +67097,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "model.symptoms"
     }
-  })], 1), _vm._v(" "), _c('div', {
+  })], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: "col-md-4"
   }, [_c('button', {
     staticClass: "btn btn-success",
     on: {
       "click": _vm.addOnClick
     }
-  }, [_vm._v("ADD")])]), _vm._v(" "), _c('b-table', {
+  }, [_vm._v("ADD")])])]), _vm._v(" "), _c('b-table', {
     attrs: {
+      "responsive": true,
       "striped": "",
       "hover": "",
       "fields": _vm.fields,
@@ -66988,13 +67116,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     scopedSlots: _vm._u([{
       key: "button",
-      fn: function(data) {
+      fn: function(row) {
         return [_c('button', {
-          staticClass: "btn btn-danger"
+          staticClass: "btn btn-danger",
+          on: {
+            "click": function($event) {
+              _vm.btnDeleteOnClick(row)
+            }
+          }
         }, [_vm._v("Delete")])]
       }
     }])
-  })], 1)])])])])
+  })], 1)])])])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -71400,6 +71533,45 @@ module.exports = function(module) {
 __webpack_require__(83);
 module.exports = __webpack_require__(84);
 
+
+/***/ }),
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(12)();
+exports.push([module.i, "\n.container-custom {\n\tpadding: 5px;\n}\n", ""]);
+
+/***/ }),
+/* 271 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(270);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(28)("2118bcd1", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-b9a04f78\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Location.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-b9a04f78\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Location.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
 
 /***/ })
 /******/ ]);

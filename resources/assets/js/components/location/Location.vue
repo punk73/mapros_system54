@@ -1,52 +1,62 @@
 <template>
-	<div class="container">
+	<div class="container-fluid">
 		<div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
                 	<div class="panel-body">
-                		<div class="form-group">
-	          				<label> Ref Number </label>
-	          				<v-select
-	          					v-model='model.ref_number'
-	          					placeholder="Ketik untuk mencari ref number"
-                                label="ref_no" 
-                                :maxHeight='"200px"'
-                                :options="locations"
-                                :ref="'ref_number'"
-                                required
-                                @search="onSearch" 
-	          				>
-	          					<template slot="option" slot-scope="option">
-                                    {{ option.modelname }} - {{ option.pwbname }} - {{ option.ref_no }}
-                                </template>
-	          				</v-select>      	
-                		</div>
-                		<div class="form-group">
-                			<label for='symptoms'>Symptoms</label>
-	                		<v-select
-		                        placeholder='ketik untuk kode symptom / kategori symptom'
-		                        multiple 
-		                        v-model='model.symptoms'
-		                        :maxHeight='"200px"' 
-		                        label="category" 
-		                        :options="symptoms"
-		                        :ref="'symptoms'"
-		                        required
-		                        @search="onSearch" >
-		                        <template slot="option" slot-scope="option">
-		                            {{ option.code }} - {{ option.category }}
-		                        </template>
-		                    </v-select>
-                		</div>
-                		<div class="form-group">
-                			<button class="btn btn-success" @click="addOnClick">ADD</button>
-                		</div>
+                		<form class="form-horizontal" role="form">
+	                		<div class="form-group">
+		          				<label class="col-md-4 control-label"> Ref Number </label>
+		          				<div class="col-md-8">
+			          				<v-select
+			          					v-model='model.ref_number'
+			          					placeholder="Ketik untuk mencari ref number"
+		                                label="ref_no" 
+		                                :maxHeight='"200px"'
+		                                :options="locations"
+		                                :ref="'ref_noumber'"
+		                                required
+		                                @search="onSearch" 
+			          				>
+			          					<template slot="option" slot-scope="option">
+		                                    {{ option.modelname }} - {{ option.pwbname }} - {{ option.ref_no }}
+		                                </template>
+			          				</v-select>      	
+		          				</div>
+	                		</div>
 
-                		 <b-table striped hover :fields="fields" :items="stores">
-                		 	<template slot="button" slot-scope="data">
-						      <button class="btn btn-danger">Delete</button>
-						    </template>
-                		 </b-table>
+	                		<div class="form-group">
+	                			<label class="col-md-4 control-label" for='symptoms'>Symptoms</label>
+		                		<div class="col-md-8">
+			                		<v-select
+				                        placeholder='ketik untuk kode symptom / kategori symptom'
+				                        multiple 
+				                        v-model='model.symptoms'
+				                        :maxHeight='"200px"' 
+				                        label="category" 
+				                        :options="symptoms"
+				                        :ref="'symptoms'"
+				                        required
+				                        @search="onSearch" >
+				                        <template slot="option" slot-scope="option">
+				                            {{ option.code }} - {{ option.category }}
+				                        </template>
+				                    </v-select>
+		                		</div>
+	                		</div>
+
+	                		<div class="form-group">
+	                			<div class="col-md-4">
+	                				<button class="btn btn-success" @click="addOnClick">ADD</button>
+	                			</div>
+	                		</div>
+
+	                		 <b-table :responsive="true" striped hover :fields="fields" :items="stores">
+	                		 	<template slot="button" slot-scope="row">
+							      <button class="btn btn-danger" @click='btnDeleteOnClick(row)' >Delete</button>
+							    </template>
+	                		 </b-table>
+                		 </form>
                 	</div>
                 </div>
             </div>
@@ -62,19 +72,20 @@
 	export default {
 		data(){
 			return {
-				locations:[],
-				symptoms :[],
+				locations:[], //for checkbox options
+				symptoms :[], //for checkbox options
 				fields : ['ref_number','symptoms', 'button'],
 				model: {
 					ref_number: null,
 					symptoms: [],
 				},
 				stores:[],
+				form:[],
 			}
 		},
 
 		computed : {
-			form(){
+			newForm(){
 				let result = {}
 				if (this.model.ref_number !== null ) {
 					result.ref_number = this.model.ref_number.id
@@ -129,12 +140,13 @@
 
 			addOnClick(){
 				console.log('model', this.model)
-				console.log('form', this.form)
+				console.log('newForm', this.newForm)
 				if (this.verifyForm() == false) {
 					// stop the code here
 					return;
 				}
 				this.stores.push( this.row )
+				this.addForm(this.newForm)
 				this.clear()
 
 			},
@@ -161,11 +173,37 @@
 				return result;
 			},
 
+			addForm(newForm){
+				this.form.push(newForm)
+			},
+
+			btnDeleteOnClick(row ){
+				console.log(row , "btn delete on click")
+				let index = row.index;
+				this.removeRow(index)
+			},
+
+			removeRow(index){
+				this.stores.splice(index, 1);
+				this.form.splice(index, 1);
+			},
+
 			clear(){
 				this.model =  {
 					ref_number: null,
 					symptoms: [],
 				}
+			},
+
+			/*called from parent component to clear all data here*/
+			clearAll(){
+				this.model = {
+					ref_number: null,
+					symptoms: [],
+				}
+				
+				this.stores = []
+				this.form = []
 			},
 			
 			fetchLocations(){
@@ -198,3 +236,9 @@
 		}
 	}
 </script>
+
+<style>
+	.container-custom {
+		padding: 5px;
+	}
+</style>

@@ -21,6 +21,14 @@
                                 </div>
                             </div>
 
+                            <!-- <div class="form-group">
+                                <div class="col-md-6 col-md-offset-4">   
+                                    <button class="btn btn-success">show locations</button>
+                                </div>
+                            </div> -->
+                            <!-- &&  -->
+                            <location v-if="config.isTouchUp && responseData.message.includes('IN / OK')" ref="location" />
+
                             <div class="form-group" v-if='config.showCritical' v-for="(critical, index ) in form.critical_parts" >
                                 <label for="critical_parts" class="col-md-4 control-label">Critical Part</label>
                                 <div class="col-md-6" >
@@ -94,6 +102,8 @@
                                 </div>
                             </div>
 
+                            <!-- <location></location> -->
+
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
                                     <div class="well no-bottom-margin" :style="styles" >
@@ -150,6 +160,8 @@
                                     </button>
 
                                     <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN / OK') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
+
+                                    <!-- <button class="btn btn-warning form-control" @click.prevent="getLocationData">Test</button> -->
                                 </div>
                             </div>
 
@@ -192,6 +204,7 @@
     import ToggleButton from 'vue-js-toggle-button/src/Button';
     import vSelect from 'vue-select';
     import _ from 'lodash';
+    import Location from './location/Location.vue';
     
     export default {
         data: () => {
@@ -204,7 +217,8 @@
                     is_solder:false,
                     judge : 'OK', //default nya OK
                     symptom: [], //default value for symptom is empty array;
-                    // critical_parts:[''], //default value for critical_parts empty array
+                    critical_parts:[], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
+                    locations:[],
                 },
 
                 isNG : false,
@@ -371,7 +385,7 @@
         },
 
         components: {
-            modal, loading, confirm, alert, join, ToggleButton, vSelect
+            modal, loading, confirm, alert, join, ToggleButton, vSelect, Location
         },
 
         methods : {
@@ -381,6 +395,11 @@
                     return;
                 };
 
+                let locationData = this.getLocationData();
+                let locationDataIsNotEmpty = (locationData.length > 0);
+                if (locationDataIsNotEmpty) {
+                    this.form.locations = locationData;
+                }
                 let data = this.form;
                 // console.log(data);
                 let self = this;
@@ -389,11 +408,16 @@
                     .then((response) => {
                         self.toggleLoading()
                         self.handleSucces(response)
+                        if (locationDataIsNotEmpty) {
+                            self.clearLocationData();
+                        }
                         console.log(response)
                     })
                     .catch( (error) => {
                         self.toggleLoading();
-
+                        if (locationDataIsNotEmpty) {
+                            self.clearLocationData();
+                        }
                         if(error == undefined ){
                             this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {} )
                             return;
@@ -438,6 +462,24 @@
                 if(this.config.checkEsd && ( this.form.nik.length >= 5 ) ){
                    this.checkEsd(this)
                 }
+            },
+
+            getLocationData(){
+                let location =  this.$refs.location;
+                if (location) {
+                    return location.form
+                }else{
+                    return []; //empty array
+                }
+            },
+
+            clearLocationData(){
+                let location =  this.$refs.location;
+                if (location) {
+                    location.clearAll();
+                }
+
+                this.form.locations = [];
             },
 
             checkEsd : _.debounce(( self ) => {

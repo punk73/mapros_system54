@@ -131,6 +131,13 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <toggle-button v-model="config.isTouchUp" :sync='true' :color="'#2ab27b'" :labels="true"/>
+                                    <label for="isTouchUp"> is Touch Up Process </label>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-9 col-md-offset-3">
                                     <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
@@ -177,6 +184,7 @@
 					isSendAjax : false,
 					isShowDeleteButton : false,
 					isAutolinezero : false,
+                    isTouchUp : false,
 					generatedFileName : 'something.txt',
 					uri : '',
                     isDebug : false,
