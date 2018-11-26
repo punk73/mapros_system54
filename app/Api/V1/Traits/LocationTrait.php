@@ -16,21 +16,28 @@ trait LocationTrait {
 			symptoms_id: [2,3]
 		}]
 	*/
-	public function insertLocation(Array $locations){
+	public function insertLocation(Array $locations = null ){
 
 	}
 
 	public function verifyLocations($locations){
 		$result = true;
+
+		if ( !(count($locations) > 0) ) {
+			return false;
+		}
+
 		foreach ($locations as $key => $location) {
 			# code...
 			$locationId = $location['ref_number_id'];
 			$locationSymptoms = $location['symptoms_id'];
+			
+			if (is_null( $locationId)) {
+				return false;
+			}
 
-			if ( is_null($locationSymptoms)) {
-				throw new StoreResourceFailedException("Tolong pilih symptom!!", [
-					'location' => $this->locations //it should be registered in node class
-				]);				
+			if ( is_null($locationSymptoms) || !(count($locationSymptoms) > 0) ) {
+				return false; // kalau error		
 			}
 		}
 
@@ -42,7 +49,10 @@ trait LocationTrait {
 	}
 
 	public function setLocations($locations){
-		$this->locations = $locations;
+		if (!$this->verifyLocations($locations)) {
+			return false; //ga lolos verifikasi	
+		}
+			$this->locations = $locations;
 	}
 
 	public function decodeLocations($locations){

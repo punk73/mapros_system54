@@ -88,11 +88,11 @@
 			newForm(){
 				let result = {}
 				if (this.model.ref_number !== null ) {
-					result.ref_number = this.model.ref_number.id
+					result.ref_number_id = this.model.ref_number.id
 				}
 
 				if (this.model.symptoms.length > 0) {
-					result.symptoms = [];
+					result.symptoms_id = [];
 					this.model.symptoms.forEach(function(symptom){
 						result.symptoms.push( symptom.code )
 					})

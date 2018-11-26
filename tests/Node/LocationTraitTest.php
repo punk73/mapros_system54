@@ -22,32 +22,16 @@ class LocationTraitTest extends TestCase
         return $this->mock;
     }
 
-    protected function getDummyData(){
+    protected function getDummyLocation(){
         return [
-            [   
-                "id" =>  2,
-                "name" =>  "panel",
-                "dummy_column" =>  "ticket_no",
-                "table_name" =>  "tickets",
-                "code_prefix" =>  "MAPNL",
-                "level" =>  2,
-                "pivot" =>  [
-                    "lineprocess_id" =>  55,
-                    "column_setting_id" =>  2
-                ]                        
-            ],
             [
-                "id" =>  7,
-                "name" =>  "lcd",
-                "dummy_column" =>  "barcode",
-                "table_name" =>  "parts",
-                "code_prefix" =>  "G1P85",
-                "level" =>  3,
-                "pivot" =>  [
-                    "lineprocess_id" =>  55,
-                    "column_setting_id" =>  7
-                ]
-        ]];
+                'ref_number_id'  =>  1,
+                'symptoms_id'    => ['1','2','3']
+            ],[
+                'ref_number_id'  => 2,
+                'symptoms_id'    => [ '2','3' ]
+            ]
+        ];
     }
 
     public function getMock(){
@@ -55,15 +39,46 @@ class LocationTraitTest extends TestCase
         return $mock;
     }
 
-    public function testSetLocation(){
+    public function testSetLocations(){
         $mock = $this->getMock();
         $data = $this->getDummyLocation();
-        $result = $mock->setLocation();
+        $mock->setLocations($data);
+
+        $this->assertEquals($data, $mock->getLocations() );
     }
 
-    public function testGetLocation(){
+    public function testVerifyLocations(){
+        $mock = $this->getMock();
+        $data = $this->getDummyLocation();
+        $result = $mock->verifyLocations($data);
+
+        $this->assertTrue($result);
+    }
+
+    public function testVerifyLocationsFalse(){
+        $mock = $this->getMock();
+        $data = [];
+        $testCase1 = $mock->verifyLocations($data);
+        $data2 = [[
+            'ref_number_id'  => 2,
+            'symptoms_id'    => [] //empty array is forbiden
+        ]];
+
+        $testCase2 = $mock->verifyLocations($data2);
+
+        $data3 = [
+            'ref_number_id'  => 2,
+            'symptoms_id'    => [3,2,5]
+        ]; // error karena array nya satu dimensi;
+        $testCase3 = $mock->verifyLocations($data3);
+
+        $this->assertFalse($testCase1);
+        $this->assertFalse($testCase2);
+        $this->assertFalse($testCase3);
+
 
     }
+
 
     
 }
