@@ -3,6 +3,9 @@ namespace App\Api\V1\Traits;
 
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Location;
+use App\Board;
+use App\Symptom;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 trait LocationTrait {
 	
@@ -16,8 +19,58 @@ trait LocationTrait {
 			symptoms_id: [2,3]
 		}]
 	*/
-	public function insertLocation(Array $locations = null ){
+	public function insertLocation(Board $board, Array $locationsParam = null ){
+		/*verify parameter from users*/
+		if(is_null($locationsParam)) { 
+			$locations = $this->getLocations();
+			if (is_null( $locations) ) {
+				return false; //insertLocation error 
+			}
+		}
+		else{ 
+			if (!$this->verifyLocations($locationsParam)) {
+				throw new StoreResourceFailedException("location parameter is not correct!", [
+					'locations_param' => $locationsParam,
+					'expected_param' => [
+						[
+							'ref_number_id'=>1,
+							'symptoms_id' => [1,2,3]
 
+						]
+					],
+					'messages' => 'expected_param is just an example'
+				]);
+			}
+
+			$locations = $locationsParam;
+		};
+
+		foreach ($locations as $key => $location) {
+			# code...
+			$locationId = $location['ref_number_id'];
+			$locationSymptoms = $location['symptoms_id'];
+			
+			// input ref_number_id dengan boards;
+			$pivot = $this->saveBoardLocation($board, $locationId );
+			// for every pivot save, collect the id of the pivot,
+			$this->saveLocationSymptoms($pivot, $locationSymptoms );
+			// save into second pivot;
+		}
+	}
+
+	/*this will return pivot id */
+	/*$location id must be single integer */
+	public function saveBoardLocation(Board $board, $location_id){
+		$board->locations()->sync($location_id);
+
+		$locations = $board->locations;
+		foreach ($locations as $key => $location) {
+			return $location->pivot; //return the pivot model
+		}
+	}
+
+	public function saveLocationSymptoms(Pivot $pivot, Array $symptoms ){
+		$pivot->belongsToMany('App\Symptom')->sync($symptoms);
 	}
 
 	public function verifyLocations($locations){

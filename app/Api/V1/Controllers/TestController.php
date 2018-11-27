@@ -12,6 +12,7 @@ use App\Api\V1\Traits\LoggerHelper;
 use GuzzleHttp\Client;
 use App\Mastermodel;
 use App\Api\V1\Helper\Node;
+use App\Board;
 
 class TestController extends Controller
 {	
@@ -39,6 +40,8 @@ class TestController extends Controller
 		$a = [1,2,3];
 		$val = 5;
 		$arraySearch = array_search($val, $a);
+		$board = new Board;
+		$board = $board->find(99);
 
 		$node = new Node($request->all());
 		return [
@@ -47,7 +50,9 @@ class TestController extends Controller
 			// 'getLineprocessNg' => $node->getLineprocessNg(),
 			'node' => $node,
 			// 'isAfterNgProcess' => $node->isAfterNgProcess('1,2,3,4,5', 4, 1),
-			'isRepaired' => $node->isRepaired(),
+			'node-locations' => $node->getLocations(),
+
+			'boards' => $node->saveBoardLocation( $board, 1 ),
 		];
 		// return $node->isSettingContainChildrenOf('ticket');
 		// return ($node->isExists()) ? 'true' : 'false' ;

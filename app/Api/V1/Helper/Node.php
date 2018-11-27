@@ -48,7 +48,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
         'nik',
         'ip',
         'is_solder',
-        'guid'
+        'guid',
+        'locations', // for touch up process;
 	];
 	public $scanner_id; //contain scanner id;
 	public $scanner; //contain scanner object (App\Scanner)
@@ -79,7 +80,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	protected $confirmation_view_error = 'confirmation-view';
 	// protected $criticalParts; //dari CriticalPartTrait
 	protected $firstSequence = false;
-	protected $locations;
+	protected $locations; // new comer dari trait LocationTrait. (implementasi touch up)
 
 	function __construct($parameter, $debug = false ){
 		// kalau sedang debugging, maka gausah run construct
@@ -127,6 +128,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$this->initCurrentPosition();
 			// set the critical parts;
 			$this->initCriticalPart();
+			// set the the locations data
+			$this->initLocations();
 		}
 	}
 
@@ -864,6 +867,12 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$this->insertSymptom($model);
 		}
 
+		/*kalau locations tidak null dan yg diproses itu board, maka save into locations*/
+		if ( (is_null( $this->getLocations()) === false) && ($this->getModelType() == 'board') ) {
+			# save to locations;
+			
+		}
+
 		return $isSaveSuccess; //true or false;
 	}
 
@@ -1512,5 +1521,13 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 	public function next(){
 		return $this->move(1);
+	}
+
+	public function initLocations(){
+		$parameter = $this->parameter;
+		if (isset($parameter['locations'])) {
+			# code...
+			$this->setLocations($parameter['locations']);
+		}
 	}
 }

@@ -53,4 +53,8 @@ class Board extends Model
             'scan_nik' => $this->scan_nik,
         ]);
     }
+
+    public function locations(){
+        return $this->belongsToMany('App\Location')->withPivot('id');
+    }
 }

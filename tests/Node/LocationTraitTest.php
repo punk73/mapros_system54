@@ -12,6 +12,8 @@ use App\Scanner;
 use App\Lineprocess;
 use App\LineprocessStart;
 use App\Repair;
+use App\Location;
+use App\Board;
 
 class LocationTraitTest extends TestCase
 {
@@ -75,7 +77,28 @@ class LocationTraitTest extends TestCase
         $this->assertFalse($testCase1);
         $this->assertFalse($testCase2);
         $this->assertFalse($testCase3);
+    }
 
+    protected function getBoardTransaction(){
+        $board = new Board;
+        $board->board_id = 'dummy';
+        $board->modelname = 'dummy-model';
+        $board->status = 'OUT';
+        $board->judge = 'OK';
+        $board->scan_nik = '39597';
+        $board->scanner_id = 1;
+        $board->save();
+
+        return $board; 
+    }
+
+    public function testSaveBoardLocation(){
+        $mock = $this->getMock();
+        $board = $this->getBoardTransaction();
+        $location_id = 1; //dummy
+
+        $pivotId = $mock->saveBoardLocation($board, $location_id);
+        $this->assertInternalType('int', $pivotId );
 
     }
 
