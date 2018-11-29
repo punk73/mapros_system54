@@ -129,16 +129,28 @@ trait RepairableTrait {
 		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
 
 		$repairExists = Repair::where('unique_id', $uniqueId )
-		->exists();
+		->orderBy('created_at', 'desc')
+		->first();
 
-		$lineprocessNg = (is_null($isLineprocessNgExists))?(is_null($this->getLineprocessNg())===false):$isLineprocessNgExists;
+		if (!$repairExists) {
+			# jika repair record tidak ketemu
+			return false;
+		}
+
+		$lineprocessNgId = $this->getLineprocessNg();
+
+		if (is_null($repairExists->ng_lineprocess_id) ) {
+			# code...
+			$repairExists->ng_lineprocess_id = $lineprocessNgId;
+			$repairExists->save();
+		}
+
+		return ($repairExists->ng_lineprocess_id === $lineprocessNgId );
+			
+
+		// $lineprocessNg = (is_null($isLineprocessNgExists))?(is_null($lineprocessNgId)===false):$isLineprocessNgExists;
 		
-		/*return [
-			'repairExists' => $repairExists,
-			'lineprocessNg' => $lineprocessNg,
-		];*/
-		
-		return ($repairExists && $lineprocessNg );
+		// return ($repairExists && $lineprocessNg );
 	}
 
 	public function isBeforeStartId($processParam = null , $lineprocessId = null, $startIdParam = null){
