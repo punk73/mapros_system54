@@ -90,6 +90,7 @@ class RepairableTraitTest extends TestCase
         $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
         $this->assertNotNull( $lineprocessNg );
         $this->assertInternalType('int', $lineprocessNg );
+        $this->assertEquals(1, $lineprocessNg );
     }
 
     public function testGetJoinQuery(){
@@ -162,18 +163,26 @@ class RepairableTraitTest extends TestCase
         $true = $mock->isRepaired('someuniqueid', true );
         $this->assertTrue($true);
 
-        /*true && false*/
-        $false = $mock->isRepaired('someuniqueid', false );
+        /*parameter 1 = unique_id, parameter 2 = lineprocess_id */
+        $false = $mock->isRepaired('someuniqueid', 12 );
         $this->assertFalse($false);
         
-        /*false && true*/
+        /*parameter 1 = unique_id, parameter 2 = lineprocess_id */
         $false = $mock->isRepaired('anotherUniquerId', true );
         $this->assertFalse($false);
 
-        /*false && false*/
-        $false = $mock->isRepaired('anotherUniquerId', false );
+        /*parameter 1 = unique_id, parameter 2 = lineprocess_id */
+        $false = $mock->isRepaired('anotherUniquerId', 12 );
         $this->assertFalse($false);
 
+    }
+
+    public function testIsRepairedOneMoreTime(){
+        $mock = $this->getMock();
+        $this->seedRepairTable(); //seed the table
+        
+        $false = $mock->isRepaired('anotherUniquerId', 2 );
+        $this->assertFalse($false);
     }
 
     public function testGetLineprocessNgName(){
@@ -204,6 +213,25 @@ class RepairableTraitTest extends TestCase
         $false2 = $mock->isBeforeStartId('1,2,3,4', 4, 3);
         $this->assertFalse($false1);
         $this->assertFalse($false2);
+    }
 
-    }    
+    public function testGetFurthestNgProcessSuccess(){
+        $mock = $this->getMock();
+        $this->seedTableMaster();
+        $master = new Master;
+        $lineprocessNg = $mock->getFurthestNgProcess($master , 'guid_master', 'some-guid-master-temp', '1,2,3');
+        // $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
+        $this->assertNotNull( $lineprocessNg );
+        $this->assertInternalType('int', $lineprocessNg );
+        $this->assertEquals(1, $lineprocessNg );
+    }
+
+    public function testGetFurthestNgProcessReturnNull(){
+        $mock = $this->getMock();
+        $master = new Master;
+        $lineprocessNg = $mock->getFurthestNgProcess($master , 'guid_master', 'some-guid-master-temp', '1,2,3');
+        // $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
+        $this->assertNull( $lineprocessNg );
+
+    }
 }

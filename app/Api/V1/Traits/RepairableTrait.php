@@ -11,7 +11,7 @@ trait RepairableTrait {
 		$model = (is_null($modelParam)) ? $this->getModel() : $modelParam ;
 		$table = $model->getTable(); //it get table name from the models; it can be masters, boards, or tickets;
 
-		$query = $model->select([
+		$query = $model->select([ 
 			'lineprocesses.id'
 		])
 		->join('scanners', 'scanners.id','=','scanner_id')
@@ -42,13 +42,48 @@ trait RepairableTrait {
 		return $result['id'];
 	}
 
+	public function getFurthestNgProcess(Model $modelParam = null, $uniqueColumnParam = null , $uniqueIdParam = null, $processParam = null ){
+		$model = (is_null($modelParam)) ? $this->getModel() : $modelParam ;
+		/*uniqueColumn different from one another. it can be board_id, guid_master, or guid_ticket based on the model_type*/
+		$uniqueColumn = (is_null($uniqueColumnParam)) ? $this->getUniqueColumn() : $uniqueColumnParam ;
+		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam ;
+
+		$lineprocesses = $this->getJoinQuery($model)
+		->where( $uniqueColumn , $uniqueId )
+		->where('judge', 'NG')
+		->get();
+
+		// return $lineprocesses;
+
+		$process = (is_null($processParam)) ? $this->getProcess() : $processParam;
+		$process = explode(',', $process );
+
+		$indexProcess = -1; //index
+		$result=null;
+		/*jika lineprocesss null, maka foreach jg ga akan ter triger*/
+		foreach ($lineprocesses as $i => $lineprocessNg) {
+			$key = array_search($lineprocessNg->id , $process );
+			if (!($key === false)) {
+				// jika lineprocess id ditemukan
+				if ( $key > $indexProcess ) {
+					# jika ditemukan, 
+					$indexProcess = $key;
+					$result = $lineprocessNg->id;
+				}
+			}
+		}
+		// $result will be null if lineprocess Ng not found in array process;
+		return $result;
+	}
+
 	public function getLineprocessNgName($idParam = null ){
 		$id = (is_null($idParam)) ? $this->getLineprocessNg() : $idParam;
 		$lineprocess = Lineprocess::select(['name'])->find($id);
 		if (!$lineprocess) {
 			# code...
-			throw new StoreResourceFailedException("lineprocess dengan id = '{$id}' tidak ditemukan.", [
+			throw new StoreResourceFailedException("Lineprocess NG tidak ditemukan!. klik see detail", [
 				'id' => $id,
+				'message' => "lineprocess dengan id = '{$id}' tidak ditemukan.",
 			]);
 		}
 
@@ -60,7 +95,7 @@ trait RepairableTrait {
 		the parameter is not necesarry, it is for testing purpose. called dependecies injections;
 	*/
 	public function isAfterNgProcess($processParam = null, $lineprocessId = null , $lineprocessNgParam = null ){
-		$lineprocessNg = (is_null($lineprocessNgParam)) ? $this->getLineprocessNg() : $lineprocessNgParam;
+		$lineprocessNg = (is_null($lineprocessNgParam)) ? $this->getFurthestNgProcess() : $lineprocessNgParam;
 
 		$lineprocess = (is_null($lineprocessId))? $this->getLineprocess()->id : $lineprocessId ;
 
@@ -125,7 +160,7 @@ trait RepairableTrait {
 	* isRepaired is function to check data in table repair;
 	* the return value is boolean;
 	*/
-	public function isRepaired($uniqueIdParam = null, $isLineprocessNgExists = null ){
+	public function isRepaired($uniqueIdParam = null, $lineprocessNgIdParam = null ){
 		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
 
 		$repairExists = Repair::where('unique_id', $uniqueId )
@@ -137,7 +172,11 @@ trait RepairableTrait {
 			return false;
 		}
 
-		$lineprocessNgId = $this->getLineprocessNg();
+		$lineprocessNgId = (is_null($lineprocessNgIdParam))? $this->getLineprocessNg() : $lineprocessNgIdParam;
+		if (is_null($lineprocessNgId)) {
+			/*jika NG Records tidak ketemu*/
+			return false;
+		}
 
 		if (is_null($repairExists->ng_lineprocess_id) ) {
 			# code...
