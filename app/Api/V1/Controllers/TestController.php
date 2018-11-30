@@ -41,13 +41,15 @@ class TestController extends Controller
 		$arraySearch = array_search($val, $a);
 
 		$node = new Node($request->all());
+
+		$guid = '3FE33A6B-5EA2-45B8-885B-6EF6F5455664';
 		return [
 			// 'node' => $node,
-			'arraySearch' => $arraySearch,
-			'getLineprocessNg' => $node->getLineprocessNg(),
-			'getLineprocessNgName' => $node->getLineprocessNgName(),
-			'getFurthestNgProcess' => $node->getFurthestNgProcess(),
-			
+			// 'arraySearch' => $arraySearch,
+			// 'getLineprocessNg' => $node->getLineprocessNg(),
+			// 'getLineprocessNgName' => $node->getLineprocessNgName(),
+			// 'getFurthestNgProcess' => $node->getFurthestNgProcess(),
+			'isGuidTicket' => $node->isGuidTicket($guid),
 			// 'isAfterNgProcess' => $node->isAfterNgProcess('1,2,3,4,5', 4, 1),
 			'isRepaired' => $node->isRepaired(),
 		];

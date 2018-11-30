@@ -321,6 +321,9 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		// it can triggered after scanner & model has been set; 
 		if ($this->getModelType() == 'ticket' ) {
 			if($guidParam != null){
+				// verify that if guidParam is also guid_ticket, throw exception
+				$this->isGuidTicket($guidParam);
+
 				$this->setGuidMaster($guidParam);
 			}
 			$this->setGuidTicket($guid);
@@ -353,6 +356,26 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 
 		$this->setUniqueId($guid);
+	}
+
+	public function isGuidTicket($guidParam){
+
+		$uniqueColumn = $this->getUniqueColumn();
+		$uniqueId = (is_null($guidParam))? $this->getUniqueId(): $guidParam;
+
+		$result = Ticket::select('id')
+		->where( 'guid_ticket', $uniqueId )
+		->first();
+
+		if ($result){
+			throw new StoreResourceFailedException("Tolong Scan LCD atau BOARD, Jangan Dummy Panel lagi. atau matikan Is join Active dengan cara klik tombolnya", [
+				'message' => 'tolong ulangi scan LCD atau Boardnya sampai berhasil!',
+				'dev_message'=>'ini terjadi karena guid master yg dikirim front end, telah digunakan sbg guid ticket dummy panel lain',
+				'guid' => $uniqueId
+			]);
+			
+		};
+		// if ( ( $result && ($guidParam !== '') ) );
 	}
 
 	private function setUniqueId($guid){
@@ -517,6 +540,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 					$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_ticket' , $guid )
 						->orderBy('created_at', 'desc')
 						->first();
+
+					// we need to add checking boards from master here;
 				}
 
 				if($type == 'master'){
