@@ -186,7 +186,10 @@ trait RepairableTrait {
 
 		return ($repairExists->ng_lineprocess_id === $lineprocessNgId );
 			
-
+		/*
+			method sekarang masih sama dengan method sebelumnya, hanya saja ditambahkan satu lagi pengecekan. yaitu:
+			- cek kalau NG sekarang, sama kaya Rework skrg
+		*/
 		// $lineprocessNg = (is_null($isLineprocessNgExists))?(is_null($lineprocessNgId)===false):$isLineprocessNgExists;
 		
 		// return ($repairExists && $lineprocessNg );
@@ -223,5 +226,13 @@ trait RepairableTrait {
 		/*will return true if lineprocess_index kurang dari startid_index*/
 		return ($lineprocess_index < $startid_index );
 
+	}
+
+	public function getCountDataRepair(){
+		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
+
+		$repairExists = Repair::where('unique_id', $uniqueId )
+		->orderBy('created_at', 'desc')
+		->count();
 	}
 }

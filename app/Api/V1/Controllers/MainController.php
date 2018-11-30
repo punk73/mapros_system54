@@ -324,86 +324,87 @@ class MainController extends Controller
 		if($node->getStatus() == 'OUT'){
 			if($node->is_solder == false){
 				// cek current judge
-				if($node->getJudge() != 'REWORK'){
+				// if($node->getJudge() != 'REWORK'){
 					/*
 						isRepaired harusnya verify juga bahwa current node punya record NG.
 						untuk pengamanan in case someone input into table repair without input 
 						record NG. that would be huge pain. --> Done!! (2018-11-19)
 					*/
-					if($node->isRepaired()){
-						// cek apakah Start Id == Current lineprocess;
+				if($node->isRepaired()){
+					// cek apakah Start Id == Current lineprocess;
+					/*
+						getStartId return start_id dari lineprocessNg, bukan lagi dari 
+						current lineprocess;
+					*/
+					if ($node->getLineprocess()['id'] == $node->getStartId() ) {
+						# code...
+						$node->setStatus('IN');
+						$node->setJudge('REWORK');
+						if(!$node->save()){
+							// throw new StoreResourceFailedException("Error Saving Progress", [
+							throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
+								'message' => '305 something went wrong with save method on model! ask your IT member'
+							]);
+						}
+
+						$this->returnValue['line_code'] = 278;
+						$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus().' / '. $node->getJudge();
+
+						return $this->returnValue;
+					}else{
+						// add more if statement here.
 						/*
-							getStartId return start_id dari lineprocessNg, bukan lagi dari 
-							current lineprocess;
+							check if current process is after ng_lineprocess_id;
+							if False, run current code.
+							if not, let it to shows error 'data sudah di scan out di proses ini.'
 						*/
-						if ($node->getLineprocess()['id'] == $node->getStartId() ) {
+						if ($node->isAfterNgProcess() == false ) {
 							# code...
-							$node->setStatus('IN');
-							$node->setJudge('REWORK');
-							if(!$node->save()){
-								// throw new StoreResourceFailedException("Error Saving Progress", [
-								throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
-									'message' => '305 something went wrong with save method on model! ask your IT member'
-								]);
+							$isNodeBeforeStartId = $node->isBeforeStartId();
+							if ($isNodeBeforeStartId) {
+								# kalau node adalah first sequences, kita harus ambil NG nya dimana.
+								# untuk memunculkan pesan error yg benar.
+								$step = $node->getLineprocessNgName();
+								$errorMessages = "DATA HARUS SCAN REWORK MULAI DARI PROSES ( ".$step." )";
 							}
-
-							$this->returnValue['line_code'] = 278;
-							$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus().' / '. $node->getJudge();
-
-							return $this->returnValue;
-						}else{
-							// add more if statement here.
-							/*
-								check if current process is after ng_lineprocess_id;
-								if False, run current code.
-								if not, let it to shows error 'data sudah di scan out di proses ini.'
-							*/
-							if ($node->isAfterNgProcess() == false ) {
-								# code...
-								$isNodeBeforeStartId = $node->isBeforeStartId();
-								if ($isNodeBeforeStartId) {
-									# kalau node adalah first sequences, kita harus ambil NG nya dimana.
-									# untuk memunculkan pesan error yg benar.
-									$step = $node->getLineprocessNgName();
-									$errorMessages = "DATA HARUS SCAN REWORK MULAI DARI PROSES ( ".$step." )";
-								}
-								// cek prev node nya;
-								$prevNode = $node->prev();
-								$prevIsExists = $prevNode->isExists('OUT', 'REWORK');
-								if ($prevIsExists) {
-									# kalau prev node nya exists, boleh input di current positions;
-									$node->next(); // maju
-									$node->setStatus('IN');
-									$node->setJudge('REWORK');
-									if(!$node->save()){
-										// throw new StoreResourceFailedException("Error Saving Progress", [
-										throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
-											'message' => '305 something went wrong with save method on model! ask your IT member'
-										]);
-									}
-
-									$this->returnValue['line_code'] = 352;
-									$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus().' / '. $node->getJudge();
-
-									return $this->returnValue;
-								}else{
-									// selain itu error data belum di scan di process sebelumnya;
-									if (!$isNodeBeforeStartId) {
-										#jika isNodeFirstSequence false, maka error message nya masuk sini.
-										# selain itu, $step & $errorMessages sudah di declare sebelumnya.
-										$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
-										$errorMessages = "DATA BELUM DI SCAN REWORK DI PROSES SEBELUMNYA. ( ".$step." )";
-									}
-
-									throw new StoreResourceFailedException( $errorMessages , [
-										// 'message' => 'bukan board',
-										'prevNode' => json_decode( $prevNode, true )
+							// cek prev node nya;
+							$prevNode = $node->prev();
+							$prevIsExists = $prevNode->isExists('OUT', 'REWORK');
+							if ($prevIsExists) {
+								# kalau prev node nya exists, boleh input di current positions;
+								$node->next(); // maju
+								$node->setStatus('IN');
+								$node->setJudge('REWORK');
+								if(!$node->save()){
+									// throw new StoreResourceFailedException("Error Saving Progress", [
+									throw new StoreResourceFailedException("Terjadi Error Ketika Menyimpan Progress", [ //Ario 20180915	
+										'message' => '305 something went wrong with save method on model! ask your IT member'
 									]);
 								}
+
+								$this->returnValue['line_code'] = 352;
+								$this->returnValue['message'] = $node->getDummyId() .' : '. $node->getStatus().' / '. $node->getJudge();
+
+								return $this->returnValue;
+							}else{
+								// selain itu error data belum di scan di process sebelumnya;
+								if (!$isNodeBeforeStartId) {
+									#jika isNodeFirstSequence false, maka error message nya masuk sini.
+									# selain itu, $step & $errorMessages sudah di declare sebelumnya.
+									$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+									$errorMessages = "DATA BELUM DI SCAN REWORK DI PROSES SEBELUMNYA. ( ".$step." )";
+								}
+
+								throw new StoreResourceFailedException( $errorMessages , [
+									// 'message' => 'bukan board',
+									'prevNode' => json_decode( $prevNode, true )
+								]);
 							}
 						}
 					}
 				}
+				
+				// }
 
 				$getJudge = $node->getJudge();
 				if( ( $getJudge == 'OK') || ($getJudge == 'NG') || ( $getJudge == 'REWORK') ){
