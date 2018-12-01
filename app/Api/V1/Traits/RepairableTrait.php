@@ -228,11 +228,79 @@ trait RepairableTrait {
 
 	}
 
-	public function getCountDataRepair(){
-		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
+	public function isBeforeOrEqualStartId($processParam = null , $lineprocessId = null, $startIdParam = null){
+		/*setup default value of the parameter*/
+		/*the parameter is use in unit testing. it's called dependencies injections*/
+			$process = (is_null($processParam)) ? $this->getProcess() : $processParam;
+			$process = explode(',', $process );
 
-		$repairExists = Repair::where('unique_id', $uniqueId )
-		->orderBy('created_at', 'desc')
-		->count();
+			$lineprocess = (is_null($lineprocessId))? $this->getLineprocess()->id : $lineprocessId ;
+			$startId = (is_null($startIdParam)) ? $this->getStartId() : $startIdParam;
+		/*end*/
+		$lineprocess_index = array_search($lineprocess, $process);
+		/* === is necesarry due to we sometimes used 1 as parameter */
+		if ( $lineprocess_index === false ) {
+			# lineprocess index tidak ditemukan di process
+			throw new StoreResourceFailedException("lineprocess id tidak ditemukan di proses. klik detail untuk info selengkapnya", [
+				'lineprocess' => $lineprocess,
+				'process' => $process
+			]);
+		}
+
+		$startid_index = array_search($startId, $process);
+		if ($startid_index === false) {
+			# code...
+			throw new StoreResourceFailedException("start id '{$startId}' tidak ditemukan di proses. klik detail untuk info selengkapnya", [
+				'start_id' => $startId,
+				'process' => $process
+			]);
+		}
+
+		/*will return true if lineprocess_index kurang dari startid_index*/
+		return ($lineprocess_index <= $startid_index );
 	}
+
+	public function hasRework(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null, $processParam = null ){
+		$model 	 		= (is_null($modelParam)) ? $this->getModel() 				: $modelParam;
+		$scannerId 		= (is_null($scannerIdParam)) ? $this->getScanner()->id 		: $scannerIdParam;
+		$uniqueColumn 	= (is_null($uniqueColumnParam))? $this->getUniqueColumn() 	: $uniqueColumnParam;
+		$uniqueId 		= (is_null($uniqueIdParam)) ? $this->getUniqueId()			: $uniqueIdParam;
+
+		// get how many rework record with specific scanner id;
+		$recordRework = $model->where($uniqueColumn, $uniqueId )
+		->where('scanner_id', $scannerId )
+		->where('judge', 'REWORK')
+		->count();
+
+		// get all lineprocess_ng record with specific uniqueColumn (guid_ticket, guid_master, '') 
+		$ngRecords = $model
+		->select(['lineprocess_id'])
+		->join('scanners', $model->getTable().'.scanner_id', '=', 'scanners.id')
+		->where($uniqueColumn, $uniqueId)
+		->where('judge', 'NG')
+		->get();
+
+		$process = (is_null($processParam)) ? $this->getProcess() : $processParam;
+		$currentLineProcessId = $this->getLineprocess()->id;
+		$recordNgAfterCurrentProcess = 0;
+		
+		foreach ($ngRecords as $key => $ngRecord ) {
+			# code...
+			$ngRecordId = $ngRecord->lineprocess_id;
+			if ($this->isBeforeOrEqualStartId($process, $currentLineProcessId, $ngRecordId )) {
+				# code...
+				$recordNgAfterCurrentProcess++;
+			}
+		}
+
+		$result = ( ($recordRework*2) >= $recordNgAfterCurrentProcess );
+
+		return [
+			'recordRework' => $recordRework,
+			// 'ceking' => $ceking,	
+			'recordNgAfterCurrentProcess' => $recordNgAfterCurrentProcess,
+			'result' => $result
+		];
+	}
+
 }

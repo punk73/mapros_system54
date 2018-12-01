@@ -49,7 +49,7 @@ class TestController extends Controller
 			// 'getLineprocessNg' => $node->getLineprocessNg(),
 			// 'getLineprocessNgName' => $node->getLineprocessNgName(),
 			// 'getFurthestNgProcess' => $node->getFurthestNgProcess(),
-			'isGuidTicket' => $node->isGuidTicket($guid),
+			'hasRework' => $node->hasRework(),
 			// 'isAfterNgProcess' => $node->isAfterNgProcess('1,2,3,4,5', 4, 1),
 			'isRepaired' => $node->isRepaired(),
 		];
