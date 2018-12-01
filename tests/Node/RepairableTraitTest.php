@@ -232,6 +232,29 @@ class RepairableTraitTest extends TestCase
         $lineprocessNg = $mock->getFurthestNgProcess($master , 'guid_master', 'some-guid-master-temp', '1,2,3');
         // $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
         $this->assertNull( $lineprocessNg );
+    }
+
+    public function testIsBeforeOrEqualStartId(){
+        $mock = $this->getMock();
+        $result = $mock->isBeforeOrEqualStartId('1,2,3', 2, 2);
+        $this->assertTrue($result);
+
+        $false = $mock->isBeforeStartId('1,2,3,4,5', 4, 3 );
+        $this->assertFalse($false);
+    }
+
+    public function testHasRework(){
+        $mock = $this->getMock();
+        $this->seedTableMaster();
+        $modelParam = new Master;
+        $scannerIdParam = 1;
+        $uniqueColumnParam = 'guid_master'; 
+        $uniqueIdParam = 'some-guid-master-temp'; 
+        $processParam = '1,2,3'; 
+        $result = $mock->hasRework($modelParam,$scannerIdParam,$uniqueColumnParam,$uniqueIdParam,$processParam);
+
 
     }
+
+
 }

@@ -260,7 +260,7 @@ trait RepairableTrait {
 		return ($lineprocess_index <= $startid_index );
 	}
 
-	public function hasRework(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null, $processParam = null ){
+	public function reworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null){
 		$model 	 		= (is_null($modelParam)) ? $this->getModel() 				: $modelParam;
 		$scannerId 		= (is_null($scannerIdParam)) ? $this->getScanner()->id 		: $scannerIdParam;
 		$uniqueColumn 	= (is_null($uniqueColumnParam))? $this->getUniqueColumn() 	: $uniqueColumnParam;
@@ -272,18 +272,36 @@ trait RepairableTrait {
 		->where('judge', 'REWORK')
 		->count();
 
-		// get all lineprocess_ng record with specific uniqueColumn (guid_ticket, guid_master, '') 
-		$ngRecords = $model
+		return $recordRework;
+	}
+
+	public function getAllNgRecord(Model $modelParam = null, $uniqueColumnParam = null, $uniqueIdParam = null){
+		$model 	 		= (is_null($modelParam)) ? $this->getModel() 				: $modelParam;
+		$uniqueColumn 	= (is_null($uniqueColumnParam))? $this->getUniqueColumn() 	: $uniqueColumnParam;
+		$uniqueId 		= (is_null($uniqueIdParam)) ? $this->getUniqueId()			: $uniqueIdParam;
+
+		$result = $model
 		->select(['lineprocess_id'])
 		->join('scanners', $model->getTable().'.scanner_id', '=', 'scanners.id')
 		->where($uniqueColumn, $uniqueId)
 		->where('judge', 'NG')
 		->get();
 
+		return $result;
+	}
+
+	public function hasRework($lineprocessParamId = null, $processParam = null ){
+		// get how many rework record with specific scanner id;
+		$recordRework = $this->reworkCount();
+
+		// get all lineprocess_ng record with specific uniqueColumn (guid_ticket, guid_master, '') 
+		$ngRecords = $this->getAllNgRecord();
+
+		// get current process
 		$process = (is_null($processParam)) ? $this->getProcess() : $processParam;
-		$currentLineProcessId = $this->getLineprocess()->id;
+		// get current lineprocess
+		$currentLineProcessId = (is_null($lineprocessParamId))? $this->getLineprocess()->id : $lineprocessParamId ;
 		$recordNgAfterCurrentProcess = 0;
-		
 		foreach ($ngRecords as $key => $ngRecord ) {
 			# code...
 			$ngRecordId = $ngRecord->lineprocess_id;
@@ -292,15 +310,16 @@ trait RepairableTrait {
 				$recordNgAfterCurrentProcess++;
 			}
 		}
+		/*untuk tiap record NG, dibutuhkan sepasang record rework. yaitu (IN & OUT)*/
+		$result = ( ($recordRework/2) >= $recordNgAfterCurrentProcess );
 
-		$result = ( ($recordRework*2) >= $recordNgAfterCurrentProcess );
-
-		return [
+		/*return [
 			'recordRework' => $recordRework,
 			// 'ceking' => $ceking,	
 			'recordNgAfterCurrentProcess' => $recordNgAfterCurrentProcess,
 			'result' => $result
-		];
+		];*/
+		return $result;
 	}
 
 }
