@@ -90,6 +90,7 @@ class RepairableTraitTest extends TestCase
         $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
         $this->assertNotNull( $lineprocessNg );
         $this->assertInternalType('int', $lineprocessNg );
+        $this->assertEquals(1, $lineprocessNg );
     }
 
     public function testGetJoinQuery(){
@@ -104,7 +105,6 @@ class RepairableTraitTest extends TestCase
         /*parameters : process, lineprocess_id, lineprocessNg*/
         $true = $mock->isAfterNgProcess('1,2,3,4,5', 4, 1 );
         $this->assertTrue($true);
-
         $false = $mock->isAfterNgProcess('1,2,3,4,5', 2, 4 );
         $this->assertFalse($false);
     }
@@ -162,18 +162,26 @@ class RepairableTraitTest extends TestCase
         $true = $mock->isRepaired('someuniqueid', true );
         $this->assertTrue($true);
 
-        /*true && false*/
-        $false = $mock->isRepaired('someuniqueid', false );
+        /*parameter 1 = unique_id, parameter 2 = lineprocess_id */
+        $false = $mock->isRepaired('someuniqueid', 12 );
         $this->assertFalse($false);
         
-        /*false && true*/
+        /*parameter 1 = unique_id, parameter 2 = lineprocess_id */
         $false = $mock->isRepaired('anotherUniquerId', true );
         $this->assertFalse($false);
 
-        /*false && false*/
-        $false = $mock->isRepaired('anotherUniquerId', false );
+        /*parameter 1 = unique_id, parameter 2 = lineprocess_id */
+        $false = $mock->isRepaired('anotherUniquerId', 12 );
         $this->assertFalse($false);
 
+    }
+
+    public function testIsRepairedOneMoreTime(){
+        $mock = $this->getMock();
+        $this->seedRepairTable(); //seed the table
+        
+        $false = $mock->isRepaired('anotherUniquerId', 2 );
+        $this->assertFalse($false);
     }
 
     public function testGetLineprocessNgName(){
@@ -204,6 +212,110 @@ class RepairableTraitTest extends TestCase
         $false2 = $mock->isBeforeStartId('1,2,3,4', 4, 3);
         $this->assertFalse($false1);
         $this->assertFalse($false2);
+    }
 
-    }    
+    public function testGetFurthestNgProcessSuccess(){
+        $mock = $this->getMock();
+        $this->seedTableMaster();
+        $master = new Master;
+        $lineprocessNg = $mock->getFurthestNgProcess($master , 'guid_master', 'some-guid-master-temp', '1,2,3');
+        // $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
+        $this->assertNotNull( $lineprocessNg );
+        $this->assertInternalType('int', $lineprocessNg );
+        $this->assertEquals(1, $lineprocessNg );
+    }
+
+    public function testGetFurthestNgProcessReturnNull(){
+        $mock = $this->getMock();
+        $master = new Master;
+        $lineprocessNg = $mock->getFurthestNgProcess($master , 'guid_master', 'some-guid-master-temp', '1,2,3');
+        // $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
+        $this->assertNull( $lineprocessNg );
+    }
+
+    public function testIsBeforeOrEqualStartId(){
+        $mock = $this->getMock();
+        $result = $mock->isBeforeOrEqualStartId('1,2,3', 2, 2);
+        $this->assertTrue($result);
+
+        $false = $mock->isBeforeStartId('1,2,3,4,5', 4, 3 );
+        $this->assertFalse($false);
+    }
+
+    public function testReworkCountReturnZero(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null){
+        $mock = $this->getMock();
+        $master = new Master;
+        $result = $mock->reworkCount($master, 1, 'guid_master', 'some-guid-master-temp');
+        // record rework of master is 0;
+        $this->assertEquals(0, $result );
+    }
+
+    public function seedTableMasterRework($judge='REWORK'){
+        $scanners = factory(Scanner::class, 2 )
+        ->create([
+            'lineprocess_id' => function (){
+                return factory(Lineprocess::class)->create()->id;
+            }
+        ]);
+        
+        $master = new Master;
+        $master->ticket_no_master = 'MAMSTTESTING';
+        $master->guid_master = 'some-guid-master-temp';
+        $master->status = 'OUT';
+        $master->scanner_id = 1; //we'll need to specify this scanner;
+        $master->scan_nik = '39597';
+        $master->judge = $judge;
+        $master->save();
+    }
+
+    public function testReworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null){
+        $mock = $this->getMock();
+        $this->seedTableMasterRework();
+        $master = Master::where('judge', 'REWORK')->get();
+        $this->assertGreaterThan(0, count($master));
+        $master = new Master;
+        $result = $mock->reworkCount($master, 1, 'guid_master', 'some-guid-master-temp');
+        $this->assertEquals(1, $result );
+    }
+
+    public function testGetAllNgRecord(){
+        $mock = $this->getMock();
+        $model = new Master;
+        // $allNgRecord is empty laravel collection;
+        $allNgRecord = $mock->getAllNgRecord($model, 'guid_master', 'some-guid-master-temp');
+        $this->assertEquals(0, $allNgRecord->count() );
+
+        $this->seedTableMaster();
+        // setelah master di isi dengan record ng, harusnya ga lagi 0 tapi 1;
+        $allNgRecord = $mock->getAllNgRecord($model, 'guid_master', 'some-guid-master-temp');
+        $this->assertEquals(1, $allNgRecord->count() );        
+    }
+
+    public function testHasRework(){
+        $mock = $this->getMock();
+        $this->seedTableMaster();
+        $modelParam = new Master;
+        $scannerIdParam = 1;
+        $uniqueColumnParam = 'guid_master'; 
+        $uniqueIdParam = 'some-guid-master-temp'; 
+        $processParam = '1,2,3'; 
+        
+        $recordReworkParam = 2; // rework nya sudah ada 2 records di lineprocess saat ini;
+        $ngRecordsParam = [['lineprocess_id' => 2]] ; //ng nya di proses 2
+        $lineprocessParamId = 1; //current process / lineprocess saat ini
+        $processParam  = '1,2,3,4,5'; //processnya
+        
+        $true = $mock->hasRework($recordReworkParam, $ngRecordsParam, $lineprocessParamId, $processParam );
+        $this->assertTrue($true);
+
+        $recordReworkParam = 1; // rework nya sudah ada 1 records di lineprocess saat ini;
+        $ngRecordsParam = [['lineprocess_id' => 2]] ; //ng nya di proses 2
+        $lineprocessParamId = 1; //current process / lineprocess saat ini
+        $processParam  = '1,2,3,4,5'; //processnya
+        
+        $false = $mock->hasRework($recordReworkParam, $ngRecordsParam, $lineprocessParamId, $processParam );
+        $this->assertTrue($false);
+    }
+
+
 }
