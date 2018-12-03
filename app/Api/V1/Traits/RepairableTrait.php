@@ -260,7 +260,7 @@ trait RepairableTrait {
 		return ($lineprocess_index <= $startid_index );
 	}
 
-	public function reworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null){
+	public function reworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null, $status = null ){
 		$model 	 		= (is_null($modelParam)) ? $this->getModel() 				: $modelParam;
 		$scannerId 		= (is_null($scannerIdParam)) ? $this->getScanner()->id 		: $scannerIdParam;
 		$uniqueColumn 	= (is_null($uniqueColumnParam))? $this->getUniqueColumn() 	: $uniqueColumnParam;
@@ -269,8 +269,14 @@ trait RepairableTrait {
 		// get how many rework record with specific scanner id;
 		$recordRework = $model->where($uniqueColumn, $uniqueId )
 		->where('scanner_id', $scannerId )
-		->where('judge', 'REWORK')
-		->count();
+		->where('judge', 'REWORK');
+
+		if (!is_null($status)) {
+			# code...
+			$recordRework = $recordRework->where('status', $status );
+		}
+
+		$recordRework = $recordRework->count();
 
 		return $recordRework;
 	}
@@ -320,6 +326,19 @@ trait RepairableTrait {
 			'result' => $result
 		];*/
 		return $result;
+	}
+
+	public function repairCount($uniqueId = null ){
+		$repairCount = Repair::where('unique_id', $uniqueId )->count();
+		return $repairCount;
+	}
+
+	public function isReworked($reworkCount = null, $repairCount = null ){
+		$reworkRecords = (is_null($reworkCount)) ? $this->reworkCount(null, null, null, null, 'OUT') : $reworkCount;
+		$repairRecords = (is_null($repairCount)) ? $this->repairCount() : $repairCount;
+		
+		// untuk handle pokayoke di repair kedua;
+		return ( $reworkRecords < $repairRecords );
 	}
 
 }
