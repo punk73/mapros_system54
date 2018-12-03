@@ -415,7 +415,7 @@ class MainController extends Controller
 
 				$getJudge = $node->getJudge();
 				if( ( $getJudge == 'OK') || ($getJudge == 'NG') || ( $getJudge == 'REWORK') ){
-					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT {$getJudge} DI PROSES INI!", [
+					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT {$getJudge} DI PROSES INI! klik see details", [
 						'message' => 'jika ini NG untuk ke sekian kali. mohon pastikan anda sudah insert data repair ulang!',
 						'proses NG' => $node->getAllNgRecord(),
 						'Sudah Repair' => $node->repairCount(),
