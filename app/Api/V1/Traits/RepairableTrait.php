@@ -290,12 +290,12 @@ trait RepairableTrait {
 		return $result;
 	}
 
-	public function hasRework($lineprocessParamId = null, $processParam = null ){
+	public function hasRework($recordReworkParam = null, $ngRecordsParam = null, $lineprocessParamId = null, $processParam = null ){
 		// get how many rework record with specific scanner id;
-		$recordRework = $this->reworkCount();
+		$recordRework = (is_null($recordReworkParam))? $this->reworkCount() : $recordReworkParam;
 
 		// get all lineprocess_ng record with specific uniqueColumn (guid_ticket, guid_master, '') 
-		$ngRecords = $this->getAllNgRecord();
+		$ngRecords = (is_null($ngRecordsParam))? $this->getAllNgRecord() : $ngRecordsParam;
 
 		// get current process
 		$process = (is_null($processParam)) ? $this->getProcess() : $processParam;
@@ -304,7 +304,7 @@ trait RepairableTrait {
 		$recordNgAfterCurrentProcess = 0;
 		foreach ($ngRecords as $key => $ngRecord ) {
 			# code...
-			$ngRecordId = $ngRecord->lineprocess_id;
+			$ngRecordId = $ngRecord['lineprocess_id'];
 			if ($this->isBeforeOrEqualStartId($process, $currentLineProcessId, $ngRecordId )) {
 				# code...
 				$recordNgAfterCurrentProcess++;
