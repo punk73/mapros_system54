@@ -287,10 +287,16 @@ trait RepairableTrait {
 		$uniqueId 		= (is_null($uniqueIdParam)) ? $this->getUniqueId()			: $uniqueIdParam;
 
 		$result = $model
-		->select(['lineprocess_id'])
+		->select([
+			$model->getTable(). '.*',
+			'lineprocess_id',
+			'scanners.name as scanner_name',
+
+		])
 		->join('scanners', $model->getTable().'.scanner_id', '=', 'scanners.id')
 		->where($uniqueColumn, $uniqueId)
 		->where('judge', 'NG')
+		->orderBy($model->getTable(). '.created_at', 'desc')
 		->get();
 
 		return $result;
@@ -328,7 +334,10 @@ trait RepairableTrait {
 		return $result;
 	}
 
-	public function repairCount($uniqueId = null ){
+	public function repairCount($uniqueIdParam = null ){
+
+		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
+
 		$repairCount = Repair::where('unique_id', $uniqueId )->count();
 		return $repairCount;
 	}
