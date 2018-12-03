@@ -523,7 +523,9 @@ class MainController extends Controller
 			$node->setStatus('OUT');
 			// it's mean to get current in process judgement, so when it's rework; it'll get rework
 			// also, if its OK, it's get the users judge parameter;
-			$judge = ($node->getJudge() == 'OK')? $this->judge : $node->getJudge();
+			// $judge = ($node->getJudge() == 'OK')? $this->judge : $node->getJudge();
+			// kalau dari parameter nya NG, maka set NG. selain itu, ambil dari judge node;
+			$judge = ($this->judge == 'NG')? 'NG' : $node->getJudge(); 
 			$node->setJudge($judge);
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [
