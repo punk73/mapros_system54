@@ -314,7 +314,7 @@ class RepairableTraitTest extends TestCase
         $processParam  = '1,2,3,4,5'; //processnya
         
         $false = $mock->hasRework($recordReworkParam, $ngRecordsParam, $lineprocessParamId, $processParam );
-        $this->assertTrue($false);
+        $this->assertFalse($false);
     }
 
 
