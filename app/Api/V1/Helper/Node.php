@@ -365,6 +365,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 		$result = Ticket::select('id')
 		->where( 'guid_ticket', $uniqueId )
+		->where('guid_master', '=', null ) ///ini urgent, mohon review lagi nanti; untuk handle Audio mecha
 		->first();
 
 		if ($result){
