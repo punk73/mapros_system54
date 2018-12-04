@@ -15,6 +15,7 @@ use App\Api\V1\Traits\LoggerHelper;
 use App\Api\V1\Helper\Node;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Carbon\Carbon;
+use App\lineprocess;
 
 class MainController extends Controller
 {
@@ -324,7 +325,9 @@ class MainController extends Controller
 		if($node->getStatus() == 'OUT'){
 			if($node->is_solder == false){
 				// cek current judge
-				if($node->getJudge() != 'REWORK'){
+				// if($node->getJudge() != 'REWORK'){
+				if ($node->hasRework() === false ) {
+					#jika belum rework masuk sini;
 					/*
 						isRepaired harusnya verify juga bahwa current node punya record NG.
 						untuk pengamanan in case someone input into table repair without input 
@@ -369,7 +372,11 @@ class MainController extends Controller
 								}
 								// cek prev node nya;
 								$prevNode = $node->prev();
-								$prevIsExists = $prevNode->isExists('OUT', 'REWORK');
+								$prevIsExists = $prevNode->hasRework(); //$prevNode->isExists('OUT', 'REWORK');
+								// untuk rework kedua jadi error. gimana caranya biar isExists bisa return false based on 
+								// repair ke berapa. itu kan data repair pertama, sedangkan yg kita check repair kedua;
+								// how ??
+								
 								if ($prevIsExists) {
 									# kalau prev node nya exists, boleh input di current positions;
 									$node->next(); // maju
@@ -404,10 +411,14 @@ class MainController extends Controller
 						}
 					}
 				}
+				// }
 
 				$getJudge = $node->getJudge();
 				if( ( $getJudge == 'OK') || ($getJudge == 'NG') || ( $getJudge == 'REWORK') ){
-					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT {$getJudge} DI PROSES INI!", [
+					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT {$getJudge} DI PROSES INI! klik see details", [
+						'message' => 'jika ini NG untuk ke sekian kali. mohon pastikan anda sudah insert data repair ulang!',
+						'proses NG' => $node->getAllNgRecord(),
+						'Sudah Repair' => $node->repairCount(),
 						'node' => json_decode( $node, true ),
 					]);
 				}
@@ -516,7 +527,9 @@ class MainController extends Controller
 			$node->setStatus('OUT');
 			// it's mean to get current in process judgement, so when it's rework; it'll get rework
 			// also, if its OK, it's get the users judge parameter;
-			$judge = ($node->getJudge() == 'OK')? $this->judge : $node->getJudge();
+			// $judge = ($node->getJudge() == 'OK')? $this->judge : $node->getJudge();
+			// kalau dari parameter nya NG, maka set NG. selain itu, ambil dari judge node;
+			$judge = ($this->judge == 'NG')? 'NG' : $node->getJudge(); 
 			$node->setJudge($judge);
 			if(!$node->save()){
 				throw new StoreResourceFailedException("Error Saving Progress", [

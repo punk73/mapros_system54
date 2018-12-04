@@ -40,19 +40,19 @@ class TestController extends Controller
 		$a = [1,2,3];
 		$val = 5;
 		$arraySearch = array_search($val, $a);
-		$board = new Board;
-		$board = $board->find(99);
 
 		$node = new Node($request->all());
+
+		$guid = '3FE33A6B-5EA2-45B8-885B-6EF6F5455664';
 		return [
 			// 'node' => $node,
-			'arraySearch' => $arraySearch,
+			// 'arraySearch' => $arraySearch,
 			// 'getLineprocessNg' => $node->getLineprocessNg(),
-			'node' => $node,
+			// 'getLineprocessNgName' => $node->getLineprocessNgName(),
+			// 'getFurthestNgProcess' => $node->getFurthestNgProcess(),
+			'hasRework' => $node->hasRework(),
 			// 'isAfterNgProcess' => $node->isAfterNgProcess('1,2,3,4,5', 4, 1),
-			'node-locations' => $node->getLocations(),
-
-			'boards' => $node->saveBoardLocation( $board, 1 ),
+			'isRepaired' => $node->isRepaired(),
 		];
 		// return $node->isSettingContainChildrenOf('ticket');
 		// return ($node->isExists()) ? 'true' : 'false' ;
