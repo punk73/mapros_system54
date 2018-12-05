@@ -293,16 +293,16 @@ trait RepairableTrait {
 		return ($lineprocess_index <= $startid_index );
 	}
 
-	public function reworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null, $status = null ){
+	public function reworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null, $status = null, $judgeParam = null ){
 		$model 	 		= (is_null($modelParam)) ? $this->getModel() 				: $modelParam;
 		$scannerId 		= (is_null($scannerIdParam)) ? $this->getScanner()->id 		: $scannerIdParam;
 		$uniqueColumn 	= (is_null($uniqueColumnParam))? $this->getUniqueColumn() 	: $uniqueColumnParam;
 		$uniqueId 		= (is_null($uniqueIdParam)) ? $this->getUniqueId()			: $uniqueIdParam;
-
+		$judge 			= (is_null($judgeParam))? 'REWORK' : 'NG';
 		// get how many rework record with specific scanner id;
 		$recordRework = $model->where($uniqueColumn, $uniqueId )
 		->where('scanner_id', $scannerId )
-		->where('judge', 'REWORK');
+		->where('judge', $judge );
 
 		if (!is_null($status)) {
 			# code...
@@ -355,7 +355,20 @@ trait RepairableTrait {
 				$recordNgAfterCurrentProcess++;
 			}
 		}
+
+		// jika recordRework ganjil, maka.
+		if ( ($recordRework % 2) == 1) {
+			// check apakah current node punya record NG di current process, kalau ya, maka tambah satu.
+			if ( $this->reworkCount(null, null, null, null, null, 'NG') > 0 ) {
+				# recordRework + 1;
+				// hal ini untuk menghindari keharusan scan additional rework di node yg terdapat 
+				// record NG saat reworks; 
+				$recordRework++;
+			}
+		}
+
 		/*untuk tiap record NG, dibutuhkan sepasang record rework. yaitu (IN & OUT)*/
+		/*masalahnya kalau pas rework NG, maka cuman ada In doang rework nya.*/
 		$result = ( ($recordRework/2) >= $recordNgAfterCurrentProcess );
 
 		/*return [
