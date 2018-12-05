@@ -190,19 +190,32 @@ trait RepairableTrait {
 	*/
 	public function isRepaired($uniqueIdParam = null, $lineprocessNgIdParam = null ){
 		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
+		
+		$lineprocessNgId = (is_null($lineprocessNgIdParam))? $this->getLineprocessNg() : $lineprocessNgIdParam;
+		if (is_null($lineprocessNgId)) {
+			/*jika NG Records tidak ketemu*/
+			return false;
+		}
+
+		// later I think we need to add where repair.created_at > lineprocessNg.created_at. 
+		// now we can't, because lineprocess ng only return id
+		// it's checking repair with lineprocessNgId already assigned. 
+		$repaired = Repair::where('unique_id', $uniqueId )
+		->where('ng_lineprocess_id', $lineprocessNgId )
+		->orderBy('created_at', 'desc')
+		->exists();
+
+		if ($repaired) {
+			return true; // kalau udah di repair
+		}
 
 		$repairExists = Repair::where('unique_id', $uniqueId )
+		->where('ng_lineprocess_id', null )
 		->orderBy('created_at', 'desc')
 		->first();
 
 		if (!$repairExists) {
 			# jika repair record tidak ketemu
-			return false;
-		}
-
-		$lineprocessNgId = (is_null($lineprocessNgIdParam))? $this->getLineprocessNg() : $lineprocessNgIdParam;
-		if (is_null($lineprocessNgId)) {
-			/*jika NG Records tidak ketemu*/
 			return false;
 		}
 
@@ -213,14 +226,6 @@ trait RepairableTrait {
 		}
 
 		return ($repairExists->ng_lineprocess_id === $lineprocessNgId );
-			
-		/*
-			method sekarang masih sama dengan method sebelumnya, hanya saja ditambahkan satu lagi pengecekan. yaitu:
-			- cek kalau NG sekarang, sama kaya Rework skrg
-		*/
-		// $lineprocessNg = (is_null($isLineprocessNgExists))?(is_null($lineprocessNgId)===false):$isLineprocessNgExists;
-		
-		// return ($repairExists && $lineprocessNg );
 	}
 
 	public function isBeforeStartId($processParam = null , $lineprocessId = null, $startIdParam = null){
