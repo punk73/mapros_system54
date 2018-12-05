@@ -415,10 +415,19 @@ class MainController extends Controller
 
 				$getJudge = $node->getJudge();
 				if( ( $getJudge == 'OK') || ($getJudge == 'NG') || ( $getJudge == 'REWORK') ){
+					try {
+						$lineprocessNgName = $node->getLineprocessNgName();
+					} catch (StoreResourceFailedException $e) {
+						$lineprocessNgName = null;
+					}
+
 					throw new StoreResourceFailedException("DATA '".$node->getDummyId()."' SUDAH DI SCAN OUT {$getJudge} DI PROSES INI! klik see details", [
 						'message' => 'jika ini NG untuk ke sekian kali. mohon pastikan anda sudah insert data repair ulang!',
+						'sudah_repair' => $node->isRepaired(),
+						'jumlah_repair' => $node->repairCount(),
+						'ng_terakhir'=> $lineprocessNgName,
+						'has_rework' => $node->hasRework(),
 						'proses NG' => $node->getAllNgRecord(),
-						'Sudah Repair' => $node->repairCount(),
 						'node' => json_decode( $node, true ),
 					]);
 				}
