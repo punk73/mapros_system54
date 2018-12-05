@@ -20,14 +20,41 @@ trait RepairableTrait {
 		return $query;
 	}
 
-	public function getLineprocessNg(Model $modelParam = null, $uniqueColumnParam = null , $uniqueIdParam = null ){
+	/*
+	* return process that >= current lineprocess id;
+	* if the process is 1,2,3,4,5 and the lineprocess is 3 then it will return = 3,4,5
+	*/
+	public function getNextProcess($currentId = null, $processParam = null ){
+		// default lineprocess id parameter
+		$currentLineProcessId = (is_null($currentId))?$this->getLineprocess()->id : $currentId;
+		// default process parameter
+		$process = (is_null($processParam)) ? $this->getProcess(): $processParam;
+		$process = explode(',', $process );
+		// index array 
+		$lineprocessIndex = array_search($currentLineProcessId, $process );
+		
+		for ($i=0; $i < $lineprocessIndex ; $i++) { 
+			# code...
+			unset($process[$i]);
+		}
+
+		$process = array_values($process);
+
+		return $process;
+	}
+
+	public function getLineprocessNg(Model $modelParam = null, $uniqueColumnParam = null , $uniqueIdParam = null,Array $nextProcessParam = null ){
 		$model = (is_null($modelParam)) ? $this->getModel() : $modelParam ;
 		/*uniqueColumn different from one another. it can be board_id, guid_master, or guid_ticket based on the model_type*/
 		$uniqueColumn = (is_null($uniqueColumnParam)) ? $this->getUniqueColumn() : $uniqueColumnParam ;
 		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam ;
+		
+		// get process after or equal this current lineprocess_id;
+		$nextProcess = (is_null($nextProcessParam))? $this->getNextProcess() : $nextProcessParam;
 
 		$result = $this->getJoinQuery($model)
 		->where( $uniqueColumn , $uniqueId )
+		->whereIn('lineprocesses.id', $nextProcess )
 		->where('judge', 'NG')
 		->first();
 
@@ -79,6 +106,7 @@ trait RepairableTrait {
 	public function getLineprocessNgName($idParam = null ){
 		$id = (is_null($idParam)) ? $this->getLineprocessNg() : $idParam;
 		$lineprocess = Lineprocess::select(['name'])->find($id);
+
 		if (!$lineprocess) {
 			# code...
 			throw new StoreResourceFailedException("Lineprocess NG tidak ditemukan!. klik see detail", [
