@@ -55,6 +55,6 @@ class Board extends Model
     }
 
     public function locations(){
-        return $this->belongsToMany('App\Location')->withPivot('id');
+        return $this->belongsToMany('App\Location')->withPivot('id')->using('App\BoardLocation');
     }
 }

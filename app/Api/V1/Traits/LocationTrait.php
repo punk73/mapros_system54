@@ -6,6 +6,7 @@ use App\Location;
 use App\Board;
 use App\Symptom;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use App\BoardLocation;
 
 trait LocationTrait {
 	
@@ -69,8 +70,8 @@ trait LocationTrait {
 		}
 	}
 
-	public function saveLocationSymptoms(Pivot $pivot, Array $symptoms ){
-		$pivot->belongsToMany('App\Symptom')->sync($symptoms);
+	public function saveLocationSymptoms(BoardLocation $pivot, Array $symptoms ){
+		return $pivot->symptoms()->sync($symptoms);
 	}
 
 	public function verifyLocations($locations){

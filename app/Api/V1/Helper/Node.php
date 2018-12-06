@@ -896,7 +896,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		/*kalau locations tidak null dan yg diproses itu board, maka save into locations*/
 		if ( (is_null( $this->getLocations()) === false) && ($this->getModelType() == 'board') ) {
 			# save to locations;
-			
+			$this->insertLocation($model);
 		}
 
 		return $isSaveSuccess; //true or false;
