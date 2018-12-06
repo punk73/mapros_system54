@@ -94,7 +94,7 @@
 				if (this.model.symptoms.length > 0) {
 					result.symptoms_id = [];
 					this.model.symptoms.forEach(function(symptom){
-						result.symptoms.push( symptom.code )
+						result.symptoms_id.push( symptom.code )
 					})
 				}
 
