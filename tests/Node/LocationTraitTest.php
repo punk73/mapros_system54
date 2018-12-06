@@ -14,6 +14,8 @@ use App\LineprocessStart;
 use App\Repair;
 use App\Location;
 use App\Board;
+use App\Symptom;
+use DB;
 
 class LocationTraitTest extends TestCase
 {
@@ -99,9 +101,26 @@ class LocationTraitTest extends TestCase
 
         $pivot = $mock->saveBoardLocation($board, $location_id);
         $this->assertInstanceOf('Illuminate\Database\Eloquent\Relations\Pivot', $pivot );
-
     }
 
+    public function testSaveLocationSymptoms(){
+        $board = factory(Board::class)->create();
+        $locations = factory(Location::class, 2)->create();
+        $board->locations()->sync($locations);
+        $locations = $board->locations;
 
-    
+        foreach ($locations as $key => $location) {
+            $pivot = $location->pivot;
+        }
+
+        $symptom_id = factory(Symptom::class)->create()->id;
+
+        $mock = $this->getMock();
+        $result = $mock->saveLocationSymptoms($pivot, [$symptom_id] );
+
+        $board_location_symptom = DB::table('board_location_symptom')->select('id')->count();
+        // cek data di database masuk;
+        $this->assertGreaterThan( 0, $board_location_symptom );
+        
+    }
 }
