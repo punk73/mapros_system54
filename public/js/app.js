@@ -40601,6 +40601,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 var axios = __webpack_require__(21);
 
@@ -41353,6 +41357,10 @@ var axios = __webpack_require__(21);
             } else {
                 this.hasError = hasError;
             }
+        },
+        locationAdded: function locationAdded(locations) {
+            // console.log(locations)
+            this.form.locations = locations;
         }
     }
 });
@@ -41611,6 +41619,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		},
 		addForm: function addForm(newForm) {
 			this.form.push(newForm);
+			this.$emit('locationAdded', this.form);
 		},
 		btnDeleteOnClick: function btnDeleteOnClick(row) {
 			console.log(row, "btn delete on click");
@@ -65721,8 +65730,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "nik", $event.target.value)
       }
     }
-  })])])]), _vm._v(" "), (_vm.config.isTouchUp && _vm.responseData.message.includes('IN / OK')) ? _c('location', {
-    ref: "location"
+  })])])]), _vm._v(" "), (_vm.config.isTouchUp && _vm.responseData.message.includes('IN /')) ? _c('location', {
+    ref: "location",
+    on: {
+      "locationAdded": _vm.locationAdded
+    }
   }) : _vm._e(), _vm._v(" "), _vm._l((_vm.form.critical_parts), function(critical, index) {
     return (_vm.config.showCritical) ? _c('div', {
       staticClass: "form-group"
@@ -66007,7 +66019,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("\n                                      Delete "), _c('i', {
     staticClass: "fa fa-trash float-right"
-  })]) : _vm._e(), _vm._v(" "), ((_vm.config.isSendAjax || _vm.config.isGenerateFile) && _vm.responseData.message.includes('IN / OK')) ? _c('button', {
+  })]) : _vm._e(), _vm._v(" "), ((_vm.config.isSendAjax || _vm.config.isGenerateFile) && _vm.responseData.message.includes('IN /')) ? _c('button', {
     staticClass: "btn btn-warning",
     on: {
       "click": function($event) {

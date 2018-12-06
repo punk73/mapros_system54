@@ -175,6 +175,7 @@
 
 			addForm(newForm){
 				this.form.push(newForm)
+				this.$emit('locationAdded', this.form )
 			},
 
 			btnDeleteOnClick(row ){

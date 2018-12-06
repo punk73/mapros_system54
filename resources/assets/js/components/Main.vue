@@ -27,7 +27,11 @@
                                 </div>
                             </div> -->
                             <!-- &&  -->
-                            <location v-if="config.isTouchUp && responseData.message.includes('IN / OK')" ref="location" />
+                            <location 
+                                v-if="config.isTouchUp && responseData.message.includes('IN /')" 
+                                ref="location"
+                                @locationAdded="locationAdded"
+                            />
 
                             <div class="form-group" v-if='config.showCritical' v-for="(critical, index ) in form.critical_parts" >
                                 <label for="critical_parts" class="col-md-4 control-label">Critical Part</label>
@@ -159,7 +163,7 @@
                                         Delete <i class="fa fa-trash float-right"></i>
                                     </button>
 
-                                    <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN / OK') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
+                                    <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN /') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
 
                                     <!-- <button class="btn btn-warning form-control" @click.prevent="getLocationData">Test</button> -->
                                 </div>
@@ -974,6 +978,11 @@
                 }else{
                     this.hasError = hasError;
                 }
+            },
+
+            locationAdded(locations){
+                // console.log(locations)
+                this.form.locations = locations;
             },
         }
     }
