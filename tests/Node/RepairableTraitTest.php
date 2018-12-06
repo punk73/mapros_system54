@@ -77,7 +77,7 @@ class RepairableTraitTest extends TestCase
         $mock = $this->getMock();
         $master = new Master;
         // $this->expectException(StoreResourceFailedException::class); 
-        $null = $mock->getLineprocessNg( $master , 'guid_master', 'someguimaster') ;
+        $null = $mock->getLineprocessNg( $master , 'guid_master', 'someguimaster', [1,2,3]) ;
         $this->assertNull($null);
     }
 
@@ -87,7 +87,8 @@ class RepairableTraitTest extends TestCase
         // jalankan seeder
         $this->seedTableMaster();
         $master = new Master;
-        $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
+        // model, unique_column, unique_id, nextProcess
+        $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp', [1,2,3]);
         $this->assertNotNull( $lineprocessNg );
         $this->assertInternalType('int', $lineprocessNg );
         $this->assertEquals(1, $lineprocessNg );

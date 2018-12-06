@@ -20,14 +20,41 @@ trait RepairableTrait {
 		return $query;
 	}
 
-	public function getLineprocessNg(Model $modelParam = null, $uniqueColumnParam = null , $uniqueIdParam = null ){
+	/*
+	* return process that >= current lineprocess id;
+	* if the process is 1,2,3,4,5 and the lineprocess is 3 then it will return = 3,4,5
+	*/
+	public function getNextProcess($currentId = null, $processParam = null ){
+		// default lineprocess id parameter
+		$currentLineProcessId = (is_null($currentId))?$this->getLineprocess()->id : $currentId;
+		// default process parameter
+		$process = (is_null($processParam)) ? $this->getProcess(): $processParam;
+		$process = explode(',', $process );
+		// index array 
+		$lineprocessIndex = array_search($currentLineProcessId, $process );
+		
+		for ($i=0; $i < $lineprocessIndex ; $i++) { 
+			# code...
+			unset($process[$i]);
+		}
+
+		$process = array_values($process);
+
+		return $process;
+	}
+
+	public function getLineprocessNg(Model $modelParam = null, $uniqueColumnParam = null , $uniqueIdParam = null,Array $nextProcessParam = null ){
 		$model = (is_null($modelParam)) ? $this->getModel() : $modelParam ;
 		/*uniqueColumn different from one another. it can be board_id, guid_master, or guid_ticket based on the model_type*/
 		$uniqueColumn = (is_null($uniqueColumnParam)) ? $this->getUniqueColumn() : $uniqueColumnParam ;
 		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam ;
+		
+		// get process after or equal this current lineprocess_id;
+		$nextProcess = (is_null($nextProcessParam))? $this->getNextProcess() : $nextProcessParam;
 
 		$result = $this->getJoinQuery($model)
 		->where( $uniqueColumn , $uniqueId )
+		->whereIn('lineprocesses.id', $nextProcess )
 		->where('judge', 'NG')
 		->first();
 
@@ -79,6 +106,7 @@ trait RepairableTrait {
 	public function getLineprocessNgName($idParam = null ){
 		$id = (is_null($idParam)) ? $this->getLineprocessNg() : $idParam;
 		$lineprocess = Lineprocess::select(['name'])->find($id);
+
 		if (!$lineprocess) {
 			# code...
 			throw new StoreResourceFailedException("Lineprocess NG tidak ditemukan!. klik see detail", [
@@ -162,19 +190,32 @@ trait RepairableTrait {
 	*/
 	public function isRepaired($uniqueIdParam = null, $lineprocessNgIdParam = null ){
 		$uniqueId = (is_null($uniqueIdParam)) ? $this->getUniqueId() : $uniqueIdParam;
+		
+		$lineprocessNgId = (is_null($lineprocessNgIdParam))? $this->getLineprocessNg() : $lineprocessNgIdParam;
+		if (is_null($lineprocessNgId)) {
+			/*jika NG Records tidak ketemu*/
+			return false;
+		}
+
+		// later I think we need to add where repair.created_at > lineprocessNg.created_at. 
+		// now we can't, because lineprocess ng only return id
+		// it's checking repair with lineprocessNgId already assigned. 
+		$repaired = Repair::where('unique_id', $uniqueId )
+		->where('ng_lineprocess_id', $lineprocessNgId )
+		->orderBy('created_at', 'desc')
+		->exists();
+
+		if ($repaired) {
+			return true; // kalau udah di repair
+		}
 
 		$repairExists = Repair::where('unique_id', $uniqueId )
+		->where('ng_lineprocess_id', null )
 		->orderBy('created_at', 'desc')
 		->first();
 
 		if (!$repairExists) {
 			# jika repair record tidak ketemu
-			return false;
-		}
-
-		$lineprocessNgId = (is_null($lineprocessNgIdParam))? $this->getLineprocessNg() : $lineprocessNgIdParam;
-		if (is_null($lineprocessNgId)) {
-			/*jika NG Records tidak ketemu*/
 			return false;
 		}
 
@@ -185,14 +226,6 @@ trait RepairableTrait {
 		}
 
 		return ($repairExists->ng_lineprocess_id === $lineprocessNgId );
-			
-		/*
-			method sekarang masih sama dengan method sebelumnya, hanya saja ditambahkan satu lagi pengecekan. yaitu:
-			- cek kalau NG sekarang, sama kaya Rework skrg
-		*/
-		// $lineprocessNg = (is_null($isLineprocessNgExists))?(is_null($lineprocessNgId)===false):$isLineprocessNgExists;
-		
-		// return ($repairExists && $lineprocessNg );
 	}
 
 	public function isBeforeStartId($processParam = null , $lineprocessId = null, $startIdParam = null){
@@ -260,16 +293,16 @@ trait RepairableTrait {
 		return ($lineprocess_index <= $startid_index );
 	}
 
-	public function reworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null, $status = null ){
+	public function reworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null, $status = null, $judgeParam = null ){
 		$model 	 		= (is_null($modelParam)) ? $this->getModel() 				: $modelParam;
 		$scannerId 		= (is_null($scannerIdParam)) ? $this->getScanner()->id 		: $scannerIdParam;
 		$uniqueColumn 	= (is_null($uniqueColumnParam))? $this->getUniqueColumn() 	: $uniqueColumnParam;
 		$uniqueId 		= (is_null($uniqueIdParam)) ? $this->getUniqueId()			: $uniqueIdParam;
-
+		$judge 			= (is_null($judgeParam))? 'REWORK' : 'NG';
 		// get how many rework record with specific scanner id;
 		$recordRework = $model->where($uniqueColumn, $uniqueId )
 		->where('scanner_id', $scannerId )
-		->where('judge', 'REWORK');
+		->where('judge', $judge );
 
 		if (!is_null($status)) {
 			# code...
@@ -322,7 +355,20 @@ trait RepairableTrait {
 				$recordNgAfterCurrentProcess++;
 			}
 		}
+
+		// jika recordRework ganjil, maka.
+		if ( ($recordRework % 2) == 1) {
+			// check apakah current node punya record NG di current process, kalau ya, maka tambah satu.
+			if ( $this->reworkCount(null, null, null, null, null, 'NG') > 0 ) {
+				# recordRework + 1;
+				// hal ini untuk menghindari keharusan scan additional rework di node yg terdapat 
+				// record NG saat reworks; 
+				$recordRework++;
+			}
+		}
+
 		/*untuk tiap record NG, dibutuhkan sepasang record rework. yaitu (IN & OUT)*/
+		/*masalahnya kalau pas rework NG, maka cuman ada In doang rework nya.*/
 		$result = ( ($recordRework/2) >= $recordNgAfterCurrentProcess );
 
 		/*return [
