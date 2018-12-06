@@ -95,10 +95,10 @@ class LocationTraitTest extends TestCase
     public function testSaveBoardLocation(){
         $mock = $this->getMock();
         $board = $this->getBoardTransaction();
-        $location_id = 1; //dummy
+        $location_id = factory(\App\Location::class)->create()->id; //dummy
 
-        $pivotId = $mock->saveBoardLocation($board, $location_id);
-        $this->assertInternalType('int', $pivotId );
+        $pivot = $mock->saveBoardLocation($board, $location_id);
+        $this->assertInstanceOf('Illuminate\Database\Eloquent\Relations\Pivot', $pivot );
 
     }
 
