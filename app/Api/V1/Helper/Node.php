@@ -889,12 +889,13 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 
 		$isSaveSuccess = $model->save();
+		
 		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
 			$this->insertSymptom($model);
 		}
 
 		/*kalau locations tidak null dan yg diproses itu board, maka save into locations*/
-		if ( (is_null( $this->getLocations()) === false) && ($this->getModelType() == 'board') ) {
+		if ( (empty( $this->getLocations()) === false) && ($this->getModelType() == 'board') ) {
 			# save to locations;
 			$this->insertLocation($model);
 		}
