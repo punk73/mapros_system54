@@ -40,12 +40,6 @@ class LocationController extends Controller
 
     protected function applyFilter(Builder $query, Request $request){
         $params = $request->all(); //only( $this->allowedParameter );
-        
-        foreach ($params as $key => $param ) {
-            if (isset($params[$key]) && $param != '' && ($key != 'q') ) {
-                $query = $query->where($key, 'like', $param .'%' );
-            }
-        }
 
         if (isset( $params['q'])) {
             $query = $query->where('locations.ref_no', 'like', "%{$params['q']}%" )
@@ -53,6 +47,19 @@ class LocationController extends Controller
             ->orWhere('pwbs.name', 'like', $params['q'] .'%' );
         }
 
+        if(isset($params['model_header_id'])){
+            $query = $query->where('model_headers.id', $params['model_header_id']);
+        }
+
+        if(isset($params['pwb_id'])){
+            $pwbId = $params['pwb_id'];
+
+            if(is_array( $pwbId)){
+                $query = $query->whereIn('pwbs.id', $pwbId );
+            }else{
+                $query = $query->where('pwbs.id', $pwbId );
+            }
+        }
         return $query;
     }
 

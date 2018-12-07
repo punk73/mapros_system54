@@ -69,6 +69,14 @@ $api->version('v1', function (Router $api) {
         $api->get('/', 'App\\Api\\V1\\Controllers\\LocationController@index' );
     });
 
+    $api->group(['prefix' => 'model_headers'], function (Router $api) {
+        $api->get('/', 'App\\Api\\V1\\Controllers\\ModelHeaderController@index' );
+    });
+
+    $api->group(['prefix' => 'pwbs'], function (Router $api) {
+        $api->get('/', 'App\\Api\\V1\\Controllers\\PwbController@index' );
+    });
+
     $api->group(['prefix' => 'symptoms'], function (Router $api) {
         $api->get('/all', 'App\\Api\\V1\\Controllers\\SymptomController@all' );
     });
