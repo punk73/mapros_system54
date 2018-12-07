@@ -42,9 +42,15 @@ class LocationController extends Controller
         $params = $request->all(); //only( $this->allowedParameter );
         
         foreach ($params as $key => $param ) {
-            if (isset($params[$key]) && $param != '' ) {
+            if (isset($params[$key]) && $param != '' && ($key != 'q') ) {
                 $query = $query->where($key, 'like', $param .'%' );
             }
+        }
+
+        if (isset( $params['q'])) {
+            $query = $query->where('locations.ref_no', 'like', "%{$params['q']}%" )
+            ->orWhere('model_headers.name', 'like', $params['q'] .'%' )
+            ->orWhere('pwbs.name', 'like', $params['q'] .'%' );
         }
 
         return $query;

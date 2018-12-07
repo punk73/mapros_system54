@@ -134,9 +134,30 @@
 		},
 
 		methods: {
-			onSearch(){
+			onSearch(search, loading ){
+                loading(true);
+                this.search(loading, search, this );
+            },
 
-			},
+            search: _.debounce((loading, search, vm) => {
+              const url = 'api/locations';
+
+              axios.get(url, {
+                params : {
+                    q : search
+                }
+              })
+              .then(res => {
+                // res.json().then(json => (vm.options = json.items));
+                let response = res.data;
+                let data = response.data;
+                vm.options = data;
+                loading(false);
+              }).catch(res => {
+                console.log(res)
+              });
+
+            }, 350),
 
 			addOnClick(){
 				console.log('model', this.model)

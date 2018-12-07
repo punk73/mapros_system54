@@ -144,12 +144,10 @@
                                     <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i> Save </a>
                                 </div>
                             </div>
-
 						</form>
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
 </template>

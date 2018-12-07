@@ -39877,8 +39877,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
-//
-//
 
 
 
@@ -41587,7 +41585,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 	methods: {
-		onSearch: function onSearch() {},
+		onSearch: function onSearch(search, loading) {
+			loading(true);
+			this.search(loading, search, this);
+		},
+
+
+		search: _.debounce(function (loading, search, vm) {
+			var url = 'api/locations';
+
+			__WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(url, {
+				params: {
+					q: search
+				}
+			}).then(function (res) {
+				// res.json().then(json => (vm.options = json.items));
+				var response = res.data;
+				var data = response.data;
+				vm.options = data;
+				loading(false);
+			}).catch(function (res) {
+				console.log(res);
+			});
+		}, 350),
+
 		addOnClick: function addOnClick() {
 			console.log('model', this.model);
 			console.log('newForm', this.newForm);
