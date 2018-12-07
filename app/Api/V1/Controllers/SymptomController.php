@@ -21,9 +21,17 @@ class SymptomController extends Controller
     	->select(['code', 'category']);
 
     	if(isset($request->q)){
-    		$result = $result->where('code',  'like', $request->q .'%' )
-    					->orWhere('category', 'like', $request->q .'%' );
-    	}
+    		$result = $result->where('code',  'like', "%{$request->q}%" )
+    		->orWhere('category', 'like', "%{$request->q}%" );
+		}
+		
+		if ($request->has('category')) {
+			$result = $result->where('category','like', "%{$request->category}%" );
+		}
+
+		if($request->has('include_symptom_id')) {
+			$result = $result->whereIn('code', $request->include_symptom_id );
+		}
 
     	return $result = $result->paginate($limit);
     }

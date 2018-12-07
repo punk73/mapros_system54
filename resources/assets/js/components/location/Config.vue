@@ -29,7 +29,7 @@
                     index="id"
                     placeholder="Pwb name"
                     multiple
-                    @search="onSearchModelname" >
+                    @search="onSearchPwbs" >
                     	<template slot="option" slot-scope="option">
                             {{ option.id }} - {{ option.name }}
                         </template>
@@ -37,6 +37,24 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label for="symptoms" class="col-md-3 control-label">Include Symptoms</label>
+            <div class="col-md-9">
+                <v-select 
+                    v-model='config.include_symptom_id'
+                    label="category" 
+                    :maxHeight='"200px"'
+                    :options="symptoms"
+                    index="code"
+                    placeholder="Include Symptom"
+                    multiple
+                    @search="onSearchSymptom" >
+                    	<template slot="option" slot-scope="option">
+                            {{ option.code }} - {{ option.category }}
+                        </template>
+                </v-select>
+            </div>
+        </div>
 	</div>
 </template>
 
@@ -55,7 +73,8 @@
 		data(){
 			return {
 				modelnames: [], //options for v-select modelname
-				pwbs : [],
+                pwbs : [],
+                symptoms: [],
 			}
 		},
 
@@ -66,6 +85,8 @@
             this.fetchData(modelHeaderUrl, 'modelnames' );
           	const pwbUrl = 'api/pwbs';
             this.fetchData(pwbUrl, 'pwbs' );
+            const symptomUrl = 'api/symptoms/all';
+            this.fetchData(symptomUrl, 'symptoms');
               
         },
         
@@ -81,16 +102,22 @@
 			onSearchModelname(search, loading ){
                 loading(true);
                 const url = 'api/model_headers';
-                this.search(loading, search, this, url );
+                this.search(loading, search, this, url, 'modelnames' );
             },
 
             onSearchSymptom(search, loading){
             	loading(true);
             	const url = 'api/symptoms/all';
-                this.search(loading, search, this, url );
+                this.search(loading, search, this, url, 'symptoms' );
             },
 
-			search: _.debounce((loading, search, vm, url ) => {
+            onSearchPwbs(search, loading){
+                loading(true);
+                const url = 'api/pwbs';
+                this.search(loading, search, this, url, 'pwbs');
+            },
+
+			search: _.debounce((loading, search, vm, url, options ) => {
               axios.get(url, {
                 params : {
                     q : search
@@ -100,7 +127,7 @@
                 // res.json().then(json => (vm.options = json.items));
                 let response = res.data;
                 let data = response.data;
-                vm.options = data;
+                vm[options] = data;
                 loading(false);
               }).catch(res => {
                 console.log(res)
@@ -118,8 +145,10 @@
                     let data = response.data;
                     if (column =='modelnames') {
                     	this.modelnames = data;
-                    }else{
+                    }else if(column == 'pwbs'){
                     	this.pwbs = data;
+                    }else{
+                        this.symptoms = data;
                     }
 
                   }).catch(res => {

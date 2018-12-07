@@ -266,8 +266,14 @@
 			fetchSymptomCode(){
                 //fetch data for selectbox;
               const url = 'api/symptoms/all';
+			  let params = {};
+			  if(this.config.include_symptom_id.length > 0){
+				params.include_symptom_id = this.config.include_symptom_id;
+			  }
 
-              axios.get(url)
+              axios.get(url , {
+				  params: params
+			  })
               .then(res => {
                 // res.json().then(json => (vm.options = json.items));
                 let response = res.data;
