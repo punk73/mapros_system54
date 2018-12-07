@@ -187,6 +187,7 @@
 			removeRow(index){
 				this.stores.splice(index, 1);
 				this.form.splice(index, 1);
+				this.$emit('locationRemove', index );
 			},
 
 			clear(){

@@ -40605,6 +40605,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 var axios = __webpack_require__(21);
 
@@ -40803,29 +40804,23 @@ var axios = __webpack_require__(21);
         onSubmit: function onSubmit() {
             var _this = this;
 
+            var data = this.form;
+            // console.log('pertama', {data });
             if (this.toggleMode() == 'break') {
                 return;
             };
 
-            var locationData = this.getLocationData();
-            var locationDataIsNotEmpty = locationData.length > 0;
-            if (locationDataIsNotEmpty) {
-                this.form.locations = locationData;
-            }
-            var data = this.form;
-            // console.log(data);
             var self = this;
             this.toggleLoading();
             axios.post('api/main', data).then(function (response) {
                 self.toggleLoading();
                 self.handleSucces(response);
-                if (locationDataIsNotEmpty) {
+                if (_this.form.locations.length > 0) {
                     self.clearLocationData();
                 }
-                console.log(response);
             }).catch(function (error) {
                 self.toggleLoading();
-                if (locationDataIsNotEmpty) {
+                if (_this.form.locations.length > 0) {
                     self.clearLocationData();
                 }
                 if (error == undefined) {
@@ -40845,7 +40840,7 @@ var axios = __webpack_require__(21);
 
                 var data = error.response.data;
                 _this.responseData = error.response.data;
-                console.log(data);
+                console.log(data, 'on catch');
                 var message = data.message;
 
                 if (message == 'view') {
@@ -40875,6 +40870,7 @@ var axios = __webpack_require__(21);
         getLocationData: function getLocationData() {
             var location = this.$refs.location;
             if (location) {
+                // this is data from location component
                 return location.form;
             } else {
                 return []; //empty array
@@ -41361,6 +41357,13 @@ var axios = __webpack_require__(21);
         locationAdded: function locationAdded(locations) {
             // console.log(locations)
             this.form.locations = locations;
+            var data = this.form;
+            console.log(data, 'locationAdded');
+        },
+        locationRemove: function locationRemove(index) {
+            // remove array with key = index sebanyak 1 buah
+            // dipanggil dari $emit oleh location vue
+            this.form.splice(index, 1);
         }
     }
 });
@@ -41629,6 +41632,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		removeRow: function removeRow(index) {
 			this.stores.splice(index, 1);
 			this.form.splice(index, 1);
+			this.$emit('locationRemove', index);
 		},
 		clear: function clear() {
 			this.model = {
@@ -65733,7 +65737,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   })])])]), _vm._v(" "), (_vm.config.isTouchUp && _vm.responseData.message.includes('IN /')) ? _c('location', {
     ref: "location",
     on: {
-      "locationAdded": _vm.locationAdded
+      "locationAdded": _vm.locationAdded,
+      "locationRemove": _vm.locationRemove
     }
   }) : _vm._e(), _vm._v(" "), _vm._l((_vm.form.critical_parts), function(critical, index) {
     return (_vm.config.showCritical) ? _c('div', {

@@ -31,6 +31,7 @@
                                 v-if="config.isTouchUp && responseData.message.includes('IN /')" 
                                 ref="location"
                                 @locationAdded="locationAdded"
+                                @locationRemove="locationRemove"
                             />
 
                             <div class="form-group" v-if='config.showCritical' v-for="(critical, index ) in form.critical_parts" >
@@ -394,32 +395,25 @@
 
         methods : {
             onSubmit(){
-
+                let data = this.form;
+                // console.log('pertama', {data });
                 if( this.toggleMode() == 'break' ){
                     return;
                 };
 
-                let locationData = this.getLocationData();
-                let locationDataIsNotEmpty = (locationData.length > 0);
-                if (locationDataIsNotEmpty) {
-                    this.form.locations = locationData;
-                }
-                let data = this.form;
-                // console.log(data);
                 let self = this;
                 this.toggleLoading();
                 axios.post('api/main', data )
                     .then((response) => {
                         self.toggleLoading()
                         self.handleSucces(response)
-                        if (locationDataIsNotEmpty) {
+                        if (this.form.locations.length > 0 ) {
                             self.clearLocationData();
                         }
-                        console.log(response)
                     })
                     .catch( (error) => {
                         self.toggleLoading();
-                        if (locationDataIsNotEmpty) {
+                        if (this.form.locations.length > 0 ) {
                             self.clearLocationData();
                         }
                         if(error == undefined ){
@@ -439,7 +433,7 @@
 
                         let data = error.response.data;
                         this.responseData = error.response.data;
-                        console.log(data)
+                        console.log(data, 'on catch')
                         let message = data.message;
                         
                         if(message == 'view'){
@@ -471,6 +465,7 @@
             getLocationData(){
                 let location =  this.$refs.location;
                 if (location) {
+                    // this is data from location component
                     return location.form
                 }else{
                     return []; //empty array
@@ -983,6 +978,14 @@
             locationAdded(locations){
                 // console.log(locations)
                 this.form.locations = locations;
+                let data = this.form;
+                console.log(data, 'locationAdded')
+            },
+
+            locationRemove(index){
+                // remove array with key = index sebanyak 1 buah
+                // dipanggil dari $emit oleh location vue
+                this.form.splice(index, 1);
             },
         }
     }
