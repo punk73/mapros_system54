@@ -32,6 +32,7 @@
                                 ref="location"
                                 @locationAdded="locationAdded"
                                 @locationRemove="locationRemove"
+                                :config="config"
                             />
 
                             <div class="form-group" v-if='config.showCritical' v-for="(critical, index ) in form.critical_parts" >

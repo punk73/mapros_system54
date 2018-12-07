@@ -138,6 +138,10 @@
                                 </div>
                             </div>
 
+                            <div v-if="config.isTouchUp" >
+                                <location-config :config="config" />
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-9 col-md-offset-3">
                                     <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
@@ -160,6 +164,7 @@
     import vSelect from 'vue-select';
     import _ from 'lodash';
     import axios from 'axios';
+    import locationConfig from './location/Config.vue';
 
 	export default {
 
@@ -192,6 +197,8 @@
 
                     checkEsd : true,
                     esdUri : 'http://136.198.117.48/esd/api/esd',
+                    model_header_id : null,
+                    pwb_id : [],
 				},
 
                 debug : {
@@ -209,7 +216,7 @@
 		},
 
 		components : {
-			ToggleButton, GenerateFileConfig, Alert, InputNumber, vSelect
+			ToggleButton, GenerateFileConfig, Alert, InputNumber, vSelect, locationConfig
 		},
 
 		mounted(){

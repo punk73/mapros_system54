@@ -37,7 +37,7 @@
 				                        :options="symptoms"
 				                        :ref="'symptoms'"
 				                        required
-				                        @search="onSearch" >
+				                        @search="onSearchSymptom" >
 				                        <template slot="option" slot-scope="option">
 				                            {{ option.code }} - {{ option.category }}
 				                        </template>
@@ -83,6 +83,8 @@
 				form:[],
 			}
 		},
+
+		props : ['config'],
 
 		computed : {
 			newForm(){
@@ -136,12 +138,17 @@
 		methods: {
 			onSearch(search, loading ){
                 loading(true);
-                this.search(loading, search, this );
+                const url = 'api/locations';
+                this.search(loading, search, this, url );
             },
 
-            search: _.debounce((loading, search, vm) => {
-              const url = 'api/locations';
+            onSearchSymptom(search, loading){
+            	loading(true);
+            	const url = 'api/symptoms/all';
+                this.search(loading, search, this, url );
+            },
 
+            search: _.debounce((loading, search, vm, url ) => {
               axios.get(url, {
                 params : {
                     q : search
@@ -231,7 +238,21 @@
 			
 			fetchLocations(){
 				const url = 'api/locations';
-				axios.get(url)
+				console.log(this.config)
+				let model_header_id  = this.config.model_header_id;
+				let pwb_id = this.config.pwb_id;
+				let params = {}
+				if(model_header_id != null ){
+					params.model_header_id = model_header_id
+				}
+
+				if(pwb_id.length > 0 ){
+					params.pwb_id = pwb_id;
+				}	
+				
+				axios.get(url, {
+					params: params
+				})
 				.then(res => {
 					console.log(res)
 					let response = res.data; 
