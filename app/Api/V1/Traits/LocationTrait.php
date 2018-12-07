@@ -62,16 +62,17 @@ trait LocationTrait {
 	/*this will return pivot id */
 	/*$location id must be single integer */
 	public function saveBoardLocation(Board $board, $location_id){
-		$board->locations()->sync($location_id);
+		$board->locations()->attach($location_id);
 
 		$locations = $board->locations;
 		foreach ($locations as $key => $location) {
+			// because location_id is single id (not an array), it save to keep it this way;
 			return $location->pivot; //return the pivot model
 		}
 	}
 
 	public function saveLocationSymptoms(BoardLocation $pivot, Array $symptoms ){
-		return $pivot->symptoms()->sync($symptoms);
+		return $pivot->symptoms()->attach($symptoms);
 	}
 
 	public function verifyLocations($locations){
