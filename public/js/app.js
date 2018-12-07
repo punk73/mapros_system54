@@ -67393,13 +67393,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   })], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
-    staticClass: "col-md-4"
+    staticClass: "col-md-12 col-sm-12 col-xs-12"
   }, [_c('button', {
-    staticClass: "btn btn-success",
+    staticClass: "btn btn-success pull-right",
     on: {
       "click": _vm.addOnClick
     }
-  }, [_vm._v("ADD")])])]), _vm._v(" "), _c('b-table', {
+  }, [_vm._v("ADD "), _c('i', {
+    staticClass: "fa fa-plus float-right"
+  })])])]), _vm._v(" "), _c('b-table', {
     attrs: {
       "responsive": true,
       "striped": "",
@@ -67417,7 +67419,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
               _vm.btnDeleteOnClick(row)
             }
           }
-        }, [_vm._v("Delete")])]
+        }, [_vm._v("Delete "), _c('i', {
+          staticClass: "fa fa-trash float-right"
+        })])]
       }
     }])
   })], 1)])])])])])

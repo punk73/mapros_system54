@@ -46,14 +46,14 @@
 	                		</div>
 
 	                		<div class="form-group">
-	                			<div class="col-md-4">
-	                				<button class="btn btn-success" @click="addOnClick">ADD</button>
+	                			<div class="col-md-12 col-sm-12 col-xs-12">
+	                				<button class="btn btn-success pull-right" @click="addOnClick">ADD <i class="fa fa-plus float-right"></i> </button>
 	                			</div>
 	                		</div>
 
 	                		 <b-table :responsive="true" striped hover :fields="fields" :items="stores">
 	                		 	<template slot="button" slot-scope="row">
-							      <button class="btn btn-danger" @click='btnDeleteOnClick(row)' >Delete</button>
+							      <button class="btn btn-danger" @click='btnDeleteOnClick(row)' >Delete <i class="fa fa-trash float-right"></i></button>
 							    </template>
 	                		 </b-table>
                 		 </form>
