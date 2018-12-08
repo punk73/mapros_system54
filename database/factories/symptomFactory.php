@@ -14,7 +14,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Symptom::class, function (Faker\Generator $faker) {
     return [
-    	'code' => $faker->unique()->randomNumber(),
+    	'code' => $faker->unique()->randomNumber,
     	'category' => $faker->name,
     ];
 });
