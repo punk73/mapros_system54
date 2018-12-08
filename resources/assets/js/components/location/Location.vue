@@ -19,7 +19,7 @@
 		                                @search="onSearch" 
 			          				>
 			          					<template slot="option" slot-scope="option">
-		                                    {{ option.modelname }} - {{ option.pwbname }} - {{ option.ref_no }}
+		                                   {{ option.ref_no }}-{{ option.modelname }}-{{ option.pwbname }}
 		                                </template>
 			          				</v-select>      	
 		          				</div>

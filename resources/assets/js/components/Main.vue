@@ -169,7 +169,7 @@
 
                                     <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN /') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
 
-                                    <!-- <button class="btn btn-warning form-control" @click.prevent="getLocationData">Test</button> -->
+                                    <!-- <button class="btn btn-warning form-control" @click.prevent="boardOnFocus">Test</button> -->
                                 </div>
                             </div>
 
@@ -659,9 +659,10 @@
                 }
 
                 if(this.form.board_id == ''){
-                    let boardInput = document.getElementById('board_id');
+                    // let boardInput = document.getElementById('board_id');
+                    let boardInput = this.$refs.board_id; //changes to using ref
                     if(boardInput){
-                        boardInput.focus()
+                        boardInput.focus();
                     }
                 }
 
