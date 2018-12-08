@@ -71,8 +71,8 @@ trait LocationTrait {
 		}
 	}
 
-	public function saveLocationSymptoms(BoardLocation $pivot, Array $symptoms ){
-		$symptomIdCollection = Symptom::select(['id'])->whereIn('code', $symptoms )->get();
+	public function saveLocationSymptoms(BoardLocation $pivot, Array $symptomCode ){
+		$symptomIdCollection = Symptom::select(['id'])->whereIn('code', $symptomCode )->get();
 		$symptoms_id = $symptomIdCollection->map(function ($item, $key){
 			return $item->id;
 		});
