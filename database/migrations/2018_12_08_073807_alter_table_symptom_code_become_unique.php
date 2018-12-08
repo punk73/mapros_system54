@@ -30,7 +30,8 @@ class AlterTableSymptomCodeBecomeUnique extends Migration
     {
         Schema::table('symptoms', function (Blueprint $table) {
             if( Schema::hasColumn('symptoms', 'code') ){
-                $table->dropUnique('code');
+                $table->dropUnique('symptoms_code_unique'); //it's the name of the index;
+                // if we assigned code, it'll be error
             }
         });
     }

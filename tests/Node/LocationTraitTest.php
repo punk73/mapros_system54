@@ -106,17 +106,17 @@ class LocationTraitTest extends TestCase
     public function testSaveLocationSymptoms(){
         $board = factory(Board::class)->create();
         $locations = factory(Location::class, 2)->create();
-        $board->locations()->sync($locations);
+        $board->locations()->attach($locations);
         $locations = $board->locations;
 
         foreach ($locations as $key => $location) {
             $pivot = $location->pivot;
         }
 
-        $symptom_id = factory(Symptom::class)->create()->id;
+        $symptom_code = factory(Symptom::class)->create()->code;
 
         $mock = $this->getMock();
-        $result = $mock->saveLocationSymptoms($pivot, [$symptom_id] );
+        $result = $mock->saveLocationSymptoms($pivot, [$symptom_code] );
 
         $board_location_symptom = DB::table('board_location_symptom')->select('id')->count();
         // cek data di database masuk;
