@@ -24,13 +24,15 @@ use App\Symptom;
 use App\Api\V1\Interfaces\ColumnSettingInterface;
 use App\Api\V1\Interfaces\CriticalPartInterface;
 use App\Api\V1\Interfaces\RepairableInterface;
+use App\Api\V1\Interfaces\LocationInterface;
 use App\Api\V1\Traits\ColumnSettingTrait;
 use App\Api\V1\Traits\CriticalPartTrait;
 use App\Api\V1\Traits\RepairableTrait;
+use App\Api\V1\Traits\LocationTrait;
 
-class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface
+class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface, LocationInterface
 {
-	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait;
+	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait, LocationTrait;
 
 	protected $model; // App\Board, App\Master , App\Ticket, or App\Part;
 	protected $model_code; // 5 char atau 11 char awal
@@ -46,7 +48,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
         'nik',
         'ip',
         'is_solder',
-        'guid'
+        'guid',
+        'locations', // for touch up process;
 	];
 	public $scanner_id; //contain scanner id;
 	public $scanner; //contain scanner object (App\Scanner)
@@ -77,6 +80,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	protected $confirmation_view_error = 'confirmation-view';
 	// protected $criticalParts; //dari CriticalPartTrait
 	protected $firstSequence = false;
+	protected $locations; // new comer dari trait LocationTrait. (implementasi touch up)
 
 	function __construct($parameter, $debug = false ){
 		// kalau sedang debugging, maka gausah run construct
@@ -124,6 +128,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$this->initCurrentPosition();
 			// set the critical parts;
 			$this->initCriticalPart();
+			// set the the locations data
+			$this->initLocations();
 		}
 	}
 
@@ -883,8 +889,15 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 
 		$isSaveSuccess = $model->save();
+		
 		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
 			$this->insertSymptom($model);
+		}
+
+		/*kalau locations tidak null dan yg diproses itu board, maka save into locations*/
+		if ( (empty( $this->getLocations()) === false) && ($this->getModelType() == 'board') ) {
+			# save to locations;
+			$this->insertLocation($model);
 		}
 
 		return $isSaveSuccess; //true or false;
@@ -1535,5 +1548,13 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 	public function next(){
 		return $this->move(1);
+	}
+
+	public function initLocations(){
+		$parameter = $this->parameter;
+		if (isset($parameter['locations'])) {
+			# code...
+			$this->setLocations($parameter['locations']);
+		}
 	}
 }

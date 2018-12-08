@@ -31,6 +31,7 @@ class MainController extends Controller
 		'judge',
 		'symptom',
 		'critical_parts', //new due to critical part scan;
+		'locations' //added for touch up process
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;

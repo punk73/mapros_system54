@@ -131,18 +131,27 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <toggle-button v-model="config.isTouchUp" :sync='true' :color="'#2ab27b'" :labels="true"/>
+                                    <label for="isTouchUp"> is Touch Up Process </label>
+                                </div>
+                            </div>
+
+                            <div v-if="config.isTouchUp" >
+                                <location-config :config="config" />
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-9 col-md-offset-3">
                                     <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
                                     <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i> Save </a>
                                 </div>
                             </div>
-
 						</form>
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
 </template>
@@ -155,6 +164,7 @@
     import vSelect from 'vue-select';
     import _ from 'lodash';
     import axios from 'axios';
+    import locationConfig from './location/Config.vue';
 
 	export default {
 
@@ -177,6 +187,7 @@
 					isSendAjax : false,
 					isShowDeleteButton : false,
 					isAutolinezero : false,
+                    isTouchUp : false,
 					generatedFileName : 'something.txt',
 					uri : '',
                     isDebug : false,
@@ -186,6 +197,9 @@
 
                     checkEsd : true,
                     esdUri : 'http://136.198.117.48/esd/api/esd',
+                    model_header_id : null,
+                    pwb_id : [],
+                    include_symptom_id:[],
 				},
 
                 debug : {
@@ -203,7 +217,7 @@
 		},
 
 		components : {
-			ToggleButton, GenerateFileConfig, Alert, InputNumber, vSelect
+			ToggleButton, GenerateFileConfig, Alert, InputNumber, vSelect, locationConfig
 		},
 
 		mounted(){

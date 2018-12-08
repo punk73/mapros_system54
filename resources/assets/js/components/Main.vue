@@ -21,6 +21,22 @@
                                 </div>
                             </div>
 
+                            <div v-if="config.isTouchUp" class="form-group">
+                                <div class="col-md-6 col-md-offset-4">
+                                    <!-- <input type="checkbox" id="checkbox" v-model="form.is_solder"> -->
+                                    <toggle-button v-model="showLocationForm" :color="'#2ab27b'" :sync='true' :labels="true"/>
+                                    <label for="checkbox"> Show Ref No </label>
+                                </div>
+                            </div>
+                            <!-- &&  -->
+                            <location 
+                                v-if="config.isTouchUp && showLocation" 
+                                ref="location"
+                                @locationAdded="locationAdded"
+                                @locationRemove="locationRemove"
+                                :config="config"
+                            />
+
                             <div class="form-group" v-if='config.showCritical' v-for="(critical, index ) in form.critical_parts" >
                                 <label for="critical_parts" class="col-md-4 control-label">Critical Part</label>
                                 <div class="col-md-6" >
@@ -94,6 +110,8 @@
                                 </div>
                             </div>
 
+                            <!-- <location></location> -->
+
                             <div class="form-group">
                                 <div class="col-md-12 col-xs-12">
                                     <div class="well no-bottom-margin" :style="styles" >
@@ -149,7 +167,9 @@
                                         Delete <i class="fa fa-trash float-right"></i>
                                     </button>
 
-                                    <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN / OK') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
+                                    <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN /') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
+
+                                    <!-- <button class="btn btn-warning form-control" @click.prevent="getLocationData">Test</button> -->
                                 </div>
                             </div>
 
@@ -192,6 +212,7 @@
     import ToggleButton from 'vue-js-toggle-button/src/Button';
     import vSelect from 'vue-select';
     import _ from 'lodash';
+    import Location from './location/Location.vue';
     
     export default {
         data: () => {
@@ -204,7 +225,8 @@
                     is_solder:false,
                     judge : 'OK', //default nya OK
                     symptom: [], //default value for symptom is empty array;
-                    // critical_parts:[''], //default value for critical_parts empty array
+                    critical_parts:[], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
+                    locations:[],
                 },
 
                 isNG : false,
@@ -294,6 +316,8 @@
                     header: 'Header',
                     message: 'message'
                 },
+
+                showLocationForm : false,
             }
         },
 
@@ -350,7 +374,11 @@
             computedShowCritical(){
                 // console.log('showCritical computed called', this.config.showCritical )
                 return this.config.showCritical 
-            }
+            },
+
+            showLocation(){
+                return  (this.responseData.message.includes('IN /') || this.showLocationForm);
+            },
         },
 
         mounted(){
@@ -371,29 +399,32 @@
         },
 
         components: {
-            modal, loading, confirm, alert, join, ToggleButton, vSelect
+            modal, loading, confirm, alert, join, ToggleButton, vSelect, Location
         },
 
         methods : {
             onSubmit(){
-
+                let data = this.form;
+                // console.log('pertama', {data });
                 if( this.toggleMode() == 'break' ){
                     return;
                 };
 
-                let data = this.form;
-                // console.log(data);
                 let self = this;
                 this.toggleLoading();
                 axios.post('api/main', data )
                     .then((response) => {
                         self.toggleLoading()
                         self.handleSucces(response)
-                        console.log(response)
+                        if (this.form.locations.length > 0 ) {
+                            self.clearLocationData();
+                        }
                     })
                     .catch( (error) => {
                         self.toggleLoading();
-
+                        if (this.form.locations.length > 0 ) {
+                            self.clearLocationData();
+                        }
                         if(error == undefined ){
                             this.handleError('TOLONG RELOAD APLIKASI DENGAN F5!', {} )
                             return;
@@ -411,7 +442,7 @@
 
                         let data = error.response.data;
                         this.responseData = error.response.data;
-                        console.log(data)
+                        console.log(data, 'on catch')
                         let message = data.message;
                         
                         if(message == 'view'){
@@ -438,6 +469,25 @@
                 if(this.config.checkEsd && ( this.form.nik.length >= 5 ) ){
                    this.checkEsd(this)
                 }
+            },
+
+            getLocationData(){
+                let location =  this.$refs.location;
+                if (location) {
+                    // this is data from location component
+                    return location.form
+                }else{
+                    return []; //empty array
+                }
+            },
+
+            clearLocationData(){
+                let location =  this.$refs.location;
+                if (location) {
+                    location.clearAll();
+                }
+
+                this.form.locations = [];
             },
 
             checkEsd : _.debounce(( self ) => {
@@ -932,6 +982,19 @@
                 }else{
                     this.hasError = hasError;
                 }
+            },
+
+            locationAdded(locations){
+                // console.log(locations)
+                this.form.locations = locations;
+                let data = this.form;
+                console.log(data, 'locationAdded')
+            },
+
+            locationRemove(index){
+                // remove array with key = index sebanyak 1 buah
+                // dipanggil dari $emit oleh location vue
+                this.form.splice(index, 1);
             },
         }
     }

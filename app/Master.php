@@ -31,7 +31,7 @@ class Master extends Model
 
 	private function getData(){
 		return json_encode([
-			'ticket_no_master' => $this->ticket_no,
+			'ticket_no_master' => $this->ticket_no_master,
 			'guid_master' => $this->guid_master,
 			'scanner_id' => $this->scanner_id,
 			'status' => $this->status,

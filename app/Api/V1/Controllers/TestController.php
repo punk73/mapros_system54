@@ -12,6 +12,7 @@ use App\Api\V1\Traits\LoggerHelper;
 use GuzzleHttp\Client;
 use App\Mastermodel;
 use App\Api\V1\Helper\Node;
+use App\Board;
 
 class TestController extends Controller
 {	
@@ -41,23 +42,18 @@ class TestController extends Controller
 		$arraySearch = array_search($val, $a);
 
 		$node = new Node($request->all());
-
 		$guid = '3FE33A6B-5EA2-45B8-885B-6EF6F5455664';
+		$symptoms_id = ["02 solder"];
+		$boardLocationPivot = Board::whereHas('locations')
+			->orderBy('created_at', 'desc')
+			->first()->locations()->first()->pivot;
+		
 		return [
-			// 'node' => $node,
-			// 'arraySearch' => $arraySearch,
-			// 'getLineprocessNg' => $node->getLineprocessNg(),
-			// 'getLineprocessNgName' => $node->getLineprocessNgName(),
-			// 'getFurthestNgProcess' => $node->getFurthestNgProcess(),
-			'hasRework' => $node->hasRework(),
-			// 'isAfterNgProcess' => $node->isAfterNgProcess('1,2,3,4,5', 4, 1),
-			'isRepaired' => $node->isRepaired(),
-
-			'getLineprocessNg' => $node->getLineprocessNgName(),
+			// 'node' => json_decode($node, true),
+			// '' => $node->
+			'node_location' => ( (empty( $node->getLocations()) === false) && ($node->getModelType() == 'board') ),
+			'saveLocationSymptoms' => $node->saveLocationSymptoms($boardLocationPivot, $symptoms_id ),
 		];
-		// return $node->isSettingContainChildrenOf('ticket');
-		// return ($node->isExists()) ? 'true' : 'false' ;
-		// return ($node->hasChildren()) ? 'true' : 'false' ;
 
 	}
 
