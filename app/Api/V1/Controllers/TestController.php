@@ -43,11 +43,16 @@ class TestController extends Controller
 
 		$node = new Node($request->all());
 		$guid = '3FE33A6B-5EA2-45B8-885B-6EF6F5455664';
+		$symptoms_id = ["02 solder"];
+		$boardLocationPivot = Board::whereHas('locations')
+			->orderBy('created_at', 'desc')
+			->first()->locations()->first()->pivot;
+		
 		return [
 			// 'node' => json_decode($node, true),
 			// '' => $node->
 			'node_location' => ( (empty( $node->getLocations()) === false) && ($node->getModelType() == 'board') ),
-			'node_save' => $node->save(),
+			'saveLocationSymptoms' => $node->saveLocationSymptoms($boardLocationPivot, $symptoms_id ),
 		];
 
 	}
