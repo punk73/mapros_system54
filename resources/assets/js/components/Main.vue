@@ -21,14 +21,16 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="form-group">
-                                <div class="col-md-6 col-md-offset-4">   
-                                    <button class="btn btn-success">show locations</button>
+                            <div v-if="config.isTouchUp" class="form-group">
+                                <div class="col-md-6 col-md-offset-4">
+                                    <!-- <input type="checkbox" id="checkbox" v-model="form.is_solder"> -->
+                                    <toggle-button v-model="showLocationForm" :color="'#2ab27b'" :sync='true' :labels="true"/>
+                                    <label for="checkbox"> Show Ref No </label>
                                 </div>
-                            </div> -->
+                            </div>
                             <!-- &&  -->
                             <location 
-                                v-if="config.isTouchUp && responseData.message.includes('IN /')" 
+                                v-if="config.isTouchUp && showLocation" 
                                 ref="location"
                                 @locationAdded="locationAdded"
                                 @locationRemove="locationRemove"
@@ -314,6 +316,8 @@
                     header: 'Header',
                     message: 'message'
                 },
+
+                showLocationForm : false,
             }
         },
 
@@ -370,7 +374,11 @@
             computedShowCritical(){
                 // console.log('showCritical computed called', this.config.showCritical )
                 return this.config.showCritical 
-            }
+            },
+
+            showLocation(){
+                return  (this.responseData.message.includes('IN /') || this.showLocationForm);
+            },
         },
 
         mounted(){

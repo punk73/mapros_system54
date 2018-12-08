@@ -139,16 +139,16 @@
 			onSearch(search, loading ){
                 loading(true);
                 const url = 'api/locations';
-                this.search(loading, search, this, url );
+                this.search(loading, search, this, url, 'locations' );
             },
 
             onSearchSymptom(search, loading){
             	loading(true);
             	const url = 'api/symptoms/all';
-                this.search(loading, search, this, url );
+                this.search(loading, search, this, url, 'symptoms' );
             },
 
-            search: _.debounce((loading, search, vm, url ) => {
+            search: _.debounce((loading, search, vm, url, options ) => {
               axios.get(url, {
                 params : {
                     q : search
@@ -158,7 +158,7 @@
                 // res.json().then(json => (vm.options = json.items));
                 let response = res.data;
                 let data = response.data;
-                vm.options = data;
+                vm[options] = data;
                 loading(false);
               }).catch(res => {
                 console.log(res)

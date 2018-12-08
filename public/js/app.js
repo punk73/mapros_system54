@@ -40615,6 +40615,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 var axios = __webpack_require__(17);
 
@@ -40728,7 +40730,9 @@ var axios = __webpack_require__(17);
             modal: {
                 header: 'Header',
                 message: 'message'
-            }
+            },
+
+            showLocationForm: false
         };
     },
 
@@ -40780,6 +40784,9 @@ var axios = __webpack_require__(17);
         computedShowCritical: function computedShowCritical() {
             // console.log('showCritical computed called', this.config.showCritical )
             return this.config.showCritical;
+        },
+        showLocation: function showLocation() {
+            return this.responseData.message.includes('IN /') || this.showLocationForm;
         }
     },
 
@@ -41518,105 +41525,110 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    config: {
-      default: function _default() {
-        return {};
-      }
-    }
-  },
-
-  data: function data() {
-    return {
-      modelnames: [], //options for v-select modelname
-      pwbs: [],
-      symptoms: []
-    };
-  },
-  mounted: function mounted() {
-    // this.getConfig();
-    // this.fetchIpData();
-    var modelHeaderUrl = 'api/model_headers';
-    this.fetchData(modelHeaderUrl, 'modelnames');
-    var pwbUrl = 'api/pwbs';
-    this.fetchData(pwbUrl, 'pwbs');
-    var symptomUrl = 'api/symptoms/all';
-    this.fetchData(symptomUrl, 'symptoms');
-  },
-
-
-  watch: {
-    'config.model_header_id': function configModel_header_id(newVal, oldVal) {
-      // console.log('wowowowowo')
-      var url = 'api/pwbs';
-      this.fetchData(url, 'pwbs', { model_header_id: newVal });
-    }
-  },
-
-  methods: {
-    onSearchModelname: function onSearchModelname(search, loading) {
-      loading(true);
-      var url = 'api/model_headers';
-      this.search(loading, search, this, url, 'modelnames');
-    },
-    onSearchSymptom: function onSearchSymptom(search, loading) {
-      loading(true);
-      var url = 'api/symptoms/all';
-      this.search(loading, search, this, url, 'symptoms');
-    },
-    onSearchPwbs: function onSearchPwbs(search, loading) {
-      loading(true);
-      var url = 'api/pwbs';
-      this.search(loading, search, this, url, 'pwbs');
-    },
-
-
-    search: _.debounce(function (loading, search, vm, url, options) {
-      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(url, {
-        params: {
-          q: search
+    props: {
+        config: {
+            default: function _default() {
+                return {};
+            }
         }
-      }).then(function (res) {
-        // res.json().then(json => (vm.options = json.items));
-        var response = res.data;
-        var data = response.data;
-        vm[options] = data;
-        loading(false);
-      }).catch(function (res) {
-        console.log(res);
-      });
-    }, 350),
+    },
 
-    fetchData: function fetchData(url, column, query) {
-      var _this = this;
+    data: function data() {
+        return {
+            modelnames: [], //options for v-select modelname
+            pwbs: [],
+            symptoms: []
+        };
+    },
+    mounted: function mounted() {
+        // this.getConfig();
+        // this.fetchIpData();
+        var modelHeaderUrl = 'api/model_headers';
+        this.fetchData(modelHeaderUrl, 'modelnames');
+        var pwbUrl = 'api/pwbs';
+        this.fetchData(pwbUrl, 'pwbs');
+        var symptomUrl = 'api/symptoms/all';
+        this.fetchData(symptomUrl, 'symptoms');
+    },
 
-      // const url = 'api/model_headers';
-      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(url, {
-        params: query
-      }).then(function (res) {
-        var response = res.data;
-        var data = response.data;
-        if (column == 'modelnames') {
-          _this.modelnames = data;
-        } else if (column == 'pwbs') {
-          _this.pwbs = data;
-        } else {
-          _this.symptoms = data;
+
+    watch: {
+        'config.model_header_id': function configModel_header_id(newVal, oldVal) {
+            // console.log('wowowowowo')
+            var url = 'api/pwbs';
+            this.fetchData(url, 'pwbs', { model_header_id: newVal });
+        },
+
+        'config.include_symptoms': function configInclude_symptoms(newVal, oldVal) {
+            this.config.include_symptom_id = newVal.map(function (val) {
+                return val.code;
+            });
         }
-      }).catch(function (res) {
-        console.log(res);
-      });
-    }
-  },
+    },
 
-  components: {
-    vSelect: __WEBPACK_IMPORTED_MODULE_0_vue_select___default.a
-  }
+    methods: {
+        onSearchModelname: function onSearchModelname(search, loading) {
+            loading(true);
+            var url = 'api/model_headers';
+            this.search(loading, search, this, url, 'modelnames');
+        },
+        onSearchSymptom: function onSearchSymptom(search, loading) {
+            loading(true);
+            var url = 'api/symptoms/all';
+            this.search(loading, search, this, url, 'symptoms');
+        },
+        onSearchPwbs: function onSearchPwbs(search, loading) {
+            loading(true);
+            var url = 'api/pwbs';
+            this.search(loading, search, this, url, 'pwbs');
+        },
+
+
+        search: _.debounce(function (loading, search, vm, url, options) {
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(url, {
+                params: {
+                    q: search
+                }
+            }).then(function (res) {
+                // res.json().then(json => (vm.options = json.items));
+                var response = res.data;
+                var data = response.data;
+                vm[options] = data;
+                loading(false);
+            }).catch(function (res) {
+                console.log(res);
+            });
+        }, 350),
+
+        fetchData: function fetchData(url, column, query) {
+            var _this = this;
+
+            // const url = 'api/model_headers';
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(url, {
+                params: query
+            }).then(function (res) {
+                var response = res.data;
+                var data = response.data;
+                if (column == 'modelnames') {
+                    _this.modelnames = data;
+                } else if (column == 'pwbs') {
+                    _this.pwbs = data;
+                } else {
+                    _this.symptoms = data;
+                }
+            }).catch(function (res) {
+                console.log(res);
+            });
+        }
+    },
+
+    components: {
+        vSelect: __WEBPACK_IMPORTED_MODULE_0_vue_select___default.a
+    }
 });
 
 /***/ }),
@@ -41771,16 +41783,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		onSearch: function onSearch(search, loading) {
 			loading(true);
 			var url = 'api/locations';
-			this.search(loading, search, this, url);
+			this.search(loading, search, this, url, 'locations');
 		},
 		onSearchSymptom: function onSearchSymptom(search, loading) {
 			loading(true);
 			var url = 'api/symptoms/all';
-			this.search(loading, search, this, url);
+			this.search(loading, search, this, url, 'symptoms');
 		},
 
 
-		search: _.debounce(function (loading, search, vm, url) {
+		search: _.debounce(function (loading, search, vm, url, options) {
 			__WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(url, {
 				params: {
 					q: search
@@ -41789,7 +41801,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				// res.json().then(json => (vm.options = json.items));
 				var response = res.data;
 				var data = response.data;
-				vm.options = data;
+				vm[options] = data;
 				loading(false);
 			}).catch(function (res) {
 				console.log(res);
@@ -65996,7 +66008,28 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "nik", $event.target.value)
       }
     }
-  })])])]), _vm._v(" "), (_vm.config.isTouchUp && _vm.responseData.message.includes('IN /')) ? _c('location', {
+  })])])]), _vm._v(" "), (_vm.config.isTouchUp) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: "col-md-6 col-md-offset-4"
+  }, [_c('toggle-button', {
+    attrs: {
+      "color": '#2ab27b',
+      "sync": true,
+      "labels": true
+    },
+    model: {
+      value: (_vm.showLocationForm),
+      callback: function($$v) {
+        _vm.showLocationForm = $$v
+      },
+      expression: "showLocationForm"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "checkbox"
+    }
+  }, [_vm._v(" Show Ref No ")])], 1)]) : _vm._e(), _vm._v(" "), (_vm.config.isTouchUp && _vm.showLocation) ? _c('location', {
     ref: "location",
     attrs: {
       "config": _vm.config
@@ -67541,7 +67574,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "label": "category",
       "maxHeight": "200px",
       "options": _vm.symptoms,
-      "index": "code",
       "placeholder": "Include Symptom",
       "multiple": ""
     },
@@ -67555,11 +67587,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }]),
     model: {
-      value: (_vm.config.include_symptom_id),
+      value: (_vm.config.include_symptoms),
       callback: function($$v) {
-        _vm.$set(_vm.config, "include_symptom_id", $$v)
+        _vm.$set(_vm.config, "include_symptoms", $$v)
       },
-      expression: "config.include_symptom_id"
+      expression: "config.include_symptoms"
     }
   })], 1)])])
 },staticRenderFns: []}

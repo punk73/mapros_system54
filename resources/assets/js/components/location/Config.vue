@@ -41,11 +41,10 @@
             <label for="symptoms" class="col-md-3 control-label">Include Symptoms</label>
             <div class="col-md-9">
                 <v-select 
-                    v-model='config.include_symptom_id'
+                    v-model='config.include_symptoms'
                     label="category" 
                     :maxHeight='"200px"'
                     :options="symptoms"
-                    index="code"
                     placeholder="Include Symptom"
                     multiple
                     @search="onSearchSymptom" >
@@ -95,6 +94,12 @@
                 // console.log('wowowowowo')
                 const url = 'api/pwbs';
                 this.fetchData(url, 'pwbs', {model_header_id : newVal } );
+            },
+
+            'config.include_symptoms': function (newVal, oldVal){
+                this.config.include_symptom_id = newVal.map(function (val){
+                    return val.code;
+                });
             }
         },
 
