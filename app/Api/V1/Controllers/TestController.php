@@ -50,9 +50,9 @@ class TestController extends Controller
 		
 		return [
 			// 'node' => json_decode($node, true),
-			// '' => $node->
-			'node_location' => ( (empty( $node->getLocations()) === false) && ($node->getModelType() == 'board') ),
-			'saveLocationSymptoms' => $node->saveLocationSymptoms($boardLocationPivot, $symptoms_id ),
+			'guid' => $node->verifyGuidMaster(),
+			// 'node_location' => ( (empty( $node->getLocations()) === false) && ($node->getModelType() == 'board') ),
+			// 'saveLocationSymptoms' => $node->saveLocationSymptoms($boardLocationPivot, $symptoms_id ),
 		];
 
 	}

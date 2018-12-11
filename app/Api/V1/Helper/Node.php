@@ -18,6 +18,7 @@ use App\ColumnSetting;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Guid;
+use App\Master;
 use GuzzleHttp\Client;
 use App\Endpoint;
 use App\Symptom;
@@ -342,6 +343,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 
 		else if($this->getModelType() == 'master'){
+			$this->verifyGuidMaster($guid);
 			$this->setGuidMaster($guid);
 		}
 
@@ -362,6 +364,23 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 
 		$this->setUniqueId($guid);
+	}
+
+	public function verifyGuidMaster($guidParam = null ){
+		$guid = (is_null($guidParam))? $this->getUniqueId() : $guidParam;
+		// get master yg guid nya sama, tp dummy_master nya beda. 
+		$notQualify = Master::where($this->getUniqueColumn(), $guid )
+		->where('ticket_no_master', '!=', $this->parameter['board_id'] )
+		->orderBy('created_at', 'desc')
+		->first();
+		// kalau ada, maka guid tersebut ga boleh digunakan lagi seharusnya; maka throw error
+		if ($notQualify) {
+			throw new StoreResourceFailedException('Tolong Scan Board, Panel, Atau Mecha. Jangan Master lagi.', [
+				'guid' => $guid,
+				'prev_dummy' => $notQualify->ticket_no_master,
+				'current_dummy' => $this->parameter['board_id']
+			]);
+		}
 	}
 
 	public function isGuidTicket($guidParam){
