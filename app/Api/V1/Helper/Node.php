@@ -779,8 +779,14 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
     	    $guid = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     	}
 
-    	/*$newGuid = new Guid(['guid'=> $guid]);
-        $newGuid->save();*/
+        if( Guid::where('guid' => $guid )->exists() ){
+        	$this->generateGuid(); //recursive calling
+        };
+
+        // save to table guid master;
+    	$newGuid = new Guid(['guid'=> $guid]);
+        $newGuid->save();
+
         return $guid;
 
 	}
