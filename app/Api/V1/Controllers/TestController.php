@@ -42,7 +42,7 @@ class TestController extends Controller
 		$arraySearch = array_search($val, $a);
 
 		$node = new Node($request->all());
-		$guid = '3FE33A6B-5EA2-45B8-885B-6EF6F5455664';
+		$guid = '641845A0-15F2-4A59-9D27-31CEC6316EBF';
 		$symptoms_id = ["02 solder"];
 		$boardLocationPivot = Board::whereHas('locations')
 			->orderBy('created_at', 'desc')
@@ -50,7 +50,7 @@ class TestController extends Controller
 		
 		return [
 			// 'node' => json_decode($node, true),
-			'guid' => $node->verifyGuidMaster(),
+			'guid' => $node->generateGuid($guid),
 			// 'node_location' => ( (empty( $node->getLocations()) === false) && ($node->getModelType() == 'board') ),
 			// 'saveLocationSymptoms' => $node->saveLocationSymptoms($boardLocationPivot, $symptoms_id ),
 		];

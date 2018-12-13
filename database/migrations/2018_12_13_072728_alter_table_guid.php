@@ -27,6 +27,10 @@ class AlterTableGuid extends Migration
                 $table->dropColumn('guid_master');
             }
 
+            if( Schema::hasColumn('guids', 'dummy_id') ){
+                $table->string('dummy_id', 50 )->nullable()->change();
+            }
+
             if(Schema::hasColumn('guids', 'serial_no') == false ){
                 $table->string('serial_no', 50)->nullable();
             }
@@ -51,6 +55,10 @@ class AlterTableGuid extends Migration
 
             if( Schema::hasColumn('guids', 'guid_master') === false ){
                 $table->string('guid_master');
+            }
+
+            if( Schema::hasColumn('guids', 'dummy_id') ){
+                $table->string('dummy_id', 50 )->change();
             }
 
             if(Schema::hasColumn('guids', 'serial_no')){
