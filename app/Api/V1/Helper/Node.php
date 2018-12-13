@@ -332,14 +332,12 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				$this->isGuidTicket($guidParam);
 
 				$this->setGuidMaster($guidParam);
+				// ini terpanggil ketika join master dengan ticket
+				// untuk verifikasi guid master & guid ticket
+				$this->verifyModelnameAndLotnoTicketMaster( $guid /*guidTicket*/ , $guidParam /*guidMaster*/ );
 			}
-			$this->setGuidTicket($guid);
-			// we have problem here, we cannot assign master guid to ticket, since guid always assign ton 
-			// guid_ticket;
 
-			// we need to determined if we had last guid or no;
-			// if we had, that's mean guid parameter should be as guid_master;
-			// if not, 
+			$this->setGuidTicket($guid);
 		}
 
 		else if($this->getModelType() == 'master'){
@@ -600,6 +598,60 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 	}
 
+	public function verifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster){
+		if(function_exists('setting')){
+			// jika pengaturan admin.strict_checking == false, maka method ini langsung return saja, gausah dilanjut.
+			// atau dengan kata lain, jangan test
+			if (setting('admin.strict_checking')) {
+				$boardTicket =  Board::select(['modelname', 'lotno'])
+				->where('guid_ticket', $guidTicket)
+				->orderBy('created_at', 'desc')
+				->first();
+
+				if (!$boardTicket) {
+					# kalau boardTicket ga ketemu
+					$dummyId = $this->getDummyId();
+					throw new StoreResourceFailedException("ticket {$dummyId} tidak memiliki board!", [
+						'guid_ticket'=> $guidTicket
+					]);
+					
+				}
+
+				$boardMaster = Board::select(['modelname', 'lotno'])
+				->where('guid_master', $guidMaster )
+				->orderBy('created_at', 'desc')
+				->first();
+
+				if (!$boardMaster) {
+					# kalau boardMaster ga ketemu
+					$master = Master::where('guid_master', $guidMaster )
+					->orderBy('created_at','desc')
+					->first();
+					throw new StoreResourceFailedException("Master {$master->ticket_no_master} tidak memiliki board!", [
+						'guid_master'=> $guidMaster
+					]);
+				}
+
+				if ($boardTicket->modelname != $boardMaster->modelname ) {
+					# code...
+					throw new StoreResourceFailedException($this->confirmation_view_error, [
+						'message' => "BOARD MODEL TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->modelname}. BOARD MODEL MASTER = {$boardMaster->modelname}.",
+						'board_model_ticket' => $boardTicket->modelname ,
+						'board_model_master' => $boardMaster->modelname,
+					]);
+				}
+
+				if ($boardTicket->lotno != $boardMaster->lotno ) {
+					# code...
+					throw new StoreResourceFailedException($this->confirmation_view_error, [
+						'message' => "BOARD MODEL TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->lotno}. BOARD MODEL MASTER = {$boardMaster->lotno}.",
+						'board_model_ticket' => $boardTicket->lotno ,
+						'board_model_master' => $boardMaster->lotno,
+					]);
+				}		
+			}
+		}
+	}
 
 	/*
 		@void, to verify if the parameter modelname sent by front end is correct by comparing the data with previous children board;
