@@ -634,8 +634,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 				if ($boardTicket->modelname != $boardMaster->modelname ) {
 					# code...
-					throw new StoreResourceFailedException($this->confirmation_view_error, [
-						'message' => "BOARD MODEL TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->modelname}. BOARD MODEL MASTER = {$boardMaster->modelname}.",
+					throw new StoreResourceFailedException( "BOARD MODEL TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->modelname}. BOARD MODEL MASTER = {$boardMaster->modelname}." ,[
 						'board_model_ticket' => $boardTicket->modelname ,
 						'board_model_master' => $boardMaster->modelname,
 					]);
@@ -643,8 +642,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 				if ($boardTicket->lotno != $boardMaster->lotno ) {
 					# code...
-					throw new StoreResourceFailedException($this->confirmation_view_error, [
-						'message' => "BOARD MODEL TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->lotno}. BOARD MODEL MASTER = {$boardMaster->lotno}.",
+					throw new StoreResourceFailedException( "BOARD MODEL TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->lotno}. BOARD MODEL MASTER = {$boardMaster->lotno}",[
 						'board_model_ticket' => $boardTicket->lotno ,
 						'board_model_master' => $boardMaster->lotno,
 					]);
