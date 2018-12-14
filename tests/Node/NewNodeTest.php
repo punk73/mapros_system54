@@ -9,6 +9,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Api\V1\Helper\Node;
 use App\Board;
+use App\Master;
+use App\Ticket;
 class NewNodeTest extends TestCase
 {
     protected $mock;
@@ -39,14 +41,72 @@ class NewNodeTest extends TestCase
         ]);
 
         $this->seedBoards([
+            'guid_master'=>$guidMaster,
+            'modelname' => 'DDXGT700RA9N',
+            'lotno' => '011A',
+        ]);
+        
+        $result = $node->VerifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster, true );
+        $this->assertNull($result);
+    }
+
+    public function testVerifyModelnameAndLotnoTicketMasterThrowExceptionBedaLot(){
+        $node = $this->getMock();
+        $guidTicket = 'dummy-guid-ticket';
+        $guidMaster = 'dummy-guid-master';
+        
+        $this->seedBoards([
             'guid_ticket'=>$guidTicket,
             'modelname' => 'DDXGT700RA9N',
             'lotno' => '011A',
         ]);
 
-        $this->seedBoards($guidTicket, $guidMaster);
+        $this->seedBoards([
+            'guid_ticket'=>$guidTicket,
+            'modelname' => 'DDXGT700RA9N',
+            'lotno' => '010A',
+        ]);
         
-        $result = $node->VerifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster);
-        $this->assertNull($result);
+        // throw exception ketika lotno berbeda
+        $this->expectException(StoreResourceFailedException::class);
+        $result = $node->VerifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster, true );
+    }
+
+    public function testVerifyModelnameAndLotnoTicketMasterThrowExceptionBedaModel(){
+        $node = $this->getMock();
+        $guidTicket = 'dummy-guid-ticket';
+        $guidMaster = 'dummy-guid-master';
+        
+        $this->seedBoards([
+            'guid_ticket'=>$guidTicket,
+            'modelname' => 'DDXGT500RA9N',
+            'lotno' => '011A',
+        ]);
+
+        $this->seedBoards([
+            'guid_ticket'=>$guidTicket,
+            'modelname' => 'DDXGT700RA9N',
+            'lotno' => '011A',
+        ]);
+        
+        // throw exception ketika modelname berbeda
+        $this->expectException(StoreResourceFailedException::class);
+        $result = $node->VerifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster, true );
+    }
+
+    public function testVerifyModelnameAndLotnoTicketMasterThrowExceptionWithoutBoard(){
+        $node = $this->getMock();
+        $guidTicket = 'dummy-guid-ticket';
+        $guidMaster = 'dummy-guid-master';
+        
+        $this->seedBoards([
+            'guid_ticket'=>$guidTicket,
+            'modelname' => 'DDXGT500RA9N',
+            'lotno' => '011A',
+        ]);
+   
+        // throw exception ketika board tidak ketemu
+        $this->expectException(StoreResourceFailedException::class);
+        $result = $node->VerifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster, true );
     }
 }

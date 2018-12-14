@@ -55,17 +55,17 @@ class AlterTableGuid extends Migration
     {
         Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'scanner_id') === false ){
-                $table->integer('scanner_id');
+                $table->integer('scanner_id')->nullable();
             }
         });
         Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'board_id') === false ){
-                $table->string('board_id');
+                $table->string('board_id')->nullable();
             }
         });
         Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'guid_master') === false ){
-                $table->string('guid_master');
+                $table->string('guid_master')->nullable();
             }
         });
         Schema::table('guids', function (Blueprint $table) {

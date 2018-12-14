@@ -598,11 +598,11 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 	}
 
-	public function verifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster){
+	public function verifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster, $isTesting = false ){
 		if(function_exists('setting')){
 			// jika pengaturan admin.strict_checking == false, maka method ini langsung return saja, gausah dilanjut.
 			// atau dengan kata lain, jangan test
-			if (setting('admin.strict_checking')) {
+			if (setting('admin.strict_checking') || $isTesting ) {
 				$boardTicket =  Board::select(['modelname', 'lotno'])
 				->where('guid_ticket', $guidTicket)
 				->orderBy('created_at', 'desc')
@@ -627,7 +627,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 					$master = Master::where('guid_master', $guidMaster )
 					->orderBy('created_at','desc')
 					->first();
-					throw new StoreResourceFailedException("Master {$master->ticket_no_master} tidak memiliki board!", [
+					throw new StoreResourceFailedException("Master {$master['ticket_no_master']} tidak memiliki board!", [
 						'guid_master'=> $guidMaster
 					]);
 				}
