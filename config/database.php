@@ -54,11 +54,11 @@ return [
         // main program env connection
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '136.198.117.48'),
+            'host' => env('DB_HOST', '136.198.117.78'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'MAPROS'),
             'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
+            'password' => env('DB_PASSWORD', 'JvcSql@123'),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -93,15 +93,15 @@ return [
             'strict' => true,
             'engine' => null,
         ],
-
+        //AOI
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             // 'server' => env('DB_SERVER2', 'svrdbs\sa'),
             'host' => env('DB_HOST1', '136.198.117.48'), 
-            'port' => env('DB_PORT1', '1433'),
+            'port' => env('DB_PORT1', '63244'),
             'database' => env('DB_DATABASE1', 'SMTPROS'),
             'username' => env('DB_USERNAME1', 'sa'),
-            'password' => env('DB_PASSWORD1', 'password'),
+            'password' => env('DB_PASSWORD1', 'JvcSql@123'),
             'prefix' => '',
 
         ],
@@ -110,10 +110,10 @@ return [
             'driver' => 'sqlsrv',
             // 'server' => env('DB_SERVER2', 'svrdbs\sa'),
             'host' => env('DB_HOST2', '136.198.117.48'), 
-            'port' => env('DB_PORT2', '1433'),
+            'port' => env('DB_PORT2', '63244'),
             'database' => env('DB_DATABASE2', 'SMTPROS'),
             'username' => env('DB_USERNAME2', 'sa'),
-            'password' => env('DB_PASSWORD2', 'password'),
+            'password' => env('DB_PASSWORD2', 'JvcSql@123'),
             'prefix' => '',
 
         ],
