@@ -196,7 +196,7 @@
                     toggleNgMode: 'toggleNgMode',
 
                     checkEsd : true,
-                    esdUri : 'http://136.198.117.48/esd/api/esd',
+                    esdUri : 'http://136.198.117.78/esd/api/esd',
                     model_header_id : null,
                     pwb_id : [],
                     include_symptom_id:[],
