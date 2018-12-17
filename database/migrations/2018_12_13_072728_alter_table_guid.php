@@ -18,23 +18,32 @@ class AlterTableGuid extends Migration
             if( Schema::hasColumn('guids', 'scanner_id') ){
                 $table->dropColumn('scanner_id');
             }
+        });
 
+        Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'board_id') ){
                 $table->dropColumn('board_id');
             }
+        });
 
+        Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'guid_master') ){
                 $table->dropColumn('guid_master');
             }
+        });
 
+        Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'dummy_id') ){
                 $table->string('dummy_id', 50 )->nullable()->change();
             }
-
+        });
+        
+        Schema::table('guids', function (Blueprint $table) {
             if(Schema::hasColumn('guids', 'serial_no') == false ){
                 $table->string('serial_no', 50)->nullable();
             }
         });
+
     }
 
     /**
@@ -46,21 +55,25 @@ class AlterTableGuid extends Migration
     {
         Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'scanner_id') === false ){
-                $table->integer('scanner_id');
+                $table->integer('scanner_id')->nullable();
             }
-
+        });
+        Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'board_id') === false ){
-                $table->string('board_id');
+                $table->string('board_id')->nullable();
             }
-
+        });
+        Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'guid_master') === false ){
-                $table->string('guid_master');
+                $table->string('guid_master')->nullable();
             }
-
+        });
+        Schema::table('guids', function (Blueprint $table) {
             if( Schema::hasColumn('guids', 'dummy_id') ){
                 $table->string('dummy_id', 50 )->change();
             }
-
+        });
+        Schema::table('guids', function (Blueprint $table) {
             if(Schema::hasColumn('guids', 'serial_no')){
                 $table->dropColumn('serial_no');
             }

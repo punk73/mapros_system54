@@ -14,9 +14,9 @@
 		                                label="ref_no" 
 		                                :maxHeight='"200px"'
 		                                :options="locations"
-		                                :ref="'ref_noumber'"
+		                                ref="ref_number"
 		                                required
-		                                @search="onSearch" 
+		                                @search="onSearch"
 			          				>
 			          					<template slot="option" slot-scope="option">
 		                                   {{ option.ref_no }}-{{ option.modelname }}-{{ option.pwbname }}
@@ -35,7 +35,7 @@
 				                        :maxHeight='"200px"' 
 				                        label="category" 
 				                        :options="symptoms"
-				                        :ref="'symptoms'"
+				                        ref="symptoms"
 				                        required
 				                        @search="onSearchSymptom" >
 				                        <template slot="option" slot-scope="option">
@@ -108,6 +108,7 @@
 				let symptoms = null;
 
 				if (this.model.ref_number !== null ) {
+					console.log(this.model.ref_number, 'row')
 					ref_number = this.model.ref_number.ref_no
 				}
 
@@ -133,6 +134,17 @@
 		mounted(){
 			this.fetchLocations();
 			this.fetchSymptomCode();
+		},
+
+		watch : {
+			'model.ref_number' : function (newVal, oldVal){
+				this.symptomFocus();
+			},
+
+			'model.symptoms' : function (newVal, oldVal){
+				this.addOnClick();
+				this.refNoFocus();
+			},
 		},
 
 		methods: {
@@ -167,8 +179,8 @@
             }, 350),
 
 			addOnClick(){
-				console.log('model', this.model)
-				console.log('newForm', this.newForm)
+				// console.log('model', this.model)
+				// console.log('newForm', this.newForm)
 				if (this.verifyForm() == false) {
 					// stop the code here
 					return;
@@ -183,18 +195,12 @@
 				var result = true;
 				if (this.row.ref_number == null) {
 					// console.log(this.$refs , "aku ref")
-					let el = this.$refs['ref_number'];
-					if(el){
-						el.select();
-					}
+					this.refNoFocus();
 					result = false;
 				}
 
 				if (this.row.symptoms == null) {
-					let el = this.$refs['symptoms'];
-					if (el) {
-						el.select()
-					}
+					this.symptomFocus();
 					result = false;
 				}
 
@@ -283,6 +289,23 @@
                 console.log(res , 'error fetch data!')
               });
             },
+
+            symptomFocus(){
+            	// console.log(this.$refs)
+            	let symptoms = this.$refs.symptoms;
+            	// console.log(symptoms, ' hai');
+            	if (symptoms) {
+            		symptoms.$refs.search.focus()
+            	}
+            },
+
+            refNoFocus(){
+            	let refNo = this.$refs.ref_number;
+            	console.log(refNo)
+            	if (refNo) {
+            		refNo.$refs.search.focus();
+            	}
+            }
 		}
 	}
 </script>
