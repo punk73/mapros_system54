@@ -39884,7 +39884,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         toggleNgMode: 'toggleNgMode',
 
         checkEsd: true,
-        esdUri: 'http://136.198.117.48/esd/api/esd',
+        esdUri: 'http://136.198.117.78/esd/api/esd',
         model_header_id: null,
         pwb_id: [],
         include_symptom_id: []
@@ -67233,7 +67233,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-control",
     attrs: {
       "type": "input",
-      "placeholder": "http://136.198.117.48/esd/api/esd",
+      "placeholder": "http://136.198.117.78/esd/api/esd",
       "required": "",
       "autofocus": ""
     },
