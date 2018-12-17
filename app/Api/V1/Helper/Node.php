@@ -614,11 +614,9 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				->first();
 
 				if (!$boardTicket) {
-					# kalau boardTicket ga ketemu
-					$dummyId = $this->getDummyId();
-					throw new StoreResourceFailedException("ticket {$dummyId} tidak memiliki board!", [
-						'guid_ticket'=> $guidTicket
-					]);
+					// jika tidak punya boards, artinya mingkin, ini belum sampai ke panel 3.
+					// jadi kita return saja, biar error nya ga miss leading
+					return;
 				}
 
 				$boardMaster = Board::select(['modelname', 'lotno'])
@@ -627,13 +625,10 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				->first();
 
 				if (!$boardMaster) {
-					# kalau boardMaster ga ketemu
-					$master = Master::where('guid_master', $guidMaster )
-					->orderBy('created_at','desc')
-					->first();
-					throw new StoreResourceFailedException("Master {$master['ticket_no_master']} tidak memiliki board!", [
-						'guid_master'=> $guidMaster
-					]);
+					// we should think if we can return instead of throw exception.
+					// supaya lebih konsisten;
+					return; //biar ga missleading error.
+					// ketika seharusnya blm scan process sblmnya, malah jadi tidak memiliki board
 				}
 
 				if ($boardTicket->modelname != $boardMaster->modelname ) {
