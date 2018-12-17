@@ -603,6 +603,11 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			// jika pengaturan admin.strict_checking == false, maka method ini langsung return saja, gausah dilanjut.
 			// atau dengan kata lain, jangan test
 			if (setting('admin.strict_checking') || $isTesting ) {
+				if ($this->getIdType() == 'mecha') {
+					return; //stop untill here;
+					// mecha will not have boards
+				}
+					
 				$boardTicket =  Board::select(['modelname', 'lotno'])
 				->where('guid_ticket', $guidTicket)
 				->orderBy('created_at', 'desc')
@@ -614,7 +619,6 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 					throw new StoreResourceFailedException("ticket {$dummyId} tidak memiliki board!", [
 						'guid_ticket'=> $guidTicket
 					]);
-					
 				}
 
 				$boardMaster = Board::select(['modelname', 'lotno'])
