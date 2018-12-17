@@ -680,6 +680,7 @@
                 this.detailError = detailError;
                 this.hasError = true;
                 this.changesColor('red');
+                this.playNG(); //play sound NG
                 this.form.board_id='';
             },
 
@@ -725,6 +726,7 @@
                 }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
+                this.playOk(); //play sound ok
                 this.clearForm();
                 this.boardOnFocus();
                 this.isNG = false; //turn off toggle mode
@@ -813,8 +815,8 @@
                     this.initLabel();
                 }else{
                     this.label.id = 'BOARD / DUMMY TICKET';
+                    this.playJoin(); //play sound join
                 }
-
                 this.boardOnFocus();
             },
 
@@ -997,6 +999,25 @@
                 // dipanggil dari $emit oleh location vue
                 this.form.splice(index, 1);
             },
+
+            playSound (sound) {
+              if(sound) {
+                var audio = new Audio(sound);
+                audio.play();
+              }
+            },
+
+            playOk(){
+                this.playSound('./storage/OK.mp3');
+            },
+
+            playNG(){
+                this.playSound('./storage/NG.mp3');
+            },
+
+            playJoin(){
+                this.playSound('./storage/join.mp3');
+            }
         }
     }
 

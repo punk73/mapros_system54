@@ -127,7 +127,7 @@
                             <div class="form-group" v-if="config.checkEsd" >
                                 <label for="uri" class="col-md-3 control-label"> URL data ESD </label>
                                 <div class="col-md-9">
-                                    <input type="input" placeholder="http://136.198.117.48/esd/api/esd" class="form-control" v-model="config.esdUri" required autofocus>
+                                    <input type="input" placeholder="http://136.198.117.78/esd/api/esd" class="form-control" v-model="config.esdUri" required autofocus>
                                 </div>
                             </div>
 
