@@ -8,6 +8,7 @@
 	                		<div class="form-group">
 		          				<label class="col-md-4 control-label"> Ref Number </label>
 		          				<div class="col-md-8">
+		          					<!-- on enter is handled by watch property -->
 			          				<v-select
 			          					v-model='model.ref_number'
 			          					placeholder="Ketik untuk mencari ref number"
@@ -28,6 +29,7 @@
 	                		<div class="form-group">
 	                			<label class="col-md-4 control-label" for='symptoms'>Symptoms</label>
 		                		<div class="col-md-8">
+		                			<!-- on enter is handled by watch property -->
 			                		<v-select
 				                        placeholder='ketik untuk kode symptom / kategori symptom'
 				                        multiple 
@@ -108,7 +110,7 @@
 				let symptoms = null;
 
 				if (this.model.ref_number !== null ) {
-					console.log(this.model.ref_number, 'row')
+					// console.log(this.model.ref_number, 'row')
 					ref_number = this.model.ref_number.ref_no
 				}
 
@@ -137,6 +139,7 @@
 		},
 
 		watch : {
+			/*it's for handle on enter (on scan) listeners*/
 			'model.ref_number' : function (newVal, oldVal){
 				this.symptomFocus();
 			},
@@ -189,6 +192,8 @@
 				this.addForm(this.newForm)
 				this.clear()
 
+				this.fetchLocations(); //re fetch locations
+				this.fetchSymptomCode(); // re fetch sysmptoms
 			},
 
 			verifyForm(){
@@ -213,7 +218,7 @@
 			},
 
 			btnDeleteOnClick(row ){
-				console.log(row , "btn delete on click")
+				// console.log(row , "btn delete on click")
 				let index = row.index;
 				this.removeRow(index)
 			},
@@ -244,7 +249,7 @@
 			
 			fetchLocations(){
 				const url = 'api/locations';
-				console.log(this.config)
+				// console.log(this.config)
 				let model_header_id  = this.config.model_header_id;
 				let pwb_id = this.config.pwb_id;
 				let params = {}
@@ -301,7 +306,7 @@
 
             refNoFocus(){
             	let refNo = this.$refs.ref_number;
-            	console.log(refNo)
+            	// console.log(refNo)
             	if (refNo) {
             		refNo.$refs.search.focus();
             	}

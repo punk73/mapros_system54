@@ -4825,7 +4825,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\node_modules\\vue-js-toggle-button\\src\\Button.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\node_modules\\vue-js-toggle-button\\src\\Button.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Button.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -4863,7 +4863,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Modal.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Modal.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Modal.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -27091,7 +27091,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Alert.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Alert.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Alert.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -27125,7 +27125,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Join.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Join.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Join.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -27159,7 +27159,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Loading.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Loading.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Loading.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -41732,6 +41732,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -41775,7 +41777,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			var symptoms = null;
 
 			if (this.model.ref_number !== null) {
-				console.log(this.model.ref_number, 'row');
+				// console.log(this.model.ref_number, 'row')
 				ref_number = this.model.ref_number.ref_no;
 			}
 
@@ -41805,6 +41807,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 	watch: {
+		/*it's for handle on enter (on scan) listeners*/
 		'model.ref_number': function modelRef_number(newVal, oldVal) {
 			this.symptomFocus();
 		},
@@ -41854,6 +41857,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			this.stores.push(this.row);
 			this.addForm(this.newForm);
 			this.clear();
+
+			this.fetchLocations(); //re fetch locations
+			this.fetchSymptomCode(); // re fetch sysmptoms
 		},
 		verifyForm: function verifyForm() {
 			var result = true;
@@ -41875,7 +41881,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			this.$emit('locationAdded', this.form);
 		},
 		btnDeleteOnClick: function btnDeleteOnClick(row) {
-			console.log(row, "btn delete on click");
+			// console.log(row , "btn delete on click")
 			var index = row.index;
 			this.removeRow(index);
 		},
@@ -41906,7 +41912,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			var _this = this;
 
 			var url = 'api/locations';
-			console.log(this.config);
+			// console.log(this.config)
 			var model_header_id = this.config.model_header_id;
 			var pwb_id = this.config.pwb_id;
 			var params = {};
@@ -41960,7 +41966,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		},
 		refNoFocus: function refNoFocus() {
 			var refNo = this.$refs.ref_number;
-			console.log(refNo);
+			// console.log(refNo)
 			if (refNo) {
 				refNo.$refs.search.focus();
 			}
@@ -65787,7 +65793,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Config.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Config.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Config.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -65821,7 +65827,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Confirm.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Confirm.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Confirm.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -65855,7 +65861,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\FormDebug.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\FormDebug.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] FormDebug.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -65893,7 +65899,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\GenerateFileConfig.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\GenerateFileConfig.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] GenerateFileConfig.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -65931,7 +65937,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Main.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Main.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Main.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -65965,7 +65971,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Test.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\Test.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Test.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -65999,7 +66005,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\location\\Config.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\location\\Config.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Config.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -66037,7 +66043,7 @@ var Component = __webpack_require__(6)(
   /* cssModules */
   null
 )
-Component.options.__file = "c:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\location\\Location.vue"
+Component.options.__file = "C:\\xampp\\htdocs\\mapros_system54\\resources\\assets\\js\\components\\location\\Location.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Location.vue: functional components are not supported with templates, they should use render functions.")}
 
