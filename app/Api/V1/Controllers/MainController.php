@@ -182,9 +182,9 @@ class MainController extends Controller
 		// cek current is null;
 		// cek kondisi sebelumnya is null
 		if(!$node->isExists()){ //board null
-
-			// kalau sequence pertama, maka insert; gausah cek data sebelumnya dulu;
-			if ($node->isFirstSequence() ) {
+			// kalau sequence pertama atau pengaturan prev_node_checking false,
+			// maka insert; gausah cek data sebelumnya dulu;
+			if ($node->isFirstSequence() || (setting('admin.prev_node_checking') == false) ) {
 				// langsung input;
 				$node->setStatus('IN');
 				$node->setJudge('OK'); //kalau IN mah ga bisa NG
