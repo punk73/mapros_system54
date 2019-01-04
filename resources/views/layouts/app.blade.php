@@ -53,7 +53,7 @@
                         @if (Auth::guest())
                             <li><a href="{{ route('login') }}"><span class="fa fa-arrow-circle-right"></span> Login</a></li>
                             <li><a href="{{ route('register') }}"><span class="fa fa-user"></span> Register</a></li>
-                            <li><a href="#/config"><span class="fa fa-cogs"> Config </span></a></li>
+                            <!-- <li><a href="#/config"><span class="fa fa-cogs"> Config </span></a></li> -->
                         @else
                             <li><a href="{{ url('/admin') }}"><span class="fa fa-user-secret"></span> Admin Panel</a></li>
                             <li class="dropdown">
@@ -75,8 +75,9 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li><a href="#/config"><span class="fa fa-cogs"> Config </span></a></li>
                         @endif
+                            <li><a href="#/config"><span class="fa fa-cogs"> Config </span></a></li>
+                            <li><a href="{{ setting('admin.second_link') }}"><span class="fa fa-desktop"> Backup Applikasi</span></a></li>
                     </ul>
                 </div>
             </div>
