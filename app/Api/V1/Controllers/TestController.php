@@ -37,25 +37,12 @@ class TestController extends Controller
 	}
 
 	public function store(Request $request){
-		$a = [1,2,3];
-		$val = 5;
-		$arraySearch = array_search($val, $a);
-
+		
 		$node = new Node($request->all());
-		$guid = '641845A0-15F2-4A59-9D27-31CEC6316EBF';
-		$symptoms_id = ["02 solder"];
-		$boardLocationPivot = Board::whereHas('locations')
-			->orderBy('created_at', 'desc')
-			->first()->locations()->first()->pivot;
-
-		$guidMaster = '01E2E317-CAA0-4358-A021-F36714BA62CE';
-		$guidTicket = '44194E7C-4E61-4E2F-A30D-4415821F1E0E';
 		return [
-			// 'node' => json_decode($node, true),
-			// 'guid' => $node->generateGuid($guid),
-			'verify' => $node->verifyModelnameAndLotnoTicketMaster( $guidTicket , $guidMaster )
-			// 'node_location' => ( (empty( $node->getLocations()) === false) && ($node->getModelType() == 'board') ),
-			// 'saveLocationSymptoms' => $node->saveLocationSymptoms($boardLocationPivot, $symptoms_id ),
+			'isExists' => $node->isExists(),
+			'isGuidGenerated' => $node->isGuidGenerated(),
+			'node' =>	$node,
 		];
 
 	}

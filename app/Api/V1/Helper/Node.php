@@ -298,6 +298,24 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null;
 			}
 
+			// untuk handle join LCD
+			if($this->getModelType() == 'part'){
+				// join dan column setting tidak contain board;
+				if( $this->isJoin() && $this->isSettingContain('ticket') && $this->isSettingContain('part') ){
+					// cek apakah guid master sudah di generated based on ticket;
+					// untuk cek guid master sudah generate atau belum dari ticket, masih kesulitan, jadi diganti dengan
+					// cek apakah ini join & seting tidak contain board, karena kalau dia join dan tidak kontain board, maka pasti dia contain master; that's why langkah ini harus punya guidParam as guid_master nya;
+					if ($guidParam == null ) {
+						throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN PANEL TERLEBIH DULU!",[
+							'note' => 'need guid ticket',
+							'node' => json_decode( $this, true ),
+						]);
+					}
+				}
+
+				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null;
+			}
+
 			if($this->getModelType() == 'master'){
 				$guid = (!is_null($guid)) ? $guid['guid_master'] : null;
 			}
@@ -352,6 +370,42 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				if( $this->isSettingContain('master') ){
 			 		$this->setGuidMaster($guid);
 				}else{
+					
+					// ini untuk memastikan, satu lcd tidak di scan dengan lebih dari satu dummy panel
+					if($guidParam != null){
+						if($this->getModelType() == 'part'){
+							
+							// jika lastGuid != currentGuid
+							$lastGuid = $guid;
+							$currentGuid = $guidParam;
+
+							$lastDummy = Ticket::distinct('ticket_no')
+							->where( 'guid_ticket', $lastGuid )
+							->orderBy('created_at', 'desc')
+							->first();
+							
+							if($lastDummy){
+								$lastDummy = $lastDummy['ticket_no'];
+							}
+
+							$currDummy = Ticket::distinct('ticket_no')
+							->where( 'guid_ticket', $currentGuid )
+							->orderBy('created_at', 'desc')
+							->first();
+
+							if($currDummy){
+								$currDummy = $currDummy['ticket_no'];
+							}
+
+							if($lastGuid != $currentGuid){
+								throw new StoreResourceFailedException("{$this->getDummyId()} sudah join dengan dummy {$lastDummy}!!! dummy {$currDummy} harus lanjut dengan LCD lain!!", [
+									'last_dummy' => $lastDummy,
+									'current_dummy' => $currDummy
+								]);
+							}
+						}	
+					}
+
 					$this->setGuidTicket($guid);
 				}
 
@@ -814,6 +868,11 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			return $this->model
 				->where( $this->dummy_column, $this->dummy_id )
 				->where('serial_no', null )
+				->exists();
+		}else if ($paramType == 'part'){
+			return $this->model
+				->where( $this->dummy_column, $this->dummy_id )
+				->where('guid_master', null )
 				->exists();
 		}
 
