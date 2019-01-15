@@ -38,6 +38,19 @@
 		</div>
 
 		<div class="form-group">
+			<label  class="col-md-3 control-label">DATA UNTUK DIKIRIM KE LUAR</label>	
+            <div class=" col-md-6  col-xs-9 col-sm-9">
+                <b-form-radio-group 
+					id="radios1" 
+					v-model="config.generateFileData" 
+					:options="radioOptions" 
+					name="radioOpenions"
+				>
+      			</b-form-radio-group>
+            </div>
+        </div>
+
+		<div class="form-group">
             <div class=" col-md-6 col-md-offset-3 col-xs-12">
                 <toggle-button 
                 	v-model="isDebug" 
@@ -69,6 +82,8 @@
 		data(){
 			return {
 				isDebug : false,
+				radioOptions : ['GUID', 'DUMMY'],
+				// selected dari radio ada di config, defaultnya DUMMY
 			}
 		},
 

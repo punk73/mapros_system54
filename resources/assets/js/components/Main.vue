@@ -287,6 +287,7 @@
                     showSolder: true,
                     isGenerateFile : false,
                     generatedFileName : 'something.txt',
+                    generateFileData:'DUMMY',
                     isSendAjax : false,
                     isShowDeleteButton : false,
                     isAutolinezero : false,
@@ -378,6 +379,20 @@
 
             showLocation(){
                 return  (this.responseData.message.includes('IN /') || this.showLocationForm);
+            },
+
+            guid(){
+                var data;
+                var node = this.responseData.node;
+                if(node.guid_master != null ){
+                    data = node.guid_master;
+                }else if (node.guid_ticket != null ){
+                    data = node.guid_ticket;
+                }else {
+                    data = 'NA';
+                }
+
+                return data;
             },
         },
 
@@ -743,14 +758,24 @@
                 if (!this.config.showNgoption) { this.isNG = false; }
             },
 
-            generateFile(){
+            generateFile(resend = false){
                 if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
                     this.serialAutolinezero = 'NA';
                 }
 
+                var data = '';
+                if(this.config.generateFileData == 'GUID'){
+                    // kalau ini, resend atau bukan, sama aja
+                    data = this.guid; //from computed value
+                }else{
+                    data = this.form.board_id;
+                    if(resend){
+                        data = this.oldForm.board_id;
+                    }
+                }
+                console.log(data, this.config.generateFileData, 'generateFile')
                 var enter = this.config.delimiter; //'';//'\r\n';
-                this.downloadContent = this.form.board_id + enter + this.serialAutolinezero ;
-                
+                this.downloadContent = data + enter + this.serialAutolinezero ;
 
                 let filename = this.config.generatedFileName;
                 this.download( this.downloadContent, filename );
@@ -898,26 +923,22 @@
 
             sendAjax(responseData){
                 let scanner_id = responseData.node.scanner.id;
-                let guid;
-                
-                if ( this.form.board_id != '' ) {
-                    /*pertama kali jalan*/
-                    console.log('tidak ')
-                    var board_id = this.form.board_id;
+                var board_id;
+                if(this.config.generateFileData == 'DUMMY'){
+                    if ( this.form.board_id != '' ) {
+                        /*pertama kali jalan*/
+                        board_id = this.form.board_id;
+                    }else{
+                        /*pas mau resend data*/
+                        board_id = this.oldForm.board_id;
+                    }
                 }else{
-                    /*pas mau resend data*/
-                    var board_id = this.oldForm.board_id;
-                }
-
-                if(responseData.node.guid_master != null ){
-                    guid = responseData.node.guid_master;
-                }else if (responseData.node.guid_ticket != null ){
-                    guid = responseData.node.guid_ticket;
-                }else {
-                    guid = 'noData';
+                    // guid 
+                    board_id = this.guid; //computed value;
                 }
 
                 // let value = board_id + '_' + guid + '_' + scanner_id ; //ini untuk nanti;
+                // board_id can be dummy or guid
                 let value = board_id;
                 // console.log({responseData, value}, 'sendAjax methods triggered')
                 
@@ -966,16 +987,17 @@
                 }
 
                 if(this.config.isGenerateFile){
-                    if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
-                        this.serialAutolinezero = 'NA';
-                    }
+                    // if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
+                    //     this.serialAutolinezero = 'NA';
+                    // }
 
-                    var enter = this.config.delimiter; //'';//'\r\n';
-                    this.downloadContent = this.oldForm.board_id + enter + this.serialAutolinezero ;
+                    // var enter = this.config.delimiter; //'';//'\r\n';
+                    // this.downloadContent = this.oldForm.board_id + enter + this.serialAutolinezero ;
                     
 
-                    let filename = this.config.generatedFileName;
-                    this.download( this.downloadContent, filename );
+                    // let filename = this.config.generatedFileName;
+                    // this.download( this.downloadContent, filename );
+                    this.generateFile();
                 }
             },
 

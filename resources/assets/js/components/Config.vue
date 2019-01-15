@@ -183,7 +183,8 @@
                     // jumlahJoin:1, //will deleted soon due to move to server
 
 					showConfig: false,
-					isGenerateFile : false,
+                    isGenerateFile : false,
+                    generateFileData: 'DUMMY', //default value untuk radio button, bs jd diisi GUID
 					isSendAjax : false,
 					isShowDeleteButton : false,
 					isAutolinezero : false,
