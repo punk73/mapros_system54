@@ -7,6 +7,7 @@ use Spatie\Activitylog\LogsActivityInterface;
 use Spatie\Activitylog\LogsActivity;
 use App\LineprocessStart;
 use Dingo\Api\Exception\StoreResourceFailedException;
+use App\LineprocessInspect;
 
 class Lineprocess extends Model implements LogsActivityInterface
 {
@@ -52,6 +53,20 @@ class Lineprocess extends Model implements LogsActivityInterface
 			// return null;
 		}else{
 			return $start_id['start_id'];
+		}
+	}
+
+	// we can implement has
+	public function hasInspect(){
+		$hasInspect = LineprocessInspect::select('has_log')
+		->where('lineprocess_id', $this->id )
+		->where('has_log', 1 )
+		->first();
+
+		if(!$hasInspect){
+			return false;
+		}else{
+			return true;
 		}
 	}
 }

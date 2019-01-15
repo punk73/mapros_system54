@@ -1014,7 +1014,6 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$model->lotno = $this->lotno;
 		}
 
-		$this->updateGuidSibling();
 
 		# insert the to critical parts jika critical parts tidak null;
 		if (!is_null($this->getCriticalPart())) {
@@ -1029,6 +1028,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 
 		$isSaveSuccess = $model->save();
+
+		$this->updateGuidSibling(); //move updateGuidSibling after save method;
 		
 		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
 			$this->insertSymptom($model);
@@ -1695,6 +1696,24 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		if (isset($parameter['locations'])) {
 			# code...
 			$this->setLocations($parameter['locations']);
+		}
+	}
+
+	public function hasInspect(){
+		return $this->getLineprocess()->hasInspect();
+	}
+
+	public function InspectionLogOk(){
+		// cek inspection log if it not ok, it's throw exception
+		$guid = '';
+		$scannerId = null;
+		$isOk = true; //it need to check the data;
+		if(!$isOk){
+			throw new StoreResourceFailedException('Inspection log belum ada. mohon Tunggu beberapa saat',[
+				'messages' => "data inspection log dengan guid = '{$guid}' & scanner id = '{$scannerId}' tidak ditemukan.",
+				'guid' => $guid,
+				'scanner_id' => $scannerId,
+			]);
 		}
 	}
 }

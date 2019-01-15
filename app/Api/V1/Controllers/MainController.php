@@ -532,6 +532,12 @@ class MainController extends Controller
 				]);
 			}
 
+			// checking inspection log before out
+			if(setting('admin.check_inspection_log')){
+				if($node->hasInspect()){
+					$node->InspectionLogOk(); //if not it will throw exception;
+				}
+			}
 			// disini kita harus ikut update status dari child node; jika ini adalah proses join;
 			// save
 			$node->setStatus('OUT');
