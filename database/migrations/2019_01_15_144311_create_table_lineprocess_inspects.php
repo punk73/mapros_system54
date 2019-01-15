@@ -18,12 +18,12 @@ class CreateTableLineprocessInspects extends Migration
             $table->unsignedInteger('lineprocess_id');
             $table->integer('has_log'); //it should be 0 or 1; boolean
             $table->foreign('lineprocess_id')
-                ->reference('id')
+                ->references('id')
                 ->on('lineprocesses')
                 ->onDelete('cascade');
-
             $table->timestamps();
         });
+
     }
 
     /**
