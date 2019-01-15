@@ -924,7 +924,8 @@
             sendAjax(responseData){
                 let scanner_id = responseData.node.scanner.id;
                 var board_id;
-                if(this.config.generateFileData == 'DUMMY'){
+                // != GUID to avoid error on client that doesn't have the config
+                if(this.config.generateFileData != 'GUID'){
                     if ( this.form.board_id != '' ) {
                         /*pertama kali jalan*/
                         board_id = this.form.board_id;
