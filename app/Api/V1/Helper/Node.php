@@ -1721,6 +1721,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 					$q->where('scanner_id', $scannerId )
 					->orWhere('lineprocess_id', $lineprocessId );
 				})->where('judgement', 'OK')
+				->orderBy('created_at', 'desc')
 				->first(); //it need to check the data;
 			} catch ( QueryException $th) {
 				//throw $th;
