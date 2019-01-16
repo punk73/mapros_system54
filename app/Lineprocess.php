@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Spatie\Activitylog\LogsActivityInterface;
 use Spatie\Activitylog\LogsActivity;
 use App\LineprocessStart;
@@ -58,15 +59,24 @@ class Lineprocess extends Model implements LogsActivityInterface
 
 	// we can implement has
 	public function hasInspect(){
-		$hasInspect = LineprocessInspect::select('has_log')
-		->where('lineprocess_id', $this->id )
-		->where('has_log', 1 )
-		->first();
+		// to avoid error by non existing table, we simply return false when exception thrown;
+		// is it good idea ? i don't know.
+		// but I know it will be ok even when I forget to migrate  the data
+		try {
+			//code...
+			$hasInspect = LineprocessInspect::select('has_log')
+			->where('lineprocess_id', $this->id )
+			->where('has_log', 1 )
+			->first();
 
-		if(!$hasInspect){
+			if(!$hasInspect){
+				return false;
+			}else{
+				return true;
+			}
+		} catch ( QueryException $th) {
+			//throw $th;
 			return false;
-		}else{
-			return true;
 		}
 	}
 }
