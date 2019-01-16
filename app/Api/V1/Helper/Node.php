@@ -15,6 +15,8 @@ use App\Mastermodel;
 use App\Repair;
 use App\Lineprocess;
 use App\ColumnSetting;
+use App\InspectionLog;
+use Illuminate\Database\QueryException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Guid;
@@ -1014,7 +1016,6 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$model->lotno = $this->lotno;
 		}
 
-		$this->updateGuidSibling();
 
 		# insert the to critical parts jika critical parts tidak null;
 		if (!is_null($this->getCriticalPart())) {
@@ -1029,6 +1030,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 
 		$isSaveSuccess = $model->save();
+
+		$this->updateGuidSibling(); //move updateGuidSibling after save method;
 		
 		if( $isSaveSuccess && ( $this->getModelType() == 'master' ) && ($this->getJudge() == 'NG') ){
 			$this->insertSymptom($model);
@@ -1695,6 +1698,45 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		if (isset($parameter['locations'])) {
 			# code...
 			$this->setLocations($parameter['locations']);
+		}
+	}
+
+	public function hasInspect(){
+		return $this->getLineprocess()->hasInspect();
+	}
+
+	public function InspectionLogOk(){
+		// jika parameter judge == NG, gausah check ini;langsung return true aja
+		// biar operator bisa meng NG kan Inspect log yang NG;
+
+		if($this->parameter['judge'] != 'NG' ){
+			// cek inspection log if it not ok, it's throw exception
+			$guid = $this->getGuidMaster();
+			$scannerId = $this->getScanner()['id'] ;
+			$lineprocessId = $this->getLineprocess()['id'];
+			try {
+				//code...
+				$isOk = InspectionLog::where('unique_id', $guid )
+				->where( function ($q) use ($scannerId, $lineprocessId){
+					$q->where('scanner_id', $scannerId )
+					->orWhere('lineprocess_id', $lineprocessId );
+				})->where('judgement', 'OK')
+				->first(); //it need to check the data;
+			} catch ( QueryException $th) {
+				//throw $th;
+				$isOk = true; //kalau InspectionLog throw exception, ini akan ok terus;
+			}
+			
+			if(!$isOk){
+				throw new StoreResourceFailedException('INSPECTION LOG NG ATAU BELUM ADA. MOHON PASTIKAN INSPECT OK',[
+					'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) tidak ditemukan.",
+					'guid' => $guid,
+					'scanner_id' => $scannerId,
+					'lineprocess_id' => $lineprocessId
+				]);
+			}
+		}else{
+			return true;
 		}
 	}
 }

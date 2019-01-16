@@ -41,7 +41,8 @@ class TestController extends Controller
 		$node = new Node($request->all());
 		return [
 			'isExists' => $node->isExists(),
-			'isGuidGenerated' => $node->isGuidGenerated(),
+			'hasInspect' => $node->hasInspect(),
+			'InspectionLogOk' => $node->InspectionLogOk(),
 			'node' =>	$node,
 		];
 
