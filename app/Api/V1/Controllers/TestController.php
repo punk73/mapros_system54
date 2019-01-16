@@ -42,6 +42,7 @@ class TestController extends Controller
 		return [
 			'isExists' => $node->isExists(),
 			'hasInspect' => $node->hasInspect(),
+			'InspectionLogOk' => $node->InspectionLogOk(),
 			'node' =>	$node,
 		];
 
