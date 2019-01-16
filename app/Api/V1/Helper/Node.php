@@ -1711,7 +1711,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 		if($this->parameter['judge'] != 'NG' ){
 			// cek inspection log if it not ok, it's throw exception
-			$guid = $this->getGuidMaster();
+			$guid = $this->getUniqueId(); //it can be board_id or guid, depend 
 			$scannerId = $this->getScanner()['id'] ;
 			$lineprocessId = $this->getLineprocess()['id'];
 			try {
