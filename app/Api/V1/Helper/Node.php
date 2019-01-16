@@ -1729,11 +1729,13 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			}
 			
 			if(!$isOk){
-				throw new StoreResourceFailedException('INSPECTION LOG NG ATAU BELUM ADA. MOHON PASTIKAN INSPECT OK',[
+				throw new StoreResourceFailedException('INSPECTION LOG NG ATAU BELUM ADA. MOHON PASTIKAN INSPECT OK.',[
 					'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) tidak ditemukan.",
 					'guid' => $guid,
+					'showResend' => true, //it's mandatory for the front end to keep the resend button;
 					'scanner_id' => $scannerId,
-					'lineprocess_id' => $lineprocessId
+					'lineprocess_id' => $lineprocessId,
+					'node' => json_decode($this, true),
 				]);
 			}
 		}else{

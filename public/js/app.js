@@ -40876,9 +40876,27 @@ var axios = __webpack_require__(17);
         showLocation: function showLocation() {
             return this.responseData.message.includes('IN /') || this.showLocationForm;
         },
+        includeIn: function includeIn() {
+            return this.responseData.message.includes('IN /');
+        },
+        showResendBtn: function showResendBtn() {
+            if (this.responseData.errors) {
+                if (this.responseData.errors.showResend) {
+                    return true;
+                }
+            }
+
+            return false;
+        },
         guid: function guid() {
             var data;
-            var node = this.responseData.node;
+            var node;
+            if (typeof this.responseData.node == "undefined") {
+                // error, terjadi ketika awalnya belum in, langsung mau resend data
+                node = this.responseData.errors.node;
+            } else {
+                node = this.responseData.node;
+            }
             if (node.guid_master != null) {
                 data = node.guid_master;
             } else if (node.guid_ticket != null) {
@@ -41402,8 +41420,10 @@ var axios = __webpack_require__(17);
                 }
             }
         },
-        sendAjax: function sendAjax(responseData) {
-            var scanner_id = responseData.node.scanner.id;
+        sendAjax: function sendAjax() {
+            var responseData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+
             var board_id;
             // != GUID to avoid error on client that doesn't have the config
             if (this.config.generateFileData != 'GUID') {
@@ -41419,10 +41439,7 @@ var axios = __webpack_require__(17);
                 board_id = this.guid; //computed value;
             }
 
-            // let value = board_id + '_' + guid + '_' + scanner_id ; //ini untuk nanti;
-            // board_id can be dummy or guid
             var value = board_id;
-            // console.log({responseData, value}, 'sendAjax methods triggered')
 
             axios.get(this.config.uri, {
                 params: {
@@ -66627,7 +66644,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("\n                                      Delete "), _c('i', {
     staticClass: "fa fa-trash float-right"
-  })]) : _vm._e(), _vm._v(" "), ((_vm.config.isSendAjax || _vm.config.isGenerateFile) && _vm.responseData.message.includes('IN /')) ? _c('button', {
+  })]) : _vm._e(), _vm._v(" "), ((_vm.config.isSendAjax || _vm.config.isGenerateFile) && (_vm.includeIn || _vm.showResendBtn)) ? _c('button', {
     staticClass: "btn btn-warning",
     on: {
       "click": function($event) {

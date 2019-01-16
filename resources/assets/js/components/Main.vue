@@ -167,7 +167,7 @@
                                         Delete <i class="fa fa-trash float-right"></i>
                                     </button>
 
-                                    <button v-if="(config.isSendAjax || config.isGenerateFile) && responseData.message.includes('IN /') " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
+                                    <button v-if="(config.isSendAjax || config.isGenerateFile) && ( includeIn || showResendBtn ) " @click.prevent='resendData' class="btn btn-warning">Resend Data <i class="fa fa-arrow-right"></i> </button>
 
                                     <!-- <button class="btn btn-warning form-control" @click.prevent="boardOnFocus">Test</button> -->
                                 </div>
@@ -381,9 +381,29 @@
                 return  (this.responseData.message.includes('IN /') || this.showLocationForm);
             },
 
+            includeIn(){
+                return this.responseData.message.includes('IN /');
+            },
+
+            showResendBtn(){
+                if(this.responseData.errors){
+                    if( this.responseData.errors.showResend ){
+                        return true;
+                    }
+                }
+                
+                return false;
+            },
+
             guid(){
                 var data;
-                var node = this.responseData.node;
+                var node;
+                if(typeof this.responseData.node == "undefined"){
+                    // error, terjadi ketika awalnya belum in, langsung mau resend data
+                    node = this.responseData.errors.node;
+                }else{
+                    node = this.responseData.node;
+                }
                 if(node.guid_master != null ){
                     data = node.guid_master;
                 }else if (node.guid_ticket != null ){
@@ -921,8 +941,8 @@
                 }
             },
 
-            sendAjax(responseData){
-                let scanner_id = responseData.node.scanner.id;
+            sendAjax(responseData = null){
+
                 var board_id;
                 // != GUID to avoid error on client that doesn't have the config
                 if(this.config.generateFileData != 'GUID'){
@@ -938,10 +958,7 @@
                     board_id = this.guid; //computed value;
                 }
 
-                // let value = board_id + '_' + guid + '_' + scanner_id ; //ini untuk nanti;
-                // board_id can be dummy or guid
                 let value = board_id;
-                // console.log({responseData, value}, 'sendAjax methods triggered')
                 
                 axios.get(this.config.uri, {
                     params : {
