@@ -66,7 +66,7 @@ class Lineprocess extends Model implements LogsActivityInterface
 			//code...
 			$hasInspect = LineprocessInspect::select('has_log')
 			->where('lineprocess_id', $this->id )
-			->where('has_log', 1 )
+			->where('has_log', 1 ) //boolean, 1 or 0; 1 == aktif
 			->first();
 
 			if(!$hasInspect){
