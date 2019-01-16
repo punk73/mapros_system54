@@ -13,12 +13,21 @@ class LineprocessInspectsTableSeeder extends Seeder
      */
     public function run()
     {
-        $datas = Lineprocess::whereIn('name', $this->getData() )
+        $datas = Lineprocess::select([
+            'lineprocesses.id',
+            'scanners.id as scanner_id'
+        ])
+        ->whereIn('lineprocesses.name', $this->getData() )
+        ->leftJoin('scanners', function ($q){
+            $q->on('lineprocesses.id', '=', 'scanners.lineprocess_id')
+            ->where('scanners.line_id', 2 );
+        })
         ->get();
 
         foreach ($datas as $key => $data ) {
             $newData = new LineprocessInspect;
-            $newData->lineprocess_id= $data['id'];
+            $newData->lineprocess_id = $data['id'];
+            $newData->scanner_id = $data['scanner_id'];
             $newData->has_log = 1;
             $newData->save();
         }
