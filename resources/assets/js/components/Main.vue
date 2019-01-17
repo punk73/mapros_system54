@@ -1000,6 +1000,12 @@
             },
 
             resendData(){
+                let pesan = "RESENDING DATA ...";
+                this.hasError = false;
+                this.error = pesan;
+                this.detailError = pesan;
+                this.changesColor('yellow');
+
                 if( (this.config.isSendAjax) && ( this.responseData != null) ){
                     this.sendAjax(this.responseData)
                 }

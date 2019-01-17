@@ -41476,6 +41476,12 @@ var axios = __webpack_require__(17);
             });
         },
         resendData: function resendData() {
+            var pesan = "RESENDING DATA ...";
+            this.hasError = false;
+            this.error = pesan;
+            this.detailError = pesan;
+            this.changesColor('yellow');
+
             if (this.config.isSendAjax && this.responseData != null) {
                 this.sendAjax(this.responseData);
             }
