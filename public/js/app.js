@@ -40025,7 +40025,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
       options: [],
 
-      radioOptions: ['DUMMY', 'GUID']
+      radioOptions: ['GUID', 'DUMMY']
 
     };
   },
@@ -41292,7 +41292,7 @@ var axios = __webpack_require__(17);
                 data = this.guid; //from computed value
             } else {
                 data = this.form.board_id;
-                if (resend) {
+                if (resend || this.form.board_id != '') {
                     data = this.oldForm.board_id;
                 }
             }
@@ -41513,7 +41513,8 @@ var axios = __webpack_require__(17);
 
                 // let filename = this.config.generatedFileName;
                 // this.download( this.downloadContent, filename );
-                this.generateFile();
+                var resend = true;
+                this.generateFile(resend);
             }
         },
         toggleHasError: function toggleHasError() {
@@ -67370,9 +67371,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: " col-md-6  col-xs-9 col-sm-9"
   }, [_c('b-form-radio-group', {
     attrs: {
-      "id": "radios1",
+      "id": "radios2",
       "options": _vm.radioOptions,
-      "name": "radioOpenions"
+      "name": "radioSendAjaxFile"
     },
     model: {
       value: (_vm.config.sendAjaxFileData),

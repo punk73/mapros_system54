@@ -99,10 +99,10 @@
                                 <label  class="col-md-3 control-label">DATA UNTUK DIKIRIM KE LUAR</label>	
                                 <div class=" col-md-6  col-xs-9 col-sm-9">
                                     <b-form-radio-group 
-                                        id="radios1" 
+                                        id="radios2" 
                                         v-model="config.sendAjaxFileData" 
                                         :options="radioOptions" 
-                                        name="radioOpenions"
+                                        name="radioSendAjaxFile"
                                     >
                                     </b-form-radio-group>
                                 </div>
@@ -229,7 +229,7 @@
                 options: [],
 
                 
-                radioOptions: ['DUMMY', 'GUID'],
+                radioOptions: ['GUID', 'DUMMY'],
 
 			}
 		},

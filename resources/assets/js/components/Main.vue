@@ -789,7 +789,7 @@
                     data = this.guid; //from computed value
                 }else{
                     data = this.form.board_id;
-                    if(resend){
+                    if(resend || this.form.board_id != ''){
                         data = this.oldForm.board_id;
                     }
                 }
@@ -1021,7 +1021,8 @@
 
                     // let filename = this.config.generatedFileName;
                     // this.download( this.downloadContent, filename );
-                    this.generateFile();
+                    var resend=true;
+                    this.generateFile(resend);
                 }
             },
 
