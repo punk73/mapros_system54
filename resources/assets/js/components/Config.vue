@@ -95,6 +95,19 @@
                                 </div>
                             </div>
 
+                            <div class="form-group" v-if='config.isSendAjax'>
+                                <label  class="col-md-3 control-label">DATA UNTUK DIKIRIM KE LUAR</label>	
+                                <div class=" col-md-6  col-xs-9 col-sm-9">
+                                    <b-form-radio-group 
+                                        id="radios1" 
+                                        v-model="config.sendAjaxFileData" 
+                                        :options="radioOptions" 
+                                        name="radioOpenions"
+                                    >
+                                    </b-form-radio-group>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <!-- <input type="checkbox" v-model="config.isShowDeleteButton"> -->
@@ -186,6 +199,7 @@
                     isGenerateFile : false,
                     generateFileData: 'DUMMY', //default value untuk radio button, bs jd diisi GUID
 					isSendAjax : false,
+                    sendAjaxFileData: 'DUMMY',
 					isShowDeleteButton : false,
 					isAutolinezero : false,
                     isTouchUp : false,
@@ -213,6 +227,9 @@
                 },
 
                 options: [],
+
+                
+                radioOptions: ['DUMMY', 'GUID'],
 
 			}
 		},

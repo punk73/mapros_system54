@@ -39954,6 +39954,19 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -39983,6 +39996,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         isGenerateFile: false,
         generateFileData: 'DUMMY', //default value untuk radio button, bs jd diisi GUID
         isSendAjax: false,
+        sendAjaxFileData: 'DUMMY',
         isShowDeleteButton: false,
         isAutolinezero: false,
         isTouchUp: false,
@@ -40009,7 +40023,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }
       },
 
-      options: []
+      options: [],
+
+      radioOptions: ['DUMMY', 'GUID']
 
     };
   },
@@ -41280,7 +41296,7 @@ var axios = __webpack_require__(17);
                     data = this.oldForm.board_id;
                 }
             }
-            console.log(data, this.config.generateFileData, 'generateFile');
+
             var enter = this.config.delimiter; //'';//'\r\n';
             this.downloadContent = data + enter + this.serialAutolinezero;
 
@@ -41426,7 +41442,7 @@ var axios = __webpack_require__(17);
 
             var board_id;
             // != GUID to avoid error on client that doesn't have the config
-            if (this.config.generateFileData != 'GUID') {
+            if (this.config.sendAjaxFileData != 'GUID') {
                 if (this.form.board_id != '') {
                     /*pertama kali jalan*/
                     board_id = this.form.board_id;
@@ -67346,7 +67362,26 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.config, "uri", $event.target.value)
       }
     }
-  })])]) : _vm._e(), _vm._v(" "), _c('div', {
+  })])]) : _vm._e(), _vm._v(" "), (_vm.config.isSendAjax) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label"
+  }, [_vm._v("DATA UNTUK DIKIRIM KE LUAR")]), _vm._v(" "), _c('div', {
+    staticClass: " col-md-6  col-xs-9 col-sm-9"
+  }, [_c('b-form-radio-group', {
+    attrs: {
+      "id": "radios1",
+      "options": _vm.radioOptions,
+      "name": "radioOpenions"
+    },
+    model: {
+      value: (_vm.config.sendAjaxFileData),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "sendAjaxFileData", $$v)
+      },
+      expression: "config.sendAjaxFileData"
+    }
+  })], 1)]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: " col-md-6 col-md-offset-3 col-xs-12"

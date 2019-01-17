@@ -793,7 +793,7 @@
                         data = this.oldForm.board_id;
                     }
                 }
-                console.log(data, this.config.generateFileData, 'generateFile')
+
                 var enter = this.config.delimiter; //'';//'\r\n';
                 this.downloadContent = data + enter + this.serialAutolinezero ;
 
@@ -945,7 +945,7 @@
 
                 var board_id;
                 // != GUID to avoid error on client that doesn't have the config
-                if(this.config.generateFileData != 'GUID'){
+                if(this.config.sendAjaxFileData != 'GUID'){
                     if ( this.form.board_id != '' ) {
                         /*pertama kali jalan*/
                         board_id = this.form.board_id;
