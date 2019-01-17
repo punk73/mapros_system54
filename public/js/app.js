@@ -41291,8 +41291,11 @@ var axios = __webpack_require__(17);
                 // kalau ini, resend atau bukan, sama aja
                 data = this.guid; //from computed value
             } else {
-                data = this.form.board_id;
-                if (resend || this.form.board_id != '') {
+                if (this.form.board_id != '') {
+                    /*pertama kali jalan*/
+                    data = this.form.board_id;
+                } else {
+                    /*pas mau resend data*/
                     data = this.oldForm.board_id;
                 }
             }
