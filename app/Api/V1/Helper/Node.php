@@ -1720,24 +1720,40 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				->where( function ($q) use ($scannerId, $lineprocessId){
 					$q->where('scanner_id', $scannerId )
 					->orWhere('lineprocess_id', $lineprocessId );
-				})->where('judgement', 'OK')
+				}) //->where('judgement', 'OK')
 				->orderBy('created_at', 'desc')
 				->first(); //it need to check the data;
+
+				if(!$isOk){
+					throw new StoreResourceFailedException('INSPECTION LOG BELUM ADA. MOHON PASTIKAN INSPECT OK.',[
+						'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) tidak ditemukan.",
+						'guid' => $guid,
+						'showResend' => true, //it's mandatory for the front end to keep the resend button;
+						'scanner_id' => $scannerId,
+						'lineprocess_id' => $lineprocessId,
+						'node' => json_decode($this, true),
+					]);
+				}
+
+				// data ada, baru check OK atau NG
+				if($isOk['judgement'] == "OK"){
+					$isOk = true;
+				}else{
+					// ini NG;
+					throw new StoreResourceFailedException('INSPECTION LOG NG. MOHON PASTIKAN INSPECT OK.',[
+						'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) tidak ditemukan.",
+						'guid' => $guid,
+						'showResend' => true, //it's mandatory for the front end to keep the resend button;
+						'scanner_id' => $scannerId,
+						'lineprocess_id' => $lineprocessId,
+						'node' => json_decode($this, true),
+					]);
+				}
 			} catch ( QueryException $th) {
 				//throw $th;
 				$isOk = true; //kalau InspectionLog throw exception, ini akan ok terus;
 			}
-			
-			if(!$isOk){
-				throw new StoreResourceFailedException('INSPECTION LOG NG ATAU BELUM ADA. MOHON PASTIKAN INSPECT OK.',[
-					'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) tidak ditemukan.",
-					'guid' => $guid,
-					'showResend' => true, //it's mandatory for the front end to keep the resend button;
-					'scanner_id' => $scannerId,
-					'lineprocess_id' => $lineprocessId,
-					'node' => json_decode($this, true),
-				]);
-			}
+
 		}else{
 			return true;
 		}
