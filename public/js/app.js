@@ -41305,6 +41305,8 @@ var axios = __webpack_require__(17);
 
             var filename = this.config.generatedFileName;
             this.download(this.downloadContent, filename);
+
+            return data; //dummy atau guid untuk kepentingan visualisasi
         },
         deleteOnClick: function deleteOnClick() {
             var _this3 = this;
@@ -41469,6 +41471,8 @@ var axios = __webpack_require__(17);
             }).catch(function (error) {
                 console.log('error', error);
             });
+
+            return value; // dummy atau guid
         },
         getInfo: function getInfo() {
             var modal = this.modal;
@@ -41495,30 +41499,30 @@ var axios = __webpack_require__(17);
             });
         },
         resendData: function resendData() {
-            var pesan = "RESENDING DATA ...";
+            var ajaxData = '';
+            var generateData = '';
+
+            if (this.config.isSendAjax && this.responseData != null) {
+                ajaxData = this.sendAjax(this.responseData);
+            }
+
+            if (this.config.isGenerateFile) {
+                var resend = true;
+                generateData = this.generateFile(resend);
+            }
+
+            var data = '';
+            if (ajaxData == generateData) {
+                data = ajaxData;
+            } else {
+                data = ajaxData + " " + generateData;
+            }
+
+            var pesan = "RESENDING DATA " + data;
             this.hasError = false;
             this.error = pesan;
             this.detailError = pesan;
             this.changesColor('yellow');
-
-            if (this.config.isSendAjax && this.responseData != null) {
-                this.sendAjax(this.responseData);
-            }
-
-            if (this.config.isGenerateFile) {
-                // if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
-                //     this.serialAutolinezero = 'NA';
-                // }
-
-                // var enter = this.config.delimiter; //'';//'\r\n';
-                // this.downloadContent = this.oldForm.board_id + enter + this.serialAutolinezero ;
-
-
-                // let filename = this.config.generatedFileName;
-                // this.download( this.downloadContent, filename );
-                var resend = true;
-                this.generateFile(resend);
-            }
         },
         toggleHasError: function toggleHasError() {
             var hasError = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
