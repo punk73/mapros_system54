@@ -16,6 +16,7 @@ use App\Repair;
 use App\Lineprocess;
 use App\ColumnSetting;
 use App\InspectionLog;
+use App\lineprocessInspect;
 use Illuminate\Database\QueryException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
@@ -1702,7 +1703,25 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	}
 
 	public function hasInspect(){
-		return $this->getLineprocess()->hasInspect();
+		try {
+			$lineprocessId = $this->getLineprocess()['id'];
+			$scannerId = $this->getScanner()['id'];
+			//code...
+			$hasInspect = LineprocessInspect::select('has_log')
+			->where('lineprocess_id', $lineprocessId )
+			->where('scanner_id', $scannerId )
+			->where('has_log', 1 ) //boolean, 1 or 0; 1 == aktif
+			->first();
+
+			if(!$hasInspect){
+				return false;
+			}else{
+				return true;
+			}
+		} catch ( QueryException $th) {
+			//throw $th;
+			return false;
+		}
 	}
 
 	public function InspectionLogOk(){
