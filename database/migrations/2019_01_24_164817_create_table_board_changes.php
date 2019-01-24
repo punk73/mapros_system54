@@ -16,9 +16,11 @@ class CreateTableBoardChanges extends Migration
         Schema::create('board_changes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('board_id', 50);
-            $table->string('unique_id', 120 );
+            $table->string('guid_master', 120 );
+            $table->string('guid_ticket', 120 );
             $table->string('board_id_new', 50);
             $table->string('nik', 30);
+            $table->string('type', 30); // mecha or board
             $table->timestamps();
         });
     }
