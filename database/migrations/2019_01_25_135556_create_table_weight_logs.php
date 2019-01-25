@@ -17,8 +17,10 @@ class CreateTableWeightLogs extends Migration
             $table->increments('id');
             $table->string('serial_no', 50);
             $table->unsignedInteger('master_id')->nullable();
-            $table->string('guid_master', 120 ); // guid
-            $table->float('weight');
+            $table->string('guid_master', 120 )->nullable(); // guid
+            $table->float('std_weight');
+            $table->float('meas_weight');
+            $table->float('tol');
             $table->timestamps();
         });
     }
