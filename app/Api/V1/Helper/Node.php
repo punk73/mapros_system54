@@ -1733,6 +1733,12 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$guid = $this->getUniqueId(); //it can be board_id or guid, depend 
 			$scannerId = $this->getScanner()['id'] ;
 			$lineprocessId = $this->getLineprocess()['id'];
+			// created at tidak akan ada jika source data dari external / API. 
+			// that's why we need to check isset
+			$createdAt = ( is_null( $this->getStep() ) || ( !isset($this->getStep()->created_at) ) ) 
+				? date("Y-m-d H:i:s") :
+				$this->getStep()->created_at->toDateTimeString();
+			
 			try {
 				//code...
 				$isOk = InspectionLog::where('unique_id', $guid )
@@ -1740,12 +1746,13 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 					$q->where('scanner_id', $scannerId )
 					->orWhere('lineprocess_id', $lineprocessId );
 				}) //->where('judgement', 'OK')
+				->where('created_at', '>=', $createdAt )
 				->orderBy('created_at', 'desc')
 				->first(); //it need to check the data;
 
 				if(!$isOk){
 					throw new StoreResourceFailedException('INSPECTION LOG BELUM ADA. MOHON PASTIKAN INSPECT OK.',[
-						'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) tidak ditemukan.",
+						'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) && created_at >= '{$createdAt}' tidak ditemukan.",
 						'guid' => $guid,
 						'showResend' => true, //it's mandatory for the front end to keep the resend button;
 						'scanner_id' => $scannerId,
@@ -1760,7 +1767,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				}else{
 					// ini NG;
 					throw new StoreResourceFailedException('INSPECTION LOG NG. MOHON PASTIKAN INSPECT OK.',[
-						'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) tidak ditemukan.",
+						'messages' => "data inspection log dengan guid = '{$guid}' && judgement = 'OK' && ( scanner id = '{$scannerId}' || lineprocess_id = '{$lineprocessId}' ) && created_at >= '{$createdAt}' tidak ditemukan.",
 						'guid' => $guid,
 						'showResend' => true, //it's mandatory for the front end to keep the resend button;
 						'scanner_id' => $scannerId,
@@ -1768,6 +1775,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 						'node' => json_decode($this, true),
 					]);
 				}
+
+				return $isOk;
 			} catch ( QueryException $th) {
 				//throw $th;
 				$isOk = true; //kalau InspectionLog throw exception, ini akan ok terus;
