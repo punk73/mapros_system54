@@ -33,6 +33,7 @@ use App\Api\V1\Traits\ColumnSettingTrait;
 use App\Api\V1\Traits\CriticalPartTrait;
 use App\Api\V1\Traits\RepairableTrait;
 use App\Api\V1\Traits\LocationTrait;
+use Carbon\Carbon;
 
 class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface, LocationInterface
 {
@@ -1735,8 +1736,9 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$lineprocessId = $this->getLineprocess()['id'];
 			// created at tidak akan ada jika source data dari external / API. 
 			// that's why we need to check isset
+			// if last IN created_at not found, created_at = 3 minutes ago;
 			$createdAt = ( is_null( $this->getStep() ) || ( !isset($this->getStep()->created_at) ) ) 
-				? date("Y-m-d H:i:s") :
+				? Carbon::now()->subMinutes(3)->toDateTimeString() :
 				$this->getStep()->created_at->toDateTimeString();
 			
 			try {
