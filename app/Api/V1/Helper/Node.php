@@ -335,6 +335,19 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				}
 			}
 
+			// untuk handle join LCD // // need to add checking for part module here
+			if($this->getModelType() == 'part'){
+				// join dan column setting tidak contain board;
+				if( $this->isJoin() && $this->isSettingContain('ticket') && $this->isSettingContain('part') ){
+					if ($guidParam == null ) {
+						throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN PANEL TERLEBIH DULU!",[
+							'note' => 'need guid ticket',
+							'node' => json_decode( $this, true ),
+						]);
+					}
+				}
+			}
+
 			if( ($this->getModelType() == 'ticket') && ($this->isJoin()) && ($this->isSettingContain('ticket')) && ($this->isSettingContain('master')) ){
 				if ($guidParam == null ) {
 					throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN MASTER DULU!",[
@@ -1180,7 +1193,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		foreach ($this->column_setting as $key => $setting ) {
 			$settingTable = str_singular( $setting['table_name'] );
 			if($settingTable == $modelType ){
-				$result = true;
+				return true;
 			}
 		}
 		return $result;
