@@ -41,8 +41,9 @@ class TestController extends Controller
 		$node = new Node($request->all());
 		return [
 			'isExists' => $node->isExists(),
-			'hasInspect' => $node->hasInspect(),
-			'InspectionLogOk' => $node->InspectionLogOk(),
+			// 'hasInspect' => $node->hasInspect(),
+			// 'InspectionLogOk' => $node->InspectionLogOk(),
+			'checkBoardDupplication' =>	$node->checkBoardDupplication(),
 			'node' =>	$node,
 		];
 
