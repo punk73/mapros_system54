@@ -137,6 +137,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$this->initCriticalPart();
 			// set the the locations data
 			$this->initLocations();
+			// cek board dupplication if setting('admin.check_board_dupplication') is true
+			$this->checkBoardDupplication();
 		}
 	}
 
@@ -387,7 +389,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			if($this->isJoin()){
 				/*this changes is to avoid same guid_master & guid_ticket in input 1 audio which is obiously data anomaly*/
 				if( $this->isSettingContain('master') ){
-			 		$this->setGuidMaster($guid);
+					$this->setGuidMaster($guid);
 				}else{
 					
 					// ini untuk memastikan, satu lcd tidak di scan dengan lebih dari satu dummy panel
