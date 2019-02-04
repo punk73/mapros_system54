@@ -8,4 +8,5 @@ interface CheckBoardDupplicationInterface {
     public function getScanner();
     public function getBoard();
     public function checkBoardDupplication();
+    public function isJoin();
 }

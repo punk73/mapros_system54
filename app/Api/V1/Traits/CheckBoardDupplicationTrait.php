@@ -8,7 +8,7 @@ use App\Mastermodel;
 trait CheckBoardDupplicationTrait {
 
 	public function checkBoardDupplication($pwbnameParam = null){
-        if(setting('admin.check_dupplication_board') && ($this->getModelType() == 'board') ){
+        if( setting('admin.check_dupplication_board') && ($this->getModelType() == 'board') && ($this->isJoin()) ){
             $isBoardExists = $this->isBoardExists();
             //jika board denga type seperti itu sudah ada, ga boleh scan lagi.
             if(!$isBoardExists){
