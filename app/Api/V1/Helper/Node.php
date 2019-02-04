@@ -263,7 +263,10 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			    $dummy_column = $setting->dummy_column;
 			    $name = str_singular($setting->table_name);
 			    $idType = $setting->name;
-			    $unique_column = 'guid_' . $name; //guid_ticket or guid_master
+				$unique_column = 'guid_' . $name; //guid_ticket or guid_master
+				if($name == 'part'){
+					$unique_column = 'guid_ticket'; //avoid error on part
+				}
 			}
 
 		}else{
@@ -309,7 +312,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			// untuk handle join LCD
 			if($this->getModelType() == 'part'){
 				// join dan column setting tidak contain board;
-				if( $this->isJoin() && $this->isSettingContain('ticket') && $this->isSettingContain('part') ){
+				if( $this->isJoin() && $this->isSettingContainParentOf('part') && $this->isSettingContain('part') ){
 					// cek apakah guid master sudah di generated based on ticket;
 					// untuk cek guid master sudah generate atau belum dari ticket, masih kesulitan, jadi diganti dengan
 					// cek apakah ini join & seting tidak contain board, karena kalau dia join dan tidak kontain board, maka pasti dia contain master; that's why langkah ini harus punya guidParam as guid_master nya;
@@ -342,7 +345,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			// untuk handle join LCD // // need to add checking for part module here
 			if($this->getModelType() == 'part'){
 				// join dan column setting tidak contain board;
-				if( $this->isJoin() && $this->isSettingContain('ticket') && $this->isSettingContain('part') ){
+				if( $this->isJoin() && $this->isSettingContainParentOf('part') && $this->isSettingContain('part') ){
 					if ($guidParam == null ) {
 						throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN PANEL TERLEBIH DULU!",[
 							'note' => 'need guid ticket',

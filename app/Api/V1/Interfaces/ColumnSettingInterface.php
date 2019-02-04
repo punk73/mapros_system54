@@ -17,4 +17,6 @@ interface ColumnSettingInterface {
 	public function getColumnSettingWhereCodePrefix($code);
 	/*return boolean wheter or not specific model_type has chilren*/
 	public function isSettingContainChildrenOf($parent = 'master');
+
+	public function isSettingContainParentOf($children = 'part');
 }
