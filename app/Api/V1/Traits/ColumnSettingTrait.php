@@ -75,4 +75,9 @@ trait ColumnSettingTrait {
 		return $result;
 	}
 
+	// we need to implement this method 
+	public function getChildren(){
+
+	}
+
 }

@@ -781,6 +781,10 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		if($this->getModelType() == 'master'){
 			$guid_master = $this->getGuidMaster();
 
+			/* 
+				we need to implement this->getChildren, to make it more simple.
+				so instead do it in 3 separate query, do it in in query instead. 
+			*/
 			$ticket = Ticket::distinct()
 			->where('guid_master', $guid_master )
 			->where('scanner_id', $this->scanner_id )
@@ -791,7 +795,15 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			->where('scanner_id', $this->scanner_id )
 			->count('board_id');
 
-			$totalChildren = $ticket + $board;
+			$part = Part::distinct()
+			->where('guid_master', $guid_master )
+			->where('scanner_id', $this->scanner_id )
+			->count('barcode');
+			
+			$totalChildren = $ticket + $board + $part;
+
+			$this->joinTimesLeft = $joinQty - $totalChildren;
+			return ( $totalChildren >= $joinQty );
 		}
 
 		if($this->getModelType() == 'ticket' && ($this->isSettingContain('master') === false ) ){
