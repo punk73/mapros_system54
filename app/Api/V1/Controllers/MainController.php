@@ -654,7 +654,7 @@ class MainController extends Controller
 		};
 
 		// cek master sudah punya anak atau belum, kalau belum, return view lagi;
-		if( (!$node->hasChildren()) && ( $node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
+		if( (!$node->hasChildren()) && ( $node->isSettingContainChildrenOf('master') ) && ($node->isSettingContain('master')) ){
 			throw new StoreResourceFailedException("view", [
 				'node' => json_decode($node, true ),
 				'nik' => $node->getNik(),

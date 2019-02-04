@@ -13,7 +13,7 @@ use App\Lineprocess;
 use App\LineprocessStart;
 use App\Repair;
 
-class RepairableTraitTest extends TestCase
+class CheckboardDupplicationTraitTest extends TestCase
 {
     protected $mock;
 
