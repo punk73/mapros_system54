@@ -641,7 +641,7 @@ class MainController extends Controller
 			}
 		}
 
-		if( ($node->isJoin()) && ( $node->isIn() == false ) && ($node->isSettingContain('ticket') || $node->isSettingContain('board') ) && ($node->isSettingContain('master')) ){
+		if( ($node->isJoin()) && ( $node->isIn() == false ) && $node->isSettingContainChildrenOf('master') && $node->isSettingContain('master') ){
 
 			$node->setStatus('IN');
 			$node->setJudge("OK"); //in harus selalu ok, no matter what;
