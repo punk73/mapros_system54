@@ -287,84 +287,39 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		$this->setIdType($idType);
 	}
 
+	public function getParent(){
+		$columnSettings = $this->getColumnSetting();
+		$tmpLevel = 999999; //max int harusnya
+		$result = null;
+		foreach ($columnSettings as $key => $setting) {
+			if($tmpLevel > $setting['level']){
+				$tmpLevel = $setting['level'];
+				$result = $setting;
+			}
+		}
+		return $result;
+	}
+
 	// method init guid di triggere dari constructor;
 	private function initGuid($guidParam){
 		// cek apakah ticket guid sudah di generate sebelumnya;
+		$guid = $this->getLastGuid(); //this method need update to acomodate master
+		$type = $this->getModelType();
+		$uniqueColumn = $this->getUniqueColumn();
+
+		if( $this->isJoin() && $this->isSettingContainParentOf($type) && $this->isSettingContain($type) ){
+			$parentName = (is_null( $this->getParent()) ) ? '' : $this->getParent()['name'];
+			if ($guidParam == null ) {
+				throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN {$parentName} TERLEBIH DULU!",[
+					'note' => 'need guid !!',
+					'node' => json_decode( $this, true ),
+				]);
+			}
+		}
+
 		if ($this->isGuidGenerated() ) {
-			$guid = $this->getLastGuid(); //this method need update to acomodate master
-
-			if($this->getModelType() == 'ticket'){
-				// join dan column setting tidak contain board;
-				if( $this->isJoin() && $this->isSettingContain('master') ){
-					// cek apakah guid master sudah di generated based on ticket;
-					// untuk cek guid master sudah generate atau belum dari ticket, masih kesulitan, jadi diganti dengan
-					// cek apakah ini join & seting tidak contain board, karena kalau dia join dan tidak kontain board, maka pasti dia contain master; that's why langkah ini harus punya guidParam as guid_master nya;
-					if ($guidParam == null ) {
-						throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN MASTER TERLEBIH DULU!",[
-							'note' => 'need guid master',
-							'node' => json_decode( $this, true ),
-						]);
-					}
-				}
-
-				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null;
-			}
-
-			// untuk handle join LCD
-			if($this->getModelType() == 'part'){
-				// join dan column setting tidak contain board;
-				if( $this->isJoin() && $this->isSettingContainParentOf('part') && $this->isSettingContain('part') ){
-					// cek apakah guid master sudah di generated based on ticket;
-					// untuk cek guid master sudah generate atau belum dari ticket, masih kesulitan, jadi diganti dengan
-					// cek apakah ini join & seting tidak contain board, karena kalau dia join dan tidak kontain board, maka pasti dia contain master; that's why langkah ini harus punya guidParam as guid_master nya;
-					if ($guidParam == null ) {
-						throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN PANEL TERLEBIH DULU!",[
-							'note' => 'need guid ticket',
-							'node' => json_decode( $this, true ),
-						]);
-					}
-				}
-
-				$guid = (!is_null($guid)) ? $guid['guid_ticket'] : null;
-			}
-
-			if($this->getModelType() == 'master'){
-				$guid = (!is_null($guid)) ? $guid['guid_master'] : null;
-			}
-
+			$guid = (!is_null($guid)) ? $guid[$uniqueColumn] : null;
 		}else {
-			// tadinya ga ada is join, something went wrong. so add the is join to verify 
-			if( ($this->getModelType()=='board') && ($this->isJoin()) && ($this->isSettingContain('board')) ){
-				if ($guidParam == null ) {
-					throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN TICKET ATAU MASTER DULU!",[
-						'note' => 'need guid_ticket or guid_master',
-						'node' => json_decode( $this, true ),
-					]);
-				}
-			}
-
-			// untuk handle join LCD // // need to add checking for part module here
-			if($this->getModelType() == 'part'){
-				// join dan column setting tidak contain board;
-				if( $this->isJoin() && $this->isSettingContainParentOf('part') && $this->isSettingContain('part') ){
-					if ($guidParam == null ) {
-						throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN PANEL TERLEBIH DULU!",[
-							'note' => 'need guid ticket',
-							'node' => json_decode( $this, true ),
-						]);
-					}
-				}
-			}
-
-			if( ($this->getModelType() == 'ticket') && ($this->isJoin()) && ($this->isSettingContain('ticket')) && ($this->isSettingContain('master')) ){
-				if ($guidParam == null ) {
-					throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN MASTER DULU!",[
-						'note' => 'BUTUH GUID MASTER',
-						'node' => json_decode( $this, true ),
-					]);
-				}
-			}
-
 			$guid = ($guidParam == null )?  $this->generateGuid() : $guidParam ;
 		}
 
@@ -765,32 +720,6 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			->where('guid_master', $guid )
 			->exists();
 		}
-	}
-
-	/* 
-
-	*/
-	public function getChildren($tableNameParam = null ){
-		$tableName = (is_null($tableNameParam)) ? $this->getModelType() . 's' : $tableNameParam;
-		$level = ColumnSetting::distinct()
-		->select(['level'])
-		->where('table_name', $tableName )
-		->first();
-
-		if(!$level){
-			throw new StoreResourceFailedException("{$tableName} not found as table name at column settings", [
-				'table_name' => $tableName
-			]);
-		}else{
-			$level = $level['level'];
-		}
-
-		$children = ColumnSetting::distinct()
-		->select(['table_name', 'level'])
-		->where('level','>', $level )
-		->get();
-
-		return $children;
 	}
 
 	/*

@@ -44,7 +44,7 @@ class TestController extends Controller
 			// 'hasInspect' => $node->hasInspect(),
 			// 'InspectionLogOk' => $node->InspectionLogOk(),
 			// 'checkBoardDupplication' =>	$node->checkBoardDupplication(),
-			// 'isBoardExists' =>	$node->isBoardExists(),
+			'getColumnSetting' =>	$node->getColumnSetting(),
 			'hasChildren' =>	$node->hasChildren(),
 			'getChildren' =>	$node->getChildren(),
 			'node' =>	$node,

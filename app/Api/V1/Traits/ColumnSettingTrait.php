@@ -99,4 +99,28 @@ trait ColumnSettingTrait {
 		return $children;
 	}
 
+	public function getParents($modelType = null ){
+		$tableName = (is_null($tableNameParam)) ? $this->getModelType() . 's' : $tableNameParam;
+		$level = ColumnSetting::distinct()
+		->select(['level'])
+		->where('table_name', $tableName )
+		->first();
+
+		if(!$level){
+			throw new StoreResourceFailedException("{$tableName} not found as table name at column settings", [
+				'table_name' => $tableName
+			]);
+		}else{
+			$level = $level['level'];
+		}
+
+		$parent = ColumnSetting::distinct()
+		->select(['table_name', 'level'])
+		->where('level','<', $level )
+		->orderBy('level', 'asc') //1,2,3 dst
+		->get();
+
+		return $parent;
+	}
+
 }

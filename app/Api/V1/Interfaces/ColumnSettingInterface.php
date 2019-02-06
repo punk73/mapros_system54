@@ -19,4 +19,8 @@ interface ColumnSettingInterface {
 	public function isSettingContainChildrenOf($parent = 'master');
 
 	public function isSettingContainParentOf($children = 'part');
+
+	public function getChildren($tableNameParam = null );
+
+	public function getParents($modelType = null );
 }
