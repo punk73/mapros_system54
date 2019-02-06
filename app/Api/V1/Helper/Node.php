@@ -778,7 +778,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		->first();
 
 		if(!$level){
-			throw new StoreResourceFailedException('{$tableName} not found as table name at column settings', [
+			throw new StoreResourceFailedException("{$tableName} not found as table name at column settings", [
 				'table_name' => $tableName
 			]);
 		}else{
@@ -796,65 +796,41 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	/*
 		bool @hasChildren() 
 		comparing current children qty with $this->lineprocess->joinQty
+		@20190206 this method is rewrited to efisiensi and become configurable 
+		table hierarcy;
 	*/
 	public function hasChildren(){
-		if($this->getModelType() == 'board' ){
+		if($this->getModelType() == 'board' || $this->getModelType() == 'part' ){
 			return false;
 		}
 
 		$joinQty = $this->getLineprocess()->join_qty;
 		$totalChildren = 0; //default value of total children
+		$children = $this->getChildren();
 
 		if($this->getModelType() == 'master' || $this->isSettingContain('master') ){
-			$guid_master = $this->getGuidMaster();
-			/* 
-				baik master, ataupun anak master, harus masuk kesini untuk hasChildren nya.
-				
-			*/
-			/* 
-				we need to implement this->getChildren, to make it more simple.
-				so instead do it in 3 separate query, do it in in query instead.989/pj 
-			*/
-			$ticket = Ticket::distinct()
-			->where('guid_master', $guid_master )
-			->where('scanner_id', $this->scanner_id )
-			->count('id');
-
-			$board = Board::distinct()
-			->where('guid_master', $guid_master )
-			->where('scanner_id', $this->scanner_id )
-			->count('id');
-
-			$part = Part::distinct()
-			->where('guid_master', $guid_master )	
-			// ->orWhere('guid_ticket', $guid_master );
-			//  tidak perlu pakai orWhere guid ticket, karena ini get chilren untuk master
-			->where('scanner_id', $this->scanner_id )
-			->count('id');
-			
-			$totalChildren = $ticket + $board + $part;
-
-			$this->joinTimesLeft = $joinQty - $totalChildren;
-			return ( $totalChildren >= $joinQty );
+			$uniqueColumn = 'guid_master';
+			$uniqueId = $this->getGuidMaster();
 		}
 
-		/* yg masuk kesini ticket, yg ga punya parent lg. (bukan anak dari master) */
 		if($this->getModelType() == 'ticket' ){
-			/* 
-				betul ga ini beneran anak dari ticket itu sendiri ??
-				jangan2 yg masuk kesini itu master yg sedang scan anaknya yaitu tickets;
-			*/
-			$boards = Board::distinct()
-			->where('guid_ticket', $this->getGuidTicket() )
-			->where('scanner_id', $this->scanner_id )
-			->count("board_id");
-
-			$parts = Part::distinct()
-			->where('guid_ticket', $this->getGuidTicket() )
-			->where('scanner_id', $this->scanner_id )
-			->count("barcode");
-
-			$totalChildren = $boards + $parts;
+			$uniqueColumn = 'guid_ticket';
+			$uniqueId = $this->getGuidTicket();
+		}
+		
+		foreach ($children as $key => $child) {
+			$table = $child['table_name'];
+			try {
+				//code...
+				$query = DB::table($table)
+				->where('scanner_id', $this->scanner_id )
+				->where($uniqueColumn , $uniqueId )
+				->count('id');
+			} catch ( QueryException $th ) {
+				$query = 0; //if query error, i'll just get 0
+			}
+			
+			$totalChildren += $query;
 		}
 
 		$this->joinTimesLeft = $joinQty - $totalChildren;
