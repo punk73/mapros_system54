@@ -39,6 +39,7 @@ class TestController extends Controller
 	public function store(Request $request){
 		
 		$node = new Node($request->all());
+		// $this->isJoin() && $this->isSettingContainParentOf($type) && $this->isSettingContain($type)
 		return [
 			'isExists' => $node->isExists(),
 			// 'hasInspect' => $node->hasInspect(),
@@ -46,7 +47,11 @@ class TestController extends Controller
 			// 'checkBoardDupplication' =>	$node->checkBoardDupplication(),
 			'getColumnSetting' =>	$node->getColumnSetting(),
 			'hasChildren' =>	$node->hasChildren(),
-			'getChildren' =>	$node->getChildren(),
+			'isJoin' => $node->isJoin(),
+			'isSettingContainParentOf' => $node->isSettingContainParentOf(),
+			'isSettingContain' => $node->isSettingContain(),
+			'type' => $node->getModelType(),
+			// 'getChildren' =>	$node->getChildren(),
 			'node' =>	$node,
 
 		];

@@ -306,8 +306,11 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		$guid = $this->getLastGuid(); //this method need update to acomodate master
 		$type = $this->getModelType();
 		$uniqueColumn = $this->getUniqueColumn();
-
-		if( $this->isJoin() && $this->isSettingContainParentOf($type) && $this->isSettingContain($type) ){
+		// $this->settingContain($type) tidak usah karena relasi antara
+		//  proses dengan columnSetting harusnya lineprocess_id-> column_settings->name,
+		// tapi aktual implementasi adalah lineprocess_id -> column_Settings_id
+		// we need to check it again later, if it causing bug or not;
+		if( $this->isJoin() && $this->isSettingContainParentOf($type) /* && $this->isSettingContain($type) */ ){
 			$parentName = (is_null( $this->getParent()) ) ? '' : $this->getParent()['name'];
 			$parentName = strtoupper($parentName);
 			if ($guidParam == null ) {
