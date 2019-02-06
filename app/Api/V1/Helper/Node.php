@@ -36,6 +36,7 @@ use App\Api\V1\Traits\RepairableTrait;
 use App\Api\V1\Traits\LocationTrait;
 use App\Api\V1\Traits\CheckBoardDupplicationTrait;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface, LocationInterface
 {
@@ -766,6 +767,32 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 	}
 
+	/* 
+
+	*/
+	public function getChildren($tableNameParam = null ){
+		$tableName = (is_null($tableNameParam)) ? $this->getModelType() . 's' : $tableNameParam;
+		$level = ColumnSetting::distinct()
+		->select(['level'])
+		->where('table_name', $tableName )
+		->first();
+
+		if(!$level){
+			throw new StoreResourceFailedException('{$tableName} not found as table name at column settings', [
+				'table_name' => $tableName
+			]);
+		}else{
+			$level = $level['level'];
+		}
+
+		$children = ColumnSetting::distinct()
+		->select(['table_name', 'level'])
+		->where('level','>', $level )
+		->get();
+
+		return $children;
+	}
+
 	/*
 		bool @hasChildren() 
 		comparing current children qty with $this->lineprocess->joinQty
@@ -778,9 +805,12 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		$joinQty = $this->getLineprocess()->join_qty;
 		$totalChildren = 0; //default value of total children
 
-		if($this->getModelType() == 'master'){
+		if($this->getModelType() == 'master' || $this->isSettingContain('master') ){
 			$guid_master = $this->getGuidMaster();
-
+			/* 
+				baik master, ataupun anak master, harus masuk kesini untuk hasChildren nya.
+				
+			*/
 			/* 
 				we need to implement this->getChildren, to make it more simple.
 				so instead do it in 3 separate query, do it in in query instead.989/pj 
@@ -788,17 +818,19 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			$ticket = Ticket::distinct()
 			->where('guid_master', $guid_master )
 			->where('scanner_id', $this->scanner_id )
-			->count('ticket_no');
+			->count('id');
 
 			$board = Board::distinct()
 			->where('guid_master', $guid_master )
 			->where('scanner_id', $this->scanner_id )
-			->count('board_id');
+			->count('id');
 
 			$part = Part::distinct()
-			->where('guid_master', $guid_master )
+			->where('guid_master', $guid_master )	
+			// ->orWhere('guid_ticket', $guid_master );
+			//  tidak perlu pakai orWhere guid ticket, karena ini get chilren untuk master
 			->where('scanner_id', $this->scanner_id )
-			->count('barcode');
+			->count('id');
 			
 			$totalChildren = $ticket + $board + $part;
 
@@ -806,7 +838,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			return ( $totalChildren >= $joinQty );
 		}
 
-		if($this->getModelType() == 'ticket' && ($this->isSettingContain('master') === false ) ){
+		/* yg masuk kesini ticket, yg ga punya parent lg. (bukan anak dari master) */
+		if($this->getModelType() == 'ticket' ){
 			/* 
 				betul ga ini beneran anak dari ticket itu sendiri ??
 				jangan2 yg masuk kesini itu master yg sedang scan anaknya yaitu tickets;
@@ -822,21 +855,6 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			->count("barcode");
 
 			$totalChildren = $boards + $parts;
-		}else{
-			// ini ticket yg contain master. ticket as children
-			$guid_master = $this->getGuidMaster();
-
-			$ticket = Ticket::distinct()
-			->where('guid_master', $guid_master )
-			->where('scanner_id', $this->scanner_id )
-			->count('ticket_no');
-
-			$board = Board::distinct()
-			->where('guid_master', $guid_master )
-			->where('scanner_id', $this->scanner_id )
-			->count('board_id');
-
-			$totalChildren = $ticket + $board;
 		}
 
 		$this->joinTimesLeft = $joinQty - $totalChildren;
