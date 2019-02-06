@@ -783,7 +783,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 			/* 
 				we need to implement this->getChildren, to make it more simple.
-				so instead do it in 3 separate query, do it in in query instead. 
+				so instead do it in 3 separate query, do it in in query instead.989/pj 
 			*/
 			$ticket = Ticket::distinct()
 			->where('guid_master', $guid_master )
@@ -1814,6 +1814,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			} catch ( QueryException $th) {
 				//throw $th;
 				$isOk = true; //kalau InspectionLog throw exception, ini akan ok terus;
+				return $isOk;
 			}
 
 		}else{
