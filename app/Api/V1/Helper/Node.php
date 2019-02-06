@@ -309,6 +309,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 		if( $this->isJoin() && $this->isSettingContainParentOf($type) && $this->isSettingContain($type) ){
 			$parentName = (is_null( $this->getParent()) ) ? '' : $this->getParent()['name'];
+			$parentName = strtoupper($parentName);
 			if ($guidParam == null ) {
 				throw new StoreResourceFailedException("INI PROSES JOIN, TOLONG SCAN {$parentName} TERLEBIH DULU!",[
 					'note' => 'need guid !!',
