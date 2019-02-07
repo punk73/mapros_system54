@@ -45,7 +45,6 @@ class TestController extends Controller
 			'isJoin' => $node->isJoin(),
 			'last_guid' => $node->getLastGuid(),
 			'current_guid'=> $request->guid,
-			'initGuid' => $node->initGuid($request->guid),
 			'node' =>	$node,
 		];
 

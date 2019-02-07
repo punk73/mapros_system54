@@ -301,7 +301,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	}
 
 	// method init guid di triggere dari constructor;
-	public function initGuid($guidParam){
+	private function initGuid($guidParam){
 		// cek apakah ticket guid sudah di generate sebelumnya;
 		$guid = $this->getLastGuid(); //this method need update to acomodate master
 		$type = $this->getModelType();
