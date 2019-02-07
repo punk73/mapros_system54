@@ -39,21 +39,14 @@ class TestController extends Controller
 	public function store(Request $request){
 		
 		$node = new Node($request->all());
-		// $this->isJoin() && $this->isSettingContainParentOf($type) && $this->isSettingContain($type)
+		$guid = "004F4B7B-15D1-40C2-9530-E9BC95CBC625";
 		return [
-			'isExists' => $node->isExists(),
-			// 'hasInspect' => $node->hasInspect(),
-			// 'InspectionLogOk' => $node->InspectionLogOk(),
-			// 'checkBoardDupplication' =>	$node->checkBoardDupplication(),
-			'getColumnSetting' =>	$node->getColumnSetting(),
-			'hasChildren' =>	$node->hasChildren(),
+			'modelType' => $node->getModelType(),
 			'isJoin' => $node->isJoin(),
-			'isSettingContainParentOf' => $node->isSettingContainParentOf(),
-			'isSettingContain' => $node->isSettingContain(),
-			'type' => $node->getModelType(),
-			// 'getChildren' =>	$node->getChildren(),
+			'last_guid' => $node->getLastGuid(),
+			'current_guid'=> $request->guid,
+			'initGuid' => $node->initGuid($request->guid),
 			'node' =>	$node,
-
 		];
 
 	}

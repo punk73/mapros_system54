@@ -78,8 +78,8 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	protected $id_type; //board, panel, master or mecha;
 	protected $step; // step is contain data in table boads, tickets, or master based on modeltype
 	//protected $column_setting; //move to column setting trait
-	protected $unique_column; // its contain board id, guid_ticket, or guid_master based model type
-	protected $unique_id; // its contain board id, guid_ticket, or guid_master based model type for repair purposes
+	public $unique_column; // its contain board id, guid_ticket, or guid_master based model type
+	public $unique_id; // its contain board id, guid_ticket, or guid_master based model type for repair purposes
 	protected $parameter;
 	protected $key; //array index of sequence
 	protected $symptom;
@@ -301,7 +301,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	}
 
 	// method init guid di triggere dari constructor;
-	private function initGuid($guidParam){
+	public function initGuid($guidParam){
 		// cek apakah ticket guid sudah di generate sebelumnya;
 		$guid = $this->getLastGuid(); //this method need update to acomodate master
 		$type = $this->getModelType();
@@ -322,11 +322,15 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		}
 
 		if ($this->isGuidGenerated() ) {
+			if($this->getModelType() == 'board' || $this->getModelType() == 'part' ){
+				$parent = $this->getParent();
+				$tableName = $parent['table_name'];
+				$uniqueColumn = 'guid_' . str_singular( $tableName ); //guid_ticket or guid_master
+			}
 			$guid = (!is_null($guid)) ? $guid[$uniqueColumn] : null;
 		}else {
 			$guid = ($guidParam == null )?  $this->generateGuid() : $guidParam ;
 		}
-
 		// it can triggered after scanner & model has been set; 
 		if ($this->getModelType() == 'ticket' ) {
 			if($guidParam != null){
@@ -349,47 +353,60 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 
 		else /*($this->getModelType() == 'board')*/{
 			// cek column setting, this step is join atau bkn,
+			// yg masuk kesini pasti board, atau part
 			if($this->isJoin()){
 				/*this changes is to avoid same guid_master & guid_ticket in input 1 audio which is obiously data anomaly*/
-				if( $this->isSettingContain('master') ){
-					$this->setGuidMaster($guid);
-				}else{
-					
-					// ini untuk memastikan, satu lcd tidak di scan dengan lebih dari satu dummy panel
-					if($guidParam != null){
-						if($this->getModelType() == 'part'){
-							
-							// jika lastGuid != currentGuid
-							$lastGuid = $guid;
-							$currentGuid = $guidParam;
-
-							$lastDummy = Ticket::distinct('ticket_no')
-							->where( 'guid_ticket', $lastGuid )
+				$parent = $this->getParent();
+				// ini untuk memastikan, satu lcd tidak di scan dengan lebih dari satu dummy panel
+				if($guidParam != null){
+					// jika lastGuid != currentGuid
+					$lastGuid = $guid;
+					$currentGuid = $guidParam;
+					$parentName = $parent['table_name'];
+					$parentDummyColumn = $parent['dummy_column'];
+					$parentUniqueColumn = 'guid_' . str_singular($parentName); //guid_master or guid_ticket
+					$className = 'App\\' . studly_case(str_singular($parentName));
+					$idType = $this->getIdType();
+					$idType = strtoupper($idType);
+					// $this->wawa = [$lastGuid, $currentGuid ];
+					if(class_exists($className)) {
+						$className = new $className;
+						// jika last guid & current guid beda, berarti ada yang salah.
+						if($lastGuid != $currentGuid){
+							$lastDummy = $className->distinct($parentDummyColumn)
+							->where( $parentUniqueColumn , $lastGuid )
 							->orderBy('created_at', 'desc')
 							->first();
-							
+
 							if($lastDummy){
-								$lastDummy = $lastDummy['ticket_no'];
+								$lastDummy = $lastDummy[$parentDummyColumn];
 							}
 
-							$currDummy = Ticket::distinct('ticket_no')
-							->where( 'guid_ticket', $currentGuid )
+							$currDummy = $className->distinct($parentDummyColumn)
+							->where( $parentUniqueColumn , $currentGuid )
 							->orderBy('created_at', 'desc')
 							->first();
 
 							if($currDummy){
-								$currDummy = $currDummy['ticket_no'];
+								$currDummy = $currDummy[$parentDummyColumn];
 							}
-
-							if($lastGuid != $currentGuid){
-								throw new StoreResourceFailedException("{$this->getDummyId()} sudah join dengan dummy {$lastDummy}!!! dummy {$currDummy} harus lanjut dengan LCD lain!!", [
-									'last_dummy' => $lastDummy,
-									'current_dummy' => $currDummy
-								]);
-							}
-						}	
+						
+							throw new StoreResourceFailedException("{$idType} {$this->getDummyId()} sudah join dengan dummy {$lastDummy}!!! dummy {$currDummy} harus lanjut dengan {$idType} lain!!", [
+								'last_dummy' => $lastDummy,
+								'current_dummy' => $currDummy,
+								'parentDummyColumn' => $parentDummyColumn,
+								'parentUniqueColumn' => $parentUniqueColumn,
+								'last_guid' => $lastGuid,
+								'current_guid' => $currentGuid
+							]);
+						}
 					}
 
+				}
+
+				if( $this->isSettingContain('master') ){
+					$this->setGuidMaster($guid);
+				}else{
 					$this->setGuidTicket($guid);
 				}
 
@@ -506,7 +523,7 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 	}
 
 	// we need to changes this method to acomodate the masters 
-	private function getLastGuid(){
+	public function getLastGuid(){
 		if (is_null($this->dummy_column)) {
 			throw new StoreResourceFailedException("dummy_column id is null", [
 				'node' => json_decode($this, true),
@@ -832,10 +849,13 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 				->where( $this->dummy_column, $this->dummy_id )
 				->where('serial_no', null )
 				->exists();
-		}else if ($paramType == 'part'){
+		}else { //untuk mengakomodir board & parts, yg parent nya bs ticket atau master;
 			return $this->model
 				->where( $this->dummy_column, $this->dummy_id )
-				->where('guid_master', null )
+				->where(function ($q){
+					$q->where('guid_master', '!=', null )
+					->orWhere('guid_ticket', '!=', null );
+				})
 				->exists();
 		}
 
