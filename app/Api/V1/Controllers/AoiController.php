@@ -18,7 +18,7 @@ class AoiController extends Controller
 		])->where('barcode', $request->board_id );
 		
 		if(!$aoi->first() ){
-			throw new StoreResourceFailedException("Data '{$request->board_id}' tidak ditemukan di SMT!!", [
+			throw new StoreResourceFailedException("Data '{$request->board_id}' NG atau tidak ditemukan di SMT!!", [
 				'message' => 'data tidak ditemukan pada table AOI!'
 			]);
 		}
