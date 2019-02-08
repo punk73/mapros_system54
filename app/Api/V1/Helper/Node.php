@@ -23,6 +23,7 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 use App\Guid;
 use App\Master;
 use GuzzleHttp\Client;
+use Guzzle\Http\Exception\BadResponseException;
 use App\Endpoint;
 use App\Symptom;
 use App\Api\V1\Interfaces\ColumnSettingInterface;
@@ -1259,14 +1260,27 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		$url = $endpoint->url; //'http://localhost/mapros_system54/public/api/aoies';
 		$client = new Client();
 		// $url = "https://api.github.com/repos/guzzle/guzzle";
-        $res = $client->get($url, [	
-    		'query' => [
-    			'board_id'	=> $this->parameter['board_id']
-    		],
-	 		'headers' => ['Content-type' => 'application/json'],
-        ]);
-
-        if( $res->getStatusCode() != 200 ){
+		try {
+			$res = $client->get($url, [	
+				'query' => [
+					'board_id'	=> $this->parameter['board_id']
+				],
+				'headers' => ['Content-type' => 'application/json'],
+				// 'http_errors' => false,
+			]);
+		} catch ( \GuzzleHttp\Exception\ClientException  $e) {
+			// return $e->getMessage();
+			$response = $e->getResponse();
+			$responseBodyAsString = $response->getBody()->getContents();
+			$arrResponse = json_decode($responseBodyAsString, true );
+			$stringRes = (isset($arrResponse['message'])) ? $arrResponse['message'] : $responseBodyAsString ;
+			throw new StoreResourceFailedException( $stringRes , [
+				'board_id' => $this->parameter['board_id']
+			]);
+		}
+        
+        if( $res->getStatusCode() !== 200 ){
+			// return $res->getStatusCode();
         	throw new StoreResourceFailedException("Something wrong to your external code data. CALL IT!", [
         		'status_code' => $res->getStatusCode(),
         		'body' => $res->getBody()

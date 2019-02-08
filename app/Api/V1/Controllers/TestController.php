@@ -6,6 +6,8 @@ use Config;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Guzzle\Http\Exception\BadResponseException;
+use Dingo\Api\Exception\StoreResourceFailedException;
 use Illuminate\Http\Request;
 use App\Sequence;
 use App\Api\V1\Traits\LoggerHelper;
@@ -29,7 +31,35 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		return 'hai';
+		/* $client = new Client;
+		try {
+			$client->get('http://google.com/nosuchpage');    
+		}
+		catch (\GuzzleHttp\Exception\ClientException $e) {
+			$response = $e->getResponse();
+			$responseBodyAsString = $response->getBody()->getContents();
+			return $responseBodyAsString;
+		}
+
+		return $client; */
+
+		$url = 'http://localhost/mapros_system54/public/api/aoies';
+		$client = new Client();
+		// $url = "https://api.github.com/repos/guzzle/guzzle";
+		try {
+			$res = $client->get($url, [	
+				'query' => [
+					'board_id'	=> $request->board_id
+				],
+				'headers' => ['Content-type' => 'application/json'],
+				// 'http_errors' => false,
+			]);
+		} catch ( \GuzzleHttp\Exception\ClientException  $e) {
+			// return $e->getMessage();
+			$response = $e->getResponse();
+			$responseBodyAsString = $response->getBody()->getContents();
+			throw new StoreResourceFailedException('something went wrong', []);
+		}
 	}
 
 	public function testNode(){
@@ -45,7 +75,7 @@ class TestController extends Controller
 			'isJoin' => $node->isJoin(),
 			'last_guid' => $node->getLastGuid(),
 			'current_guid'=> $request->guid,
-			'node' =>	$node,
+			'node' =>	$node->procedureGetStepExternal(),
 		];
 
 	}
