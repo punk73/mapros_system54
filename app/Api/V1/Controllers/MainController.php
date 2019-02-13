@@ -31,7 +31,8 @@ class MainController extends Controller
 		'judge',
 		'symptom',
 		'critical_parts', //new due to critical part scan;
-		'locations' //added for touch up process
+		'locations', //added for touch up process
+		'isRework'
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;
@@ -149,13 +150,6 @@ class MainController extends Controller
 	}
 
 	private function runNode($parameter){
-		/*if ( strlen($parameter['board_id']) == 16 ) {
-			if ( $parameter['board_id'][6] != 'A' ) {
-				throw new StoreResourceFailedException("TOLONG SCAN BARCODE SIDE A !!", [
-					'PARAMETER' => $parameter
-				]);
-			}
-		}*/
 
 		$node = new Node($parameter);
 		// return $node;
