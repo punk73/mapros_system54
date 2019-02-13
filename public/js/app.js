@@ -39960,13 +39960,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -40011,7 +40004,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         esdUri: 'http://136.198.117.78/esd/api/esd',
         model_header_id: null,
         pwb_id: [],
-        include_symptom_id: []
+        include_symptom_id: [],
+
+        isRework: false
       },
 
       debug: {
@@ -40744,7 +40739,8 @@ var axios = __webpack_require__(17);
                 judge: 'OK', //default nya OK
                 symptom: [], //default value for symptom is empty array;
                 critical_parts: [], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
-                locations: []
+                locations: [],
+                isRework: false //default value
             },
 
             isNG: false,
@@ -40814,7 +40810,8 @@ var axios = __webpack_require__(17);
                 toggleNgMode: '',
                 jumlahJoin: 1, //default value of jumlah join
                 esdUri: '',
-                checkEsd: ''
+                checkEsd: '',
+                isRework: false // i'll be overriden by config
             },
 
             serialAutolinezero: '', //default value of serial
@@ -40864,6 +40861,12 @@ var axios = __webpack_require__(17);
             }
             this.form.judge = judge;
         },
+
+
+        'config.isRework': function configIsRework(newVal, oldVal) {
+            this.form.isRework = newVal;
+        },
+
         computedShowCritical: function computedShowCritical(newVal, oldVal) {
             if (newVal == true) {
                 this.form.critical_parts = [''];
@@ -40922,6 +40925,13 @@ var axios = __webpack_require__(17);
             }
 
             return data;
+        },
+        form_title: function form_title() {
+            if (this.config.isRework) {
+                return "PLEASE SCAN DATA REWORK";
+            } else {
+                return "PLEASE SCAN DATA";
+            }
         }
     },
 
@@ -53709,7 +53719,7 @@ exports.push([module.i, "/* Add support for fixed layout table */\ntable.b-table
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(11)();
-exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.txt-color {\n    color: #ffffff;\n}\n.bg-color {\n    background-color: #edf108;\n}\nh1, h2, h3, h4 {\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.no-bottom-margin {\n    margin-bottom: auto;\n}\n.no-left-margin {\n    margin-left: 0px;\n}\n", ""]);
+exports.push([module.i, "\n.custom-color{\n    background-image: none!important;\n    /*background-color: yellow !important;*/\n}\n.black {\n    border-color: #636B6F;\n    border-width: 2px;\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.txt-color {\n    color: #ffffff;\n}\n.bg-color {\n    background-color: #edf108;\n}\n.panel-body-color {\n    background-color: gold;\n}\nh1, h2, h3, h4 {\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n.no-bottom-margin {\n    margin-bottom: auto;\n}\n.no-left-margin {\n    margin-left: 0px;\n}\n", ""]);
 
 /***/ }),
 /* 226 */
@@ -66306,7 +66316,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "panel panel-default"
   }, [_c('div', {
-    staticClass: "panel-body"
+    class: {
+      'panel-body': true, 'panel-body-color': _vm.config.isRework
+    }
   }, [_c('form', {
     staticClass: "form-horizontal",
     attrs: {
@@ -66318,7 +66330,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         return _vm.onSubmit($event)
       }
     }
-  }, [_vm._m(0), _vm._v(" "), _c('div', {
+  }, [_c('div', {
+    staticClass: "form-group text-center"
+  }, [_c('h3', [_c('strong', [_vm._v(_vm._s(_vm.form_title))])])]), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label",
@@ -66712,11 +66726,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "toggleModal": _vm.toggleModal
     }
   }) : _vm._e()], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "form-group text-center"
-  }, [_c('h3', [_c('strong', [_vm._v("PLEASE SCAN DATA")])])])
-}]}
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -67542,6 +67552,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "config": _vm.config
     }
   })], 1) : _vm._e(), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.isRework),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isRework", $$v)
+      },
+      expression: "config.isRework"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isRework"
+    }
+  }, [_vm._v(" REWORK ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"
