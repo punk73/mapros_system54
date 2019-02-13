@@ -32,20 +32,6 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="form-group">
-                                <label  class="col-md-3 control-label">Jumlah Join</label>
-                                <div class="col-md-9">
-                                    <input-number
-                                        :step="1"
-                                        :min="1"
-                                        :max="10"
-                                        v-model='config.jumlahJoin'
-                                        controls
-                                        inline
-                                    ></input-number>
-                                </div>
-                            </div> -->
-
                             <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <!-- <input type="checkbox" id="showSolder" v-model="config.showSolder"> -->
@@ -155,6 +141,13 @@
                                 <location-config :config="config" />
                             </div>
 
+                            <div class="form-group">
+                                <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                                    <toggle-button v-model="config.isRework" :sync='true' :color="'#2ab27b'" :labels="true"/>
+                                    <label for="isRework"> REWORK </label>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-9 col-md-offset-3">
                                     <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
@@ -215,6 +208,8 @@
                     model_header_id : null,
                     pwb_id : [],
                     include_symptom_id:[],
+
+                    isRework : false,
 				},
 
                 debug : {

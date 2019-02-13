@@ -5,10 +5,10 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     
-                    <div class="panel-body">
+                    <div :class="{'panel-body': true, 'panel-body-color': config.isRework }">
                         <form class="form-horizontal" role="form" @submit.prevent='onSubmit' >
                             <div class="form-group text-center">
-                                <h3><strong>PLEASE SCAN DATA</strong></h3>
+                                <h3><strong>{{ form_title }}</strong></h3>
                             </div>
 
                             <div class="form-group">
@@ -227,6 +227,7 @@
                     symptom: [], //default value for symptom is empty array;
                     critical_parts:[], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
                     locations:[],
+                    isRework : false, //default value
                 },
 
                 isNG : false,
@@ -297,6 +298,7 @@
                     jumlahJoin:1, //default value of jumlah join
                     esdUri: '',
                     checkEsd:'',
+                    isRework : false, // i'll be overriden by config
                 },
 
                 serialAutolinezero:'', //default value of serial
@@ -347,6 +349,10 @@
                     delete this.form.symptom;
                 }
                 this.form.judge = judge;
+            },
+
+            'config.isRework': function(newVal, oldVal ){
+                this.form.isRework = newVal;
             },
 
             computedShowCritical(newVal, oldVal){
@@ -413,6 +419,14 @@
                 }
 
                 return data;
+            },
+
+            form_title(){
+                if(this.config.isRework){
+                    return "PLEASE SCAN DATA REWORK";
+                }else{
+                    return "PLEASE SCAN DATA";
+                }
             },
         },
 
@@ -1096,6 +1110,10 @@
 
     .bg-color {
         background-color: #edf108;
+    }
+
+    .panel-body-color {
+        background-color: gold;
     }
 
     h1, h2, h3, h4 {
