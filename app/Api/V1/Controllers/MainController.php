@@ -178,7 +178,7 @@ class MainController extends Controller
 		if(!$node->isExists()){ //board null
 			// kalau sequence pertama atau pengaturan prev_node_checking false,
 			// maka insert; gausah cek data sebelumnya dulu;
-			if ($node->isFirstSequence() || (setting('admin.prev_node_checking') == false) ) {
+			if ($node->isFirstSequence() || (setting('admin.prev_node_checking') == false) || $node->isRework() ) {
 				// langsung input;
 				$node->setStatus('IN');
 				$node->setJudge('OK'); //kalau IN mah ga bisa NG
@@ -567,17 +567,20 @@ class MainController extends Controller
 			if( ($node->isFirstSequence() == false) ){
 				if( setting('admin.prev_node_checking') )
 				{
-					$prevNode = $node->prev();
-					// cek prev node sudah out atau belum
-					if ($prevNode->getStatus() !== 'OUT') {
-						// jika get status bukan in atau out maka throw error
-						$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
-						throw new StoreResourceFailedException("DATA BELUM DI SCAN DI PROSES SEBELUMNYA. ( ".$step." )", [
-							'node' => json_decode( $prevNode, true )
-						]);
+					/* kalau bukan rework, baru check ke belakang. kalau rework, gausah. */
+					if( $node->isRework() == false ){
+						$prevNode = $node->prev();
+						// cek prev node sudah out atau belum
+						if ($prevNode->getStatus() !== 'OUT') {
+							// jika get status bukan in atau out maka throw error
+							$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+							throw new StoreResourceFailedException("DATA BELUM DI SCAN DI PROSES SEBELUMNYA. ( ".$step." )", [
+								'node' => json_decode( $prevNode, true )
+							]);
+						}
+						// go back to where it is;
+						$node = $node->next();
 					}
-					// go back to where it is;
-					$node = $node->next();
 				}
 			}
 		}
@@ -620,17 +623,20 @@ class MainController extends Controller
 			if( ($node->isFirstSequence() == false) ){
 				if( setting('admin.prev_node_checking') )
 				{
-					$prevNode = $node->prev();
-					// cek prev node sudah out atau belum
-					if ($prevNode->getStatus() !== 'OUT') {
-						// jika get status bukan in atau out maka throw error
-						$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
-						throw new StoreResourceFailedException("DATA BELUM DI SCAN DI PROSES SEBELUMNYA. ( ".$step." )", [
-							'node' => json_decode( $prevNode, true )
-						]);
+					/* kalau bukan rework, baru check ke belakang. kalau rework, gausah. */
+					if( $node->isRework() == false ){
+						$prevNode = $node->prev();
+						// cek prev node sudah out atau belum
+						if ($prevNode->getStatus() !== 'OUT') {
+							// jika get status bukan in atau out maka throw error
+							$step = ( is_null($prevNode->getLineprocess()) ) ? '': $prevNode->getLineprocess()['name'];
+							throw new StoreResourceFailedException("DATA BELUM DI SCAN DI PROSES SEBELUMNYA. ( ".$step." )", [
+								'node' => json_decode( $prevNode, true )
+							]);
+						}
+						// go back to where it is;
+						$node = $node->next();
 					}
-					// go back to where it is;
-					$node = $node->next();
 				}
 			}
 		}

@@ -69,13 +69,10 @@ class TestController extends Controller
 	public function store(Request $request){
 		
 		$node = new Node($request->all());
-		$guid = "004F4B7B-15D1-40C2-9530-E9BC95CBC625";
+		
 		return [
-			'modelType' => $node->getModelType(),
-			'isJoin' => $node->isJoin(),
-			'last_guid' => $node->getLastGuid(),
-			'current_guid'=> $request->guid,
-			'node' =>	$node->procedureGetStepExternal(),
+			'isRework' => $node->isRework(),
+			'isGuidGenerated' => $node->isGuidGenerated(),
 		];
 
 	}
