@@ -1788,10 +1788,10 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 			return false; //kalau ga ada parameter isRework, pasti return false;
 			// artinya ini bukan proses rework;
 		}
-		
+
 		/* ini return true, ketika client kirim parameter rework, dan guid belum di generate.
 		method ini digunakan untuk menentukan apakah kita perlu check ke belakang atau tidak
 		pada saat kondisi rework. */
-		return ($this->parameter['isRework'] && $this->isGuidGenerated() ) ;
+		return ($this->parameter['isRework'] && ($this->isGuidGenerated() == false ) ) ;
 	}
 }
