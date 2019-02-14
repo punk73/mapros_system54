@@ -119,4 +119,11 @@ class NewNodeTest extends TestCase
         $result = $node->VerifyModelnameAndLotnoTicketMaster($guidTicket, $guidMaster, true );
         $this->assertNull($result);
     }
+
+    public function testIsReworkwithNoIsReworkParam(){
+        $node = new Node(null, true );
+        /* it'll false if no is rework parameter is specify */
+        $this->assertFalse( $node->isRework() );
+    }
+
 }
