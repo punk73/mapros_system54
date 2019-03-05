@@ -26,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('TCG\Voyager\Http\Controllers\Controller', 
+            'App\Vendor\Controllers\Controller');
     }
 }
