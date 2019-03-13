@@ -74,7 +74,7 @@
                                                     class="form-control {{-- select2-taggable --}}"
                                                     name="process_select[]" 
                                                     multiple
-                                                    data-placeholder="Select a state"
+                                                    data-placeholder="-- Choose Process --"
                                                     data-route="{{ route('voyager.'.str_slug( 'lineprocesses' ).'.store') }}"
                                                     data-label="Process"
                                                     data-error-message="{{__('voyager::bread.error_tagging')}}"
@@ -95,7 +95,8 @@
                                                                 value="{{ $relationshipOption->id }}" 
                                                                 @if(in_array($relationshipOption->id, $selected_values))
                                                                   {{ 'selected="selected"' }}
-                                                                @endif>
+                                                                @endif
+                                                            >
                                                                 {{ $relationshipOption->name }}
                                                             </option>
                                                         @endforeach
@@ -214,20 +215,29 @@
 
                 $('#confirm_delete_modal').modal('hide');
             });
+
             $('[data-toggle="tooltip"]').tooltip();
 
-            let unchangeableorder = function (evt) {
+            /* taggable select box for process */
+            $('#process_select').select2();
+
+            $("select").on("select2:select", function (evt) {
                 var element = evt.params.data.element;
                 var $element = $(element);
                 
                 $element.detach();
                 $(this).append($element);
-                $(this).trigger("change");
-            }
-            /* taggable select box for process */
-            $('#process_select').select2();
 
-            $("select").on("select2:select", unchangeableorder );
+                let val = $(this).val();
+                if(val[0] == ""){
+                    val.splice(0, 1)
+                }
+                let str = val.toString();
+                let process = $('[name="process"]').val(str)
+                console.log(val, str)
+
+                $(this).trigger("change");
+            });
             
 
 
@@ -235,28 +245,28 @@
             let processTextVal = $('[name="process"]').val();
             let data = processTextVal.split(',')
             /* the problem here is  */
-            var options = document.getElementById('process_select').options;
-            /* opt = { 21: "smt", 25:"proses lain" } */
-            let opt = {}
-            for (const option of options) {
-                opt[option.value] = option.text;               
-            }
             if(data.length > 0){
+                /* get select2 options */
+                var options = document.getElementById('process_select').options;
+                /* 
+                    make dictionary from those options 
+                    the data will be :  opt = { 21: "smt", 25:"proses lain" } 
+                */
+                let opt = {}
+                for (const option of options) {
+                    opt[option.value] = option.text;               
+                }
+
                 for (let index = 0; index < data.length; index++) {
                     const value = data[index];
                     const text = opt[value];
+                    /* make new option with specific text, value */
                     var newOption = new Option(text, value, true , true);
                     $('#process_select').append(newOption);
                 }
                 $('#process_select').trigger("change");
             }
             
-
-            $('#process_select').on('change', function (e) {
-                let val = $(this).val();
-                let process = $('[name="process"]').val(val.toString())
-                console.log(val)
-            });
         });
     </script>
 @stop
