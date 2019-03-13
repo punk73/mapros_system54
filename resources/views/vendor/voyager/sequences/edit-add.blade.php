@@ -218,6 +218,29 @@
 
             $('[data-toggle="tooltip"]').tooltip();
 
+            /* make the value empty */
+            $('#process_select').val([]);
+            $('#process_select').trigger('change');            
+
+            $("#process_select").on("select2:select", function (evt) {
+                var element = evt.params.data.element;
+                var $element = $(element);
+                
+                $element.detach();
+                $(this).append($element);
+
+                let val = $(this).val();
+                if(val[0] == ""){
+                    val.splice(0, 1)
+                    console.log(val, 'inside')
+                }
+                let str = val.toString();
+                let process = $('[name="process"]').val(str)
+                console.log(val, str)
+
+                $(this).trigger("change");
+            });
+
             /* isi value process select jika process textbox sudah ada isinya */
             let processTextVal = $('[name="process"]').val();
             let data = processTextVal.split(',')
@@ -243,29 +266,6 @@
                 }
                 $('#process_select').trigger("change");
             }
-
-            /* make the value empty */
-            $('#process_select').val([]);
-            $('#process_select').trigger('change');            
-
-            $("select").on("select2:select", function (evt) {
-                var element = evt.params.data.element;
-                var $element = $(element);
-                
-                $element.detach();
-                $(this).append($element);
-
-                let val = $(this).val();
-                if(val[0] == ""){
-                    val.splice(0, 1)
-                    console.log(val, 'inside')
-                }
-                let str = val.toString();
-                let process = $('[name="process"]').val(str)
-                console.log(val, str)
-
-                $(this).trigger("change");
-            });
 
             
         });
