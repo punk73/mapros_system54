@@ -245,7 +245,9 @@
             let processTextVal = $('[name="process"]').val();
             let data = processTextVal.split(',')
             /* the problem here is  */
-            if(data.length > 0){
+            // console.log(data.length , processTextVal)
+
+            if(processTextVal !== ""){
                 /* get select2 options */
                 var options = document.getElementById('process_select').options;
                 /* 
