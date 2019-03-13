@@ -71,10 +71,10 @@
                                         @else
                                             @if($row->field == 'process')
                                                 <select
-                                                    class="form-control {{-- select2-taggable --}}"
+                                                    class="form-control select2-taggable"
                                                     name="process_select[]" 
                                                     multiple
-                                                    data-placeholder="-- Choose Process --"
+                                                    {{-- data-placeholder="-- Choose Process --" --}}
                                                     data-route="{{ route('voyager.'.str_slug( 'lineprocesses' ).'.store') }}"
                                                     data-label="Process"
                                                     data-error-message="{{__('voyager::bread.error_tagging')}}"
@@ -218,29 +218,6 @@
 
             $('[data-toggle="tooltip"]').tooltip();
 
-            /* taggable select box for process */
-            $('#process_select').select2();
-
-            $("select").on("select2:select", function (evt) {
-                var element = evt.params.data.element;
-                var $element = $(element);
-                
-                $element.detach();
-                $(this).append($element);
-
-                let val = $(this).val();
-                if(val[0] == ""){
-                    val.splice(0, 1)
-                }
-                let str = val.toString();
-                let process = $('[name="process"]').val(str)
-                console.log(val, str)
-
-                $(this).trigger("change");
-            });
-            
-
-
             /* isi value process select jika process textbox sudah ada isinya */
             let processTextVal = $('[name="process"]').val();
             let data = processTextVal.split(',')
@@ -266,6 +243,30 @@
                 }
                 $('#process_select').trigger("change");
             }
+
+            /* make the value empty */
+            $('#process_select').val([]);
+            $('#process_select').trigger('change');            
+
+            $("select").on("select2:select", function (evt) {
+                var element = evt.params.data.element;
+                var $element = $(element);
+                
+                $element.detach();
+                $(this).append($element);
+
+                let val = $(this).val();
+                if(val[0] == ""){
+                    val.splice(0, 1)
+                    console.log(val, 'inside')
+                }
+                let str = val.toString();
+                let process = $('[name="process"]').val(str)
+                console.log(val, str)
+
+                $(this).trigger("change");
+            });
+
             
         });
     </script>
