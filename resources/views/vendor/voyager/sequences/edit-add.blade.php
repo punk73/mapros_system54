@@ -71,7 +71,7 @@
                                         @else
                                             @if($row->field == 'process')
                                                 <select
-                                                    class="form-control select2-taggable"
+                                                    class="form-control select2"
                                                     name="process_select[]" 
                                                     multiple
                                                     {{-- data-placeholder="-- Choose Process --" --}}
