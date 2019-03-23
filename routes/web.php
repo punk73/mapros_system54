@@ -16,7 +16,7 @@ Route::get('reset_password/{token}', ['as' => 'password.reset', function($token)
     // implement your reset password route here!
 }]);
 
-Route::get('/', ['uses' => 'MainController@index', 'as' => 'copy'] )->name('copy');
+Route::get('/', ['uses' => 'MainController@index' ]);
 
 Route::group(['prefix' => 'main'], function($route){
 	$route->post('/', 'MainController@post' );
@@ -29,7 +29,7 @@ Route::group(['prefix' => 'join'], function($route){
 
 Route::group(['prefix' => 'admin'], function ($route) {
 	Voyager::routes();
-	$route->get('sequences/{id}/copy', 'SequenceController@showCopy');
+	$route->get('sequences/{id}/copy', 'SequenceController@showCopy')->name('copy');
 });
 
 Auth::routes();

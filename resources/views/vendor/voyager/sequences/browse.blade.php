@@ -191,7 +191,7 @@
                                             @foreach(Voyager::actions() as $action)
                                                 @include('voyager::bread.partials.actions', ['action' => $action])
                                             @endforeach
-                                            <a href="#" id="edit-{{ $data->id }}" title="Copy" class="btn btn-sm btn-success pull-right view" style="margin-right:3px" >
+                                            <a href="{{ route('copy', $data->id ) }}" id="copy-{{ $data->id }}" title="Copy" class="btn btn-sm btn-success pull-right view" style="margin-right:3px" >
                                                 <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Copy</span>
                                             </a>
                                         </td>
