@@ -13,7 +13,8 @@ class WeightControlController extends Controller
      */
     public function index()
     {
-        //
+        // return view('weightcontrol.browse');
+        
     }
 
     /**
