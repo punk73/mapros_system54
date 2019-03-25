@@ -8,7 +8,11 @@ use App\Database\Query\FirebirdQueryBuilder as QueryBuilder;
 
 class Weightcontrol extends Model
 {
-    protected $table = 'WEIGHTCONTROL';
+		protected $table = 'WEIGHTCONTROL';
+		
+		public $timestamps = false;
+
+		protected $primaryKey = 'ID'; // or null
 
     public function __construct(){
       $this->connection = env('DB_CONNECTION_FB', 'firebird');
