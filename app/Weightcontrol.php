@@ -12,6 +12,8 @@ class Weightcontrol extends Model
 		
 		public $timestamps = false;
 
+		public $incrementing = false;
+
 		protected $primaryKey = 'ID'; // or null
 
     public function __construct(){
