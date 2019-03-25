@@ -13,9 +13,14 @@ class WeightControlController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        // return view('weightcontrol.browse');
-        return Weightcontrol::all();
+    {  
+        /* $dataType = [];
+        $dataTypeContent = [];
+        return view('weightcontrol.browse', [
+            'dataType' => $dataType,
+            'dataTypeContent' => $dataTypeContent
+        ]); */
+        return Weightcontrol::paginate();
     }
 
     /**
