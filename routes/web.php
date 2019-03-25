@@ -30,6 +30,7 @@ Route::group(['prefix' => 'join'], function($route){
 Route::group(['prefix' => 'admin'], function ($route) {
 	Voyager::routes();
 	$route->get('sequences/{id}/copy', 'SequenceController@showCopy')->name('copy');
+	$route->resource('weight_control', 'WeightControlController' );
 });
 
 Auth::routes();
