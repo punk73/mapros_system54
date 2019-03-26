@@ -138,6 +138,7 @@ return [
             'username' => env('DB_USERNAME_FB', 'sysdba'),
             'password' => env('DB_PASSWORD_FB', 'masterkey'),
             'charset'  => env('DB_CHARSET_FB', 'UTF8'),
+            
         ],
 
     ],
