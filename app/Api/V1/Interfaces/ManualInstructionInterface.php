@@ -5,6 +5,6 @@ use Dingo\Api\Http\Request;
 
 
 interface ManualInstructionInterface {
-    public function storeManualContent($data);
+    public function storeManualContent($data, $guid = null);
     public function getGuidMaster();
 }
