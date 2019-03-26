@@ -1029,7 +1029,7 @@ class Node implements
 			# save to locations;
 			$this->insertLocation($model);
 		}
-
+		/* insert ke manual_intructions kalau manual content ada di paramete  */
 		if(isset( $this->parameter['manual_content'] )){
 			if(method_exists($this, 'storeManualContent')){
 				$this->storeManualContent($this->parameter['manual_content']);

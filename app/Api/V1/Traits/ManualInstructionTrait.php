@@ -10,6 +10,10 @@ trait ManualInstructionTrait {
         $guidMaster = ($guid == null )? $this->getGuidMaster() : $guid;
         $content  = $data;
 
+        if($content == null || $guidMaster = null) {
+            return null; // ??
+        }
+
         $manualInstruction = new ManualInstruction();
         $manualInstruction->guid_master = $guidMaster;
         $manualInstruction->content = $content;

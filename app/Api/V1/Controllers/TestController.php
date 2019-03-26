@@ -72,7 +72,7 @@ class TestController extends Controller
 		
 		return [
 			'isRework' => $node->isRework(),
-			'isGuidGenerated' => $node->isGuidGenerated(),
+			'isGuidGenerated' => $node->getGuidMaster(),
 		];
 
 	}
