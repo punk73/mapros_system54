@@ -39,12 +39,14 @@ use App\Api\V1\Traits\CheckBoardDupplicationTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Api\V1\Interfaces\ManualInstructionInterface;
+use App\Api\V1\Traits\ManualInstructionTrait;
 
 class Node implements 
 	ColumnSettingInterface, CriticalPartInterface, RepairableInterface, LocationInterface,
 	ManualInstructionInterface
 {
-	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait, LocationTrait, CheckBoardDupplicationTrait;
+	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait, 
+		LocationTrait, CheckBoardDupplicationTrait, ManualInstructionTrait;
 
 	protected $model; // App\Board, App\Master , App\Ticket, or App\Part;
 	protected $model_code; // 5 char atau 11 char awal
