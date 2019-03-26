@@ -6,9 +6,9 @@ use Dingo\Api\Http\Request;
 use App\ManualInstruction;
 
 trait ManualInstructionTrait {
-    public function storeManualContent(Request $request) {
+    public function storeManualContent($data) {
         $guidMaster = $this->getGuidMaster();
-        $content  = $request->only('model_content');
+        $content  = $data;
 
         $manualInstruction = new ManualInstruction();
         $manualInstruction->guid_master = $guidMaster;

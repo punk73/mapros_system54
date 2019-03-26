@@ -38,8 +38,11 @@ use App\Api\V1\Traits\LocationTrait;
 use App\Api\V1\Traits\CheckBoardDupplicationTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Api\V1\Interfaces\ManualInstructionInterface;
 
-class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableInterface, LocationInterface
+class Node implements 
+	ColumnSettingInterface, CriticalPartInterface, RepairableInterface, LocationInterface,
+	ManualInstructionInterface
 {
 	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait, LocationTrait, CheckBoardDupplicationTrait;
 
@@ -1023,6 +1026,12 @@ class Node implements ColumnSettingInterface, CriticalPartInterface, RepairableI
 		if ( (empty( $this->getLocations()) === false) && ($this->getModelType() == 'board') ) {
 			# save to locations;
 			$this->insertLocation($model);
+		}
+
+		if(isset( $this->parameter['manual_content'] )){
+			if(method_exists($this, 'storeManualContent')){
+				$this->storeManualContent($this->parameter['manual_content']);
+			}
 		}
 
 		return $isSaveSuccess; //true or false;
