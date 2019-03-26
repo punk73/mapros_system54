@@ -21,7 +21,7 @@ class CriticalPartTraitTest extends TestCase
         return $this->mock;
     }
 
-    public function getMock(){
+    public function getMocks(){
         $mock = (is_null($this->mock)) ? $this->initMock() : $this->mock;
         return $mock;
     }
@@ -29,7 +29,7 @@ class CriticalPartTraitTest extends TestCase
     public function testSave(){}
     
     public function testGetSetCriticalPart(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->assertNull( $mock->getCriticalPart() );
         $data = $this->getDummyData();
         $mock->setCriticalPart($data);
@@ -39,20 +39,20 @@ class CriticalPartTraitTest extends TestCase
     }
 
     public function testSetCriticalPartErrorWhenSettingNonCriticalPart(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $nonCriticalPart = ['B46-0825-00     2629991 12    I10775 B46-0825-00    201809021630107354000002          '];
         $this->expectException(StoreResourceFailedException::class); //exeption expected cuz the parameter not critical parts;
         $mock->setCriticalPart($nonCriticalPart);
     }
 
     public function testIsCriticalPartReturnTrue(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $this->getDummyData();
         $this->assertTrue( $mock->isCriticalPart($data) );
     }
 
     public function testIsCriticalPartReturnFalse(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = 'B46-0825-00     2629991 12    I10775 B46-0825-00    201809021630107354000002          ';
         $this->assertFalse( $mock->isCriticalPart($data) );
         $data = ['B46-0825-00     2629991 12    I10775 B46-0825-00    201809021630107354000002          '];
@@ -61,7 +61,7 @@ class CriticalPartTraitTest extends TestCase
     }
 
     public function testExtractCriticalPart(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $this->getDummyData();
         $contains = [
             'part_no',
@@ -82,7 +82,7 @@ class CriticalPartTraitTest extends TestCase
 
     /*public function testIsCriticalExists(){
         $data = $this->getDummyData();
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $mock->extractCriticalPart($data);
         $isExists = $mock->isCriticalExists($data);
         $this->assertFalse($isExists);
@@ -90,13 +90,13 @@ class CriticalPartTraitTest extends TestCase
 
     /*public function testIsCriticalExistsWithStringParameter(){
         $data = $this->getDummyData();
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $isExists = $mock->isCriticalExists($data);
         $this->assertFalse($isExists);
     }*/
 
     public function testInsertIntoCritical(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = [$this->getDummyData()];
         $unique_id = 'boards-id';
         /*seed the database*/
@@ -117,31 +117,31 @@ class CriticalPartTraitTest extends TestCase
     }
 
     public function testIsCriticalPartExtracted(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $this->getDummyData();
         $this->assertFalse( $mock->isCriticalPartExtracted($data));
     }
 
     public function testIsCriticalPartExtractedWithParameterArray(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $this->getDummyData();
         $this->assertFalse( $mock->isCriticalPartExtracted([$data]) ); 
     }
 
     public function testIsCriticalPartExtractedWithParameterArrayReturnTrue(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $mock->extractCriticalPart( $this->getDummyData() );
         $this->assertTrue( $mock->isCriticalPartExtracted($data) );
     }
 
     public function testIsCriticalPartExtractedReturnTrue(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $mock->extractCriticalPart( $this->getDummyData() );
         $this->assertTrue( $mock->isCriticalPartExtracted([$data]) );
     }
 
     public function testSaveToPivot(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $criticalId = 1;
         $unique_id = '9EB02277-8732-4C43-A9A2-D3E38A70105E';
 
@@ -159,7 +159,7 @@ class CriticalPartTraitTest extends TestCase
     }
 
     public function testSaveToPivotError(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedCriticalDb(1);
         
         $criticalId = 1;
@@ -195,7 +195,7 @@ class CriticalPartTraitTest extends TestCase
     }
 
     public function testIsRunOutReturnFalse(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedCriticalDb(200);
         // run isRunOut method with critical_id = 1
         $isRunOut = $mock->isRunOut(1);
@@ -203,7 +203,7 @@ class CriticalPartTraitTest extends TestCase
     }
 
     public function testIsRunOutReturnTrue(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedCriticalDb(1);
         $this->assertDatabaseHas('criticals', ['qty' => 1] );
         // run isRunOut method with critical_id = 1

@@ -51,12 +51,12 @@ class ColumnSettingTraitTest extends TestCase
         ]];
     }
 
-    public function getMock(){
+    public function getMocks(){
         $mock = (is_null($this->mock)) ? $this->initMock() : $this->mock;
         return $mock;
     }
     public function testGetAndSetColumnSetting(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->assertNull( $mock->getColumnSetting() );
         $columnSetting = 'someData';
         $mock->setColumnSetting($columnSetting);
@@ -64,19 +64,19 @@ class ColumnSettingTraitTest extends TestCase
     }
 
     public function testIsJoinReturnFalse(){
-       $mock = $this->getMock();
+       $mock = $this->getMocks();
        $this->assertFalse( $mock->isJoin() );
     }
 
     public function testIsJoinReturnTrue(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $dummy = $this->getDummyData();
         $mock->setColumnSetting($dummy);
         $this->assertTrue($mock->isJoin());
     }
 
     public function testGetColumnSettingWhereCodePrefix(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         /*factory will seed our database with preset data;*/
         $this->seedColumnSetting();
         /*this test will be pass if we had records MAMST on column_settings table */
@@ -89,7 +89,7 @@ class ColumnSettingTraitTest extends TestCase
         /*factory will seed our database with preset data;*/
         $this->seedColumnSetting();
 
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->assertNull($mock->getColumnSetting());
         $mock->setColumnSetting($this->getDummyData());
         $this->assertNotNull($mock->getColumnSetting());

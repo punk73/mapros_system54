@@ -38,13 +38,13 @@ class LocationTraitTest extends TestCase
         ];
     }
 
-    public function getMock(){
+    public function getMocks(){
         $mock = (is_null($this->mock)) ? $this->initMock() : $this->mock;
         return $mock;
     }
 
     public function testSetLocations(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $this->getDummyLocation();
         $mock->setLocations($data);
 
@@ -52,7 +52,7 @@ class LocationTraitTest extends TestCase
     }
 
     public function testVerifyLocations(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = $this->getDummyLocation();
         $result = $mock->verifyLocations($data);
 
@@ -60,7 +60,7 @@ class LocationTraitTest extends TestCase
     }
 
     public function testVerifyLocationsFalse(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $data = [];
         $testCase1 = $mock->verifyLocations($data);
         $data2 = [[
@@ -95,7 +95,7 @@ class LocationTraitTest extends TestCase
     }
 
     public function testSaveBoardLocation(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $board = $this->getBoardTransaction();
         $location_id = factory(\App\Location::class)->create()->id; //dummy
 
@@ -115,7 +115,7 @@ class LocationTraitTest extends TestCase
 
         $symptom_code = factory(Symptom::class)->create()->code;
 
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $result = $mock->saveLocationSymptoms($pivot, [$symptom_code] );
 
         $board_location_symptom = DB::table('board_location_symptom')->select('id')->count();

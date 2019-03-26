@@ -50,7 +50,7 @@ class RepairableTraitTest extends TestCase
         ]];
     }
 
-    public function getMock(){
+    public function getMocks(){
         $mock = (is_null($this->mock)) ? $this->initMock() : $this->mock;
         return $mock;
     }
@@ -74,7 +74,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetLineprocessNgReturnNull(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $master = new Master;
         // $this->expectException(StoreResourceFailedException::class); 
         $null = $mock->getLineprocessNg( $master , 'guid_master', 'someguimaster', [1,2,3]) ;
@@ -82,7 +82,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetLineprocessNgReturnLineprocessId(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         
         // jalankan seeder
         $this->seedTableMaster();
@@ -95,14 +95,14 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetJoinQuery(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $master = new Master;
         $data = $mock->getJoinQuery($master);
         $this->assertInstanceOf('Illuminate\Database\Eloquent\Builder', $data );    
     }
 
     public function testIsAfterNgProcess(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         /*parameters : process, lineprocess_id, lineprocessNg*/
         $true = $mock->isAfterNgProcess('1,2,3,4,5', 4, 1 );
         $this->assertTrue($true);
@@ -111,7 +111,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testIsAfterNgProcessError(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         /*below exeption will be thrown*/
         $this->expectException(StoreResourceFailedException::class);
         /*parameters : process, lineprocess_id, lineprocessNg*/
@@ -133,7 +133,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetStartId(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedLineprocessStart();
         $lineprocessId = 1;
         $result = $mock->getStartId($lineprocessId);
@@ -141,7 +141,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetStartIdReturnException(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         /*getStartId jika dipanggil dengan lineprocess yg belum diisi / tidak ditemukan akan return exception*/
         $this->expectException(StoreResourceFailedException::class);
         $mock->getStartId(1);
@@ -157,7 +157,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testIsRepaired(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedRepairTable(); //seed the table
         // unique_id & isNgRecordExists; true && true
         $true = $mock->isRepaired('someuniqueid', true );
@@ -178,7 +178,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testIsRepairedOneMoreTime(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedRepairTable(); //seed the table
         
         $false = $mock->isRepaired('anotherUniquerId', 2 );
@@ -186,7 +186,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetLineprocessNgName(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         /*seed lineprocess dengan name 'proses 1' */
         $lineprocess = factory(Lineprocess::class)->create(['name' => 'proses 1']);
         $result = $mock->getLineprocessNgName(1);
@@ -195,20 +195,20 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetLineprocessNgNameReturnException(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         /*seed lineprocess dengan name 'proses 1' */
         $this->expectException(StoreResourceFailedException::class);
         $result = $mock->getLineprocessNgName(1);
     }
 
     public function testIsBeforeStartIdReturnTrue(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $result = $mock->isBeforeStartId('1,2,3,4', 2, 3);
         $this->assertTrue($result);
     }
 
     public function testIsBeforeStartIdReturnFalse(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $false1 = $mock->isBeforeStartId('1,2,3,4', 3, 3);
         $false2 = $mock->isBeforeStartId('1,2,3,4', 4, 3);
         $this->assertFalse($false1);
@@ -216,7 +216,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetFurthestNgProcessSuccess(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedTableMaster();
         $master = new Master;
         $lineprocessNg = $mock->getFurthestNgProcess($master , 'guid_master', 'some-guid-master-temp', '1,2,3');
@@ -227,7 +227,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetFurthestNgProcessReturnNull(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $master = new Master;
         $lineprocessNg = $mock->getFurthestNgProcess($master , 'guid_master', 'some-guid-master-temp', '1,2,3');
         // $lineprocessNg = $mock->getLineprocessNg( $master , 'guid_master', 'some-guid-master-temp');
@@ -235,7 +235,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testIsBeforeOrEqualStartId(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $result = $mock->isBeforeOrEqualStartId('1,2,3', 2, 2);
         $this->assertTrue($result);
 
@@ -244,7 +244,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testReworkCountReturnZero(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $master = new Master;
         $result = $mock->reworkCount($master, 1, 'guid_master', 'some-guid-master-temp');
         // record rework of master is 0;
@@ -270,7 +270,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testReworkCount(Model $modelParam = null, $scannerIdParam = null, $uniqueColumnParam = null, $uniqueIdParam = null){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedTableMasterRework();
         $master = Master::where('judge', 'REWORK')->get();
         $this->assertGreaterThan(0, count($master));
@@ -280,7 +280,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testGetAllNgRecord(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $model = new Master;
         // $allNgRecord is empty laravel collection;
         $allNgRecord = $mock->getAllNgRecord($model, 'guid_master', 'some-guid-master-temp');
@@ -293,7 +293,7 @@ class RepairableTraitTest extends TestCase
     }
 
     public function testHasRework(){
-        $mock = $this->getMock();
+        $mock = $this->getMocks();
         $this->seedTableMaster();
         $modelParam = new Master;
         $scannerIdParam = 1;

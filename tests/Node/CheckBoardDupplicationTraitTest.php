@@ -50,7 +50,7 @@ class CheckboardDupplicationTraitTest extends TestCase
         ]];
     }
 
-    public function getMock(){
+    public function getMocks(){
         $mock = (is_null($this->mock)) ? $this->initMock() : $this->mock;
         return $mock;
     }
