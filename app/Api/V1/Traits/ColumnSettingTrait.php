@@ -99,7 +99,7 @@ trait ColumnSettingTrait {
 		return $children;
 	}
 
-	public function getParents($modelType = null ){
+	public function getParents($modelType = null, $tableNameParam = null ){
 		$tableName = (is_null($tableNameParam)) ? $this->getModelType() . 's' : $tableNameParam;
 		$level = ColumnSetting::distinct()
 		->select(['level'])
