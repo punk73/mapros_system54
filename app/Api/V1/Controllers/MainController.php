@@ -32,7 +32,8 @@ class MainController extends Controller
 		'symptom',
 		'critical_parts', //new due to critical part scan;
 		'locations', //added for touch up process
-		'isRework'
+		'isRework',
+		'manual_content', // optional
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;
@@ -77,6 +78,12 @@ class MainController extends Controller
 
 	public function store(BoardRequest $request ){
 		$parameter = $this->getParameter($request);
+
+		if($request->has('manual_content')){
+			if(method_exists($this, 'storeManualContent')){
+				$this->storeManualContent($request);
+			}
+		}
 		/*isset($parameter['critical_part'])*/
 		if( strlen($parameter['board_id']) >= 80 ){
 			return $this->runCritical($parameter);
