@@ -37,25 +37,34 @@
                                 :config="config"
                             />
 
-                            <div class="form-group" v-if='config.showCritical' v-for="(critical, index ) in form.critical_parts" >
-                                <label for="critical_parts" class="col-md-4 control-label">Critical Part</label>
-                                <div class="col-md-6" >
-                                    <div class="input-group">
-                                        <input :id="'critical_parts_' + index" :ref="'critical_parts_' + index" placeholder="Scan Critical Part disini" class="form-control" name="critical_parts" v-model='form.critical_parts[index]' required autofocus>        
+                            <div v-if='config.showCritical'>
+                                <div class="form-group" :key="index" v-for="(critical, index ) in form.critical_parts" >
+                                    <label for="critical_parts" class="col-md-4 control-label">Critical Part</label>
+                                    <div class="col-md-6" >
+                                        <div class="input-group">
+                                            <input :id="'critical_parts_' + index" :ref="'critical_parts_' + index" placeholder="Scan Critical Part disini" class="form-control" name="critical_parts" v-model='form.critical_parts[index]' required autofocus>        
 
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-success" @click.prevent='addCritical' ><span class="fa fa-plus"></span> </button>
-                                            <button type="button" class="btn btn-danger" @click.prevent='minusCritical(index)' ><span class="fa fa-minus"></span> </button>
-                                        </span>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success" @click.prevent='addCritical' ><span class="fa fa-plus"></span> </button>
+                                                <button type="button" class="btn btn-danger" @click.prevent='minusCritical(index)' ><span class="fa fa-minus"></span> </button>
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>                            
+                                </div>                            
+                            </div>
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">{{ label.id }}</label>
 
                                 <div class="col-md-6">
                                     <input :placeholder="'Scan '+ label.id" id="board_id" ref='board_id' v-model="form.board_id" type="board_id" @input='filterBoard' class="form-control" name="board_id"  required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="config.isManualInstruction && includeIn" >
+                                <label class="col-md-4 control-label">Manual Intruction</label>
+                                <div class="col-md-6">
+                                    <input placeholder="Scan Manual Intruction" ref='manual_content' v-model="form.manual_content" class="form-control" name="manual_content"  required>
                                 </div>
                             </div>
 
@@ -228,6 +237,7 @@
                     critical_parts:[], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
                     locations:[],
                     isRework : false, //default value
+                    manual_content : null, //default value
                 },
 
                 isNG : false,
@@ -299,6 +309,7 @@
                     esdUri: '',
                     checkEsd:'',
                     isRework : false, // i'll be overriden by config
+                    isManualInstruction : false,
                 },
 
                 serialAutolinezero:'', //default value of serial
@@ -790,6 +801,7 @@
                 }
                 /*kalau config showNgOption itu false, baru jalankan*/
                 if (!this.config.showNgoption) { this.isNG = false; }
+                if(this.config.isManualInstruction){this.form.manual_content = null }
             },
 
             generateFile(resend = false){

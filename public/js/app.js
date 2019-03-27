@@ -39960,6 +39960,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -40006,7 +40013,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         pwb_id: [],
         include_symptom_id: [],
 
-        isRework: false
+        isRework: false,
+
+        isManualInstruction: false
       },
 
       debug: {
@@ -40715,6 +40724,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(17);
 
@@ -40740,7 +40758,8 @@ var axios = __webpack_require__(17);
                 symptom: [], //default value for symptom is empty array;
                 critical_parts: [], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
                 locations: [],
-                isRework: false //default value
+                isRework: false, //default value
+                manual_content: null //default value
             },
 
             isNG: false,
@@ -40811,7 +40830,8 @@ var axios = __webpack_require__(17);
                 jumlahJoin: 1, //default value of jumlah join
                 esdUri: '',
                 checkEsd: '',
-                isRework: false // i'll be overriden by config
+                isRework: false, // i'll be overriden by config
+                isManualInstruction: false
             },
 
             serialAutolinezero: '', //default value of serial
@@ -41287,6 +41307,9 @@ var axios = __webpack_require__(17);
             /*kalau config showNgOption itu false, baru jalankan*/
             if (!this.config.showNgoption) {
                 this.isNG = false;
+            }
+            if (this.config.isManualInstruction) {
+                this.form.manual_content = null;
             }
         },
         generateFile: function generateFile() {
@@ -66404,8 +66427,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "locationAdded": _vm.locationAdded,
       "locationRemove": _vm.locationRemove
     }
-  }) : _vm._e(), _vm._v(" "), _vm._l((_vm.form.critical_parts), function(critical, index) {
-    return (_vm.config.showCritical) ? _c('div', {
+  }) : _vm._e(), _vm._v(" "), (_vm.config.showCritical) ? _c('div', _vm._l((_vm.form.critical_parts), function(critical, index) {
+    return _c('div', {
+      key: index,
       staticClass: "form-group"
     }, [_c('label', {
       staticClass: "col-md-4 control-label",
@@ -66470,8 +66494,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('span', {
       staticClass: "fa fa-minus"
-    })])])])])]) : _vm._e()
-  }), _vm._v(" "), _c('div', {
+    })])])])])])
+  })) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label"
@@ -66502,7 +66526,36 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "board_id", $event.target.value)
       }, _vm.filterBoard]
     }
-  })])]), _vm._v(" "), (_vm.isJoin) ? _c('div', {
+  })])]), _vm._v(" "), (_vm.config.isManualInstruction && _vm.includeIn) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-4 control-label"
+  }, [_vm._v("Manual Intruction")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.form.manual_content),
+      expression: "form.manual_content"
+    }],
+    ref: "manual_content",
+    staticClass: "form-control",
+    attrs: {
+      "placeholder": "Scan Manual Intruction",
+      "name": "manual_content",
+      "required": ""
+    },
+    domProps: {
+      "value": (_vm.form.manual_content)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.form, "manual_content", $event.target.value)
+      }
+    }
+  })])]) : _vm._e(), _vm._v(" "), (_vm.isJoin) ? _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-offset-4 col-md-6"
@@ -66698,7 +66751,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Resend Data "), _c('i', {
     staticClass: "fa fa-arrow-right"
-  })]) : _vm._e()])])], 2)])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
+  })]) : _vm._e()])])], 1)])])])])]), _vm._v(" "), (_vm.showModal) ? _c('modal', {
     attrs: {
       "message": _vm.modal.message,
       "header": _vm.modal.header
@@ -67573,6 +67626,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "for": "isRework"
     }
   }, [_vm._v(" REWORK ")])], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.isManualInstruction),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isManualInstruction", $$v)
+      },
+      expression: "config.isManualInstruction"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isManualInstruction"
+    }
+  }, [_vm._v(" Scan Manual Instruction ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"
