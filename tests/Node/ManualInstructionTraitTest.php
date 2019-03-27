@@ -17,15 +17,24 @@ class ManualInstructionTraitTest extends TestCase {
 
     public function testStoreManualContent() {
         $mock = $this->getMocks();
-        $content = 'some intruction content';
-        $guid = 'someguidmaster';
-        $mock->storeManualContent( $content, $guid );
+        $content = 'some intruction content sd';
+        $guid = 'someguidmaster sd';
+        $result = $mock->storeManualContent( $content, $guid );
 
+        $this->assertTrue($result);
         // check data nya masuk
         $this->assertDatabaseHas('manual_instructions', [
             'content' => $content,
             'guid_master' => $guid
         ]);
 
+    }
+
+    public function testStoreManualContentWithNull() {
+        $mock = $this->getMocks();
+        $content = null;
+        
+        $result = $mock->storeManualContent($content, 'someguid');
+        $this->assertNull($result);
     }
 }

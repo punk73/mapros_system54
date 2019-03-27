@@ -10,7 +10,7 @@ trait ManualInstructionTrait {
         $guidMaster = ($guid == null )? $this->getGuidMaster() : $guid;
         $content  = $data;
 
-        if($content == null || $guidMaster = null) {
+        if($content == null || $guidMaster == null) {
             return null; // ??
         }
 
@@ -18,6 +18,6 @@ trait ManualInstructionTrait {
         $manualInstruction->guid_master = $guidMaster;
         $manualInstruction->content = $content;
         
-        $manualInstruction->save();
+        return $manualInstruction->save();
     }
 }
