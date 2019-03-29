@@ -534,6 +534,14 @@ class MainController extends Controller
 					$node->InspectionLogOk(); //if not it will throw exception;
 				}
 			}
+
+			if(setting('admin.check_instruction_manual') && ($node->checkInstructionManual()) ) {
+				if(!$node->hasInstructionManual()) {
+					throw new StoreResourceFailedException('TOLONG SCAN MANUAL INSTRUCTIONS QRCODE !', [
+						'message' => 'tolong klik button show button Manual instruction field untuk memunculkan textfieldnya'
+					]);
+				}
+			}
 			// disini kita harus ikut update status dari child node; jika ini adalah proses join;
 			// save
 			$node->setStatus('OUT');
