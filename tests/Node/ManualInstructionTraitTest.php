@@ -37,4 +37,27 @@ class ManualInstructionTraitTest extends TestCase {
         $result = $mock->storeManualContent($content, 'someguid');
         $this->assertNull($result);
     }
+
+    public function testHasManualIntruction() {
+        $mock = $this->getMocks();
+
+        $mock->parameter = ['manual_content' => 'some content'];
+
+        $result = $mock->hasInstructionManual();
+
+        $this->assertTrue($result);
+
+    }
+
+    public function testHasManualInstructionReturnFalse() {
+        $mock = $this->getMocks();
+
+        $result = $mock->hasInstructionManual();
+        $this->assertFalse($result, 'without specify parameter');
+        
+        $mock->parameter = ['manual_content' => null ];
+        $result = $mock->hasInstructionManual();
+        $this->assertFalse($result , 'specify parameter manual content with null');
+
+    }
 }

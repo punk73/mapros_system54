@@ -1805,4 +1805,8 @@ class Node implements
 		pada saat kondisi rework. */
 		return ($this->parameter['isRework'] && ($this->isGuidGenerated() == false ) ) ;
 	}
+
+	public function getParameter() {
+		return $this->parameter;
+	}
 }

@@ -22,6 +22,19 @@ trait ManualInstructionTrait {
     }
 
     public function hasInstructionManual() {
-        
+        $parameter = isset($this->parameter)? $this->parameter : null;
+        if($parameter == null) {
+            return false;
+        }
+
+        $key = 'manual_content';
+
+        if( isset($parameter[$key]) ) {
+            if($parameter[$key] !== null ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
