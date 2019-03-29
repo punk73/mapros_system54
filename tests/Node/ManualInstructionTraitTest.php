@@ -3,6 +3,7 @@
 namespace App\Functional\Api\V1\Controllers;
 
 use App\NewTestCase as TestCase;
+use App\LineprocessManualInstruction;
 
 class ManualInstructionTraitTest extends TestCase {
 
@@ -59,5 +60,30 @@ class ManualInstructionTraitTest extends TestCase {
         $result = $mock->hasInstructionManual();
         $this->assertFalse($result , 'specify parameter manual content with null');
 
+    }
+
+    protected function seedLineprocessIntruction() {
+        LineprocessManualInstruction::insert([
+            'scanner_id'=> 1,
+            'lineprocess_id' => 1,
+            'has_check' => 1
+        ]);
+    }
+
+    public function testCheckInstructionManual() {
+        $mock = $this->getMocks();
+
+        $this->seedLineprocessIntruction();
+        $result = $mock->checkInstructionManual(1,1);
+
+        $this->assertTrue($result);
+    }
+
+    public function testCheckInstructionManualReturnFalse() {
+        $mock = $this->getMocks();
+
+        $result = $mock->checkInstructionManual(1,1);
+
+        $this->assertFalse($result);
     }
 }
