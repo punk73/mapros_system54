@@ -71,8 +71,11 @@ class TestController extends Controller
 		$node = new Node($request->all());
 		
 		return [
-			'isRework' => $node->isRework(),
-			'isGuidGenerated' => $node->getGuidMaster(),
+			'check_instruction_manual' => setting('admin.check_instruction_manual'),
+			'checkInstructionManual' => $node->checkInstructionManual(),
+			'test' => setting('admin.check_instruction_manual') && $node->checkInstructionManual(),
+			'hasInstructionManual' => $node->hasInstructionManual(),
+			'node' => $node
 		];
 
 	}
