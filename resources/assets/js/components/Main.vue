@@ -61,7 +61,11 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" v-if="config.isManualInstruction && includeIn" >
+                            <div class="form-group" v-if='config.isManualInstruction'>
+                                <label class="col-md-offset-4 col-md-6"> Show Instruction QR textfield : <toggle-button v-model="showManualInstruction" :color="'#2ab27b'" :labels="true" /></label>
+                            </div>
+
+                            <div class="form-group" v-if="(config.isManualInstruction && includeIn) || showManualInstruction " >
                                 <label class="col-md-4 control-label">Manual Intruction</label>
                                 <div class="col-md-6">
                                     <input placeholder="Scan Manual Intruction" ref='manual_content' v-model="form.manual_content" class="form-control" name="manual_content"  required>
@@ -243,6 +247,7 @@
                 isNG : false,
                 options : [], 
                 isJoin : false,
+                showManualInstruction: false, 
 
                 oldForm : {
                     ip: '',

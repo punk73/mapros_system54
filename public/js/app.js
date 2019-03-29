@@ -40733,6 +40733,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 var axios = __webpack_require__(17);
 
@@ -40765,6 +40769,7 @@ var axios = __webpack_require__(17);
             isNG: false,
             options: [],
             isJoin: false,
+            showManualInstruction: false,
 
             oldForm: {
                 ip: '',
@@ -66526,7 +66531,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "board_id", $event.target.value)
       }, _vm.filterBoard]
     }
-  })])]), _vm._v(" "), (_vm.config.isManualInstruction && _vm.includeIn) ? _c('div', {
+  })])]), _vm._v(" "), (_vm.config.isManualInstruction) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-offset-4 col-md-6"
+  }, [_vm._v(" Show Instruction QR textfield : "), _c('toggle-button', {
+    attrs: {
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.showManualInstruction),
+      callback: function($$v) {
+        _vm.showManualInstruction = $$v
+      },
+      expression: "showManualInstruction"
+    }
+  })], 1)]) : _vm._e(), _vm._v(" "), ((_vm.config.isManualInstruction && _vm.includeIn) || _vm.showManualInstruction) ? _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-4 control-label"
