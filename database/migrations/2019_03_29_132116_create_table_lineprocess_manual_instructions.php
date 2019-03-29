@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableLineprocessInstructionManual extends Migration
+class CreateTableLineprocessManualInstructions extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTableLineprocessInstructionManual extends Migration
      */
     public function up()
     {
-        Schema::create('lineprocess_instruction_manual', function (Blueprint $table) {
+        Schema::create('lineprocess_manual_instructions', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('lineprocess_id');
             $table->unsignedInteger('scanner_id');
@@ -39,19 +39,19 @@ class CreateTableLineprocessInstructionManual extends Migration
      * @return void
      */
     public function down()
-    {
-        Schema::table('lineprocess_instruction_manual', function (Blueprint $table) {
-            if( Schema::hasColumn('lineprocess_instruction_manual', 'lineprocess_id') ){
+    {   
+        Schema::table('lineprocess_manual_instructions', function (Blueprint $table) {
+            if( Schema::hasColumn('lineprocess_manual_instructions', 'lineprocess_id') ){
                 // drop foreign key
                 $table->dropForeign(['lineprocess_id']);
             }
 
-            if( Schema::hasColumn('lineprocess_instruction_manual', 'scanner_id') ){
+            if( Schema::hasColumn('lineprocess_manual_instructions', 'scanner_id') ){
                 // drop foreign key
                 $table->dropForeign(['scanner_id']);
             }
         });
 
-        Schema::dropIfExists('lineprocess_instruction_manual');
+        Schema::dropIfExists('lineprocess_manual_instructions');
     }
 }
