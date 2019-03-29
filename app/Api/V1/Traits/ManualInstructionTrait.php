@@ -41,7 +41,7 @@ trait ManualInstructionTrait {
     }
 
     public function checkInstructionManual($scannerIdParameter = null, $lineprocessIdParameter = null ) {
-        $scannerId = (!is_null($scannerIdParameter))? $scannerIdParameter  : $this->getScannerId()['id'];
+        $scannerId = (!is_null($scannerIdParameter))? $scannerIdParameter  : $this->getScanner()['id'];
         $lineprocessId = (!is_null($lineprocessIdParameter))? $lineprocessIdParameter: $this->getLineprocess()['id'];
        
         try {
