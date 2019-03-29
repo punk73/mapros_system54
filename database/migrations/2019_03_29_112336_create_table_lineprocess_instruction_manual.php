@@ -18,7 +18,7 @@ class CreateTableLineprocessInstructionManual extends Migration
             $table->unsignedInteger('lineprocess_id');
             $table->unsignedInteger('scanner_id');
 
-            $table->integer('has_log'); //it should be 0 or 1; boolean
+            $table->integer('has_check'); //it should be 0 or 1; boolean
             $table->foreign('lineprocess_id')
                 ->references('id')
                 ->on('lineprocesses')
