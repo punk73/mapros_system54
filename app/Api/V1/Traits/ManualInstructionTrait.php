@@ -20,4 +20,8 @@ trait ManualInstructionTrait {
         
         return $manualInstruction->save();
     }
+
+    public function hasInstructionManual() {
+        
+    }
 }
