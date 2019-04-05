@@ -45,9 +45,9 @@
                                 <label for="name">{{ $key }}</label>
 
                                 <div class="form-group">
-                                    <input @if( !in_array($key, ['name', 'modelname']) ) readonly @endif  required type="text" class="form-control" name="{{ $key }}"
-                                    placeholder="{{ $key }} ..."
-                                    value="@if( !in_array($key, ['name', 'modelname']) ) {{$value}} @endif">                           
+                                    <input @if( !in_array($key, ['name', 'modelname']) ) readonly @endif  required type="text" class="form-control" name="{{$key}}"
+                                    placeholder="{{$key}} ..."
+                                    value="@if( !in_array($key, ['name', 'modelname']) ){{$value}}@endif">                           
                                 </div>
                             @endforeach
 
