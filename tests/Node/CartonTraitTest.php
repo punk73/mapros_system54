@@ -38,7 +38,7 @@ class CartonTraitTest extends TestCase {
     public function testHasCarton() {
         $mock = $this->getMocks();
 
-        $mock->parameter = ['manual_content' => 'some content'];
+        $mock->parameter = ['carton' => 'some content'];
 
         $result = $mock->hasCarton();
 
