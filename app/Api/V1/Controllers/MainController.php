@@ -34,6 +34,7 @@ class MainController extends Controller
 		'locations', //added for touch up process
 		'isRework',
 		'manual_content', // optional
+		'carton'
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;
@@ -546,7 +547,8 @@ class MainController extends Controller
 			if(setting('admin.check_carton') && ($node->checkCarton()) ) {
 				if(!$node->hasCarton()) {
 					throw new StoreResourceFailedException('TOLONG SCAN KARTON QRCODE !', [
-						'message' => 'tolong klik button show button Carton field untuk memunculkan textfieldnya'
+						'message' => 'tolong klik button show button Carton field untuk memunculkan textfieldnya',
+						'node' => \json_decode( $node ,  true )
 					]);
 				}
 			}

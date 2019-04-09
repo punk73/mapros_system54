@@ -59,14 +59,14 @@ class Node implements
 	protected $ticketCriteria = [
 		'__MST', '__PNL', '__MCH'
 	];
-	protected $allowedParameter = [
+	/* protected $allowedParameter = [
 		'board_id',
         'nik',
         'ip',
         'is_solder',
         'guid',
         'locations', // for touch up process;
-	];
+	]; */
 	public $scanner_id; //contain scanner id;
 	public $scanner; //contain scanner object (App\Scanner)
 	public $dummy_id; //it could be ticket_no, board_id, ticket_no_master based on the model
