@@ -27,7 +27,7 @@ trait CartonTrait {
             return false;
         }
 
-        $key = 'manual_content';
+        $key = 'carton';
 
         if( isset($parameter[$key]) ) {
             if($parameter[$key] !== null ) {

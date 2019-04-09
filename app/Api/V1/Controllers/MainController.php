@@ -542,6 +542,14 @@ class MainController extends Controller
 					]);
 				}
 			}
+
+			if(setting('admin.check_carton') && ($node->checkCarton()) ) {
+				if(!$node->hasCarton()) {
+					throw new StoreResourceFailedException('TOLONG SCAN KARTON QRCODE !', [
+						'message' => 'tolong klik button show button Carton field untuk memunculkan textfieldnya'
+					]);
+				}
+			}
 			// disini kita harus ikut update status dari child node; jika ini adalah proses join;
 			// save
 			$node->setStatus('OUT');

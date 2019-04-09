@@ -40,13 +40,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Api\V1\Interfaces\ManualInstructionInterface;
 use App\Api\V1\Traits\ManualInstructionTrait;
+use App\Api\V1\Interfaces\CartonInterface;
+use App\Api\V1\Traits\CartonTrait;
 
 class Node implements 
 	ColumnSettingInterface, CriticalPartInterface, RepairableInterface, LocationInterface,
-	ManualInstructionInterface
+	ManualInstructionInterface, CartonInterface
 {
 	use ColumnSettingTrait, CriticalPartTrait, RepairableTrait, 
-		LocationTrait, CheckBoardDupplicationTrait, ManualInstructionTrait;
+		LocationTrait, CheckBoardDupplicationTrait, ManualInstructionTrait, CartonTrait;
 
 	protected $model; // App\Board, App\Master , App\Ticket, or App\Part;
 	protected $model_code; // 5 char atau 11 char awal
@@ -1033,6 +1035,12 @@ class Node implements
 		if(isset( $this->parameter['manual_content'] )){
 			if(method_exists($this, 'storeManualContent')){
 				$this->storeManualContent($this->parameter['manual_content']);
+			}
+		}
+
+		if(isset( $this->parameter['carton'] )){
+			if(method_exists($this, 'storeCarton')){
+				$this->storeCarton($this->parameter['carton']);
 			}
 		}
 
