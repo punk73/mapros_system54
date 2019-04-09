@@ -40857,7 +40857,8 @@ var axios = __webpack_require__(17);
                 esdUri: '',
                 checkEsd: '',
                 isRework: false, // i'll be overriden by config
-                isManualInstruction: false
+                isManualInstruction: false,
+                isScanCarton: false //default value
             },
 
             serialAutolinezero: '', //default value of serial
@@ -41336,6 +41337,9 @@ var axios = __webpack_require__(17);
             }
             if (this.config.isManualInstruction) {
                 this.form.manual_content = null;
+            }
+            if (this.config.isScanCarton) {
+                this.form.carton = null;
             }
         },
         generateFile: function generateFile() {

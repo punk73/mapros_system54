@@ -328,6 +328,7 @@
                     checkEsd:'',
                     isRework : false, // i'll be overriden by config
                     isManualInstruction : false,
+                    isScanCarton:false, //default value
                 },
 
                 serialAutolinezero:'', //default value of serial
@@ -820,6 +821,8 @@
                 /*kalau config showNgOption itu false, baru jalankan*/
                 if (!this.config.showNgoption) { this.isNG = false; }
                 if(this.config.isManualInstruction){this.form.manual_content = null }
+                if(this.config.isScanCarton ){this.form.carton = null }
+                
             },
 
             generateFile(resend = false){
