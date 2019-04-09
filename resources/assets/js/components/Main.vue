@@ -72,6 +72,17 @@
                                 </div>
                             </div>
 
+                            <div class="form-group" v-if='config.isScanCarton'>
+                                <label class="col-md-offset-4 col-md-6"> Show Carton textfield : <toggle-button v-model="showCarton" :color="'#2ab27b'" :labels="true" /></label>
+                            </div>
+
+                            <div class="form-group" v-if="(config.isScanCarton && includeIn) || showCarton " >
+                                <label class="col-md-4 control-label">Carton</label>
+                                <div class="col-md-6">
+                                    <input placeholder="Scan Carton" ref='carton' v-model="form.carton" class="form-control" name="carton"  required>
+                                </div>
+                            </div>
+
                             <div class="form-group" v-if='isJoin'>
                                 <label class="col-md-offset-4 col-md-6"> Proses Join Active : <toggle-button v-model="isJoin" :color="'#2ab27b'" :labels="true" /></label>
 
@@ -242,12 +253,14 @@
                     locations:[],
                     isRework : false, //default value
                     manual_content : null, //default value
+                    carton : null,
                 },
 
                 isNG : false,
                 options : [], 
                 isJoin : false,
-                showManualInstruction: false, 
+                showManualInstruction: false,
+                showCarton:false,
 
                 oldForm : {
                     ip: '',

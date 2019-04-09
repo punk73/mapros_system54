@@ -39967,6 +39967,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -40015,7 +40022,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
         isRework: false,
 
-        isManualInstruction: false
+        isManualInstruction: false,
+        isScanCarton: false
       },
 
       debug: {
@@ -40737,6 +40745,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(17);
 
@@ -40763,13 +40782,15 @@ var axios = __webpack_require__(17);
                 critical_parts: [], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
                 locations: [],
                 isRework: false, //default value
-                manual_content: null //default value
+                manual_content: null, //default value
+                carton: null
             },
 
             isNG: false,
             options: [],
             isJoin: false,
             showManualInstruction: false,
+            showCarton: false,
 
             oldForm: {
                 ip: '',
@@ -66576,6 +66597,51 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.$set(_vm.form, "manual_content", $event.target.value)
       }
     }
+  })])]) : _vm._e(), _vm._v(" "), (_vm.config.isScanCarton) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-offset-4 col-md-6"
+  }, [_vm._v(" Show Carton textfield : "), _c('toggle-button', {
+    attrs: {
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.showCarton),
+      callback: function($$v) {
+        _vm.showCarton = $$v
+      },
+      expression: "showCarton"
+    }
+  })], 1)]) : _vm._e(), _vm._v(" "), ((_vm.config.isScanCarton && _vm.includeIn) || _vm.showCarton) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-4 control-label"
+  }, [_vm._v("Carton")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.form.carton),
+      expression: "form.carton"
+    }],
+    ref: "carton",
+    staticClass: "form-control",
+    attrs: {
+      "placeholder": "Scan Carton",
+      "name": "carton",
+      "required": ""
+    },
+    domProps: {
+      "value": (_vm.form.carton)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.form, "carton", $event.target.value)
+      }
+    }
   })])]) : _vm._e(), _vm._v(" "), (_vm.isJoin) ? _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
@@ -67668,6 +67734,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "for": "isManualInstruction"
     }
   }, [_vm._v(" Scan Manual Instruction ")])], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.isScanCarton),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isScanCarton", $$v)
+      },
+      expression: "config.isScanCarton"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isScanCarton"
+    }
+  }, [_vm._v(" Scan Inner Carton ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"
