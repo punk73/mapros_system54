@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use TCG\Voyager\Models\Permission;
 
 class InnerLabelSeeder extends Seeder
 {
@@ -35,6 +36,47 @@ class InnerLabelSeeder extends Seeder
 
         }
 
+        $this->insertPermissions();
+
+    }
+
+    protected function insertPermissions(){
+        $actions = [
+            'delete',
+            'add',
+            'edit',
+            'read',
+            'browse'
+        ];
+
+        $tableName = 'INNERLABEL';
+
+        foreach ($actions as $key => $action) {
+            $data = $action . '_' . $tableName;
+            $isExists = \DB::table('permissions')->where([
+                'key' => $data,
+                'table_name' => $tableName,
+            ])->first();
+
+            // kalau belum ada, insert
+            if(!$isExists) {
+                // \DB::table('permissions')->insert();
+
+                $permission = new Permission([
+                    'key' => $data,
+                    'table_name' => $tableName,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+
+                $permission->save();
+                
+                $roleId = 1; //admin
+                $permission->roles()->attach($roleId);
+            }
+
+
+        }
     }
 
     protected function insertDataTypes() {
