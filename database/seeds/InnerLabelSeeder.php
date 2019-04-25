@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 use TCG\Voyager\Models\Permission;
 use TCG\Voyager\Models\DataRow;
+use TCG\Voyager\Models\MenuItem;
+
 
 class InnerLabelSeeder extends Seeder
 {
@@ -40,6 +42,25 @@ class InnerLabelSeeder extends Seeder
 
         $this->insertPermissions();
 
+        $this->insertMenuItem();
+
+    }
+
+    protected function insertMenuItem($menuId = 1) {
+        $menuItem = new MenuItem();
+
+        $order = MenuItem::select(['order'])->orderBy('order', 'desc')->first();
+
+        $menuItem->firstOrCreate([
+            'menu_id' => $menuId,
+            'title' => 'Inner Label',
+            'url' => 'admin/inner-label',	
+            'target' => '_self',	
+            'icon_class' => 'voyager-barbell	',
+            'color' => '#000000',
+        ], [
+            'order' => $order['order'] + 1
+        ]);
     }
 
     protected function insertPermissions(){
