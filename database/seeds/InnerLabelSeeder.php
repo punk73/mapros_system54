@@ -31,7 +31,7 @@ class InnerLabelSeeder extends Seeder
                     'order' => $key + 1
                 ];
 
-                \DB::table('data_rows')->insert($newDataRows);
+                \DB::table('data_rows')->firstOrCreate($newDataRows);
             }
 
         }
