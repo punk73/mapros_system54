@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use TCG\Voyager\Models\Permission;
+use TCG\Voyager\Models\DataRow;
 
 class InnerLabelSeeder extends Seeder
 {
@@ -31,7 +32,8 @@ class InnerLabelSeeder extends Seeder
                     'order' => $key + 1
                 ];
 
-                \DB::table('data_rows')->firstOrCreate($newDataRows);
+                $dataRow = new DataRow();
+                $dataRow->firstOrCreate($newDataRows);
             }
 
         }
