@@ -6,6 +6,7 @@ use Dingo\Api\Http\Request;
 use App\ManualInstruction;
 use App\LineprocessManualInstruction;
 use Illuminate\Database\QueryException;
+use App\MasterManualInstruction;
 
 trait ManualInstructionTrait {
     public function storeManualContent($data , $guid = null ) {
@@ -16,11 +17,37 @@ trait ManualInstructionTrait {
             return null; // ??
         }
 
+        /* check function setting from voyagger exists */
+        if(function_exists('setting')) {
+            /* check the setting value */
+           if( setting('admin.compare_manual_instruction_to_modelname') ) {
+               if(!$this->CompareModelname($content)) {
+                   
+                    throw new StoreResourceFailedException("Tolong pastikan manual instruction sesuai dengan modelnya.", [
+                       'qrcode' => $content
+                    ]);
+
+               }
+           };
+        }
+
         $manualInstruction = new ManualInstruction();
         $manualInstruction->guid_master = $guidMaster;
         $manualInstruction->content = $content;
         
         return $manualInstruction->save();
+    }
+
+    public function CompareModelname($content, $modelname = null ) {
+        /* check if getmodelname exists */
+        if($modelname == null && method_exists($this, 'getModelname') ) {
+            $modelname = $this->getModelname();
+        }
+
+        return MasterManualInstruction::where([
+            'content' => $content,
+            'modelname' => $modelname
+        ])->exists();
     }
 
     public function hasInstructionManual() {

@@ -4,6 +4,7 @@ namespace App\Functional\Api\V1\Controllers;
 
 use App\NewTestCase as TestCase;
 use App\LineprocessManualInstruction;
+use App\MasterManualInstruction;
 
 class ManualInstructionTraitTest extends TestCase {
 
@@ -28,6 +29,25 @@ class ManualInstructionTraitTest extends TestCase {
             'content' => $content,
             'guid_master' => $guid
         ]);
+
+    }
+
+    public function testCompareModelname() {
+        $mock = $this->getMocks();
+        $content = 'somecontent';
+        $modelname = 'DDXGT700RA9N';
+
+        /* table master manual instruction belum diisi */
+        $this->assertFalse( $mock->compareModelname($content, $modelname));
+
+        /* isi table master manual instruction */
+        $masterManualInstruction = new MasterManualInstruction();
+        $masterManualInstruction->firstOrCreate([
+            'content'   => $content,
+            'modelname' => $modelname
+        ]);
+
+        $this->assertTrue($mock->compareModelname($content, $modelname));
 
     }
 
