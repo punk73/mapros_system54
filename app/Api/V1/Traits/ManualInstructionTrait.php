@@ -17,20 +17,6 @@ trait ManualInstructionTrait {
             return null; // ??
         }
 
-        /* check function setting from voyagger exists */
-        if(function_exists('setting')) {
-            /* check the setting value */
-           if( setting('admin.compare_manual_instruction_to_modelname') ) {
-               if(!$this->CompareModelname($content)) {
-                   
-                    throw new StoreResourceFailedException("Tolong pastikan manual instruction sesuai dengan modelnya.", [
-                       'qrcode' => $content
-                    ]);
-
-               }
-           };
-        }
-
         $manualInstruction = new ManualInstruction();
         $manualInstruction->guid_master = $guidMaster;
         $manualInstruction->content = $content;

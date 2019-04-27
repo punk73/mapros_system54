@@ -16,6 +16,7 @@ use App\Api\V1\Helper\Node;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Carbon\Carbon;
 use App\lineprocess;
+use App\MasterManualInstruction;
 
 class MainController extends Controller
 {
@@ -542,6 +543,25 @@ class MainController extends Controller
 						'message' => 'tolong klik button show button Manual instruction field untuk memunculkan textfieldnya'
 					]);
 				}
+
+				/* check the setting value */
+				if( setting('admin.compare_manual_instruction_to_modelname') ) {
+					$content  = $node->getParameter()['manual_content'];
+
+					if(!$node->CompareModelname($content)) {
+						$currentModel = (\method_exists($node, 'getModelname')) ? $node->getModelname() : 'unknown';
+						$masterContent = MasterManualInstruction::
+						select(['content', 'modelname'])->where('modelname', $currentModel )->get();
+	
+						throw new StoreResourceFailedException("Tolong pastikan manual instruction sesuai dengan modelnya.", [
+							'qrcode' => $content,
+							'current_modelname' => $currentModel,
+							'manual_code_content_should_be' => $masterContent
+						]);
+	
+					}
+				}
+				
 			}
 
 			if(setting('admin.check_carton') && ($node->checkCarton()) ) {
