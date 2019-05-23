@@ -383,7 +383,7 @@ class Node implements
 						if($lastGuid != $currentGuid){
 							$lastDummy = $className->distinct($parentDummyColumn)
 							->where( $parentUniqueColumn , $lastGuid )
-							->orderBy('created_at', 'desc')
+							->orderBy('id', 'desc')
 							->first();
 
 							if($lastDummy){
@@ -392,7 +392,7 @@ class Node implements
 
 							$currDummy = $className->distinct($parentDummyColumn)
 							->where( $parentUniqueColumn , $currentGuid )
-							->orderBy('created_at', 'desc')
+							->orderBy('id', 'desc')
 							->first();
 
 							if($currDummy){
@@ -432,7 +432,7 @@ class Node implements
 		// get master yg guid nya sama, tp dummy_master nya beda. 
 		$notQualify = Master::where($this->getUniqueColumn(), $guid )
 		->where('ticket_no_master', '!=', $this->parameter['board_id'] )
-		->orderBy('created_at', 'desc')
+		->orderBy('id', 'desc')
 		->first();
 		// kalau ada, maka guid tersebut ga boleh digunakan lagi seharusnya; maka throw error
 		if ($notQualify) {
@@ -625,7 +625,7 @@ class Node implements
 				// get board based on guid; wheter it is 
 				if($type == 'ticket'){
 					$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_ticket' , $guid )
-						->orderBy('created_at', 'desc')
+						->orderBy('id', 'desc')
 						->first();
 
 					// we need to add checking boards from master here;
@@ -633,7 +633,7 @@ class Node implements
 
 				if($type == 'master'){
 					$prevBoard = Board::select(['id','modelname','lotno'])->where( 'guid_master' , $guid )
-						->orderBy('created_at', 'desc')
+						->orderBy('id', 'desc')
 						->first();
 				}
 
@@ -673,7 +673,7 @@ class Node implements
 					
 				$boardTicket =  Board::select(['modelname', 'lotno'])
 				->where('guid_ticket', $guidTicket)
-				->orderBy('created_at', 'desc')
+				->orderBy('id', 'desc')
 				->first();
 
 				if (!$boardTicket) {
@@ -684,7 +684,7 @@ class Node implements
 
 				$boardMaster = Board::select(['modelname', 'lotno'])
 				->where('guid_master', $guidMaster )
-				->orderBy('created_at', 'desc')
+				->orderBy('id', 'desc')
 				->first();
 
 				if (!$boardMaster) {
@@ -1761,7 +1761,7 @@ class Node implements
 					->orWhere('lineprocess_id', $lineprocessId );
 				}) //->where('judgement', 'OK')
 				->where('created_at', '>=', $createdAt )
-				->orderBy('created_at', 'desc')
+				->orderBy('id', 'desc')
 				->first(); //it need to check the data;
 
 				if(!$isOk){
