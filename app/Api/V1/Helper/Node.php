@@ -1583,6 +1583,27 @@ class Node implements
 			}
 		}
 
+		if ($this->getModelType() == 'part') {
+			# we need to determine which column need to update, guid ticket or guid master 
+
+			// jika guid ticket nya tidak null, maka update;
+			if($this->guid_ticket!= null){
+				// update yang guid ticket nya masih null;
+				// ketika join;
+				Part::where('guid_ticket', null )
+				->where( 'barcode' , $this->parameter['board_id'] )
+				->update(['guid_ticket' => $this->guid_ticket ]);
+			}
+
+			if($this->guid_master != null){
+				// update yang guid ticket nya masih null;
+				// ketika join;
+				Part::where('guid_master', null )
+				->where( 'barcode' , $this->parameter['board_id'] )
+				->update(['guid_master' => $this->guid_master ]);
+			}
+		}
+
 		if($this->getModelType() == 'ticket'){
 			// get guid master;
 			if($this->guid_master != null){
