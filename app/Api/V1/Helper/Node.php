@@ -1654,6 +1654,30 @@ class Node implements
 				    $newBoard->save();
 				}
 			}
+
+			if($this->isSettingContain('part') ) {
+
+				$child = Part::where('guid_ticket', $this->guid_ticket )
+					->where('scanner_id', $this->scanner_id )
+					->orderBy('id', 'desc')
+					->first();
+				
+				if($child != null) {
+					if($child->status == 'IN') {
+						$newChild = new Part([
+							'barcode' 		=> $child->barcode,
+							'guid_master'	=> $child->guid_master,
+							'guid_ticket'	=> $child->guid_ticket,
+							'status' 		=> 'OUT',
+							'scan_nik' 		=> $this->parameter['nik'],
+							'scanner_id' 	=> $this->scanner_id,
+							'judge' 		=> 'OK',
+						]);
+						
+						$newChild->save();
+					}
+				}
+			}
 		}
 
 		if( $this->getModelType() == 'master' ){
@@ -1683,6 +1707,30 @@ class Node implements
 					    ]);
 
 					    $newBoard->save();
+					}
+				}
+			}
+
+			if($this->isSettingContain('part') ) {
+
+				$child = Part::where('guid_master', $this->guid_master )
+					->where('scanner_id', $this->scanner_id )
+					->orderBy('id', 'desc')
+					->first();
+				
+				if($child != null) {
+					if($child->status == 'IN') {
+						$newChild = new Part([
+							'barcode' 		=> $child->barcode,
+							'guid_master'	=> $child->guid_master,
+							'guid_ticket'	=> $child->guid_ticket,
+							'status' 		=> 'OUT',
+							'scan_nik' 		=> $this->parameter['nik'],
+							'scanner_id' 	=> $this->scanner_id,
+							'judge' 		=> 'OK',
+						]);
+						
+						$newChild->save();
 					}
 				}
 			}

@@ -7,7 +7,17 @@ use App\BaseModel as Model;
 
 class Part extends Model
 {
-    protected $table = 'parts';
+	protected $table = 'parts';
+	
+	protected $fillable = [
+		'barcode',
+		'guid_master',
+		'guid_ticket',
+		'scanner_id',
+		'status',
+		'scan_nik',
+		'judge',
+	];
 
     public function getActivityDescriptionForEvent($eventName)
 	{
