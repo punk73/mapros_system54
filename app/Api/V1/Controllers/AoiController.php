@@ -19,7 +19,7 @@ class AoiController extends Controller
 		
 		if(!$aoi->first() ){
 			// "Data '{$request->board_id}' NG atau tidak ditemukan di SMT!!"
-			throw new StoreResourceFailedException( "Board '{$request->board_id}' belum inspect AOI atau NG AOI. ", [
+			throw new StoreResourceFailedException( "Board '{$request->board_id}' belum inspect AOI atau NG AOI. Silahkan confirm SMT ", [
 				'message' => 'data tidak ditemukan pada table AOI!'
 			]);
 		}
