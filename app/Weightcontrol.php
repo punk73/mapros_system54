@@ -8,6 +8,7 @@ use App\Database\Query\FirebirdQueryBuilder as QueryBuilder;
 use Spatie\Activitylog\LogsActivityInterface;
 use Spatie\Activitylog\LogsActivity;
 use function GuzzleHttp\json_encode;
+use Activity;
 
 class Weightcontrol extends Model implements LogsActivityInterface
 {
@@ -20,6 +21,13 @@ class Weightcontrol extends Model implements LogsActivityInterface
 	public $incrementing = false;
 
 	protected $primaryKey = 'ID'; // or null
+
+	protected $fillable = [
+    	'MODEL_NAME',
+		'STDWEIGHT',
+		'TOLERANCE',
+		'SCALE',
+    ];
 
     public function __construct(){
       $this->connection = env('DB_CONNECTION_FB', 'firebird');
@@ -52,7 +60,7 @@ class Weightcontrol extends Model implements LogsActivityInterface
 
 	    if ($eventName == 'deleted')
 	    {
-	        return $this->table .' "'. $this->getData() . '" was deleted';
+	        return $this->table .' "'. $this->getData() . '" deleted';
 	    }
 
 	    return '';
@@ -60,11 +68,29 @@ class Weightcontrol extends Model implements LogsActivityInterface
 
 	public function getData() {
 		return json_encode([
-			'MODEL_NAME' => $this->MODEL_NAME,
-			'STDWEIGHT' => $this->STDWEIGHT,
-			'TOLERANCE' => $this->TOLERANCE,
-			'SCALE' => $this->SCALE,			
+			'MODEL_NAME' => trim($this->MODEL_NAME),
+			'STDWEIGHT' => trim( $this->STDWEIGHT),
+			'TOLERANCE' => trim( $this->TOLERANCE),
+			'SCALE' => trim( $this->SCALE),			
 		]);
+	}
+
+	public function save(array $options = [] ) {
+		$event = 'created';
+		
+		if ($this->exists) {
+            $event = $this->isDirty() ? 'updated' : 'created';
+		}
+		
+		Activity::log($this->getActivityDescriptionForEvent($event));
+		// insert log here;
+		return parent::save($options);
+	}
+
+	public function delete() {
+		Activity::log($this->getActivityDescriptionForEvent('deleted'));
+
+		return parent::delete();
 	}
 
 
