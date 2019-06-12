@@ -21,8 +21,8 @@
 			            <slot name="body">
 			              <vue-json-pretty
 						      :data="message"
-						  >
-						  </vue-json-pretty>
+									>
+									</vue-json-pretty>
 			            </slot>
           			</div>
           		</div>

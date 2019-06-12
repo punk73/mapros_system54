@@ -16,7 +16,7 @@
                             </div>
 
 							<div class="form-group">
-                                <label for="ip_address" class="col-md-3 control-label">IP Address</label>
+                                <label for="ip_address" class="col-md-3 control-label">ID Scanner / Nama Proses </label>
                                 <div class="col-md-9">
                                     <v-select 
                                         v-model='config.ip' 
@@ -165,7 +165,7 @@
                             <div class="form-group row">
                                 <div class="col-md-9 col-md-offset-3">
                                     <a href="#/" class="btn btn-danger"><i class="fa fa-arrow-circle-left float-right"></i> Cancel</a>
-                                    <a href="#/" @click.prevent='save' class="btn btn-success"><i class="fa fa-save"></i> Save </a>
+                                    <a href="#/" @click.prevent='toggleForm' class="btn btn-success"><i class="fa fa-save"></i> Save </a>
                                 </div>
                             </div>
 						</form>
@@ -173,6 +173,40 @@
 				</div>
 			</div>
 		</div>
+
+        <modal 
+            v-if="showForm" 
+            @toggleModal='toggleForm'
+        >
+            <div slot="body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="nik" class="col-md-3 control-label">NIK</label>
+                        <div class="col-md-9">
+                            <input placeholder="write your nik"  type="text" v-model='form.nik' class="form-control" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nik" class="col-md-3 control-label">tanggal lahir</label>
+                        <div class="col-md-9">
+                            <input  type="date" v-model='form.date' class="form-control" required autofocus>
+                        </div>
+                    </div>
+
+                    <p><strong>{{formErrorMsg}}</strong></p>
+                </form>
+            </div>
+            <div slot="footer">
+              <button class="btn btn-danger" @click.prevent="toggleForm">
+                Cancel
+              </button>
+
+              <button :disabled="nikValidated != false" class="btn btn-success" @click.prevent='save'>
+                Save 
+              </button>
+            </div>
+        </modal>
 	</div>
 </template>
 
@@ -185,6 +219,7 @@
     import _ from 'lodash';
     import axios from 'axios';
     import locationConfig from './location/Config.vue';
+    import modal from './Modal';
 
 	export default {
 
@@ -243,11 +278,21 @@
                 
                 radioOptions: ['GUID', 'DUMMY'],
 
+                showForm : false,
+                formErrorMsg : null,
+                nikValidated: false,
+                checkNik: true, //untuk nanti pengaturan server
+                form:{
+                    nik: null,
+                    date:null
+                }
+
 			}
 		},
 
 		components : {
-			ToggleButton, GenerateFileConfig, Alert, InputNumber, vSelect, locationConfig
+			ToggleButton, GenerateFileConfig, Alert, InputNumber, vSelect, locationConfig,
+            modal
 		},
 
 		mounted(){
@@ -264,9 +309,26 @@
 					}
 				}
 
-				
-				localStorage.setItem('config', JSON.stringify(this.config) )
-				this.$router.push('/');
+                for (let item in this.form) {
+                    console.log(item)
+                    if( this.form[item] == null || this.form[item] == '') {
+                        this.formErrorMsg = "Mohon isi semua data !! ( "+ item +" )";
+                        return;
+                    }
+                }
+                // kirim form
+                axios.post('api/configlog')
+                  .then(res => res.JSON())
+                  .then(res => {
+                    this.formErrorMsg = null;
+                    localStorage.setItem('config', JSON.stringify(this.config) )
+				    this.$router.push('/');
+                  })
+                  .catch(error => {
+                    this.formErrorMsg = error.message || "something went wrong & error message not found. please try again.";
+                    console.error(error)
+                  })
+
 			},
 
             onSearch(search, loading ){
@@ -313,7 +375,12 @@
 					this.config = currentConfig; 
 					
 				}
-			},
+            },
+            
+            toggleForm(){
+                this.formErrorMsg = null
+                this.showForm = !this.showForm
+            }
 		}
 	}
 </script>

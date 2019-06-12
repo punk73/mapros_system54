@@ -39794,6 +39794,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__location_Config_vue__ = __webpack_require__(246);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__location_Config_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__location_Config_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Modal__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Modal___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__Modal__);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 //
@@ -39974,6 +39976,41 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -40037,14 +40074,24 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
       options: [],
 
-      radioOptions: ['GUID', 'DUMMY']
+      radioOptions: ['GUID', 'DUMMY'],
+
+      showForm: false,
+      formErrorMsg: null,
+      nikValidated: false,
+      checkNik: true, //untuk nanti pengaturan server
+      form: {
+        nik: null,
+        date: null
+      }
 
     };
   },
 
 
   components: {
-    ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a, GenerateFileConfig: __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig___default.a, Alert: __WEBPACK_IMPORTED_MODULE_2__Alert___default.a, InputNumber: __WEBPACK_IMPORTED_MODULE_3__chenfengyuan_vue_number_input__["a" /* default */], vSelect: __WEBPACK_IMPORTED_MODULE_4_vue_select___default.a, locationConfig: __WEBPACK_IMPORTED_MODULE_7__location_Config_vue___default.a
+    ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a, GenerateFileConfig: __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig___default.a, Alert: __WEBPACK_IMPORTED_MODULE_2__Alert___default.a, InputNumber: __WEBPACK_IMPORTED_MODULE_3__chenfengyuan_vue_number_input__["a" /* default */], vSelect: __WEBPACK_IMPORTED_MODULE_4_vue_select___default.a, locationConfig: __WEBPACK_IMPORTED_MODULE_7__location_Config_vue___default.a,
+    modal: __WEBPACK_IMPORTED_MODULE_8__Modal___default.a
   },
 
   mounted: function mounted() {
@@ -40055,6 +40102,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
   methods: {
     save: function save() {
+      var _this = this;
+
       if (this.config.isSendAjax) {
         if (_typeof(this.config.uri) == undefined) {
           alert('you need to fill URI');
@@ -40062,8 +40111,24 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }
       }
 
-      localStorage.setItem('config', JSON.stringify(this.config));
-      this.$router.push('/');
+      for (var item in this.form) {
+        console.log(item);
+        if (this.form[item] == null || this.form[item] == '') {
+          this.formErrorMsg = "Mohon isi semua data !! ( " + item + " )";
+          return;
+        }
+      }
+      // kirim form
+      __WEBPACK_IMPORTED_MODULE_6_axios___default.a.post('api/configlog').then(function (res) {
+        return res.JSON();
+      }).then(function (res) {
+        _this.formErrorMsg = null;
+        localStorage.setItem('config', JSON.stringify(_this.config));
+        _this.$router.push('/');
+      }).catch(function (error) {
+        _this.formErrorMsg = error.message || "something went wrong & error message not found. please try again.";
+        console.error(error);
+      });
     },
     onSearch: function onSearch(search, loading) {
       loading(true);
@@ -40090,13 +40155,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     }, 350),
 
     fetchIpData: function fetchIpData() {
-      var _this = this;
+      var _this2 = this;
 
       var url = 'api/scanners/all';
       __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url).then(function (res) {
         var response = res.data;
         var data = response.data;
-        _this.options = data;
+        _this2.options = data;
       }).catch(function (res) {
         console.log(res);
       });
@@ -40107,6 +40172,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         currentConfig = JSON.parse(currentConfig);
         this.config = currentConfig;
       }
+    },
+    toggleForm: function toggleForm() {
+      this.formErrorMsg = null;
+      this.showForm = !this.showForm;
     }
   }
 });
@@ -67344,7 +67413,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "for": "ip_address"
     }
-  }, [_vm._v("IP Address")]), _vm._v(" "), _c('div', {
+  }, [_vm._v("ID Scanner / Nama Proses ")]), _vm._v(" "), _c('div', {
     staticClass: "col-md-9"
   }, [_c('v-select', {
     attrs: {
@@ -67770,12 +67839,110 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": function($event) {
         $event.preventDefault();
-        return _vm.save($event)
+        return _vm.toggleForm($event)
       }
     }
   }, [_c('i', {
     staticClass: "fa fa-save"
-  }), _vm._v(" Save ")])])])], 1)])])])])])
+  }), _vm._v(" Save ")])])])], 1)])])])]), _vm._v(" "), (_vm.showForm) ? _c('modal', {
+    on: {
+      "toggleModal": _vm.toggleForm
+    }
+  }, [_c('div', {
+    attrs: {
+      "slot": "body"
+    },
+    slot: "body"
+  }, [_c('form', {
+    staticClass: "form-horizontal"
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label",
+    attrs: {
+      "for": "nik"
+    }
+  }, [_vm._v("NIK")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.form.nik),
+      expression: "form.nik"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "placeholder": "write your nik",
+      "type": "text",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.form.nik)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.form, "nik", $event.target.value)
+      }
+    }
+  })])]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-3 control-label",
+    attrs: {
+      "for": "nik"
+    }
+  }, [_vm._v("tanggal lahir")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-9"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.form.date),
+      expression: "form.date"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "date",
+      "required": "",
+      "autofocus": ""
+    },
+    domProps: {
+      "value": (_vm.form.date)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.form, "date", $event.target.value)
+      }
+    }
+  })])]), _vm._v(" "), _c('p', [_c('strong', [_vm._v(_vm._s(_vm.formErrorMsg))])])])]), _vm._v(" "), _c('div', {
+    attrs: {
+      "slot": "footer"
+    },
+    slot: "footer"
+  }, [_c('button', {
+    staticClass: "btn btn-danger",
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        return _vm.toggleForm($event)
+      }
+    }
+  }, [_vm._v("\n                Cancel\n              ")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-success",
+    attrs: {
+      "disabled": _vm.nikValidated != false
+    },
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        return _vm.save($event)
+      }
+    }
+  }, [_vm._v("\n                Save \n              ")])])]) : _vm._e()], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "bg-info panel-heading custom-heading"
