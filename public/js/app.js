@@ -40195,11 +40195,16 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 // fetch config from server.
                 __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get('api/getconfig').then(function (res) {
                     console.log(res);
+                    if (res == undefined) {
+                        return;
+                    }
+
                     if (res.data != undefined) {
                         // kalau ga ketemu, di hardcode darisini.
-                        _this3.config.esdUri = res.data.esdUri || 'http://136.198.117.78/esd/api/esd/index.php';
-                        if (res.data.esdUri != undefined) {
-                            _this3.formErrorMsg = 'validating NIK to ' + res.data.esdUri;
+                        _this3.config.esdUri = res.data.esd_uri || 'http://136.198.117.78/esd/api/esd/index.php';
+                        _this3.config.checkEsd = res.data.check_esd || false;
+                        if (res.data.esd_uri != undefined) {
+                            _this3.formErrorMsg = 'validating NIK from server to ' + res.data.esd_uri;
                         } else {
                             _this3.formErrorMsg = 'Validating NIK from Client Config : ' + _this3.config.esdUri;
                         }

@@ -398,11 +398,16 @@
                     axios.get('api/getconfig')
                       .then(res=> {
                           console.log(res)
+                          if(res == undefined) {
+                              return;
+                          }
+
                           if(res.data != undefined) {
                             // kalau ga ketemu, di hardcode darisini.
-                            this.config.esdUri = res.data.esdUri || 'http://136.198.117.78/esd/api/esd/index.php';
-                            if(res.data.esdUri != undefined) {
-                                this.formErrorMsg = 'validating NIK to '+ res.data.esdUri
+                            this.config.esdUri = res.data.esd_uri || 'http://136.198.117.78/esd/api/esd/index.php';
+                            this.config.checkEsd = res.data.check_esd || false;
+                            if(res.data.esd_uri != undefined) {
+                                this.formErrorMsg = 'validating NIK from server to '+ res.data.esd_uri
                             }else {
                                 this.formErrorMsg = 'Validating NIK from Client Config : ' + this.config.esdUri
                             }
