@@ -155,5 +155,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\EndpointController@delete' );
         $api->get('/{id}', 'App\\Api\\V1\\Controllers\\EndpointController@show' );
     });
+
+    $api->post('/configlog', 'App\\Api\\V1\\Controllers\\ConfigLogController@store');
     
 });

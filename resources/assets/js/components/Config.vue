@@ -284,7 +284,8 @@
                 checkNik: true, //untuk nanti pengaturan server
                 form:{
                     nik: null,
-                    date:null
+                    date:null,
+                    configvalue: null,
                 }
 
 			}
@@ -316,8 +317,10 @@
                         return;
                     }
                 }
+
+                this.form.configvalue = JSON.stringify(this.config);
                 // kirim form
-                axios.post('api/configlog')
+                axios.post('api/configlog', this.form )
                   .then(res => res.JSON())
                   .then(res => {
                     this.formErrorMsg = null;
