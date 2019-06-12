@@ -40112,6 +40112,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }
       }
 
+      this.form.configvalue = JSON.stringify(this.config);
+
       for (var item in this.form) {
         console.log(item);
         if (this.form[item] == null || this.form[item] == '') {
@@ -40120,11 +40122,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }
       }
 
-      this.form.configvalue = JSON.stringify(this.config);
       // kirim form
-      __WEBPACK_IMPORTED_MODULE_6_axios___default.a.post('api/configlog', this.form).then(function (res) {
-        return res.JSON();
-      }).then(function (res) {
+      __WEBPACK_IMPORTED_MODULE_6_axios___default.a.post('api/configlog', this.form)
+      //   .then(res => res.JSON())
+      .then(function (res) {
         _this.formErrorMsg = null;
         localStorage.setItem('config', JSON.stringify(_this.config));
         _this.$router.push('/');

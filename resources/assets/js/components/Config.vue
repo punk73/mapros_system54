@@ -309,6 +309,8 @@
 						return;
 					}
 				}
+                
+                this.form.configvalue = JSON.stringify(this.config);
 
                 for (let item in this.form) {
                     console.log(item)
@@ -318,10 +320,9 @@
                     }
                 }
 
-                this.form.configvalue = JSON.stringify(this.config);
                 // kirim form
                 axios.post('api/configlog', this.form )
-                  .then(res => res.JSON())
+                //   .then(res => res.JSON())
                   .then(res => {
                     this.formErrorMsg = null;
                     localStorage.setItem('config', JSON.stringify(this.config) )
