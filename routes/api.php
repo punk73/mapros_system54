@@ -157,5 +157,5 @@ $api->version('v1', function (Router $api) {
     });
 
     $api->post('/configlog', 'App\\Api\\V1\\Controllers\\ConfigLogController@store');
-    
+    $api->get('/getconfig', 'App\\Api\\V1\\Controllers\\ConfigLogController@index' );
 });

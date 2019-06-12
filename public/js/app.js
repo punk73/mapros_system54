@@ -40010,6 +40010,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -40022,166 +40030,231 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      config: {
-        model: '',
-        ip: '',
+    data: function data() {
+        return {
+            config: {
+                model: '',
+                ip: '',
 
-        showSolder: false,
-        toggleSolderMode: 'toggleSolderMode',
+                showSolder: false,
+                toggleSolderMode: 'toggleSolderMode',
 
-        showCritical: false,
-        criticals: [{ index: 0 }],
+                showCritical: false,
+                criticals: [{ index: 0 }],
 
-        // jumlahJoin:1, //will deleted soon due to move to server
+                // jumlahJoin:1, //will deleted soon due to move to server
 
-        showConfig: false,
-        isGenerateFile: false,
-        generateFileData: 'DUMMY', //default value untuk radio button, bs jd diisi GUID
-        isSendAjax: false,
-        sendAjaxFileData: 'DUMMY',
-        isShowDeleteButton: false,
-        isAutolinezero: false,
-        isTouchUp: false,
-        generatedFileName: 'something.txt',
-        uri: '',
-        isDebug: false,
+                showConfig: false,
+                isGenerateFile: false,
+                generateFileData: 'DUMMY', //default value untuk radio button, bs jd diisi GUID
+                isSendAjax: false,
+                sendAjaxFileData: 'DUMMY',
+                isShowDeleteButton: false,
+                isAutolinezero: false,
+                isTouchUp: false,
+                generatedFileName: 'something.txt',
+                uri: '',
+                isDebug: false,
 
-        showNgoption: false,
-        toggleNgMode: 'toggleNgMode',
+                showNgoption: false,
+                toggleNgMode: 'toggleNgMode',
 
-        checkEsd: true,
-        esdUri: 'http://136.198.117.78/esd/api/esd',
-        model_header_id: null,
-        pwb_id: [],
-        include_symptom_id: [],
+                checkEsd: true,
+                esdUri: 'http://136.198.117.78/esd/api/esd/index.php',
+                model_header_id: null,
+                pwb_id: [],
+                include_symptom_id: [],
 
-        isRework: false,
+                isRework: false,
 
-        isManualInstruction: false,
-        isScanCarton: false
-      },
+                isManualInstruction: false,
+                isScanCarton: false
+            },
 
-      debug: {
-        enterActive: true,
-        content: {
-          dummy: 'MAPNL01020001',
-          serial: '#NA',
-          enter: '\r\n'
-        }
-      },
+            debug: {
+                enterActive: true,
+                content: {
+                    dummy: 'MAPNL01020001',
+                    serial: '#NA',
+                    enter: '\r\n'
+                }
+            },
 
-      options: [],
+            options: [],
 
-      radioOptions: ['GUID', 'DUMMY'],
+            radioOptions: ['GUID', 'DUMMY'],
 
-      showForm: false,
-      formErrorMsg: null,
-      nikValidated: false,
-      checkNik: true, //untuk nanti pengaturan server
-      form: {
-        nik: null,
-        date: null,
-        configvalue: null
-      }
+            showForm: false,
+            formErrorMsg: null,
+            nikValidated: false,
+            checkNik: true, //untuk nanti pengaturan server
+            form: {
+                nik: null,
+                date: null,
+                configvalue: null
+            }
 
-    };
-  },
-
-
-  components: {
-    ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a, GenerateFileConfig: __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig___default.a, Alert: __WEBPACK_IMPORTED_MODULE_2__Alert___default.a, InputNumber: __WEBPACK_IMPORTED_MODULE_3__chenfengyuan_vue_number_input__["a" /* default */], vSelect: __WEBPACK_IMPORTED_MODULE_4_vue_select___default.a, locationConfig: __WEBPACK_IMPORTED_MODULE_7__location_Config_vue___default.a,
-    modal: __WEBPACK_IMPORTED_MODULE_8__Modal___default.a
-  },
-
-  mounted: function mounted() {
-    this.getConfig();
-    this.fetchIpData();
-  },
-
-
-  methods: {
-    save: function save() {
-      var _this = this;
-
-      if (this.config.isSendAjax) {
-        if (_typeof(this.config.uri) == undefined) {
-          alert('you need to fill URI');
-          return;
-        }
-      }
-
-      this.form.configvalue = JSON.stringify(this.config);
-
-      for (var item in this.form) {
-        console.log(item);
-        if (this.form[item] == null || this.form[item] == '') {
-          this.formErrorMsg = "Mohon isi semua data !! ( " + item + " )";
-          return;
-        }
-      }
-
-      // kirim form
-      __WEBPACK_IMPORTED_MODULE_6_axios___default.a.post('api/configlog', this.form)
-      //   .then(res => res.JSON())
-      .then(function (res) {
-        _this.formErrorMsg = null;
-        localStorage.setItem('config', JSON.stringify(_this.config));
-        _this.$router.push('/');
-      }).catch(function (error) {
-        _this.formErrorMsg = error.message || "something went wrong & error message not found. please try again.";
-        console.error(error);
-      });
-    },
-    onSearch: function onSearch(search, loading) {
-      loading(true);
-      this.search(loading, search, this);
+        };
     },
 
 
-    search: __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.debounce(function (loading, search, vm) {
-      var url = 'api/scanners/all';
+    components: {
+        ToggleButton: __WEBPACK_IMPORTED_MODULE_0_vue_js_toggle_button_src_Button___default.a, GenerateFileConfig: __WEBPACK_IMPORTED_MODULE_1__GenerateFileConfig___default.a, Alert: __WEBPACK_IMPORTED_MODULE_2__Alert___default.a, InputNumber: __WEBPACK_IMPORTED_MODULE_3__chenfengyuan_vue_number_input__["a" /* default */], vSelect: __WEBPACK_IMPORTED_MODULE_4_vue_select___default.a, locationConfig: __WEBPACK_IMPORTED_MODULE_7__location_Config_vue___default.a,
+        modal: __WEBPACK_IMPORTED_MODULE_8__Modal___default.a
+    },
 
-      __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url, {
-        params: {
-          q: search
+    mounted: function mounted() {
+        this.getConfig();
+        this.fetchIpData();
+    },
+
+
+    methods: {
+        save: function save() {
+            var _this = this;
+
+            if (this.config.isSendAjax) {
+                if (_typeof(this.config.uri) == undefined) {
+                    alert('you need to fill URI');
+                    return;
+                }
+            }
+
+            this.form.configvalue = JSON.stringify(this.config);
+
+            for (var item in this.form) {
+                console.log(item);
+                if (this.form[item] == null || this.form[item] == '') {
+                    this.formErrorMsg = "Mohon isi semua data !! ( " + item + " )";
+                    return;
+                }
+            }
+
+            // kirim form
+            __WEBPACK_IMPORTED_MODULE_6_axios___default.a.post('api/configlog', this.form)
+            //   .then(res => res.JSON())
+            .then(function (res) {
+                _this.formErrorMsg = null;
+                localStorage.setItem('config', JSON.stringify(_this.config));
+                _this.$router.push('/');
+            }).catch(function (error) {
+                _this.formErrorMsg = error.message || "something went wrong & error message not found. please try again.";
+                console.error(error);
+            });
+        },
+        onSearch: function onSearch(search, loading) {
+            loading(true);
+            this.search(loading, search, this);
+        },
+
+
+        search: __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.debounce(function (loading, search, vm) {
+            var url = 'api/scanners/all';
+
+            __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url, {
+                params: {
+                    q: search
+                }
+            }).then(function (res) {
+                // res.json().then(json => (vm.options = json.items));
+                var response = res.data;
+                var data = response.data;
+                vm.options = data;
+                loading(false);
+            }).catch(function (res) {
+                console.log(res);
+            });
+        }, 350),
+
+        fetchIpData: function fetchIpData() {
+            var _this2 = this;
+
+            var url = 'api/scanners/all';
+            __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url).then(function (res) {
+                var response = res.data;
+                var data = response.data;
+                _this2.options = data;
+            }).catch(function (res) {
+                console.log(res);
+            });
+        },
+        getConfig: function getConfig() {
+            var currentConfig = localStorage.getItem('config');
+            if (currentConfig != null) {
+                currentConfig = JSON.parse(currentConfig);
+                this.config = currentConfig;
+            }
+        },
+        toggleForm: function toggleForm() {
+            var _this3 = this;
+
+            this.formErrorMsg = null;
+            this.showForm = !this.showForm;
+
+            if (this.showForm) {
+                // fetch config from server.
+                __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get('api/getconfig').then(function (res) {
+                    console.log(res);
+                    if (res.data != undefined) {
+                        // kalau ga ketemu, di hardcode darisini.
+                        _this3.config.esdUri = res.data.esdUri || 'http://136.198.117.78/esd/api/esd/index.php';
+                        if (res.data.esdUri != undefined) {
+                            _this3.formErrorMsg = 'validating NIK to ' + res.data.esdUri;
+                        } else {
+                            _this3.formErrorMsg = 'Validating NIK from Client Config : ' + _this3.config.esdUri;
+                        }
+                    }
+                }).catch(function (error) {
+                    console.error(error);
+                    var data = error.response.data;
+                    _this3.formErrorMsg = data;
+                });
+            }
+        },
+
+
+        checkEsd: __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.debounce(function (self) {
+            var url = self.config.esdUri;
+            var nik = self.form.nik;
+
+            __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url, {
+                params: {
+                    nik: nik
+                }
+            }).then(function (res) {
+                console.log('success', res);
+            }).catch(function (error) {
+                console.error(error);
+                if (error == undefined) {
+                    self.formErrorMsg = "error undefined";
+                    return;
+                }
+
+                if (error.response == undefined) {
+                    self.formErrorMsg = "error response undefined";
+                    return;
+                }
+
+                if (error.response.data == undefined) {
+                    self.formErrorMsg = "error response data undefined";
+                    return;
+                }
+
+                var data = error.response.data || undefined;
+                console.log(data);
+                // self.clearForm();
+                self.form.nik = '';
+
+                self.formErrorMsg = data.message || "TERJADI KESALAH KETIKA CHECK ESD. MOHON COBA LAGI.";
+            });
+        }, 350),
+
+        nikOnKeyup: function nikOnKeyup(e) {
+            if (this.form.nik.length >= 5) {
+                this.checkEsd(this);
+            }
         }
-      }).then(function (res) {
-        // res.json().then(json => (vm.options = json.items));
-        var response = res.data;
-        var data = response.data;
-        vm.options = data;
-        loading(false);
-      }).catch(function (res) {
-        console.log(res);
-      });
-    }, 350),
-
-    fetchIpData: function fetchIpData() {
-      var _this2 = this;
-
-      var url = 'api/scanners/all';
-      __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get(url).then(function (res) {
-        var response = res.data;
-        var data = response.data;
-        _this2.options = data;
-      }).catch(function (res) {
-        console.log(res);
-      });
-    },
-    getConfig: function getConfig() {
-      var currentConfig = localStorage.getItem('config');
-      if (currentConfig != null) {
-        currentConfig = JSON.parse(currentConfig);
-        this.config = currentConfig;
-      }
-    },
-    toggleForm: function toggleForm() {
-      this.formErrorMsg = null;
-      this.showForm = !this.showForm;
     }
-  }
 });
 
 /***/ }),
@@ -67877,7 +67950,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "form-control",
     attrs: {
-      "placeholder": "write your nik",
+      "placeholder": "scan your nik",
       "type": "text",
       "required": "",
       "autofocus": ""
@@ -67886,6 +67959,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "value": (_vm.form.nik)
     },
     on: {
+      "keyup": _vm.nikOnKeyup,
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.$set(_vm.form, "nik", $event.target.value)

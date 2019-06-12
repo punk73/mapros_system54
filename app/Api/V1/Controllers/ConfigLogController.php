@@ -5,9 +5,14 @@ namespace App\Api\V1\Controllers;
 use App\Http\Controllers\Controller;
 use Spatie\Activitylog\Models\Activity;
 use App\Api\V1\Requests\ConfiglogRequest;
+use Dingo\Blueprint\Annotation\Request;
 
 class ConfigLogController extends Controller
 {
+    public function index(Request $request) {
+        return setting('admin');
+    }
+
     public function store(ConfiglogRequest $request) {
 
         $activity = new Activity;

@@ -183,7 +183,15 @@
                     <div class="form-group">
                         <label for="nik" class="col-md-3 control-label">NIK</label>
                         <div class="col-md-9">
-                            <input placeholder="write your nik"  type="text" v-model='form.nik' class="form-control" required autofocus>
+                            <input 
+                              placeholder="scan your nik"  
+                              type="text" 
+                              v-model='form.nik' 
+                              class="form-control" 
+                              required 
+                              autofocus
+                              @keyup='nikOnKeyup'
+                            >
                         </div>
                     </div>
 
@@ -253,7 +261,7 @@
                     toggleNgMode: 'toggleNgMode',
 
                     checkEsd : true,
-                    esdUri : 'http://136.198.117.78/esd/api/esd',
+                    esdUri : 'http://136.198.117.78/esd/api/esd/index.php',
                     model_header_id : null,
                     pwb_id : [],
                     include_symptom_id:[],
@@ -384,7 +392,74 @@
             toggleForm(){
                 this.formErrorMsg = null
                 this.showForm = !this.showForm
-            }
+
+                if(this.showForm) {
+                    // fetch config from server.
+                    axios.get('api/getconfig')
+                      .then(res=> {
+                          console.log(res)
+                          if(res.data != undefined) {
+                            // kalau ga ketemu, di hardcode darisini.
+                            this.config.esdUri = res.data.esdUri || 'http://136.198.117.78/esd/api/esd/index.php';
+                            if(res.data.esdUri != undefined) {
+                                this.formErrorMsg = 'validating NIK to '+ res.data.esdUri
+                            }else {
+                                this.formErrorMsg = 'Validating NIK from Client Config : ' + this.config.esdUri
+                            }
+                          }
+                      })
+                      .catch(error => {
+                          console.error(error);
+                          let data = error.response.data;
+                          this.formErrorMsg = data
+                      })
+                }
+            },
+
+            checkEsd : _.debounce(( self ) => {
+              const url = self.config.esdUri;
+              const nik = self.form.nik;
+
+              axios.get(url, {
+                params : {
+                    nik : nik
+                }
+              })
+              .then((res) => {
+                console.log('success', res)  
+              }).catch((error) => {
+                console.error(error)
+                if(error == undefined) {
+                    self.formErrorMsg = "error undefined";
+                    return;
+                }
+
+                if(error.response == undefined) {
+                    self.formErrorMsg = "error response undefined";
+                    return;
+                }
+
+                if(error.response.data == undefined) {
+                    self.formErrorMsg = "error response data undefined";
+                    return;
+                }
+
+                let data = error.response.data || undefined;
+                console.log(data)
+                // self.clearForm();
+                self.form.nik = '';
+
+                self.formErrorMsg = data.message || "TERJADI KESALAH KETIKA CHECK ESD. MOHON COBA LAGI.";
+
+              });
+
+            }, 350),
+
+            nikOnKeyup(e){
+                if( ( this.form.nik.length >= 5 ) ){
+                   this.checkEsd(this)
+                }
+            },
 		}
 	}
 </script>
