@@ -40013,11 +40013,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 
@@ -40090,7 +40085,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             checkNik: true, //untuk nanti pengaturan server
             form: {
                 nik: null,
-                date: null,
                 configvalue: null
             }
 
@@ -40202,7 +40196,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     if (res.data != undefined) {
                         // kalau ga ketemu, di hardcode darisini.
                         _this3.config.esdUri = res.data.esd_uri || 'http://136.198.117.78/esd/api/esd/index.php';
-                        _this3.config.checkEsd = res.data.check_esd || false;
+                        // kalau check nik false, gausah verify nik dari ESD
+                        _this3.checkNik = res.data.check_esd == "1" || false;
                         if (res.data.esd_uri != undefined) {
                             _this3.formErrorMsg = 'validating NIK from server to ' + res.data.esd_uri;
                         } else {
@@ -40255,8 +40250,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }, 350),
 
         nikOnKeyup: function nikOnKeyup(e) {
-            if (this.form.nik.length >= 5) {
-                this.checkEsd(this);
+            if (this.checkNik) {
+                if (this.form.nik != null && this.form.nik.length >= 5) {
+                    this.checkEsd(this);
+                }
             }
         }
     }
@@ -67968,37 +67965,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.$set(_vm.form, "nik", $event.target.value)
-      }
-    }
-  })])]), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    staticClass: "col-md-3 control-label",
-    attrs: {
-      "for": "nik"
-    }
-  }, [_vm._v("tanggal lahir")]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-9"
-  }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.form.date),
-      expression: "form.date"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      "type": "date",
-      "required": "",
-      "autofocus": ""
-    },
-    domProps: {
-      "value": (_vm.form.date)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.$set(_vm.form, "date", $event.target.value)
       }
     }
   })])]), _vm._v(" "), _c('p', [_c('strong', [_vm._v(_vm._s(_vm.formErrorMsg))])])])]), _vm._v(" "), _c('div', {

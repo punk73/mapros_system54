@@ -195,12 +195,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="nik" class="col-md-3 control-label">tanggal lahir</label>
-                        <div class="col-md-9">
-                            <input  type="date" v-model='form.date' class="form-control" required autofocus>
-                        </div>
-                    </div>
+                    
 
                     <p><strong>{{formErrorMsg}}</strong></p>
                 </form>
@@ -292,7 +287,6 @@
                 checkNik: true, //untuk nanti pengaturan server
                 form:{
                     nik: null,
-                    date:null,
                     configvalue: null,
                 }
 
@@ -405,7 +399,8 @@
                           if(res.data != undefined) {
                             // kalau ga ketemu, di hardcode darisini.
                             this.config.esdUri = res.data.esd_uri || 'http://136.198.117.78/esd/api/esd/index.php';
-                            this.config.checkEsd = res.data.check_esd || false;
+                            // kalau check nik false, gausah verify nik dari ESD
+                            this.checkNik = (res.data.check_esd == "1") || false;
                             if(res.data.esd_uri != undefined) {
                                 this.formErrorMsg = 'validating NIK from server to '+ res.data.esd_uri
                             }else {
@@ -461,8 +456,10 @@
             }, 350),
 
             nikOnKeyup(e){
-                if( ( this.form.nik.length >= 5 ) ){
-                   this.checkEsd(this)
+                if(this.checkNik){
+                    if( (this.form.nik != null) && ( this.form.nik.length >= 5 ) ){
+                    this.checkEsd(this)
+                    }
                 }
             },
 		}

@@ -11,7 +11,6 @@ class ConfiglogRequest extends FormRequest
     {
         return [
             'nik'  => 'required',
-            'date'       => 'required|date',
             'configvalue' => 'required'
         ];
     }

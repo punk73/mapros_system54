@@ -16,7 +16,7 @@ class ConfigLogController extends Controller
     public function store(ConfiglogRequest $request) {
 
         $activity = new Activity;
-        $activity->text = $request->nik . " with birthdate = ". $request->date;
+        $activity->text = $request->nik . " Changes the config ";
         $activity->value = $request->configvalue;
         $activity->ip_address = $request->ip();
         $result = $activity->save();
