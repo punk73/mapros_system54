@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Lineprocess;
 use App\Observers\LineprocessObserver;
+use TCG\Voyager\Facades\Voyager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //register lineprocess observer
         Lineprocess::observe(LineprocessObserver::class);
+        Voyager::addAction(\App\Actions\Approved::class);
     }
 
     /**
