@@ -704,7 +704,7 @@ class Node implements
 					]);
 				}
 
-				if(setting('check_lot_no')){
+				if(setting('admin.check_lot_no')){
 					if ($boardTicket->lotno != $boardMaster->lotno ) {
 						# code...
 						throw new StoreResourceFailedException( "BOARD LOT NO TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->lotno}. BOARD MODEL MASTER = {$boardMaster->lotno}",[
