@@ -141,6 +141,16 @@ return [
             
         ],
 
+        'firebird2' => [
+            'driver'   => 'firebird',
+            'host'     => env('DB_HOST_FB2', 'localhost'),
+            'database' => env('DB_DATABASE_FB2','/storage/firebird/APPLICATION.FDB'),
+            'username' => env('DB_USERNAME_FB2', 'sysdba'),
+            'password' => env('DB_PASSWORD_FB2', 'masterkey'),
+            'charset'  => env('DB_CHARSET_FB2', 'UTF8'),
+            
+        ],
+
     ],
 
     /*

@@ -15,6 +15,7 @@ use GuzzleHttp\Client;
 use App\Mastermodel;
 use App\Api\V1\Helper\Node;
 use App\Board;
+use App\Quality;
 
 class TestController extends Controller
 {	
@@ -43,7 +44,7 @@ class TestController extends Controller
 
 		return $client; */
 
-		$url = 'http://localhost/mapros_system54/public/api/aoies';
+		/* $url = 'http://localhost/mapros_system54/public/api/aoies';
 		$client = new Client();
 		// $url = "https://api.github.com/repos/guzzle/guzzle";
 		try {
@@ -59,7 +60,25 @@ class TestController extends Controller
 			$response = $e->getResponse();
 			$responseBodyAsString = $response->getBody()->getContents();
 			throw new StoreResourceFailedException('something went wrong', []);
-		}
+		} */
+		$data = Quality::select([
+			'ID_QUALITY'
+			,'MODEL'
+			,'BOARD'
+			,'PCB_ID_NEW'
+			,'PCB_ID_OLD'
+			,'GUIDMASTER'
+			,'APPROVED'
+		])->where('GUIDMASTER', '!=', null )
+			->where('PCB_ID_OLD', '!=', "-")
+			->where(function($query){
+				return $query->where('APPROVED', '=', NULL )
+				  ->orWhere('APPROVED', 0);
+			})
+			->orderBy('ID_QUALITY','desc')
+			->paginate();
+
+		return $data;
 	}
 
 	public function testNode(){
