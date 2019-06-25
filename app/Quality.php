@@ -22,7 +22,13 @@ class Quality extends Model
 	protected $primaryKey = 'ID_QUALITY'; // or null
 
 	protected $fillable = [
-    	
+    	'ID_QUALITY' 
+        ,'MODEL'     
+        ,'BOARD'     
+        ,'PCB_ID_NEW'
+        ,'PCB_ID_OLD'
+        ,'GUIDMASTER'
+        ,'APPROVED'  
     ];
 
     public function __construct(){
@@ -64,10 +70,13 @@ class Quality extends Model
 
 	public function getData() {
 		return json_encode([
-			// 'MODEL_NAME' => trim($this->MODEL_NAME),
-			// 'STDWEIGHT' => trim( $this->STDWEIGHT),
-			// 'TOLERANCE' => trim( $this->TOLERANCE),
-			// 'SCALE' => trim( $this->SCALE),			
+			'ID_QUALITY' => $this->ID_QUALITY,
+            'MODEL' => $this->MODEL,
+            'BOARD' => $this->BOARD,
+            'PCB_ID_NEW' => $this->PCB_ID_NEW,
+            'PCB_ID_OLD' => $this->PCB_ID_OLD,
+            'GUIDMASTER' => $this->GUIDMASTER,
+            'APPROVED' => $this->APPROVED,	
 		]);
 	}
 
