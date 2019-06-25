@@ -650,13 +650,15 @@ class Node implements
 					]);
 				}
 
-				if( $prevBoard->lotno != $this->lotno ){
-					throw new StoreResourceFailedException("LOT NUMBER BOARD YG ANDA SCAN BERBEDA DENGAN LOT NUMBER BOARD SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
-						'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
-						'node' => json_decode($this, true ),
-						'prevBoard' => $prevBoard,
-					]);
-				}		
+				if(setting('admin.check_lot_no')){
+					if( $prevBoard->lotno != $this->lotno ){
+						throw new StoreResourceFailedException("LOT NUMBER BOARD YG ANDA SCAN BERBEDA DENGAN LOT NUMBER BOARD SEBELUMNYA. LOT NUMBER SEKARANG '{$this->lotno}' , LOT NUMBER SEBELUMNYA '{$prevBoard->lotno}'", [
+							'message' => 'for jein developer : due to circular dependencies, we cannot use current node modelname. instead we use user parameter',
+							'node' => json_decode($this, true ),
+							'prevBoard' => $prevBoard,
+						]);
+					}
+				}
 			}
 		}
 	}
@@ -702,13 +704,15 @@ class Node implements
 					]);
 				}
 
-				if ($boardTicket->lotno != $boardMaster->lotno ) {
-					# code...
-					throw new StoreResourceFailedException( "BOARD MODEL TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->lotno}. BOARD MODEL MASTER = {$boardMaster->lotno}",[
-						'board_model_ticket' => $boardTicket->lotno ,
-						'board_model_master' => $boardMaster->lotno,
-					]);
-				}		
+				if(setting('check_lot_no')){
+					if ($boardTicket->lotno != $boardMaster->lotno ) {
+						# code...
+						throw new StoreResourceFailedException( "BOARD LOT NO TICKET & MASTER BERBEDA! BOARD MODEL TICKET = {$boardTicket->lotno}. BOARD MODEL MASTER = {$boardMaster->lotno}",[
+							'board_model_ticket' => $boardTicket->lotno ,
+							'board_model_master' => $boardMaster->lotno,
+						]);
+					}		
+				}
 			}
 		}
 	}
