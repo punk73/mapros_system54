@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use TCG\Voyager\Models\Permission;
+use TCG\Voyager\Models\DataRow;
+use TCG\Voyager\Models\MenuItem;
 
 class QualityTableSeeder extends Seeder
 {
@@ -13,7 +16,10 @@ class QualityTableSeeder extends Seeder
     {
         $this->insertDataTypes();
 
-        $dataType = \DB::table('data_types')->where($this->getDatatype())->orderBy('id','desc')->first();
+        $dataType = \DB::table('data_types')
+          ->where($this->getDatatype())
+          ->orderBy('id','desc')
+          ->first();
 
         if($dataType) {
             $id = $dataType->id;
@@ -40,6 +46,10 @@ class QualityTableSeeder extends Seeder
 
         }
 
+        $this->insertPermissions();
+
+        $this->insertMenuItem();
+
     }
 
     protected function insertDataTypes() {
@@ -53,6 +63,62 @@ class QualityTableSeeder extends Seeder
         }
 
         return $result;
+    }
+
+    protected function insertPermissions(){
+        $actions = [
+            'delete',
+            'add',
+            'edit',
+            'read',
+            'browse'
+        ];
+
+        $tableName = 'QUALITY';
+
+        foreach ($actions as $key => $action) {
+            $data = $action . '_' . $tableName;
+            $isExists = \DB::table('permissions')->where([
+                'key' => $data,
+                'table_name' => $tableName,
+            ])->first();
+
+            // kalau belum ada, insert
+            if(!$isExists) {
+                // \DB::table('permissions')->insert();
+
+                $permission = new Permission([
+                    'key' => $data,
+                    'table_name' => $tableName,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+
+                $permission->save();
+                
+                $roleId = 1; //admin
+                $permission->roles()->attach($roleId);
+            }
+
+
+        }
+    }
+
+    protected function insertMenuItem($menuId = 1) {
+        $menuItem = new MenuItem();
+
+        $order = MenuItem::select(['order'])->orderBy('order', 'desc')->first();
+
+        $menuItem->firstOrCreate([
+            'menu_id' => $menuId,
+            'title' => 'Quality',
+            'url' => 'admin/quality',	
+            'target' => '_self',	
+            'icon_class' => 'voyager-barbell',
+            'color' => '#000000',
+        ], [
+            'order' => $order['order'] + 1
+        ]);
     }
 
     protected function getDatatype() {
