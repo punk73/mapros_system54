@@ -153,10 +153,18 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             
             $data = $this->swapGuid($pcb_id_new, $pcb_id_old, $guidMaster );
             
+            if(!$data) {
+                return redirect()
+                  ->back()
+                  ->with(['message' => "DATA BOARD BARU TIDAK DITEMUKAN. {$pcb_id_new}", 'alert-type' => 'error']);
+            }
+
             $quality->APPROVED = 1; //true;
             $quality->save();
 
-            return redirect()->back()->with('data', $data );
+            return redirect()->back()->with([
+                'message' => "DATA BERHASIL DI APPROVE", 'alert-type' => 'success'
+            ]);
         }
 
         return redirect()->back();
@@ -211,15 +219,22 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
         ->orderBy('id', 'desc')
         ->update(['guid_master' => $guidMaster ]);
 
+        if( $new == 0 ) {
+            // jika ga ada yang ter update, gausah lanjut. 
+            // nanti board baru ga ada, board lama keupdate
+            return false;
+        }
+
         $old = Board::where( function($query) use ($pcbIdOld) { $this->ignoreSideQuery($query, $pcbIdOld ); } )
         ->orderBy('id', 'desc')
         ->update(['guid_master' => $guidMaster . '_old' ]);;
 
-        return [
-            'new' => $new,
+        return true;
+        /* return [
+            'new' => $new, //jumlah data terupdate.
             'old' => $old,
             'guid' => $guidMaster
-        ];
+        ]; */
         
     }
 
