@@ -40,3 +40,8 @@ Route::group(['prefix' => 'ticket_masters'], function($route){
 	$route->post('/', 'MasterTicketController@post' );
 });
 
+Route::get('quality/{id}/approve', [
+	'uses' => 'Vendor\\QualityController@approve',
+	'as' => 'approve' 
+]);
+

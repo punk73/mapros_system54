@@ -10,7 +10,8 @@ use TCG\Voyager\Events\BreadDataUpdated;
 use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
-
+use App\Quality;
+use App\Board;
 
 class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 {
@@ -121,6 +122,105 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             'isServerSide',
             'defaultSearchKey'
         ));
+    }
+
+    public function approve($id, Request $request) {
+
+        $quality = Quality::select([
+            'ID_QUALITY'
+            ,'MODEL'
+            ,'BOARD'
+            ,'PCB_ID_NEW'
+            ,'PCB_ID_OLD'
+            ,'GUIDMASTER'
+            ,'APPROVED'
+        ])->where('GUIDMASTER', '!=', null )
+            ->where('PCB_ID_OLD', '!=', "-")
+            ->where(function($query){
+                return $query->where('APPROVED', '=', NULL )
+                  ->orWhere('APPROVED', 0);
+            })
+            ->orderBy('ID_QUALITY','desc')
+            ->find($id);
+        
+        if($quality) {
+            
+            // swap the master guid;
+            // pib_id_new->guid_master = pcb_id_old->guid_master
+            $pcb_id_new = trim($quality->PCB_ID_NEW);
+            $pcb_id_old = trim($quality->PCB_ID_OLD);
+            $guidMaster = trim($quality->GUIDMASTER);
+            
+            $data = $this->swapGuid($pcb_id_new, $pcb_id_old, $guidMaster );
+            
+            $quality->APPROVED = 1; //true;
+            $quality->save();
+
+            return redirect()->back()->with('data', $data );
+        }
+
+        return redirect()->back();
+    }
+
+    public function getDummyParent($boardId){
+		$tmp = str_split($boardId);
+
+		if(strlen($boardId) == 16 ){
+			$tmp[7] = 0;
+			$tmp[8] = 0;
+		}else if(strlen($boardId) == 24 ){
+			$tmp[12] = 0;
+			$tmp[13] = 0;
+		}
+
+		return implode('', $tmp );
+    }
+    
+    public function ignoreSideQuery($query, $boardId ) {
+        $tmp = $this->getDummyParent($boardId);
+				
+        if(strlen($boardId) == 16 ){
+            $sideIndex = 6;
+        }else if (strlen($boardId) == 24 ){
+            $sideIndex = 14;
+        }else{
+            // default side index yg sekarang adalah 14; karena ini yg berlaku;
+            $sideIndex = 14;
+        }
+        
+        $parentA = $tmp;
+        $parentA[$sideIndex] = 'A';
+
+        $parentB = $tmp;
+        $parentB[$sideIndex] = 'B';
+
+        $a = $boardId;
+        $a[$sideIndex] = 'A';
+        $b = $boardId;
+        $b[$sideIndex] = 'B';
+
+        $query->where('board_id', $a )
+            ->orWhere('board_id', $b )
+            ->orWhere('board_id', $parentA )
+            ->orWhere('board_id', $parentB );
+    }
+
+    public function swapGuid($pcbIdNew, $pcbIdOld, $guidMaster ) {
+        $new = Board::where( function($query) use ($pcbIdNew) { $this->ignoreSideQuery($query, $pcbIdNew ); } )
+        ->where('guid_master', '=', null )  
+        ->orderBy('id', 'desc')
+        ->update(['guid_master' => $guidMaster ]);
+
+        $old = Board::where( function($query) use ($pcbIdOld) { $this->ignoreSideQuery($query, $pcbIdOld ); } )
+        ->orderBy('id', 'desc')
+        ->update(['guid_master' => $guidMaster . '_old' ]);;
+
+        return [
+            'new' => $new,
+            'old' => $old,
+            'guid' => $guidMaster
+        ];
+        
     }
 
 }

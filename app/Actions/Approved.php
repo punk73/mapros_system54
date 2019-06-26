@@ -8,12 +8,12 @@ class Approved extends AbstractAction
 {
     public function getTitle()
     {
-        return 'My Action';
+        return 'Approve';
     }
 
     public function getIcon()
     {
-        return 'voyager-eye';
+        return 'voyager-check';
     }
 
     public function getPolicy()
@@ -30,8 +30,7 @@ class Approved extends AbstractAction
 
     public function getDefaultRoute()
     {
-        return null;
-        // return route('/');
+        return route('approve', $this->data->{$this->data->getKeyName()});
     }
 
     public function shouldActionDisplayOnDataType()
