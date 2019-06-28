@@ -220,6 +220,33 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
         ->update(['guid_master' => $guidMaster ]);
 
         if( $new == 0 ) {
+            /* 
+              check apakah board valid, dengan check keberadaan parent id dari board tersebut.
+             //ini mungkin ada karena pengecekan tidak dengan kondisi guid_master = null;
+            */
+            $prevBoard = Board::where( function($query) use ($pcbIdNew) { $this->ignoreSideQuery($query, $pcbIdNew ); } )
+            ->first();
+
+            if($prevBoard) {
+                /* what if,  */
+                // insert this particular board;
+                Board::insert([
+                    [
+                        'board_id' => '',
+                        'guid_master' => '',
+                        'guid_ticket' => null,
+                        'modelname' => '',
+                        'status' => 'IN',
+                        'lotno' => '',
+                        'scan_nik' => '',
+                        'judge' => "OK",
+                        'created_at' => date('Y-m-d h:m:s'),
+                        'updated_at' => date('Y-m-d h:m:s'),
+
+                    ]
+                ]);
+            }
+
             // jika ga ada yang ter update, gausah lanjut. 
             // nanti board baru ga ada, board lama keupdate
             return false;
