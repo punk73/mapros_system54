@@ -134,6 +134,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             ,'PCB_ID_OLD'
             ,'GUIDMASTER'
             ,'APPROVED'
+            , 'PIC_NIK'
         ])->where('GUIDMASTER', '!=', null )
             ->where('PCB_ID_OLD', '!=', "-")
             ->where(function($query){
@@ -150,8 +151,8 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             $pcb_id_new = trim($quality->PCB_ID_NEW);
             $pcb_id_old = trim($quality->PCB_ID_OLD);
             $guidMaster = trim($quality->GUIDMASTER);
-            
-            $data = $this->swapGuid($pcb_id_new, $pcb_id_old, $guidMaster );
+            $nik        = trim($quality->PIC_NIK);
+            $data = $this->swapGuid($pcb_id_new, $pcb_id_old, $guidMaster, $nik );
             
             if(!$data) {
                 return redirect()
@@ -213,7 +214,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             ->orWhere('board_id', $parentB );
     }
 
-    public function swapGuid($pcbIdNew, $pcbIdOld, $guidMaster ) {
+    public function swapGuid($pcbIdNew, $pcbIdOld, $guidMaster , $nik ) {
         $new = Board::where( function($query) use ($pcbIdNew) { $this->ignoreSideQuery($query, $pcbIdNew ); } )
         ->where('guid_master', '=', null )  
         ->orderBy('id', 'desc')
@@ -227,22 +228,36 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             $prevBoard = Board::where( function($query) use ($pcbIdNew) { $this->ignoreSideQuery($query, $pcbIdNew ); } )
             ->first();
 
+            // prev board harus ada dulu baru ke update.
             if($prevBoard) {
                 /* what if,  */
                 // insert this particular board;
+                $lotno = substr($pcbIdNew, 16, 4) ; 
                 Board::insert([
                     [
-                        'board_id' => '',
-                        'guid_master' => '',
-                        'guid_ticket' => null,
-                        'modelname' => '',
+                        'board_id' => $pcbIdNew,
+                        'guid_master' => $prevBoard->guid_master,
+                        'guid_ticket' => $prevBoard->guid_ticket,
+                        'modelname' => $prevBoard->modelname,
                         'status' => 'IN',
-                        'lotno' => '',
-                        'scan_nik' => '',
+                        'lotno' => $lotno,
+                        'scan_nik' => $nik,
+                        'scanner_id' => 9999, //assume our scanner cannot be higher;
                         'judge' => "OK",
                         'created_at' => date('Y-m-d h:m:s'),
                         'updated_at' => date('Y-m-d h:m:s'),
-
+                    ],[
+                        'board_id' => $pcbIdNew,
+                        'guid_master' => $prevBoard->guid_master,
+                        'guid_ticket' => $prevBoard->guid_ticket,
+                        'modelname' => $prevBoard->modelname,
+                        'status' => 'OUT',
+                        'lotno' => $lotno,
+                        'scan_nik' => $nik,
+                        'scanner_id' => 9999, //assume our scanner cannot be higher;
+                        'judge' => "OK",
+                        'created_at' => date('Y-m-d h:m:s'),
+                        'updated_at' => date('Y-m-d h:m:s'),
                     ]
                 ]);
             }
