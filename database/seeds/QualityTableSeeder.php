@@ -130,7 +130,7 @@ class QualityTableSeeder extends Seeder
             'icon' => 'voyager-list',
             'model_name' => 'App\\Quality',
             'policy_name' => NULL,
-            'controller' => '',
+            'controller' => '\\App\\Http\\Controllers\\Vendor\\QualityController',
             'description' => '',
             'generate_permissions' => 1,
             'server_side' => 1,
