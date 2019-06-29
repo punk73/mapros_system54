@@ -135,6 +135,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             ,'GUIDMASTER'
             ,'APPROVED'
             , 'PIC_NIK'
+            , 'SERIAL_OUTPUT'
         ])->where('GUIDMASTER', '!=', null )
             ->where('PCB_ID_OLD', '!=', "-")
             ->where(function($query){
@@ -152,7 +153,12 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             $pcb_id_old = trim($quality->PCB_ID_OLD);
             $guidMaster = trim($quality->GUIDMASTER);
             $nik        = trim($quality->PIC_NIK);
-            $data = $this->swapGuid($pcb_id_new, $pcb_id_old, $guidMaster, $nik );
+            $serial     = trim($quality->SERIAL_OUTPUT);
+            // check apakah ini master atau panel;
+            $isPanel = ( strpos( $serial, 'MAPNL') !== false );
+            
+            $data = $this->swapGuid($pcb_id_new, $pcb_id_old, $guidMaster, $nik, $isPanel );
+            
 
             if(!$data) {
                 return redirect()
@@ -214,11 +220,14 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             ->orWhere('board_id', $parentB );
     }
 
-    public function swapGuid($pcbIdNew, $pcbIdOld, $guidMaster , $nik ) {
+    public function swapGuid($pcbIdNew, $pcbIdOld, $guidMaster , $nik, $isPanel ) {
+
+        $guidColumn = ($isPanel) ? 'guid_ticket' : 'guid_master';
+
         $new = Board::where( function($query) use ($pcbIdNew) { $this->ignoreSideQuery($query, $pcbIdNew ); } )
-        ->where('guid_master', '=', null )  
+        ->where($guidColumn, '=', null )  
         ->orderBy('id', 'desc')
-        ->update(['guid_master' => $guidMaster ]);
+        ->update([$guidColumn => $guidMaster ]);
 
         if( $new == 0 ) {
             /* 
@@ -236,7 +245,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
                 $lotno = substr($pcbIdNew, 16, 4) ;
                 $tmpScannerId = 9999; 
                 $isExist = Board::where('board_id', $pcbIdNew)
-                ->where('guid_master', $prevBoard->guid_master )
+                ->where($guidColumn, $prevBoard->guid_master )
                 ->where('lotno', $lotno )
                 ->where('scanner_id', $tmpScannerId)
                 ->orderBy('id','desc')
@@ -246,7 +255,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
                     Board::insert([
                         [
                             'board_id' => $pcbIdNew,
-                            'guid_master' => $prevBoard->guid_master,
+                            $guidColumn => $prevBoard->guid_master,
                             'guid_ticket' => $prevBoard->guid_ticket,
                             'modelname' => $prevBoard->modelname,
                             'status' => 'IN',
@@ -258,7 +267,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
                             'updated_at' => date('Y-m-d h:m:s'),
                         ],[
                             'board_id' => $pcbIdNew,
-                            'guid_master' => $prevBoard->guid_master,
+                            $guidColumn => $prevBoard->guid_master,
                             'guid_ticket' => $prevBoard->guid_ticket,
                             'modelname' => $prevBoard->modelname,
                             'status' => 'OUT',
@@ -281,7 +290,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
 
         $old = Board::where( function($query) use ($pcbIdOld) { $this->ignoreSideQuery($query, $pcbIdOld ); } )
         ->orderBy('id', 'desc')
-        ->update(['guid_master' => $guidMaster . '_old' ]);;
+        ->update([$guidColumn => $guidMaster . '_old' ]);;
 
         return true;
         /* return [
