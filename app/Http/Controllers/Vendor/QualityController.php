@@ -153,7 +153,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             $guidMaster = trim($quality->GUIDMASTER);
             $nik        = trim($quality->PIC_NIK);
             $data = $this->swapGuid($pcb_id_new, $pcb_id_old, $guidMaster, $nik );
-            
+
             if(!$data) {
                 return redirect()
                   ->back()
@@ -226,6 +226,7 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
              //ini mungkin ada karena pengecekan tidak dengan kondisi guid_master = null;
             */
             $prevBoard = Board::where( function($query) use ($pcbIdNew) { $this->ignoreSideQuery($query, $pcbIdNew ); } )
+            ->orderBy('id','desc')
             ->first();
 
             // prev board harus ada dulu baru ke update.
@@ -260,11 +261,12 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
                         'updated_at' => date('Y-m-d h:m:s'),
                     ]
                 ]);
-            }
+            } else {
 
-            // jika ga ada yang ter update, gausah lanjut. 
-            // nanti board baru ga ada, board lama keupdate
-            return false;
+                // jika ga ada yang ter update, gausah lanjut. 
+                // nanti board baru ga ada, board lama keupdate
+                return false;
+            }
         }
 
         $old = Board::where( function($query) use ($pcbIdOld) { $this->ignoreSideQuery($query, $pcbIdOld ); } )
