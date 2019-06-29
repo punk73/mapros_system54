@@ -233,34 +233,44 @@ class QualityController extends \TCG\Voyager\Http\Controllers\VoyagerBaseControl
             if($prevBoard) {
                 /* what if,  */
                 // insert this particular board;
-                $lotno = substr($pcbIdNew, 16, 4) ; 
-                Board::insert([
-                    [
-                        'board_id' => $pcbIdNew,
-                        'guid_master' => $prevBoard->guid_master,
-                        'guid_ticket' => $prevBoard->guid_ticket,
-                        'modelname' => $prevBoard->modelname,
-                        'status' => 'IN',
-                        'lotno' => $lotno,
-                        'scan_nik' => $nik,
-                        'scanner_id' => 9999, //assume our scanner cannot be higher;
-                        'judge' => "OK",
-                        'created_at' => date('Y-m-d h:m:s'),
-                        'updated_at' => date('Y-m-d h:m:s'),
-                    ],[
-                        'board_id' => $pcbIdNew,
-                        'guid_master' => $prevBoard->guid_master,
-                        'guid_ticket' => $prevBoard->guid_ticket,
-                        'modelname' => $prevBoard->modelname,
-                        'status' => 'OUT',
-                        'lotno' => $lotno,
-                        'scan_nik' => $nik,
-                        'scanner_id' => 9999, //assume our scanner cannot be higher;
-                        'judge' => "OK",
-                        'created_at' => date('Y-m-d h:m:s'),
-                        'updated_at' => date('Y-m-d h:m:s'),
-                    ]
-                ]);
+                $lotno = substr($pcbIdNew, 16, 4) ;
+                $tmpScannerId = 9999; 
+                $isExist = Board::where('board_id', $pcbIdNew)
+                ->where('guid_master', $prevBoard->guid_master )
+                ->where('lotno', $lotno )
+                ->where('scanner_id', $tmpScannerId)
+                ->orderBy('id','desc')
+                ->first();
+                
+                if(!$isExist) {
+                    Board::insert([
+                        [
+                            'board_id' => $pcbIdNew,
+                            'guid_master' => $prevBoard->guid_master,
+                            'guid_ticket' => $prevBoard->guid_ticket,
+                            'modelname' => $prevBoard->modelname,
+                            'status' => 'IN',
+                            'lotno' => $lotno,
+                            'scan_nik' => $nik,
+                            'scanner_id' => $tmpScannerId, //assume our scanner cannot be higher;
+                            'judge' => "OK",
+                            'created_at' => date('Y-m-d h:m:s'),
+                            'updated_at' => date('Y-m-d h:m:s'),
+                        ],[
+                            'board_id' => $pcbIdNew,
+                            'guid_master' => $prevBoard->guid_master,
+                            'guid_ticket' => $prevBoard->guid_ticket,
+                            'modelname' => $prevBoard->modelname,
+                            'status' => 'OUT',
+                            'lotno' => $lotno,
+                            'scan_nik' => $nik,
+                            'scanner_id' => $tmpScannerId, //assume our scanner cannot be higher;
+                            'judge' => "OK",
+                            'created_at' => date('Y-m-d h:m:s'),
+                            'updated_at' => date('Y-m-d h:m:s'),
+                        ]
+                    ]);
+                }
             } else {
 
                 // jika ga ada yang ter update, gausah lanjut. 
