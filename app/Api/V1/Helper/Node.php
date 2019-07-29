@@ -1890,4 +1890,40 @@ class Node implements
 	public function getParameter() {
 		return $this->parameter;
 	}
+
+	public function checkMechaCounter() {
+		if ($this->getIdType() !== 'mecha') {
+			return true;
+		}
+
+		if($this->getModelType() !== "ticket") {
+			return true;
+		}
+
+		$scanner = $this->getScanner();
+
+		$scannerId = $scanner->id;
+		
+		$data = Ticket::where( $this->dummy_column , $this->getDummyId() )
+			->where('status', "OUT")
+			->where('scanner_id', $scannerId );
+
+		$counter = $data->count();
+
+		$maxCounter = setting('admin.max_mecha_counter');
+		if($counter >= (int) $maxCounter ) {
+			throw new StoreResourceFailedException("Mecha sudah digunakan {$counter} kali. max digunakan adalah {$maxCounter} kali.", [
+				'counter' => $counter,
+				'maxCounter' => $maxCounter,
+				'column' => $this->dummy_column,
+				'unique' => $this->getDummyId(),
+				'scanner_id' => $scannerId,
+				'data' => $data->get()
+
+			]);
+		}
+		
+		return true;
+
+	}
 }

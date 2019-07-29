@@ -652,6 +652,9 @@ class MainController extends Controller
 			]);
 		}
 
+		// check if mecha counter is hit the maximum scan yet
+		$node->checkMechaCounter();
+
 		return $this->processBoard($node);
 
 	}
