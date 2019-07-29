@@ -40912,6 +40912,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(17);
 
@@ -40947,6 +40968,7 @@ var axios = __webpack_require__(17);
             isJoin: false,
             showManualInstruction: false,
             showCarton: false,
+            showSerialNumberField: true,
 
             oldForm: {
                 ip: '',
@@ -66921,7 +66943,55 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "form.symptom"
     }
-  })], 1) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.isLoading) ? _c('div', {
+  })], 1) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.config.isScanSN) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-4 control-label"
+  }, [_vm._v("Show Serial Number")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6"
+  }, [_c('toggle-button', {
+    attrs: {
+      "color": '#2ab27b',
+      "sync": true,
+      "labels": true
+    },
+    model: {
+      value: (_vm.showSerialNumberField),
+      callback: function($$v) {
+        _vm.showSerialNumberField = $$v
+      },
+      expression: "showSerialNumberField"
+    }
+  })], 1)]) : _vm._e(), _vm._v(" "), ((_vm.config.isScanSN && _vm.includeIn) || _vm.showSerialNumberField) ? _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "col-md-4 control-label"
+  }, [_vm._v("Serial Number")]), _vm._v(" "), _c('div', {
+    staticClass: "col-md-6"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.form.serial_number),
+      expression: "form.serial_number"
+    }],
+    ref: "serial_number",
+    staticClass: "form-control",
+    attrs: {
+      "placeholder": "Scan Serial Number",
+      "name": "serial_number",
+      "required": ""
+    },
+    domProps: {
+      "value": (_vm.form.serial_number)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.$set(_vm.form, "serial_number", $event.target.value)
+      }
+    }
+  })])]) : _vm._e(), _vm._v(" "), (_vm.isLoading) ? _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-3 col-md-offset-4"

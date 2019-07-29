@@ -128,6 +128,27 @@
                                 </div>
                             </div>
 
+                            <div class="form-group" v-if="config.isScanSN" >
+                                <label class="col-md-4 control-label">Show Serial Number</label>                                
+                                <div class="col-md-6">
+                                    <toggle-button v-model="showSerialNumberField" :color="'#2ab27b'" :sync='true' :labels="true"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="(config.isScanSN && includeIn) || showSerialNumberField " >
+                                <label class="col-md-4 control-label">Serial Number</label>
+                                <div class="col-md-6">
+                                    <input 
+                                        placeholder="Scan Serial Number" 
+                                        ref='serial_number' 
+                                        v-model="form.serial_number" 
+                                        class="form-control" 
+                                        name="serial_number"  
+                                        required
+                                    >
+                                </div>
+                            </div>
+
                             <div class="form-group" v-if='isLoading' >
                                 <div class="col-md-3 col-md-offset-4">
                                     <loading />
@@ -261,6 +282,7 @@
                 isJoin : false,
                 showManualInstruction: false,
                 showCarton:false,
+                showSerialNumberField:true,
 
                 oldForm : {
                     ip: '',
