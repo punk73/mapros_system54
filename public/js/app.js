@@ -40013,6 +40013,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -40063,7 +40070,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 isRework: false,
 
                 isManualInstruction: false,
-                isScanCarton: false
+                isScanCarton: false,
+                isScanSN: false
             },
 
             debug: {
@@ -67907,6 +67915,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "for": "isScanCarton"
     }
   }, [_vm._v(" Scan Inner Carton ")])], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.isScanSN),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "isScanSN", $$v)
+      },
+      expression: "config.isScanSN"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "isScanSN"
+    }
+  }, [_vm._v(" Scan Serial Number ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"
