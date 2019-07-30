@@ -40969,7 +40969,7 @@ var axios = __webpack_require__(17);
             isJoin: false,
             showManualInstruction: false,
             showCarton: false,
-            showSerialNumberField: true,
+            showSerialNumberField: false,
 
             oldForm: {
                 ip: '',

@@ -35,7 +35,8 @@ class MainController extends Controller
 		'locations', //added for touch up process
 		'isRework',
 		'manual_content', // optional
-		'carton'
+		'carton',
+		'serial_number', //optional and cannot be null
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;

@@ -283,7 +283,7 @@
                 isJoin : false,
                 showManualInstruction: false,
                 showCarton:false,
-                showSerialNumberField:true,
+                showSerialNumberField:false,
 
                 oldForm : {
                     ip: '',
