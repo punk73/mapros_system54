@@ -40960,7 +40960,8 @@ var axios = __webpack_require__(17);
                 locations: [],
                 isRework: false, //default value
                 manual_content: null, //default value
-                carton: null
+                carton: null,
+                serial_number: null
             },
 
             isNG: false,

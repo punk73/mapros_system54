@@ -275,6 +275,7 @@
                     isRework : false, //default value
                     manual_content : null, //default value
                     carton : null,
+                    serial_number: null,
                 },
 
                 isNG : false,
