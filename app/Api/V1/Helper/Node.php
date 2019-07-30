@@ -1048,6 +1048,8 @@ class Node implements
 			}
 		}
 
+		$this->finishMaster();
+
 		return $isSaveSuccess; //true or false;
 	}
 
@@ -1924,6 +1926,32 @@ class Node implements
 		}
 		
 		return true;
+
+	}
+
+	public function finishMaster() {
+		if(!isset($this->parameter['serial_number'])) {
+			return false;
+		}
+
+		if(is_null($this->parameter['serial_number'])) {
+			return false;
+		}
+
+		if($this->getModelType() !== 'master') {
+			return false;
+		}
+
+		$serialNumber = $this->parameter['serial_number'];
+
+		$updated = Master::where($this->getUniqueColumn(), $this->getGuidMaster() )
+			->where('serial_no', null )
+			->where( $this->dummy_column, $this->getDummyId() )
+			// ->get();
+			->update([ 'serial_no' => $serialNumber ]);
+
+		
+		return $updated;
 
 	}
 }
