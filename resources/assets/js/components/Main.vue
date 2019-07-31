@@ -1053,22 +1053,31 @@
               let self= this;
               let config = localStorage.getItem('config');
               let ipConfig = JSON.parse(config);
+            //   console.log({ipConfig})
               let ip = this.form.ip || ipConfig.ip
+              let modelname = ipConfig.model;
               axios.get('api/configs', {
                 params:{
-                  ip: ip
+                  ip: ip,
+                  modelname: modelname
                 }
               }).then((response) => {
                 console.log(response)
                 var data = response.data.data;
                 self.info = data;
+                
+                if(typeof response.data.show_serial_number_field != undefined ) {
+                    console.log('hai', response.data.show_serial_number_field )
+                    self.config.isScanSN = response.data.show_serial_number_field;
+                }
+
                 self.config.jumlahJoin = data.lineprocess.join_qty;
                 self.initLabel();
               })
               .catch((error)=> {
 
                 modal.header = 'ERROR';
-                console.log(error.response)
+                console.log(error)
                 modal.message = error.response.data.message;
                 self.showModal = !self.showModal; 
 

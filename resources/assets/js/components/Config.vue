@@ -162,12 +162,12 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <div class=" col-md-6 col-md-offset-3 col-xs-12">
                                     <toggle-button v-model="config.isScanSN" :sync='true' :color="'#2ab27b'" :labels="true"/>
                                     <label for="isScanSN"> Scan Serial Number </label>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="form-group row">
                                 <div class="col-md-9 col-md-offset-3">

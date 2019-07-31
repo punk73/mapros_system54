@@ -40684,6 +40684,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_lodash__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__location_Location_vue__ = __webpack_require__(247);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__location_Location_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__location_Location_vue__);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 //
 //
 //
@@ -41721,21 +41723,30 @@ var axios = __webpack_require__(17);
             var self = this;
             var config = localStorage.getItem('config');
             var ipConfig = JSON.parse(config);
+            //   console.log({ipConfig})
             var ip = this.form.ip || ipConfig.ip;
+            var modelname = ipConfig.model;
             axios.get('api/configs', {
                 params: {
-                    ip: ip
+                    ip: ip,
+                    modelname: modelname
                 }
             }).then(function (response) {
                 console.log(response);
                 var data = response.data.data;
                 self.info = data;
+
+                if (_typeof(response.data.show_serial_number_field) != undefined) {
+                    console.log('hai', response.data.show_serial_number_field);
+                    self.config.isScanSN = response.data.show_serial_number_field;
+                }
+
                 self.config.jumlahJoin = data.lineprocess.join_qty;
                 self.initLabel();
             }).catch(function (error) {
 
                 modal.header = 'ERROR';
-                console.log(error.response);
+                console.log(error);
                 modal.message = error.response.data.message;
                 self.showModal = !self.showModal;
             });
@@ -67986,27 +67997,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "for": "isScanCarton"
     }
   }, [_vm._v(" Scan Inner Carton ")])], 1)]), _vm._v(" "), _c('div', {
-    staticClass: "form-group"
-  }, [_c('div', {
-    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
-  }, [_c('toggle-button', {
-    attrs: {
-      "sync": true,
-      "color": '#2ab27b',
-      "labels": true
-    },
-    model: {
-      value: (_vm.config.isScanSN),
-      callback: function($$v) {
-        _vm.$set(_vm.config, "isScanSN", $$v)
-      },
-      expression: "config.isScanSN"
-    }
-  }), _vm._v(" "), _c('label', {
-    attrs: {
-      "for": "isScanSN"
-    }
-  }, [_vm._v(" Scan Serial Number ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"
