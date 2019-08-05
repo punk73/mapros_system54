@@ -784,6 +784,11 @@
                 this.changesColor('red');
                 this.playNG(); //play sound NG
                 this.form.board_id='';
+                if(this.config.isScanSN) {
+                    this.form.serial_number = ''; //kita harus pikirkan apakah kita hapus ini atau engga.
+                    this.showSerialNumberField = true;
+                    this.boardOnFocus();
+                }
             },
 
             handleSucces(response){
@@ -845,6 +850,10 @@
                 if (!this.config.showNgoption) { this.isNG = false; }
                 if(this.config.isManualInstruction){this.form.manual_content = null }
                 if(this.config.isScanCarton ){this.form.carton = null }
+                if(this.config.isScanSN ) {
+                    this.showSerialNumberField = false; //tutup serial no field
+                    this.form.serial_number = null
+                }
                 
             },
 

@@ -41457,6 +41457,11 @@ var axios = __webpack_require__(17);
             this.changesColor('red');
             this.playNG(); //play sound NG
             this.form.board_id = '';
+            if (this.config.isScanSN) {
+                this.form.serial_number = ''; //kita harus pikirkan apakah kita hapus ini atau engga.
+                this.showSerialNumberField = true;
+                this.boardOnFocus();
+            }
         },
         handleSucces: function handleSucces(response) {
             // set error to default value to show alert-success in alert
@@ -41521,6 +41526,10 @@ var axios = __webpack_require__(17);
             }
             if (this.config.isScanCarton) {
                 this.form.carton = null;
+            }
+            if (this.config.isScanSN) {
+                this.showSerialNumberField = false; //tutup serial no field
+                this.form.serial_number = null;
             }
         },
         generateFile: function generateFile() {
