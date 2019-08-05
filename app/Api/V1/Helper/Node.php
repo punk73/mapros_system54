@@ -1930,15 +1930,33 @@ class Node implements
 	}
 
 	public function finishMaster() {
+		if($this->getModelType() !== 'master') {
+			return false;
+		}
+
 		if(!isset($this->parameter['serial_number'])) {
+			if($this->isSerialMandatory()) {
+				throw new StoreResourceFailedException("INI PROCESS TERKAHIR, MOHON INPUT SERIAL NUMBER.", [
+					'id_type' => $this->getIdType(),
+					'serial_no_mandatory' => $this->isSerialMandatory(),
+					'keterangan' => 'parameter serial number not isset',
+					'status' => $this->getStatus(),
+					'model' => $this->model->toArray(), // ini ada karena finishMaster dipanggil setelah $this->save()
+				]);
+			};
 			return false;
 		}
 
 		if(is_null($this->parameter['serial_number'])) {
-			return false;
-		}
-
-		if($this->getModelType() !== 'master') {
+			if($this->isSerialMandatory()) {
+				throw new StoreResourceFailedException("INI PROCESS TERKAHIR, MOHON INPUT SERIAL NUMBER.", [
+					'id_type' => $this->getIdType(),
+					'serial_no_mandatory' => $this->isSerialMandatory(),
+					'keterangan' => 'parameter serial number is null',
+					'status' => $this->getStatus(),
+					'model' => $this->model->toArray(), // ini ada karena finishMaster dipanggil setelah $this->save()
+				]);
+			};
 			return false;
 		}
 
@@ -1974,6 +1992,9 @@ class Node implements
 
 		// kalau sudah ada sebelumnya.
 		if(!is_null($isExists)) {
+			// hapus yang keinput sebelumnya
+			$this->rollbackMaster();
+
 			throw new StoreResourceFailedException("SERIAL INI '{$serialNumber}' SUDAH DIGUNAKAN. MOHON GUNAKAN SERIAL NO LAIN.", [
 				'serial_number' => $serialNumber,
 				'old_data' => $isExists->toArray(),
@@ -1983,5 +2004,53 @@ class Node implements
 		
 
 		return $serialNumber;
+	}
+
+	// pikirkan ulang untuk implementasi ini.
+	// khawatir jika ini proses terakhir, tapi bukan master, akan bermalasalah.
+	/* 
+		return @boolean tergantung apakah serial number mandatory
+		menentukan mandatory atau tidaknya dari :
+		return contain master && is last process
+	*/
+	public function isSerialMandatory() {
+		/* getIdType contain master, board, mecha, panel */
+		if($this->getIdType() != 'master') {
+			return false;
+		}
+
+		// this model sudah ter input
+		if($this->model->exists) {
+			if($this->model->status == "IN") {
+				return false;
+			}
+		}
+		
+		$scanner = $this->getScanner();
+		$process = explode(',', $this->getProcess() );
+
+		$res =  $process[ count($process) - 1 ] == $scanner['lineprocess_id'];
+
+		if($res) {
+			// delete data terakhir yang diinput;
+			$this->rollbackMaster();
+		}
+
+		return $res;
+	}
+
+	public function rollbackMaster() {
+		
+		$master = Master::where($this->dummy_column, $this->getDummyId())
+			->where( $this->getUniqueColumn(), $this->getUniqueId() )
+			->where('scanner_id', $this->scanner_id )
+			->where('status', "OUT" )
+			->where('serial_no', null )
+			->orderBy('id', 'desc')
+			// ->first();
+			->delete();
+		
+		return $master;
+		
 	}
 }
