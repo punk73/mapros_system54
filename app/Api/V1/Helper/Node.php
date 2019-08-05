@@ -1964,6 +1964,24 @@ class Node implements
 
 		$serialNumber .= $this->parameter['serial_number'];
 
+		$year = Carbon::now()->subYears(10);
+		
+		// get data mulai sepuluh tahun lalu dengan specific serialnumber
+		$isExists = Master::where('serial_no', $serialNumber)
+		->where('created_at', '>', $year )	
+		->orderBy('id', 'desc')
+		->first();
+
+		// kalau sudah ada sebelumnya.
+		if(!is_null($isExists)) {
+			throw new StoreResourceFailedException("SERIAL INI '{$serialNumber}' SUDAH DIGUNAKAN. MOHON GUNAKAN SERIAL NO LAIN.", [
+				'serial_number' => $serialNumber,
+				'old_data' => $isExists->toArray(),
+				'year' => $year
+			]);
+		}
+		
+
 		return $serialNumber;
 	}
 }
