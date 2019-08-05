@@ -88,6 +88,10 @@ class TestController extends Controller
 	public function store(Request $request){
 		
 		$node = new Node($request->all());
+
+		return [
+			'get_serial_number' => $node->getSerialNumber()
+		];
 		
 		return [
 			'check_instruction_manual' => setting('admin.check_instruction_manual'),

@@ -1942,7 +1942,7 @@ class Node implements
 			return false;
 		}
 
-		$serialNumber = $this->parameter['serial_number'];
+		$serialNumber = $this->getSerialNumber(); //$this->parameter['serial_number'];
 
 		$updated = Master::where($this->getUniqueColumn(), $this->getGuidMaster() )
 			->where('serial_no', null )
@@ -1953,5 +1953,17 @@ class Node implements
 		
 		return $updated;
 
+	}
+
+	public function getSerialNumber() {
+		$serialNumber = '';
+
+		if(setting("admin.include_modelname_on_serialno")) {
+			$serialNumber .= $this->parameter['modelname'] ." ";
+		}
+
+		$serialNumber .= $this->parameter['serial_number'];
+
+		return $serialNumber;
 	}
 }
