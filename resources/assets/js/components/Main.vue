@@ -93,7 +93,7 @@
                                 <label class="col-md-4 control-label">{{ label.serialAutolinezero }}</label>
 
                                 <div class="col-md-6">
-                                    <input  id="serialAutolinezero" ref='serialAutolinezero' v-model="serialAutolinezero" type="serialAutolinezero" class="form-control" name="serialAutolinezero"  required>
+                                    <input  id="serialAutolinezero" :placeholder="label.serialAutolinezero" ref='serialAutolinezero' v-model="serialAutolinezero" type="serialAutolinezero" class="form-control" name="serialAutolinezero"  required>
                                 </div>
                             </div>
 
@@ -512,6 +512,10 @@
                     return;
                 };
 
+                if(!this.checkSerialSetOk()){
+                    return;
+                }
+
                 let self = this;
                 this.toggleLoading();
                 axios.post('api/main', data )
@@ -565,6 +569,25 @@
 
                         this.handleError(message, data );
                     })
+            },
+
+            checkSerialSetOk() {
+                // let serialEmpty = (this.serialAutolinezero == '');
+                // kalau sekarang state nya IN dan 
+                if( this.includeIn ) {
+                    if(this.serialAutolinezero != ""){
+                        // cek oldForm.board_id and form.board_id
+                        if(this.downloadContent != null) {
+                            let boardContent = this.downloadContent.split(this.config.delimiter);
+                            if( boardContent[0] != this.form.board_id ) {
+                                this.handleError( boardContent[0] +" BELUM DI SCAN OUT. TOLONG SCAN OUT DULU.")
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                return true;
             },
 
             nikOnKeyup(e){

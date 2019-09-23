@@ -41199,6 +41199,10 @@ var axios = __webpack_require__(17);
                 return;
             };
 
+            if (!this.checkSerialSetOk()) {
+                return;
+            }
+
             var self = this;
             this.toggleLoading();
             axios.post('api/main', data).then(function (response) {
@@ -41250,6 +41254,24 @@ var axios = __webpack_require__(17);
 
                 _this.handleError(message, data);
             });
+        },
+        checkSerialSetOk: function checkSerialSetOk() {
+            // let serialEmpty = (this.serialAutolinezero == '');
+            // kalau sekarang state nya IN dan 
+            if (this.includeIn) {
+                if (this.serialAutolinezero != "") {
+                    // cek oldForm.board_id and form.board_id
+                    if (this.downloadContent != null) {
+                        var boardContent = this.downloadContent.split(this.config.delimiter);
+                        if (boardContent[0] != this.form.board_id) {
+                            this.handleError(boardContent[0] + " BELUM DI SCAN OUT. TOLONG SCAN OUT DULU.");
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
         },
         nikOnKeyup: function nikOnKeyup(e) {
             if (this.config.checkEsd && this.form.nik.length >= 5) {
@@ -66880,6 +66902,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-control",
     attrs: {
       "id": "serialAutolinezero",
+      "placeholder": _vm.label.serialAutolinezero,
       "type": "serialAutolinezero",
       "name": "serialAutolinezero",
       "required": ""
