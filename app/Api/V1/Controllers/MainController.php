@@ -37,6 +37,7 @@ class MainController extends Controller
 		'manual_content', // optional
 		'carton',
 		'serial_number', //optional and cannot be null
+		'fifoMode' // true or false;
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;

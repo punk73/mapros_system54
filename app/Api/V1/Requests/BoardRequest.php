@@ -17,6 +17,7 @@ class BoardRequest extends FormRequest
             'symptom'   => 'required_if:judge,NG|array',
             'isRework'  => 'boolean',
             // 'critical_part' => '',
+            'fifoMode' => 'boolean',
         ];
     }
 

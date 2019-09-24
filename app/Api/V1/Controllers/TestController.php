@@ -90,6 +90,10 @@ class TestController extends Controller
 		$node = new Node($request->all());
 
 		return [
+			'fifoMode' => $node->checkFifo()
+		];
+
+		return [
 			'get_serial_number' => $node->getSerialNumber(),
 			'is_serialnumber_mandatory' => $node->isSerialMandatory(),
 			'rollbackMaster' => $node->rollbackMaster()

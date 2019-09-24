@@ -1022,6 +1022,9 @@ class Node implements
 			}
 		}
 
+		/* check it fifo */
+		$this->checkFifo();
+
 		$isSaveSuccess = $model->save();
 
 		$this->updateGuidSibling(); //move updateGuidSibling after save method;
@@ -2052,5 +2055,37 @@ class Node implements
 		
 		return $master;
 		
+	}
+
+	public function checkFifo() {
+		// check apakah ini fifo mode
+
+		if(!isset($this->parameter['fifoMode'])) return true;
+
+		if($this->parameter['fifoMode'] == false) return true;
+
+		$scanner = $this->getScanner();
+		$lastModelAtSpecificProcess = ($this->getModel())
+			->where('scanner_id', $scanner['id'] )
+			->where('serial_no', null )
+			->orderBy('id', 'desc')
+			->first();
+
+		if(!$lastModelAtSpecificProcess) {
+			//langsung return karena last set nya ga ada.;
+			return true;
+		}
+
+		// check modelnya sama apa engga;
+		if ( $lastModelAtSpecificProcess[$this->dummy_column] != $this->dummy_id ) {
+			if($lastModelAtSpecificProcess->status == "IN") {
+				throw new StoreResourceFailedException("DUMMY SEBELUMNYA BELUM SCAN OUT ('{$lastModelAtSpecificProcess[$this->dummy_column]}'). MOHON PASTIKAN SUDAH SCAN OUT ATAU NON AKTIFKAN FITUR FIFO. ", [
+					"last_set" => $lastModelAtSpecificProcess->toArray(),
+					"set"      => $this->parameter
+				]);
+			}
+		}
+
+		return true;
 	}
 }
