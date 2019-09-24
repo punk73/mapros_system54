@@ -276,6 +276,7 @@
                     manual_content : null, //default value
                     carton : null,
                     serial_number: null,
+                    fifoMode: false, //ini refer ke config;
                 },
 
                 isNG : false,
@@ -408,6 +409,10 @@
                 this.form.isRework = newVal;
             },
 
+            'config.fifoMode': function(newVal, oldVal) {
+                this.form.fifoMode = newVal;
+            },
+
             computedShowCritical(newVal, oldVal){
                 if (newVal == true) {
                     this.form.critical_parts = [''];
@@ -512,9 +517,9 @@
                     return;
                 };
 
-                if(!this.checkSerialSetOk()){
+                /* if(!this.checkSerialSetOk()){
                     return;
-                }
+                } */
 
                 let self = this;
                 this.toggleLoading();
@@ -865,7 +870,7 @@
 
             clearForm(){
                 this.form.board_id = '';
-                if(this.config.isGenerateFile) {
+                if(this.config.isGenerateFile || this.config.isAutolinezero ) {
                     // kalau IN jangan dulu dihapus;
                     if(!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
                 }

@@ -40020,6 +40020,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -40071,7 +40078,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
                 isManualInstruction: false,
                 isScanCarton: false,
-                isScanSN: false
+                isScanSN: false,
+                fifoMode: false
             },
 
             debug: {
@@ -40963,7 +40971,8 @@ var axios = __webpack_require__(17);
                 isRework: false, //default value
                 manual_content: null, //default value
                 carton: null,
-                serial_number: null
+                serial_number: null,
+                fifoMode: false //ini refer ke config;
             },
 
             isNG: false,
@@ -41095,6 +41104,10 @@ var axios = __webpack_require__(17);
             this.form.isRework = newVal;
         },
 
+        'config.fifoMode': function configFifoMode(newVal, oldVal) {
+            this.form.fifoMode = newVal;
+        },
+
         computedShowCritical: function computedShowCritical(newVal, oldVal) {
             if (newVal == true) {
                 this.form.critical_parts = [''];
@@ -41199,9 +41212,9 @@ var axios = __webpack_require__(17);
                 return;
             };
 
-            if (!this.checkSerialSetOk()) {
+            /* if(!this.checkSerialSetOk()){
                 return;
-            }
+            } */
 
             var self = this;
             this.toggleLoading();
@@ -41535,7 +41548,7 @@ var axios = __webpack_require__(17);
         },
         clearForm: function clearForm() {
             this.form.board_id = '';
-            if (this.config.isGenerateFile) {
+            if (this.config.isGenerateFile || this.config.isAutolinezero) {
                 // kalau IN jangan dulu dihapus;
                 if (!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
             }
@@ -68029,6 +68042,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "for": "isScanCarton"
     }
   }, [_vm._v(" Scan Inner Carton ")])], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: " col-md-6 col-md-offset-3 col-xs-12"
+  }, [_c('toggle-button', {
+    attrs: {
+      "sync": true,
+      "color": '#2ab27b',
+      "labels": true
+    },
+    model: {
+      value: (_vm.config.fifoMode),
+      callback: function($$v) {
+        _vm.$set(_vm.config, "fifoMode", $$v)
+      },
+      expression: "config.fifoMode"
+    }
+  }), _vm._v(" "), _c('label', {
+    attrs: {
+      "for": "fifoMode"
+    }
+  }, [_vm._v(" Activate Fifo Mode ")])], 1)]), _vm._v(" "), _c('div', {
     staticClass: "form-group row"
   }, [_c('div', {
     staticClass: "col-md-9 col-md-offset-3"
