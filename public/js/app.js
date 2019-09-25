@@ -41492,6 +41492,7 @@ var axios = __webpack_require__(17);
             this.changesColor('red');
             this.playNG(); //play sound NG
             this.form.board_id = '';
+            this.clearForm(); //clear form;
             if (this.config.isScanSN) {
                 this.form.serial_number = ''; //kita harus pikirkan apakah kita hapus ini atau engga.
                 this.showSerialNumberField = true;
