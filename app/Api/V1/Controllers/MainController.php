@@ -540,6 +540,7 @@ class MainController extends Controller
 			}
 
 			if(setting('admin.check_instruction_manual') && ($node->checkInstructionManual()) ) {
+				/* cek apakah front end kirm manual instruction as parameter */
 				if(!$node->hasInstructionManual()) {
 					throw new StoreResourceFailedException('TOLONG SCAN MANUAL INSTRUCTIONS QRCODE !', [
 						'message' => 'tolong klik button show button Manual instruction field untuk memunculkan textfieldnya'

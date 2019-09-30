@@ -36,6 +36,16 @@ trait ManualInstructionTrait {
         ])->exists();
     }
 
+    public function hasMasterManualInstruction($modelname = null) {
+        if($modelname == null && method_exists($this, 'getModelname') ) {
+            $modelname = $this->getModelname();
+        }
+
+        return MasterManualInstruction::where([
+            'modelname' => $modelname
+        ])->exists();
+    }
+
     public function hasInstructionManual() {
         $parameter = isset($this->parameter)? $this->parameter : null;
         if($parameter == null) {
@@ -58,7 +68,7 @@ trait ManualInstructionTrait {
         $lineprocessId = (!is_null($lineprocessIdParameter))? $lineprocessIdParameter: $this->getLineprocess()['id'];
        
         try {
-            //code...
+            //check apakah harus scan instruction manual disini.
             $model = LineprocessManualInstruction::where('scanner_id', $scannerId)
                 ->where('lineprocess_id', $lineprocessId)
                 ->where('has_check', 1)
@@ -68,7 +78,9 @@ trait ManualInstructionTrait {
             if(!$model) {
                 return false;
             }else {
-                return true;
+                /* cek apakah master manual instruction sudah disetting ketika menentukan apakah perlu mengevalusi manual instruction */
+                $hasMasterManualInstructionSetting = $this->hasMasterManualInstruction();
+                return ( true && $hasMasterManualInstructionSetting );
             }
         } catch ( QueryException $th) {
             return false;

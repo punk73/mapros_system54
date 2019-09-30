@@ -88,12 +88,21 @@ class ManualInstructionTraitTest extends TestCase {
             'lineprocess_id' => 1,
             'has_check' => 1
         ]);
+
+        MasterManualInstruction::insert([
+            'content' => "somecontent",
+            "modelname" => "DDXGT700RA9N"
+        ]);
     }
 
     public function testCheckInstructionManual() {
         $mock = $this->getMocks();
 
         $this->seedLineprocessIntruction();
+
+        $mock->method('hasMasterManualInstruction')
+            ->willReturn(true);
+
         $result = $mock->checkInstructionManual(1,1);
 
         $this->assertTrue($result);
