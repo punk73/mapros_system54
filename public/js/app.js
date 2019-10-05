@@ -41498,6 +41498,12 @@ var axios = __webpack_require__(17);
                 this.showSerialNumberField = true;
                 this.boardOnFocus();
             }
+
+            if (this.config.isManualInstruction) {
+                if (this.error.includes('MANUAL INSTRUCTION')) {
+                    this.showManualInstruction = true;
+                }
+            }
         },
         handleSucces: function handleSucces(response) {
             // set error to default value to show alert-success in alert
@@ -41538,6 +41544,10 @@ var axios = __webpack_require__(17);
 
             if (message.includes('NG')) {
                 this.changesColor('red');
+            }
+
+            if (this.config.isManualInstruction) {
+                this.showManualInstruction = false;
             }
             // this.toggleAlert('Success', message );
             // this.showAlert = true;

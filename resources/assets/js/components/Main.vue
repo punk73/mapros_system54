@@ -818,6 +818,12 @@
                     this.showSerialNumberField = true;
                     this.boardOnFocus();
                 }
+
+                if(this.config.isManualInstruction) {
+                    if(this.error.includes('MANUAL INSTRUCTION')){
+                        this.showManualInstruction = true;
+                    }
+                }
             },
 
             handleSucces(response){
@@ -859,6 +865,10 @@
 
                 if(message.includes('NG')){
                     this.changesColor('red')
+                }
+
+                if(this.config.isManualInstruction) {
+                    this.showManualInstruction = false;
                 }
                 // this.toggleAlert('Success', message );
                 // this.showAlert = true;
