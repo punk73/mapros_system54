@@ -19,7 +19,7 @@ class Part extends Model
 		'judge',
 	];
 
-    public function getActivityDescriptionForEvent($eventName)
+    /* public function getActivityDescriptionForEvent($eventName)
 	{
 	    if ($eventName == 'created')
 	    {
@@ -50,5 +50,5 @@ class Part extends Model
 			'scanner_id' => $this->scanner_id,
 			'judge' => $this->judge,
 		]);
-	}
+	} */
 }

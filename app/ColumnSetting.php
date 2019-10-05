@@ -9,7 +9,7 @@ class ColumnSetting extends Model
 {
     protected $table='column_settings';
 
-    public function getActivityDescriptionForEvent($eventName)
+    /* public function getActivityDescriptionForEvent($eventName)
 	{
 	    if ($eventName == 'created')
 	    {
@@ -36,5 +36,5 @@ class ColumnSetting extends Model
 			'table_name' => $this->table_name,
 			'code_prefix' => $this->code_prefix
 		]);
-	}
+	} */
 }

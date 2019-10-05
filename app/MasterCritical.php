@@ -17,7 +17,7 @@ class MasterCritical extends Model
 		'qty_request',
     ];
     // protected $name = $this->partno;
-    public function getActivityDescriptionForEvent($eventName)
+    /* public function getActivityDescriptionForEvent($eventName)
 	{
 	    if ($eventName == 'created')
 	    {
@@ -35,5 +35,5 @@ class MasterCritical extends Model
 	    }
 
 	    return '';
-	}
+	} */
 }

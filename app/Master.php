@@ -9,7 +9,7 @@ class Master extends Model
 {
     protected $table = 'masters';
 
-    public function getActivityDescriptionForEvent($eventName)
+    /* public function getActivityDescriptionForEvent($eventName)
 	{
 	    if ($eventName == 'created')
 	    {
@@ -41,7 +41,7 @@ class Master extends Model
 			'judge' => $this->judge,
 
 		]);
-	}
+	} */
 
 	public function symptoms(){
 		return $this->belongsToMany('App\Symptom');

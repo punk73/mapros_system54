@@ -22,7 +22,7 @@ class Critical extends Model
 		'scan_nik',
     ];
 
-    public function getActivityDescriptionForEvent($eventName)
+    /* public function getActivityDescriptionForEvent($eventName)
 	{
 	    if ($eventName == 'created')
 	    {
@@ -55,5 +55,5 @@ class Critical extends Model
 			'qty' => $this->qty,
 			'scan_nik' => $this->scan_nik,
 		]);
-	}
+	} */
 }

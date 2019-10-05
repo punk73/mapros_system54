@@ -20,7 +20,7 @@ class Ticket extends Model
 		'scan_nik',
     ];
 
-    public function getActivityDescriptionForEvent($eventName)
+    /* public function getActivityDescriptionForEvent($eventName)
 	{
 	    if ($eventName == 'created')
 	    {
@@ -51,5 +51,5 @@ class Ticket extends Model
 			'judge' => $this->judge,
 
 		]);
-	}
+	} */
 }

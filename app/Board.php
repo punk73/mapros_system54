@@ -21,7 +21,7 @@ class Board extends Model
     	'scan_nik',
     ];
 
-    public function getActivityDescriptionForEvent($eventName)
+    /* public function getActivityDescriptionForEvent($eventName)
     {       
 
         if ($eventName == 'created')
@@ -52,7 +52,7 @@ class Board extends Model
             'judge' => $this->judge,
             'scan_nik' => $this->scan_nik,
         ]);
-    }
+    } */
 
     public function locations(){
         return $this->belongsToMany('App\Location')->withPivot('id')->using('App\BoardLocation');
