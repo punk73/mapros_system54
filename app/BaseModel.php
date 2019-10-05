@@ -16,23 +16,45 @@ class BaseModel extends Model implements LogsActivityInterface
 	{
 	    if ($eventName == 'created')
 	    {
-	        return $this->getTable() .' "'. $this->getData() . '" was created';
+			$text = $this->getTable() .' "'. $this->getData() . '" was created';
+			return $this->checkTextLen($text);
 	    }
 
 	    if ($eventName == 'updated')
 	    {
-	        return $this->getTable() .' "'. $this->getData() . '" was updated';
+			$text = $this->getTable() .' "'. $this->getData() . '" was updated';
+			return $this->checkTextLen($text);
 	    }
 
 	    if ($eventName == 'deleted')
 	    {
-	        return $this->getTable() .' "'. $this->getData() . '" was deleted';
+			$text = $this->getTable() .' "'. $this->getData() . '" was deleted';
+			return $this->checkTextLen($text);
 	    }
 
 	    return '';
 	}
 
 	public function getData(){
-        return json_encode( $this->attributes );
-    }
+
+		$attrs = [];
+		foreach ($this->attributes as $key => $value) {
+			if(! in_array($key, ['created_at','updated_at'])) {
+				$attrs[$key] = $value;
+			}
+		}
+
+		$attrsJson = json_encode( $attrs );
+
+		return $attrsJson;
+	}
+
+	public function checkTextLen($text) {
+		if(strlen($text) > 254) {
+			$text = substr($text,0,254);
+		}
+
+		return $text;
+	}
+	
 }
