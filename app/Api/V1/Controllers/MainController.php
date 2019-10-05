@@ -574,21 +574,24 @@ class MainController extends Controller
 				pengaturan check_instruction_manual di non aktifkan.
 			*/
 			if(!$alreadyCheckInstructionManual){
-				/* check apakah users kirim instruction manual content */
-				if(($node->checkInstructionManual())) {
-					$content  = $node->getParameter()['manual_content'];
+				// check setting compare manual instruction to modelname
+				if( setting('admin.compare_manual_instruction_to_modelname') ) {
+					/* check apakah users kirim instruction manual content */
+					if(($node->checkInstructionManual())) {
+						$content  = $node->getParameter()['manual_content'];
 
-					if(!$node->CompareModelname($content)) {
-						$currentModel = (\method_exists($node, 'getModelname')) ? $node->getModelname() : 'unknown';
-						$masterContent = MasterManualInstruction::
-						select(['content', 'modelname'])->where('modelname', $currentModel )->get();
+						if(!$node->CompareModelname($content)) {
+							$currentModel = (\method_exists($node, 'getModelname')) ? $node->getModelname() : 'unknown';
+							$masterContent = MasterManualInstruction::
+							select(['content', 'modelname'])->where('modelname', $currentModel )->get();
 
-						throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
-							'qrcode' => $content,
-							'current_modelname' => $currentModel,
-							'manual_code_content_should_be' => $masterContent
-						]);
+							throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
+								'qrcode' => $content,
+								'current_modelname' => $currentModel,
+								'manual_code_content_should_be' => $masterContent
+							]);
 
+						}
 					}
 				}
 			}
