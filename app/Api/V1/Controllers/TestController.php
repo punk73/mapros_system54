@@ -16,7 +16,7 @@ use App\Mastermodel;
 use App\Api\V1\Helper\Node;
 use App\Board;
 use App\Quality;
-
+use App\LineprocessManualInstruction;
 class TestController extends Controller
 {	
 	use LoggerHelper;
@@ -86,6 +86,12 @@ class TestController extends Controller
 	}
 
 	public function store(Request $request){
+		/* test method getData dari modelBased */
+		$manualInstruction = (new LineprocessManualInstruction());
+		$manualInstruction->name = 'rangga';
+		$manualInstruction->kelas = 9;
+		// dd($manualInstruction);
+		return $manualInstruction->getData();
 		
 		$node = new Node($request->all());
 
