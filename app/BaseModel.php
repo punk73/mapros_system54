@@ -16,17 +16,17 @@ class BaseModel extends Model implements LogsActivityInterface
 	{
 	    if ($eventName == 'created')
 	    {
-	        return $this->table .' "'. $this->getData() . '" was created';
+	        return $this->getTable() .' "'. $this->getData() . '" was created';
 	    }
 
 	    if ($eventName == 'updated')
 	    {
-	        return $this->table .' "'. $this->getData() . '" was updated';
+	        return $this->getTable() .' "'. $this->getData() . '" was updated';
 	    }
 
 	    if ($eventName == 'deleted')
 	    {
-	        return $this->table .' "'. $this->getData() . '" was deleted';
+	        return $this->getTable() .' "'. $this->getData() . '" was deleted';
 	    }
 
 	    return '';
