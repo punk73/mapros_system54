@@ -30,6 +30,10 @@ Route::group(['prefix' => 'join'], function($route){
 Route::group(['prefix' => 'admin'], function ($route) {
 	Voyager::routes();
 	$route->get('sequences/{id}/copy', 'SequenceController@showCopy')->name('copy');
+
+	$route->get('qa', 'QaController@index');
+	$route->get('qa/download', 'QaController@download');
+	
 });
 
 Auth::routes();
