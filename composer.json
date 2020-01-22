@@ -23,7 +23,8 @@
         "simplesoftwareio/simple-qrcode": "^1.5",
         "guzzlehttp/guzzle": "^6.3",
         "symfony/psr-http-message-bridge": "^1.0",
-        "jacquestvanzuydam/laravel-firebird": "dev-5.4-support"
+        "jacquestvanzuydam/laravel-firebird": "dev-5.4-support",
+        "phpoffice/phpspreadsheet": "^1.8"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
