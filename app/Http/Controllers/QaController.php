@@ -23,6 +23,17 @@ class QaController extends Controller
         return view('vendor.voyager.qa.browse', ['scanners' => $scanners, 'request' => $request ]);
     }
 
+    public function getWorksheet() {
+        $template = storage_path('app\public\temp.xlsx'); //url('report/FORM_CAR.xlsx');
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($template);
+        $reader->setIncludeCharts(true);
+        $spreadsheet = $reader->load($template);
+
+        $worksheet = $spreadsheet->getWorksheet();
+
+        return $worksheet;
+    }
+
     public function download(Request $request) {
         
         /* 
@@ -36,17 +47,31 @@ class QaController extends Controller
             ORDER BY a.SERIAL_NO ASC;
         */
 
+        $this->validate($request, [
+            'modelname' => 'required',
+            'lotno' => 'required',
+            'scanner_id' => 'required',
+        ]);
+
         $data = null;
         if($request->has('modelname') && $request->has('lotno') && $request->has('scanner_id')) {
+            
+            $template = storage_path('app\public\report_template.xlsx'); //url('report/FORM_CAR.xlsx');
+            $fileName = 'QA-Reports';
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($template);
+            $reader->setIncludeCharts(true);
+            $spreadsheet = $reader->load($template);
+
+            $worksheet = $spreadsheet->getActiveSheet();
+
             $data = Master::select([
-                // DB::raw('right(a.serial_no,8) as serial_no')
-                'serial_no'
+                DB::raw('right(a.serial_no,8) as serial_no')
+                // 'serial_no'
                 , 'a.judge'
                 , 'a.scan_nik'
                 , 'a.created_at'
                 , 'b.modelname'
                 , 'b.lotno'
-
             ])->from('masters as a')
             ->join('boards as b', 'a.guid_master', '=', 'b.guid_master')
             ->where('a.serial_no', 'like', $request->get('modelname') .'%' )
@@ -54,11 +79,35 @@ class QaController extends Controller
             ->where('a.status', 'OUT')
             ->where('b.modelname', $request->get('modelname'))
             ->where('b.lotno', $request->get('lotno'))
+            ->distinct()
             ->orderBy('a.serial_no', 'asc')
-            ->get();
-        }
+            ->chunk(50, function ($results) use ($worksheet){
+                $rowCount = 9; //start from 
+                foreach($results as $key => $result) {
+                    $serialno = $result['serial_no'];
+                    $worksheet->setCellValueByColumnAndRow(2, $rowCount, $serialno );
+                    $rowCount++;
+                }
+                return false;
+            });
 
-        return $data;
+            // return $tmpResult;
+            // Redirect output to a client’s web browser (Xls)
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="'.$fileName.'.xlsx"');
+            header('Cache-Control: max-age=0');
+            // If you're serving to IE 9, then the following may be needed
+            header('Cache-Control: max-age=1');
+
+            // If you're serving to IE over SSL, then the following may be needed
+            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+            header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP/1.1
+            header('Pragma: public'); // HTTP/1.0
+
+            $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $writer->save('php://output');
+        }
 
     }
 
