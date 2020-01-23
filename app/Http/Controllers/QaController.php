@@ -92,6 +92,7 @@ class QaController extends Controller
             $spreadsheet = $reader->load($template);
 
             $chunkCounter = 0;
+            $sheetCounter = 1;
             $worksheet = $spreadsheet->getActiveSheet();
 
             $data = Master::select([
@@ -110,7 +111,7 @@ class QaController extends Controller
             ->where('b.lotno', $request->get('lotno'))
             ->distinct()
             ->orderBy('a.serial_no', 'asc')
-            ->chunk(50, function ($results) use ($worksheet, &$chunkCounter){
+            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter){
                 $rowCount = 9; //start from 
                 foreach($results as $key => $result) {
                     $colCount = 0;
@@ -127,7 +128,14 @@ class QaController extends Controller
 
                 if($chunkCounter > 4) {
                     // we can reset $chunkCounter here
-                    return false;
+                    $chunkCounter = 0;
+                    $sheetCounter++;
+                    // then,  we need to copy from sheet one to a new sheet
+                    $clonedWorksheet = clone $worksheet;
+                    $newTitle = trim($worksheet->getTitle() . " ({$sheetCounter})") ;
+                    $clonedWorksheet->setTitle($newTitle);
+                    $worksheet = $spreadsheet->addSheet($clonedWorksheet);
+                    // return false;
                 }
             });
 
