@@ -34,6 +34,35 @@ class QaController extends Controller
         return $worksheet;
     }
 
+    protected $colConfig = [
+        [
+            2, //B
+            4, //D
+            5, //E
+            6  //F 
+        ], [
+            9, //I
+            11, //K
+            12, //L
+            13  //M
+        ], [
+            17, //Q
+            19, //S
+            20, //T
+            21  //U
+        ], [
+            24, //X
+            26, //Z
+            27, //AA
+            28  //AB
+        ],[
+            31, //AE
+            33, //AG
+            34, //AH
+            35  //AI
+        ]
+    ];
+
     public function download(Request $request) {
         
         /* 
@@ -62,16 +91,16 @@ class QaController extends Controller
             $reader->setIncludeCharts(true);
             $spreadsheet = $reader->load($template);
 
+            $chunkCounter = 0;
             $worksheet = $spreadsheet->getActiveSheet();
 
             $data = Master::select([
                 DB::raw('right(a.serial_no,8) as serial_no')
-                // 'serial_no'
                 , 'a.judge'
                 , 'a.scan_nik'
                 , 'a.created_at'
-                , 'b.modelname'
-                , 'b.lotno'
+                // , 'b.modelname'
+                // , 'b.lotno'
             ])->from('masters as a')
             ->join('boards as b', 'a.guid_master', '=', 'b.guid_master')
             ->where('a.serial_no', 'like', $request->get('modelname') .'%' )
@@ -81,14 +110,25 @@ class QaController extends Controller
             ->where('b.lotno', $request->get('lotno'))
             ->distinct()
             ->orderBy('a.serial_no', 'asc')
-            ->chunk(50, function ($results) use ($worksheet){
+            ->chunk(50, function ($results) use ($worksheet, &$chunkCounter){
                 $rowCount = 9; //start from 
                 foreach($results as $key => $result) {
-                    $serialno = $result['serial_no'];
-                    $worksheet->setCellValueByColumnAndRow(2, $rowCount, $serialno );
+                    $colCount = 0;
+                    $colConfig = $this->colConfig;
+                    // loop over the query result the get the column name and column value;
+                    foreach ($result->toArray() as $key => $colValue) {
+                        # code...
+                        $worksheet->setCellValueByColumnAndRow( $colConfig[$chunkCounter][$colCount], $rowCount, $colValue );
+                        $colCount++;
+                    }
                     $rowCount++;
                 }
-                return false;
+                $chunkCounter++;
+
+                if($chunkCounter > 4) {
+                    // we can reset $chunkCounter here
+                    return false;
+                }
             });
 
             // return $tmpResult;
