@@ -131,13 +131,17 @@ class QaController extends Controller
                     $chunkCounter = 0;
                     $sheetCounter++;
                     // then,  we need to copy from sheet one to a new sheet
-                    $clonedWorksheet = clone $worksheet;
+                    $clonedWorksheet = clone $spreadsheet->getSheetByName('blank'); //get sheet blank
                     $newTitle = trim($worksheet->getTitle() . " ({$sheetCounter})") ;
                     $clonedWorksheet->setTitle($newTitle);
                     $worksheet = $spreadsheet->addSheet($clonedWorksheet);
                     // return false;
                 }
             });
+
+            $spreadsheet->removeSheetByIndex($spreadsheet->getIndex(
+                $spreadsheet->getSheetByName('blank')
+            )); //delete blank sheet
 
             // return $tmpResult;
             // Redirect output to a client’s web browser (Xls)
