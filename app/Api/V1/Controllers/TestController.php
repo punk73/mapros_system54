@@ -15,6 +15,7 @@ use GuzzleHttp\Client;
 use App\Mastermodel;
 use App\Api\V1\Helper\Node;
 use App\Board;
+use App\ColumnSetting;
 use App\Quality;
 use App\LineprocessManualInstruction;
 class TestController extends Controller
@@ -61,7 +62,7 @@ class TestController extends Controller
 			$responseBodyAsString = $response->getBody()->getContents();
 			throw new StoreResourceFailedException('something went wrong', []);
 		} */
-		$data = Quality::select([
+		/* $data = Quality::select([
 			'ID_QUALITY'
 			,'MODEL'
 			,'BOARD'
@@ -78,7 +79,33 @@ class TestController extends Controller
 			->orderBy('ID_QUALITY','desc')
 			->paginate();
 
-		return $data;
+		return $data; */
+		
+		$tmp = 'G1P9';
+		$results = [];
+		foreach(range('B', 'Z') as $key => $value) {
+			$temp = [
+				"name" => "lcd",
+				"dummy_column" => "barcode",
+				"table_name" => "parts",
+				"code_prefix" => $tmp . $value,
+				"level" => 3
+			];
+
+			$results[] = ColumnSetting::firstOrCreate($temp);
+		}
+
+		// return ColumnSetting::take(10)->get();
+
+		/* 
+			"name": "lcd",
+			"dummy_column": "barcode",
+			"table_name": "parts",
+			"code_prefix": "G1P00",
+		*/
+
+		return $results;
+
 	}
 
 	public function testNode(){

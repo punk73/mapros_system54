@@ -7,7 +7,15 @@ use App\BaseModel as Model;
 
 class ColumnSetting extends Model
 {
-    protected $table='column_settings';
+	protected $table='column_settings';
+	
+	public $fillable = [
+		'name',
+		'dummy_column',
+		'table_name',
+		'code_prefix',
+		'level',
+	];
 
     /* public function getActivityDescriptionForEvent($eventName)
 	{
