@@ -111,7 +111,7 @@ class QaController extends Controller
             ->where('b.lotno', $request->get('lotno'))
             ->distinct()
             ->orderBy('a.serial_no', 'asc')
-            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter){
+            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request ){
                 $rowCount = 9; //start from 
                 foreach($results as $key => $result) {
                     $colCount = 0;
@@ -127,6 +127,11 @@ class QaController extends Controller
                 $chunkCounter++;
 
                 if($chunkCounter > 4) {
+                    // assign header data :
+                    $worksheet->setCellValueByColumnAndRow(4,2, $request->get('modelname') );
+                    $worksheet->setCellValueByColumnAndRow(4,3, "LINE TEMP" );
+                    $worksheet->setCellValueByColumnAndRow(4,4, $request->get('lotno') );
+                    
                     // we can reset $chunkCounter here
                     $chunkCounter = 0;
                     $sheetCounter++;
