@@ -14,17 +14,17 @@
 
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon1">Model</span>
-                            <input type="text" class="form-control" name="modelname"  value="{{$request->get('modelname')}}" placeholder="Model" aria-describedby="basic-addon1">
+                            <input required type="text" class="form-control" name="modelname"  value="{{$request->get('modelname')}}" placeholder="Model" aria-describedby="basic-addon1">
                         </div>
                         <br>
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon2">Lot</span>
-                            <input type="text" class="form-control" name="lotno" value="{{$request->get('lotno')}}" placeholder="lot" aria-describedby="basic-addon2">
+                            <input required type="text" class="form-control" name="lotno" value="{{$request->get('lotno')}}" placeholder="lot" aria-describedby="basic-addon2">
                         </div>
                         <br>
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon3">Scanner</span>
-                            <select name="scanner_id" class="form-control" id="scanner_id">
+                            <select required name="scanner_id" class="form-control" id="scanner_id">
                                 <option disabled selected value="">-- Please select one of these --</option>
                                 @foreach ($scanners as $scanner)    
                                 <option value="{{$scanner['id']}}">{{$scanner['name']}}</option>
