@@ -27,7 +27,10 @@ Route::group(['prefix' => 'join'], function($route){
 	$route->post('/', 'JoinController@post' );
 });
 
-Route::group(['prefix' => 'admin'], function ($route) {
+Route::group([
+	'prefix' => 'admin',
+	'middleware' => 'auth'
+], function ($route) {
 	Voyager::routes();
 	$route->get('sequences/{id}/copy', 'SequenceController@showCopy')->name('copy');
 

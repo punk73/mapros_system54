@@ -25,6 +25,7 @@
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon3">Scanner</span>
                             <select name="scanner_id" class="form-control" id="scanner_id">
+                                <option disabled selected value="">-- Please select one of these --</option>
                                 @foreach ($scanners as $scanner)    
                                 <option value="{{$scanner['id']}}">{{$scanner['name']}}</option>
                                 @endforeach
@@ -42,10 +43,15 @@
         <div class="col-md-12">
             <div class="panel panel-bordered">
                 <div class="panel-body">
-
-                    <br>
-
-                    Params : {{ json_encode($request)}}
+                    @if (count($errors) > 0)
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
