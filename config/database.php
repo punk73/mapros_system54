@@ -93,6 +93,20 @@ return [
             'strict' => true,
             'engine' => null,
         ],
+        // connection for reports (SVRDBM) in local env
+        'mysql3' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST3', '136.198.117.47'),
+            'port' => env('DB_PORT3', '3306'),
+            'database' => env('DB_DATABASE3', 'mapros'),
+            'username' => env('DB_USERNAME3', 'root'),
+            'password' => env('DB_PASSWORD3', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
         //AOI
         'sqlsrv' => [
             'driver' => 'sqlsrv',

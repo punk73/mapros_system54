@@ -64,7 +64,7 @@ class QaController extends Controller
     ];
 
     public function download(Request $request) {
-        
+        ini_set('max_execution_time', 60*5); // 5 menit
         /* 
             SELECT DISTINCT right(a.serial_no,8), a.judge, a.scan_nik, a.created_at,b.modelname, b.lotno FROM mapros.masters a
             left join boards b on a.guid_master = b.guid_master 
@@ -95,7 +95,9 @@ class QaController extends Controller
             $sheetCounter = 1;
             $worksheet = $spreadsheet->getActiveSheet();
 
-            $data = Master::select([
+            $data = DB::connection('mysql3')
+            ->table('masters')
+            ->select([
                 DB::raw('right(a.serial_no,8) as serial_no')
                 , 'a.judge'
                 , 'a.scan_nik'
@@ -111,13 +113,15 @@ class QaController extends Controller
             ->where('b.lotno', $request->get('lotno'))
             ->distinct()
             ->orderBy('a.serial_no', 'asc')
+            // ->get();
+            // return $data;
             ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request ){
                 $rowCount = 9; //start from 
                 foreach($results as $key => $result) {
                     $colCount = 0;
                     $colConfig = $this->colConfig;
                     // loop over the query result the get the column name and column value;
-                    foreach ($result->toArray() as $key => $colValue) {
+                    foreach ($result/* ->toArray() */ as $key => $colValue) {
                         # code...
                         $worksheet->setCellValueByColumnAndRow( $colConfig[$chunkCounter][$colCount], $rowCount, $colValue );
                         $colCount++;
@@ -137,7 +141,7 @@ class QaController extends Controller
                     $sheetCounter++;
                     // then,  we need to copy from sheet one to a new sheet
                     $clonedWorksheet = clone $spreadsheet->getSheetByName('blank'); //get sheet blank
-                    $newTitle = trim($worksheet->getTitle() . " ({$sheetCounter})") ;
+                    $newTitle = trim("Sheet ({$sheetCounter})") ;
                     $clonedWorksheet->setTitle($newTitle);
                     $worksheet = $spreadsheet->addSheet($clonedWorksheet);
                     // return false;
