@@ -6,6 +6,8 @@ use App\Master;
 use App\Scanner;
 use Illuminate\Http\Request;
 use DB;
+use Exception;
+
 class QaController extends Controller
 {
     /**
@@ -95,6 +97,22 @@ class QaController extends Controller
             $sheetCounter = 1;
             $worksheet = $spreadsheet->getActiveSheet();
 
+            $lineName = DB::connection('mysql3')
+                ->table('scanners')
+                ->select([
+                    'lines.name'
+                ])
+                ->join('lines', 'line_id', '=', 'lines.id')
+                ->where('scanners.id', $request->get('scanner_id') )
+                ->first();
+                
+            if(!$lineName) {
+                throw new Exception("Scanner with id {$request->scanner_id} not found.");
+            } else {
+                $lineName = $lineName->name;
+            }
+
+
             $data = DB::connection('mysql3')
             ->table('masters')
             ->select([
@@ -115,7 +133,7 @@ class QaController extends Controller
             ->orderBy('a.serial_no', 'asc')
             // ->get();
             // return $data;
-            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request ){
+            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request, $lineName ){
                 $rowCount = 9; //start from 
                 foreach($results as $key => $result) {
                     $colCount = 0;
@@ -133,7 +151,7 @@ class QaController extends Controller
                 if($chunkCounter > 4) {
                     // assign header data :
                     $worksheet->setCellValueByColumnAndRow(4,2, $request->get('modelname') );
-                    $worksheet->setCellValueByColumnAndRow(4,3, "LINE TEMP" );
+                    $worksheet->setCellValueByColumnAndRow(4,3, $lineName );
                     $worksheet->setCellValueByColumnAndRow(4,4, $request->get('lotno') );
                     
                     // we can reset $chunkCounter here
@@ -147,6 +165,13 @@ class QaController extends Controller
                     // return false;
                 }
             });
+
+            
+            // assign header data for the last worksheet:
+            // it is necessary because sometimes, chunkcounter not reach 4 then the looping is finish;
+            $worksheet->setCellValueByColumnAndRow(4,2, $request->get('modelname') );
+            $worksheet->setCellValueByColumnAndRow(4,3, $lineName );
+            $worksheet->setCellValueByColumnAndRow(4,4, $request->get('lotno') );
 
             $spreadsheet->removeSheetByIndex($spreadsheet->getIndex(
                 $spreadsheet->getSheetByName('blank')
