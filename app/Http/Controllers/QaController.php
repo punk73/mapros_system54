@@ -48,20 +48,20 @@ class QaController extends Controller
             12, //L
             13  //M
         ], [
-            17, //Q
-            19, //S
-            20, //T
-            21  //U
+            17-1, //Q //change due to changing the template
+            19-1, //S //change due to changing the template
+            20-1, //T //change due to changing the template
+            21-1  //U //change due to changing the template
         ], [
-            24, //X
-            26, //Z
-            27, //AA
-            28  //AB
+            24-1, //X //change due to changing the template
+            26-1, //Z //change due to changing the template
+            27-1, //AA //change due to changing the template
+            28-1  //AB //change due to changing the template
         ],[
-            31, //AE
-            33, //AG
-            34, //AH
-            35  //AI
+            31-1, //AE //change due to changing the template
+            33-1, //AG //change due to changing the template
+            34-1, //AH //change due to changing the template
+            35-1  //AI //change due to changing the template
         ]
     ];
 
