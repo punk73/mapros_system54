@@ -16,8 +16,11 @@ use App\Mastermodel;
 use App\Api\V1\Helper\Node;
 use App\Board;
 use App\ColumnSetting;
+use App\Doc_to;
+use App\Http\Controllers\QaController;
 use App\Quality;
 use App\LineprocessManualInstruction;
+use DB;
 class TestController extends Controller
 {	
 	use LoggerHelper;
@@ -33,76 +36,16 @@ class TestController extends Controller
 
 	// $action=null, $desc = null, $scannerId=null 
 	public function index(Request $request){
-		/* $client = new Client;
-		try {
-			$client->get('http://google.com/nosuchpage');    
-		}
-		catch (\GuzzleHttp\Exception\ClientException $e) {
-			$response = $e->getResponse();
-			$responseBodyAsString = $response->getBody()->getContents();
-			return $responseBodyAsString;
-		}
 
-		return $client; */
+		$c = new QaController;
+		$request->modelname = 'DDXGT500RA9N';
+		$request->scanner_id = 80;
+		$request->lotno = '090A';
 
-		/* $url = 'http://localhost/mapros_system54/public/api/aoies';
-		$client = new Client();
-		// $url = "https://api.github.com/repos/guzzle/guzzle";
-		try {
-			$res = $client->get($url, [	
-				'query' => [
-					'board_id'	=> $request->board_id
-				],
-				'headers' => ['Content-type' => 'application/json'],
-				// 'http_errors' => false,
-			]);
-		} catch ( \GuzzleHttp\Exception\ClientException  $e) {
-			// return $e->getMessage();
-			$response = $e->getResponse();
-			$responseBodyAsString = $response->getBody()->getContents();
-			throw new StoreResourceFailedException('something went wrong', []);
-		} */
-		/* $data = Quality::select([
-			'ID_QUALITY'
-			,'MODEL'
-			,'BOARD'
-			,'PCB_ID_NEW'
-			,'PCB_ID_OLD'
-			,'GUIDMASTER'
-			,'APPROVED'
-		])->where('GUIDMASTER', '!=', null )
-			->where('PCB_ID_OLD', '!=', "-")
-			->where(function($query){
-				return $query->where('APPROVED', '=', NULL )
-				  ->orWhere('APPROVED', 0);
-			})
-			->orderBy('ID_QUALITY','desc')
-			->paginate();
-
-		return $data; */
+		// return $request;
+		return $c->getFinishCount($request);
 		
-		$tmp = 'G1P9';
-		$results = [];
-		foreach(range('B', 'Z') as $key => $value) {
-			$temp = [
-				"name" => "lcd",
-				"dummy_column" => "barcode",
-				"table_name" => "parts",
-				"code_prefix" => $tmp . $value,
-				"level" => 3
-			];
-
-			$results[] = ColumnSetting::firstOrCreate($temp);
-		}
-
-		// return ColumnSetting::take(10)->get();
-
-		/* 
-			"name": "lcd",
-			"dummy_column": "barcode",
-			"table_name": "parts",
-			"code_prefix": "G1P00",
-		*/
+		$results = (new Doc_to)->getLotSize('DDXGT500RA9N', '090A');
 
 		return $results;
 

@@ -7,7 +7,7 @@ use App\Scanner;
 use Illuminate\Http\Request;
 use DB;
 use Exception;
-
+use App\Doc_to;
 class QaController extends Controller
 {
     /**
@@ -86,6 +86,40 @@ class QaController extends Controller
         ]; */
     }
     
+    public function getFinishCount(Request $request) {
+        $q = $this->getMainQuery($request);
+
+		$rawQuery = $this->getEloquentSqlWithBindings($q);
+
+		$data =  DB::select(DB::raw("select count(*) as aggregate from ({$rawQuery}) a"));
+
+        if(count($data) > 0) {
+            return $data[0]->aggregate;
+        }else {
+            return 0;
+        }
+    }
+
+    public function getMainQuery(Request $request) {
+        return DB::connection('mysql3')
+            ->table('masters')
+            ->select([
+                DB::raw('right(a.serial_no,8) as serial_no')
+                , 'a.judge'
+                , 'a.scan_nik'
+                , 'a.created_at'
+                // , 'b.modelname'
+                // , 'b.lotno'
+            ])->from('masters as a')
+            ->join('boards as b', 'a.guid_master', '=', 'b.guid_master')
+            ->where('a.serial_no', 'like', $request->get('modelname') .'%' )
+            ->where('a.scanner_id', $request->get('scanner_id'))
+            ->where('a.status', 'OUT')
+            ->where('a.judge', 'OK')
+            ->where('b.modelname', $request->get('modelname'))
+            ->where('b.lotno', $request->get('lotno'))
+            ->distinct();
+    }
 
     public function download(Request $request) {
         ini_set('max_execution_time', 60*5); // 5 menit
@@ -127,7 +161,10 @@ class QaController extends Controller
                 ->join('lines', 'line_id', '=', 'lines.id')
                 ->where('scanners.id', $request->get('scanner_id') )
                 ->first();
-                
+
+            $lotSize = (new Doc_to)->getLotSize($request->get('modelname'), $request->get('lotno'));
+            $finishCount = $this->getFinishCount($request);
+
             if(!$lineName) {
                 throw new Exception("Scanner with id {$request->scanner_id} not found.");
             } else {
@@ -136,27 +173,11 @@ class QaController extends Controller
 
             $counter = 1;
 
-            $data = DB::connection('mysql3')
-            ->table('masters')
-            ->select([
-                DB::raw('right(a.serial_no,8) as serial_no')
-                , 'a.judge'
-                , 'a.scan_nik'
-                , 'a.created_at'
-                // , 'b.modelname'
-                // , 'b.lotno'
-            ])->from('masters as a')
-            ->join('boards as b', 'a.guid_master', '=', 'b.guid_master')
-            ->where('a.serial_no', 'like', $request->get('modelname') .'%' )
-            ->where('a.scanner_id', $request->get('scanner_id'))
-            ->where('a.status', 'OUT')
-            ->where('b.modelname', $request->get('modelname'))
-            ->where('b.lotno', $request->get('lotno'))
-            ->distinct()
+            $data = $this->getMainQuery($request)
             ->orderBy('a.serial_no', 'asc')
             // ->get();
             // return $data;
-            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request, $lineName, &$counter ){
+            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request, $lineName, &$counter, $lotSize, $finishCount ){
                 $rowCount = 9; //start from 
                 foreach($results as $key => $result) {
                     $colCount = 1;
@@ -180,7 +201,8 @@ class QaController extends Controller
                     $worksheet->setCellValueByColumnAndRow(4,2, $request->get('modelname') );
                     $worksheet->setCellValueByColumnAndRow(4,3, $lineName );
                     $worksheet->setCellValueByColumnAndRow(4,4, $request->get('lotno') );
-                    
+                    $remarks = "Finish {$finishCount} / {$lotSize}";
+                    $worksheet->getCell('Q3')->setValue($remarks);
                     // we can reset $chunkCounter here
                     $chunkCounter = 0;
                     $sheetCounter++;
@@ -199,6 +221,10 @@ class QaController extends Controller
             $worksheet->setCellValueByColumnAndRow(4,2, $request->get('modelname') );
             $worksheet->setCellValueByColumnAndRow(4,3, $lineName );
             $worksheet->setCellValueByColumnAndRow(4,4, $request->get('lotno') );
+            
+            $remarks = "Finish {$finishCount} / {$lotSize}";
+            $worksheet->getCell('Q3')->setValue($remarks);
+
 
             $spreadsheet->removeSheetByIndex($spreadsheet->getIndex(
                 $spreadsheet->getSheetByName('blank')
