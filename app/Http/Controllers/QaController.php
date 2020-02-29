@@ -36,34 +36,56 @@ class QaController extends Controller
         return $worksheet;
     }
 
-    protected $colConfig = [
-        [
-            2, //B
-            4, //D
-            5, //E
-            6  //F 
-        ], [
-            9, //I
-            11, //K
-            12, //L
-            13  //M
-        ], [
-            17-1, //Q //change due to changing the template
-            19-1, //S //change due to changing the template
-            20-1, //T //change due to changing the template
-            21-1  //U //change due to changing the template
-        ], [
-            24-1, //X //change due to changing the template
-            26-1, //Z //change due to changing the template
-            27-1, //AA //change due to changing the template
-            28-1  //AB //change due to changing the template
-        ],[
-            31-1, //AE //change due to changing the template
-            33-1, //AG //change due to changing the template
-            34-1, //AH //change due to changing the template
-            35-1  //AI //change due to changing the template
-        ]
-    ];
+    protected $colConfig = [];
+
+    public function initColSetting($firstIndex) {
+        return [
+            $firstIndex,
+            $firstIndex+1,
+            $firstIndex+3,
+            $firstIndex+4,
+            $firstIndex+5,
+        ];
+    }
+
+    public function __construct()
+    {
+        foreach ([1,8,15,22,29] as $firstIndex) {
+            # code...
+            $this->colConfig[] = $this->initColSetting($firstIndex);
+        }
+        # code...
+        
+        /* $colConfig = [
+            [
+                2, //B
+                4, //D
+                5, //E
+                6  //F 
+            ], [
+                9, //I
+                11, //K
+                12, //L
+                13  //M
+            ], [
+                17-1, //Q //change due to changing the template
+                19-1, //S //change due to changing the template
+                20-1, //T //change due to changing the template
+                21-1  //U //change due to changing the template
+            ], [
+                24-1, //X //change due to changing the template
+                26-1, //Z //change due to changing the template
+                27-1, //AA //change due to changing the template
+                28-1  //AB //change due to changing the template
+            ],[
+                31-1, //AE //change due to changing the template
+                33-1, //AG //change due to changing the template
+                34-1, //AH //change due to changing the template
+                35-1  //AI //change due to changing the template
+            ]
+        ]; */
+    }
+    
 
     public function download(Request $request) {
         ini_set('max_execution_time', 60*5); // 5 menit
@@ -112,6 +134,7 @@ class QaController extends Controller
                 $lineName = $lineName->name;
             }
 
+            $counter = 1;
 
             $data = DB::connection('mysql3')
             ->table('masters')
@@ -133,18 +156,22 @@ class QaController extends Controller
             ->orderBy('a.serial_no', 'asc')
             // ->get();
             // return $data;
-            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request, $lineName ){
+            ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request, $lineName, &$counter ){
                 $rowCount = 9; //start from 
                 foreach($results as $key => $result) {
-                    $colCount = 0;
+                    $colCount = 1;
                     $colConfig = $this->colConfig;
                     // loop over the query result the get the column name and column value;
                     foreach ($result/* ->toArray() */ as $key => $colValue) {
                         # code...
+                        // render counter nya;
+                        $worksheet->setCellValueByColumnAndRow( $colConfig[$chunkCounter][0], $rowCount, $counter );
+                        // render the data
                         $worksheet->setCellValueByColumnAndRow( $colConfig[$chunkCounter][$colCount], $rowCount, $colValue );
                         $colCount++;
                     }
                     $rowCount++;
+                    $counter++;
                 }
                 $chunkCounter++;
 
