@@ -175,6 +175,7 @@ class QaController extends Controller
 
             $data = $this->getMainQuery($request)
             ->orderBy('a.serial_no', 'asc')
+            // ->orderBy('id', 'asc')
             // ->get();
             // return $data;
             ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request, $lineName, &$counter, $lotSize, $finishCount ){
@@ -183,7 +184,7 @@ class QaController extends Controller
                     $colCount = 1;
                     $colConfig = $this->colConfig;
                     // loop over the query result the get the column name and column value;
-                    foreach ($result/* ->toArray() */ as $key => $colValue) {
+                    foreach ($result as $key => $colValue) {
                         # code...
                         // render counter nya;
                         $worksheet->setCellValueByColumnAndRow( $colConfig[$chunkCounter][0], $rowCount, $counter );
