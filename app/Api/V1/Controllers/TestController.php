@@ -20,6 +20,7 @@ use App\Doc_to;
 use App\Http\Controllers\QaController;
 use App\Quality;
 use App\LineprocessManualInstruction;
+use App\SerialNo;
 use DB;
 class TestController extends Controller
 {	
@@ -42,13 +43,61 @@ class TestController extends Controller
 		$request->scanner_id = 80;
 		$request->lotno = '090A';
 
+		return $this->getMainQuery($request);
+
+		$query = $c->getMainQuery($request)
+			->orderBy('serial_no', 'asc');
+
+		// return $this->getEloquentSqlWithBindings($query);
+
+		$data = Doc_to::where('MODEL_NAME', strtoupper($request->modelname) )
+			->where('PROD_NO', strtoupper($request->lotno))
+			->get();
+		
+		return $data;
+
 		// return $request;
-		return $c->getFinishCount($request);
+		// return $c->getFinishCount($request);
 		
 		$results = (new Doc_to)->getLotSize('DDXGT500RA9N', '090A');
 
-		return $results;
+		// return $results;
 
+	}
+
+	public function getMainQuery(Request $request) {
+		
+		$serialNumbers = SerialNo::
+			select(['SERIAL_NO_ID'])
+			->where('MODEL_NAME', $request->modelname )
+			->where('PROD_NO', $request->lotno)
+			->distinct()
+			->get();
+		
+		$serialno = [];
+		foreach($serialNumbers as $sn) {
+			$serialno[] = trim( $sn->SERIAL_NO_ID);
+		}
+
+		$data =  DB::connection('mysql3')
+            ->table('masters')
+            ->select([
+                DB::raw('right(serial_no,8) as serial_no')
+                , 'judge'
+                , 'scan_nik'
+                , 'created_at'
+			])
+				->whereIn('serial_no', $serialno )
+				->where('scanner_id', $request->scanner_id )
+				->where('judge', 'OK')
+			->groupBy('serial_no')
+			->distinct()
+			->get();
+
+		return [
+			'count' => count( $data),
+			'data' => $data,
+		];
 	}
 
 	public function testNode(){

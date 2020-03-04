@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use DB;
 use Exception;
 use App\Doc_to;
+use App\SerialNo;
 class QaController extends Controller
 {
     /**
@@ -101,7 +102,7 @@ class QaController extends Controller
     }
 
     public function getMainQuery(Request $request) {
-        return DB::connection('mysql3')
+        /* return DB::connection('mysql3')
             ->table('masters')
             ->select([
                 DB::raw('right(a.serial_no,8) as serial_no')
@@ -118,7 +119,34 @@ class QaController extends Controller
             ->where('a.judge', 'OK')
             ->where('b.modelname', $request->get('modelname'))
             ->where('b.lotno', $request->get('lotno'))
-            ->distinct();
+            ->distinct(); */
+        
+        $serialNumbers = SerialNo::
+			select(['SERIAL_NO_ID'])
+			->where('MODEL_NAME', $request->modelname )
+			->where('PROD_NO', $request->lotno)
+			->distinct()
+			->get();
+		
+		$serialno = [];
+		foreach($serialNumbers as $sn) {
+			$serialno[] = trim( $sn->SERIAL_NO_ID);
+		}
+
+		return DB::connection('mysql3')
+            ->table('masters')
+            ->select([
+                DB::raw('right(serial_no,8) as serial_no')
+                , 'judge'
+                , 'scan_nik'
+                , 'created_at'
+			])
+            ->whereIn('serial_no', $serialno )
+            ->where('scanner_id', $request->scanner_id )
+            ->where('judge', 'OK')
+            ->groupBy('serial_no')
+            ->orderBy('serial_no', 'asc')
+			->distinct();
     }
 
     public function download(Request $request) {
@@ -174,10 +202,6 @@ class QaController extends Controller
             $counter = 1;
 
             $data = $this->getMainQuery($request)
-            ->orderBy('a.serial_no', 'asc')
-            // ->orderBy('id', 'asc')
-            // ->get();
-            // return $data;
             ->chunk(50, function ($results) use (&$spreadsheet, &$worksheet, &$chunkCounter, &$sheetCounter, $request, $lineName, &$counter, $lotSize, $finishCount ){
                 $rowCount = 9; //start from 
                 foreach($results as $key => $result) {
