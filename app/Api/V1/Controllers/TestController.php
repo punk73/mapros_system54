@@ -43,16 +43,10 @@ class TestController extends Controller
 		$request->scanner_id = 80;
 		$request->lotno = '090A';
 
-		return $this->getMainQuery($request);
-
-		$query = $c->getMainQuery($request)
-			->orderBy('serial_no', 'asc');
 
 		// return $this->getEloquentSqlWithBindings($query);
 
-		$data = Doc_to::where('MODEL_NAME', strtoupper($request->modelname) )
-			->where('PROD_NO', strtoupper($request->lotno))
-			->get();
+		$data = (new Doc_to)->getLotSize('DDXGT500R2A9N', '059A');
 		
 		return $data;
 
