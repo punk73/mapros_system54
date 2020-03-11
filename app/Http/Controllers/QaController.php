@@ -120,13 +120,26 @@ class QaController extends Controller
             ->where('b.modelname', $request->get('modelname'))
             ->where('b.lotno', $request->get('lotno'))
             ->distinct(); */
+
+        $doc = Doc_to::select([
+            DB::raw("trim(MODEL_NAME) || ' ' || SERIAL_NO_LOW as SERIAL_NO_LOW"),
+            DB::raw("trim(MODEL_NAME) || ' ' || SERIAL_NO_UP as SERIAL_NO_UP"),
+        ])
+            ->where('MODEL_NAME', $request->modelname )
+            ->where('PROD_NO', $request->lotno )
+            ->orderBy('ID_DOC_TO','desc')
+            ->first();
         
         $serialNumbers = SerialNo::
 			select(['SERIAL_NO_ID'])
 			->where('MODEL_NAME', $request->modelname )
-			->where('PROD_NO', $request->lotno)
+            ->where('PROD_NO', $request->lotno)
+            ->where(function ($q) use ($doc) {
+                $q->where('SERIAL_NO_ID', '>=', $doc->SERIAL_NO_LOW );
+                $q->where('SERIAL_NO_ID', '<=', $doc->SERIAL_NO_UP  );
+            })
 			->distinct()
-			->get();
+            ->get();
 		
 		$serialno = [];
 		foreach($serialNumbers as $sn) {

@@ -37,6 +37,19 @@ class Doc_to extends Model
         $res = $this
             ->where('MODEL_NAME', strtoupper($model) )
             ->where('PROD_NO', strtoupper($lotno))
+            ->select(['LOT_SIZE_IN'])
+            ->orderBy('ID_DOC_TO', 'desc')
+            ->first();
+            
+        if(!$res){
+            return 0;
+        }
+
+        return $res->LOT_SIZE_IN;
+        
+        /* $res = $this
+            ->where('MODEL_NAME', strtoupper($model) )
+            ->where('PROD_NO', strtoupper($lotno))
             ->from(DB::raw("(
                 SELECT DISTINCT MODEL_NAME
                 , PROD_NO
@@ -46,7 +59,7 @@ class Doc_to extends Model
             ) r"))
             ->sum('LOT_SIZE_STR');
             
-        return $res;
+        return $res; */
 
         /* $modelname = \strtoupper($model);
         $lot = \strtoupper($lotno);
