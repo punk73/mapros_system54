@@ -135,8 +135,12 @@ class QaController extends Controller
 			->where('MODEL_NAME', $request->modelname )
             ->where('PROD_NO', $request->lotno)
             ->where(function ($q) use ($doc) {
-                $q->where('SERIAL_NO_ID', '>=', $doc->SERIAL_NO_LOW );
-                $q->where('SERIAL_NO_ID', '<=', $doc->SERIAL_NO_UP  );
+                if(!$doc){
+                    return false;
+                }else{
+                    $q->where('SERIAL_NO_ID', '>=', $doc->SERIAL_NO_LOW );
+                    $q->where('SERIAL_NO_ID', '<=', $doc->SERIAL_NO_UP  );
+                }
             })
 			->distinct()
             ->get();
