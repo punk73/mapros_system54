@@ -32,6 +32,11 @@
                             </select>
                         </div>
                         <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">Process Name</span>
+                            <input required type="text" class="form-control" id="process_name" name="process_name" placeholder="process name" aria-describedby="basic-addon2">    
+                        </div>
+                        <br>
                         <button class="btn btn-success">Search</button>
                     </form>
                 </div>
@@ -57,4 +62,21 @@
         </div>
     </div>
 
+@endsection
+
+@section('javascript')
+<script>
+    $(document).ready(function(){
+        $('#scanner_id').on('change', function(e) {
+            let selectedText = $('#scanner_id option:selected').html();
+            let result = "Appearance Check";
+            // console.log(selectedText);
+            if(selectedText.includes('QA 1') == false){
+                result = "Inspection Check";
+            }
+
+            $('#process_name').val(result);
+        })
+    })
+</script>
 @endsection

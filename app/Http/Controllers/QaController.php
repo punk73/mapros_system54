@@ -245,6 +245,7 @@ class QaController extends Controller
                     $worksheet->setCellValueByColumnAndRow(4,4, $request->get('lotno') );
                     $remarks = "Finish {$finishCount} / {$lotSize}";
                     $worksheet->getCell('Q3')->setValue($remarks);
+                    $worksheet->getCell('K2')->setValue($request->get('process_name'));
                     // we can reset $chunkCounter here
                     $chunkCounter = 0;
                     $sheetCounter++;
@@ -266,7 +267,7 @@ class QaController extends Controller
             
             $remarks = "Finish {$finishCount} / {$lotSize}";
             $worksheet->getCell('Q3')->setValue($remarks);
-
+            $worksheet->getCell('K2')->setValue($request->get('process_name'));
 
             $spreadsheet->removeSheetByIndex($spreadsheet->getIndex(
                 $spreadsheet->getSheetByName('blank')
