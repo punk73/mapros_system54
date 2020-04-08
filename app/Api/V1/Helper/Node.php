@@ -158,7 +158,9 @@ class Node implements
 			// set the the locations data
 			$this->initLocations();
 			// cek board dupplication if setting('admin.check_board_dupplication') is true
-			$this->checkBoardDupplication();
+			if ($this->isRework() == false) {
+				$this->checkBoardDupplication();
+			}
 		}
 	}
 
@@ -419,17 +421,28 @@ class Node implements
 								$currDummy = $currDummy[$parentDummyColumn];
 							}
 
-							throw new StoreResourceFailedException("{$idType} {$this->getDummyId()} sudah join dengan dummy {$lastDummy}!!! dummy {$currDummy} harus lanjut dengan {$idType} lain!!", [
-								'last_dummy' => $lastDummy,
-								'current_dummy' => $currDummy,
-								'parentDummyColumn' => $parentDummyColumn,
-								'parentUniqueColumn' => $parentUniqueColumn,
-								'last_guid' => $lastGuid,
-								'current_guid' => $currentGuid
-							]);
+							if ($this->parameter['isRework']) {
+								// backup current guid to board or part history,
+								// is it good to backup in this method ??
+								$this->backupToHistory($parentUniqueColumn, $lastGuid);
+								// delete current data 
+								$this->deleteCurrentTransaction($parentUniqueColumn, $lastGuid);
+								// update old guid to new guid
+								$this->changesGuid($parentUniqueColumn, $lastGuid, $currentGuid);
+							} else {
+								throw new StoreResourceFailedException("{$idType} {$this->getDummyId()} sudah join dengan dummy {$lastDummy}!!! dummy {$currDummy} harus lanjut dengan {$idType} lain!!", [
+									'last_dummy' => $lastDummy,
+									'current_dummy' => $currDummy,
+									'parentDummyColumn' => $parentDummyColumn,
+									'parentUniqueColumn' => $parentUniqueColumn,
+									'last_guid' => $lastGuid,
+									'current_guid' => $currentGuid
+								]);
+							}
 						}
 					}
 				}
+
 
 				if ($this->isSettingContain('master')) {
 					$this->setGuidMaster($guid);
@@ -443,6 +456,66 @@ class Node implements
 		}
 
 		$this->setUniqueId($guid);
+	}
+
+	public function backupToHistory($uniqueColumn, $lastGuid)
+	{
+
+		$datas = $this->model
+			->where($uniqueColumn, $lastGuid)
+			->get();
+
+		$modelname = $this->model->getTable();
+
+		// insert data to table boards_history
+		$exists = DB::table('boards_history')->where($uniqueColumn, $lastGuid)
+			->exists();
+
+		$insert = false;
+		if (!$exists) {
+			$insert = DB::table('boards_history')->insert($datas->toArray());
+		}
+
+		return [
+			'success' => true,
+			'exists' => $exists,
+			'insert' => $insert,
+			'datas' => $datas->toArray(),
+			'modelname' => $modelname
+		];
+	}
+
+	public function changesGuid($uniqueColumn, $oldGuid, $newGuid)
+	{
+		$updated = $this->model
+			->where($uniqueColumn, $oldGuid)
+			->update([
+				$uniqueColumn => $newGuid
+			]);
+
+		/* throw new StoreResourceFailedException("updated {$updated}", [
+			'unique_column' => $uniqueColumn,
+			'old_guid' => $oldGuid,
+			'new_guid' => $newGuid
+		]); */
+
+		return $updated;
+	}
+
+	public function deleteCurrentTransaction($uniqueColumn, $lastGuid)
+	{
+		$deleted = $this->model
+			->where($uniqueColumn, $lastGuid)
+			->where('scanner_id', $this->getScanner()['id'])
+			->delete();
+
+		/* throw new StoreResourceFailedException("delete current trans", [
+			'current_process' => $deleted->toArray(),
+			'unique_column' => $uniqueColumn,
+			'last_guid' => $lastGuid
+		]); */
+
+		return $deleted;
 	}
 
 	public function verifyGuidMaster($guidParam = null)
@@ -1971,6 +2044,8 @@ class Node implements
 			return false; //kalau ga ada parameter isRework, pasti return false;
 			// artinya ini bukan proses rework;
 		}
+
+		return $this->parameter['isRework'];
 
 		/* ini return true, ketika client kirim parameter rework, dan guid belum di generate.
 		method ini digunakan untuk  menentukan apakah kita perlu check ke belakang atau tidak
