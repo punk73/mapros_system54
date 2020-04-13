@@ -425,10 +425,12 @@ class Node implements
 								// backup current guid to board or part history,
 								// is it good to backup in this method ??
 								$this->backupToHistory($parentUniqueColumn, $lastGuid);
-								// delete current data 
-								$this->deleteCurrentTransaction($parentUniqueColumn, $lastGuid);
 								// update old guid to new guid
 								$this->changesGuid($parentUniqueColumn, $lastGuid, $currentGuid);
+								// delete current data 
+								$this->deleteCurrentTransaction($parentUniqueColumn, $currentGuid);
+
+								$guid = $currentGuid; //untuk mencegah data baru, diambil dari getLastGuid
 							} else {
 								throw new StoreResourceFailedException("{$idType} {$this->getDummyId()} sudah join dengan dummy {$lastDummy}!!! dummy {$currDummy} harus lanjut dengan {$idType} lain!!", [
 									'last_dummy' => $lastDummy,
@@ -502,17 +504,17 @@ class Node implements
 		return $updated;
 	}
 
-	public function deleteCurrentTransaction($uniqueColumn, $lastGuid)
+	public function deleteCurrentTransaction($uniqueColumn, $guid)
 	{
 		$deleted = $this->model
-			->where($uniqueColumn, $lastGuid)
+			->where($uniqueColumn, $guid)
 			->where('scanner_id', $this->getScanner()['id'])
 			->delete();
 
 		/* throw new StoreResourceFailedException("delete current trans", [
-			'current_process' => $deleted->toArray(),
+			'current_process' => $deleted,
 			'unique_column' => $uniqueColumn,
-			'last_guid' => $lastGuid
+			'last_guid' => $guid
 		]); */
 
 		return $deleted;

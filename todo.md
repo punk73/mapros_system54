@@ -84,3 +84,23 @@
     so that it has new guid.
 
     the different is, we backup current guid first.
+
+## Testing boards
+
+- scenario :
+
+  - we have board A with 1,2 process
+  - we have master with 2, 3 process
+  - we scan board A with master A all process.
+  - we rework that boards, with master B.
+
+- expectation :
+
+  - data boards tersebut terback up
+  - data boards tersebut guidnya berubah jadi guid yang baru.
+  - tampilan datanya berubah jadi OK ( normal process )
+
+- reality :
+  - board terback up, ok
+  - guid berubah jdi baru, ok
+  - tampilannya belum benar, seharusnya scan ok, aktualnya error sudah error di process ini. kemungkinan besar method delete tidak berhasil. -> sekarang sudah ok
