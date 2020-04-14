@@ -470,12 +470,12 @@ class Node implements
 		$modelname = $this->model->getTable();
 
 		// insert data to table boards_history
-		$exists = DB::table('boards_history')->where($uniqueColumn, $lastGuid)
+		$exists = DB::table($modelname . '_history')->where($uniqueColumn, $lastGuid)
 			->exists();
 
 		$insert = false;
 		if (!$exists) {
-			$insert = DB::table('boards_history')->insert($datas->toArray());
+			$insert = DB::table($modelname . '_history')->insert($datas->toArray());
 		}
 
 		return [

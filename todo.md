@@ -104,3 +104,26 @@
   - board terback up, ok
   - guid berubah jdi baru, ok
   - tampilannya belum benar, seharusnya scan ok, aktualnya error sudah error di process ini. kemungkinan besar method delete tidak berhasil. -> sekarang sudah ok
+
+## testing tickets
+
+skenario di bawah, sebetulnya ga jadi soal ketika nameplatenya tidak berubah, jadi data lama dan data baru
+akan gabung dengan Serial No yang sama.
+
+ketika pun akan mulai rejoin LCD, harusnya ga masalah, tinggal backup LCDnya, ganti guid nya.
+let's try
+
+- scenario :
+
+  - we have ticket that contains LCD & boards
+  - we have master that need to be joined to that ticket
+
+- expectation :
+
+  - data boards & LCD tersebut terback up
+  - data boards & LCD tersebut guidnya berubah jadi guid yang baru.
+  - tampilan datanya berubah jadi OK ( normal process )
+
+- reality :
+
+  - v
