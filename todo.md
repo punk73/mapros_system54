@@ -120,10 +120,36 @@ let's try
 
 - expectation :
 
-  - data boards & LCD tersebut terback up
-  - data boards & LCD tersebut guidnya berubah jadi guid yang baru.
-  - tampilan datanya berubah jadi OK ( normal process )
+  - data boards & LCD tersebut terback up - OK
+  - data boards & LCD tersebut guidnya berubah jadi guid yang baru. - OK
+  - tampilan datanya berubah jadi OK ( normal process ) - OK
 
-- reality :
+  ## testing mecha ketika rework
 
-  - v
+  bisakah mecha digunakan di lebih dari satu set ketika rework is on ???
+
+  - scenario :
+
+    - scan master 1, 2, 3
+    - scan mecha 2
+    - redo with different master
+    - rescan the same mecha
+    - is it works ??
+
+mecha itu ada di table ticket, dia sudah punya guid_ticket sebelumnya. lalu join dgn master dan dapat guid master.
+ketika di re-join dengan another master, harusnya yang ke update hanya guid_master saja. guid_ticket nya jangan.
+aktual kondisi sekarang, guid_master & guid_ticket nya malah jadi sama. it's wrong.
+
+- seharusnya 
+
+## testing master tapi ubah nameplate
+
+problem akan terjadi, ketika rework mengubah data nameplate.
+ketika nameplate berubah, ga ada penghubung antara satu guid dengan guid lain.
+what should we do ?
+
+- check what current system does.
+
+what happen in current system is :
+
+-
