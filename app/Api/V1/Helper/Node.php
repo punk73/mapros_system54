@@ -375,6 +375,11 @@ class Node implements
 				// ini terpanggil ketika join master dengan ticket
 				// untuk verifikasi guid master & guid ticket
 				$this->verifyModelnameAndLotnoTicketMaster($guid /*guidTicket*/, $guidParam /*guidMaster*/);
+
+				if ($this->isRework()) {
+					// only mecha that we need to back up, dummy panel mah gausah;
+					$this->backupMechaToHistory();
+				}
 			}
 
 			$this->setGuidTicket($guid);
@@ -421,7 +426,7 @@ class Node implements
 								$currDummy = $currDummy[$parentDummyColumn];
 							}
 
-							if ($this->parameter['isRework']) {
+							if ($this->isRework()) {
 								// backup current guid to board or part history,
 								// is it good to backup in this method ??
 								$this->backupToHistory($parentUniqueColumn, $lastGuid);
@@ -458,6 +463,51 @@ class Node implements
 		}
 
 		$this->setUniqueId($guid);
+	}
+
+	public function backupMechaToHistory() {
+		
+		if($this->getIdType() == 'mecha'){
+			// get mecha, yang ticket_no = $this->dummy_id;
+			$guid = $this->model
+			->where( $this->dummy_column , $this->dummy_id )
+			->where('guid_master', '!=', null )
+			->where('guid_ticket', '!=', null )
+			->orderBy('id', 'desc')
+			->first();
+
+			if(!$guid){
+				return 0;
+			}
+
+			
+			$historyTable = $this->model->getTable() . "_history";
+			
+			$history = DB::table($historyTable)->where($this->dummy_column, $this->dummy_id )
+			->where('guid_master', $guid->guid_master )
+			->first();
+			
+			$backup = false;
+			$mecha = [];
+			$backupCount = 0;
+			if(!$history) {
+				$backup = true;
+				// backup
+				$mecha = $this->model->where('guid_master', $guid->guid_master )->get();
+
+				$backupCount = DB::table($historyTable)->insert($mecha->toArray());
+			}
+
+			return $backupCount;
+
+			/* throw new StoreResourceFailedException("mecha back up", [
+				'backup' => $backup,
+				'mecha' => $mecha,
+				'history_table' => $historyTable,
+				'backup_count' => $backupCount,
+			]); */
+		}
+
 	}
 
 	public function backupToHistory($uniqueColumn, $lastGuid)
@@ -506,13 +556,16 @@ class Node implements
 
 	public function deleteCurrentTransaction($uniqueColumn, $guid)
 	{
+		$scannerId = $this->getScanner()['id'];
+
 		$deleted = $this->model
 			->where($uniqueColumn, $guid)
-			->where('scanner_id', $this->getScanner()['id'])
+			->where('scanner_id', $scannerId )
 			->delete();
 
 		/* throw new StoreResourceFailedException("delete current trans", [
 			'current_process' => $deleted,
+			'scanner_id' => $scannerId,
 			'unique_column' => $uniqueColumn,
 			'last_guid' => $guid
 		]); */
