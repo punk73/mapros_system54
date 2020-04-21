@@ -515,6 +515,7 @@ class Node implements
 
 		$datas = $this->model
 			->where($uniqueColumn, $lastGuid)
+			->where($this->dummy_column, $this->dummy_id)
 			->get();
 
 		$modelname = $this->model->getTable();
@@ -541,6 +542,7 @@ class Node implements
 	{
 		$updated = $this->model
 			->where($uniqueColumn, $oldGuid)
+			->where($this->dummy_column, $this->dummy_id )
 			->update([
 				$uniqueColumn => $newGuid
 			]);
