@@ -124,7 +124,7 @@ let's try
   - data boards & LCD tersebut guidnya berubah jadi guid yang baru. - OK
   - tampilan datanya berubah jadi OK ( normal process ) - OK
 
-  ## testing mecha ketika rework
+## testing mecha ketika rework
 
   bisakah mecha digunakan di lebih dari satu set ketika rework is on ???
 
@@ -148,8 +148,19 @@ problem akan terjadi, ketika rework mengubah data nameplate.
 ketika nameplate berubah, ga ada penghubung antara satu guid dengan guid lain.
 what should we do ?
 
-- check what current system does.
+- this wont be an issue, because if we changes nameplate, the entire entities is changes. so we don't 
+need the previous history
 
-what happen in current system is :
+## we need to store serial number that has been reworked 
+- how ?
+  - we can alter backup history method to find the serial number from boards or LCD module that 
+    had the Serial number. store that SN on rework table
+  - 
 
--
+## we need to know, which SN is already finish, which is not
+  - how ??
+    - we can add one new column to indicate wheter this specific SN is finish or not.
+      the problem is, how about changes nameplate ???
+
+## kita juga harus membuat tampilan untuk mana yang rework mana yang engga.
+  - buat new view

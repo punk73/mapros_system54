@@ -427,8 +427,8 @@ class Node implements
 							}
 
 							if ($this->isRework()) {
+								$this->storeSerialNumberRework($lastGuid);
 								// backup current guid to board or part history,
-								// is it good to backup in this method ??
 								$this->backupToHistory($parentUniqueColumn, $lastGuid);
 								// update old guid to new guid
 								$this->changesGuid($parentUniqueColumn, $lastGuid, $currentGuid);
@@ -507,6 +507,55 @@ class Node implements
 				'backup_count' => $backupCount,
 			]); */
 		}
+
+	}
+
+	public function storeSerialNumberRework($guid) {
+		// get serial number of specific guid
+		$master = Master::select('serial_no')	
+			->where('guid_master', $guid)
+			->where('serial_no', '!=', null )
+			->orderBy('id', 'desc')
+			->distinct()
+			->first();
+		
+		if(!$master) {
+			return false;
+		}
+
+		$serialNo = (!$master) ? null : $master->serial_no;
+
+		if($serialNo == null){
+			return false;
+		}
+
+		$rework = DB::table('rework')->where('barcode', $serialNo )
+			->first();
+
+		$modelname = null;
+		$newRework = null;
+		$insert    = null;
+		$serialno  = null;
+		if(!$rework){
+			$tmp = explode(' ', $serialNo);
+			$modelname = isset( $tmp[0]) ? $tmp[0] : null; //index pertama 
+			$serialno = isset( $tmp[1]) ? $tmp[1] : null ;
+			$newRework = [
+				'barcode' => $serialNo,
+				'model' => $modelname,
+				'serialno' => $serialno,
+				'categorynm' => "-",
+				'input_user' => isset($this->nik) ? $this->nik : null ,
+				'input_date' => date('Y-m-d H:m:s')
+			];
+
+			throw new StoreResourceFailedException("kajsdf", compact('rework', 'serialNo', 'master', 'modelname', 'newRework', 'insert', 'serialno') );
+
+			$insert = DB::table('rework')->insert($newRework);
+		}
+		
+		return compact('rework', 'serialNo', 'master', 'modelname', 'newRework', 'insert', 'serialno');
+
 
 	}
 

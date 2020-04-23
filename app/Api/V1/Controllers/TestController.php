@@ -36,27 +36,11 @@ class TestController extends Controller
 	}
 
 	// $action=null, $desc = null, $scannerId=null 
-	public function index(Request $request){
+	public function index(Request $request) {
 
-		$c = new QaController;
-		$request->modelname = 'DDXGT500RA9N';
-		$request->scanner_id = 80;
-		$request->lotno = '090A';
-
-
-		return $c->getMainQuery($request);
-		// return $this->getEloquentSqlWithBindings($query);
-
-		$data = (new Doc_to)->getLotSize('DDXGT500R2A9N', '059A');
-		
-		return $data;
-
-		// return $request;
-		// return $c->getFinishCount($request);
-		
-		$results = (new Doc_to)->getLotSize('DDXGT500RA9N', '090A');
-
-		// return $results;
+		$node = new Node(null, true);
+		$guid = "95A25DE7-EF5C-4D6F-95D7-9B7A2ABCDE30";
+		return $node->storeSerialNumberRework($guid);
 
 	}
 
