@@ -554,16 +554,7 @@ class MainController extends Controller
 					$content  = $node->getParameter()['manual_content'];
 
 					if(!$node->CompareModelname($content)) {
-						$currentModel = (\method_exists($node, 'getModelname')) ? $node->getModelname() : 'unknown';
-						$masterContent = MasterManualInstruction::
-						select(['content', 'modelname'])->where('modelname', $currentModel )->get();
-	
-						throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
-							'qrcode' => $content,
-							'current_modelname' => $currentModel,
-							'manual_code_content_should_be' => $masterContent
-						]);
-	
+						$node->checkContentWithModelname($content);
 					}
 				}
 				
@@ -581,16 +572,7 @@ class MainController extends Controller
 						$content  = $node->getParameter()['manual_content'];
 
 						if(!$node->CompareModelname($content)) {
-							$currentModel = (\method_exists($node, 'getModelname')) ? $node->getModelname() : 'unknown';
-							$masterContent = MasterManualInstruction::
-							select(['content', 'modelname'])->where('modelname', $currentModel )->get();
-
-							throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
-								'qrcode' => $content,
-								'current_modelname' => $currentModel,
-								'manual_code_content_should_be' => $masterContent
-							]);
-
+							$node->checkContentWithModelname($content);
 						}
 					}
 				}
