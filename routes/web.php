@@ -36,6 +36,8 @@ Route::group([
 
 	$route->get('qa', 'QaController@index');
 	$route->get('qa/download', 'QaController@download');
+
+	$route->get('reworks', 'ReworkController@index');
 	
 });
 
