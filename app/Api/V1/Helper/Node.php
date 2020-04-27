@@ -377,6 +377,7 @@ class Node implements
 				$this->verifyModelnameAndLotnoTicketMaster($guid /*guidTicket*/, $guidParam /*guidMaster*/);
 
 				if ($this->isRework()) {
+					$this->storeSerialNumberRework($guidParam);
 					// only mecha that we need to back up, dummy panel mah gausah;
 					$this->backupMechaToHistory();
 				}
