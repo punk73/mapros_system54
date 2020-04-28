@@ -66868,6 +66868,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "col-md-offset-4 col-md-6"
   }, [_c('button', {
     staticClass: "btn btn-success",
+    attrs: {
+      "type": "button"
+    },
     on: {
       "click": function($event) {
         $event.preventDefault();
@@ -66912,6 +66915,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "input-group-btn"
     }, [_c('button', {
       staticClass: "btn btn-danger",
+      attrs: {
+        "type": "button"
+      },
       on: {
         "click": function($event) {
           $event.preventDefault();
