@@ -66,11 +66,22 @@
                             </div>
 
                             <div v-if="(config.isManualInstruction && includeIn) || showManualInstruction " >
+                                <div class="form-group">
+                                    <div class="col-md-offset-4 col-md-6">
+                                        <button class="btn btn-success" @click.prevent="manualInstructionQty++" >Add</button>
+                                    </div>
+                                </div>
+
                                 <div class="form-group" :key="i" v-for="i in manualInstructionQty">
                                     <label class="col-md-4 control-label">Manual Intruction {{i}}</label>
                                     <!-- jumlah input based on jumlah manual instruction qty -->
                                     <div class="col-md-6">
-                                        <input :placeholder="'Scan Manual Intruction '+i" ref='manual_content' v-model="form.manual_content[i-1]" class="form-control" name="manual_content"  required>
+                                        <div class="input-group">
+                                            <input :placeholder="'Scan Manual Intruction '+i" ref='manual_content' v-model="form.manual_content[i-1]" class="form-control" name="manual_content"  required>
+                                            <span class="input-group-btn">
+                                                 <button class="btn btn-danger" @click.prevent="manualInstructionQtyDeleteOnClick(i-1)" >x</button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -508,6 +519,7 @@
             // console.log('mounted')
             this.getConfig();
             this.getInfo();
+            this.fetchInstructionManualQty();
         },
 
         components: {
@@ -1203,6 +1215,32 @@
 
             playJoin(){
                 this.playSound('./storage/join.mp3');
+            },
+
+            fetchInstructionManualQty() {
+                let modelname = this.config.model;
+                console.log(modelname)
+                axios.get('api/get_instruction_manual_qty', {
+                    params:{
+                        modelname: modelname
+                    }
+                }).then(res => res.data )
+                .then(data => {
+                    if(data.success){
+                        let jml = data.data;
+                        if(jml < 1){
+                            this.manualInstructionQty = 1;
+                        }else{
+                            this.manualInstructionQty = jml;
+                        }
+                    }
+                })
+                .catch(error => console.log(error));
+            },
+
+            manualInstructionQtyDeleteOnClick(index) {
+                this.manualInstructionQty--;
+                this.form.manual_content.splice(index, 1);
             }
         }
     }

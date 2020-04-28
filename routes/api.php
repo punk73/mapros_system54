@@ -53,7 +53,11 @@ $api->version('v1', function (Router $api) {
         $api->post('/', 'App\\Api\\V1\\Controllers\\MainController@store' )->name('api-main');
         $api->delete('/', 'App\\Api\\V1\\Controllers\\MainController@destroy' );
 
-    });    
+    });
+
+    $api->group(['prefix' => 'get_instruction_manual_qty'], function (Router $api) {
+        $api->get('/', 'App\\Api\\V1\\Controllers\\ManualInstructionController@index');
+    });
 
     $api->get('/test', 'App\\Api\\V1\\Controllers\\TestController@index' );
     $api->post('/test', 'App\\Api\\V1\\Controllers\\TestController@store' );

@@ -40946,6 +40946,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var axios = __webpack_require__(17);
 
@@ -41200,6 +41211,7 @@ var axios = __webpack_require__(17);
         // console.log('mounted')
         this.getConfig();
         this.getInfo();
+        this.fetchInstructionManualQty();
     },
 
 
@@ -41871,6 +41883,34 @@ var axios = __webpack_require__(17);
         },
         playJoin: function playJoin() {
             this.playSound('./storage/join.mp3');
+        },
+        fetchInstructionManualQty: function fetchInstructionManualQty() {
+            var _this4 = this;
+
+            var modelname = this.config.model;
+            console.log(modelname);
+            axios.get('api/get_instruction_manual_qty', {
+                params: {
+                    modelname: modelname
+                }
+            }).then(function (res) {
+                return res.data;
+            }).then(function (data) {
+                if (data.success) {
+                    var jml = data.data;
+                    if (jml < 1) {
+                        _this4.manualInstructionQty = 1;
+                    } else {
+                        _this4.manualInstructionQty = jml;
+                    }
+                }
+            }).catch(function (error) {
+                return console.log(error);
+            });
+        },
+        manualInstructionQtyDeleteOnClick: function manualInstructionQtyDeleteOnClick(index) {
+            this.manualInstructionQty--;
+            this.form.manual_content.splice(index, 1);
         }
     }
 });
@@ -66822,7 +66862,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "showManualInstruction"
     }
-  })], 1)]) : _vm._e(), _vm._v(" "), ((_vm.config.isManualInstruction && _vm.includeIn) || _vm.showManualInstruction) ? _c('div', _vm._l((_vm.manualInstructionQty), function(i) {
+  })], 1)]) : _vm._e(), _vm._v(" "), ((_vm.config.isManualInstruction && _vm.includeIn) || _vm.showManualInstruction) ? _c('div', [_c('div', {
+    staticClass: "form-group"
+  }, [_c('div', {
+    staticClass: "col-md-offset-4 col-md-6"
+  }, [_c('button', {
+    staticClass: "btn btn-success",
+    on: {
+      "click": function($event) {
+        $event.preventDefault();
+        _vm.manualInstructionQty++
+      }
+    }
+  }, [_vm._v("Add")])])]), _vm._v(" "), _vm._l((_vm.manualInstructionQty), function(i) {
     return _c('div', {
       key: i,
       staticClass: "form-group"
@@ -66830,6 +66882,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "col-md-4 control-label"
     }, [_vm._v("Manual Intruction " + _vm._s(i))]), _vm._v(" "), _c('div', {
       staticClass: "col-md-6"
+    }, [_c('div', {
+      staticClass: "input-group"
     }, [_c('input', {
       directives: [{
         name: "model",
@@ -66854,8 +66908,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.$set(_vm.form.manual_content, i - 1, $event.target.value)
         }
       }
-    })])])
-  })) : _vm._e(), _vm._v(" "), (_vm.config.isScanCarton) ? _c('div', {
+    }), _vm._v(" "), _c('span', {
+      staticClass: "input-group-btn"
+    }, [_c('button', {
+      staticClass: "btn btn-danger",
+      on: {
+        "click": function($event) {
+          $event.preventDefault();
+          _vm.manualInstructionQtyDeleteOnClick(i - 1)
+        }
+      }
+    }, [_vm._v("x")])])])])])
+  })], 2) : _vm._e(), _vm._v(" "), (_vm.config.isScanCarton) ? _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-offset-4 col-md-6"
