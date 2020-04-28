@@ -45,11 +45,16 @@ trait ManualInstructionTrait {
 
     public function CompareModelname($contents, $modelname = null ) {
         /* check if getmodelname exists */
-        if(is_array($contents)){
+        if(is_array($contents)){ 
+            # how to handle two manual instruction that scan the same content;
             foreach ($contents as $key => $content) {
-                # code...
-                $this->checkModelname($content, $modelname);
+                # semuanya harus bener
+                if( $this->checkModelname($content, $modelname) == false ) {
+                    return false;
+                };
             }
+
+            return true;
         }else {
             return $this->checkModelname($contents, $modelname);
         }
@@ -136,7 +141,7 @@ trait ManualInstructionTrait {
                 throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
                     'qrcode' => $content,
                     'current_modelname' => $currentModel,
-                    'manual_code_content_should_be' => $masterContent
+                    'manual_code_content_should_be' => $masterContent->toArray()
                 ]);
             }
         } else {
@@ -149,7 +154,7 @@ trait ManualInstructionTrait {
             throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
                 'qrcode' => $content,
                 'current_modelname' => $currentModel,
-                'manual_code_content_should_be' => $masterContent
+                'manual_code_content_should_be' => $masterContent->toArray()
             ]);
         }
         
