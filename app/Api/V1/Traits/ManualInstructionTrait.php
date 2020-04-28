@@ -86,6 +86,12 @@ trait ManualInstructionTrait {
 
         if( isset($parameter[$key]) ) {
             if($parameter[$key] !== null ) {
+                if(is_array($parameter[$key])) {
+                    return count($parameter[$key]) > 0;
+                    // jika array ada isinya, tapi empty string, maka haruskah return false ??
+
+                }
+
                 return true;
             }
         }
