@@ -17,16 +17,46 @@ trait ManualInstructionTrait {
             return null; // ??
         }
 
-        $manualInstruction = new ManualInstruction();
-        $manualInstruction->guid_master = $guidMaster;
-        $manualInstruction->content = $content;
-        
-        return $manualInstruction->save();
+        // diseragamkan saja, semuanya jadi array instead of string;
+        if(!is_array($content)) {
+            // swap the value
+            $temp = [];
+            $temp[] = $content;
+            $content = $temp;
+        }
+
+        foreach ($content as $key => $contentValue ) {
+            if($contentValue == null || $contentValue == "") {
+                continue;
+            }
+            
+            $manualInstruction = new ManualInstruction();
+            $manualInstruction->guid_master = $guidMaster;
+            $manualInstruction->content = $contentValue;
+            $result = $manualInstruction->save();
+
+            if(!$result){
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    public function CompareModelname($content, $modelname = null ) {
+    public function CompareModelname($contents, $modelname = null ) {
         /* check if getmodelname exists */
-        if($modelname == null && method_exists($this, 'getModelname') ) {
+        if(is_array($contents)){
+            foreach ($contents as $key => $content) {
+                # code...
+                $this->checkModelname($content, $modelname);
+            }
+        }else {
+            return $this->checkModelname($contents, $modelname);
+        }
+    }
+
+    public function checkModelname($content, $modelname = null) {
+        if ($modelname == null && method_exists($this, 'getModelname')) {
             $modelname = $this->getModelname();
         }
 
@@ -88,16 +118,34 @@ trait ManualInstructionTrait {
         
     }
 
-    public function checkContentWithModelname($content){
-        $currentModel = (\method_exists($this, 'getModelname')) ? $this->getModelname() : 'unknown';
-        $masterContent = MasterManualInstruction::select(['content', 'modelname'])
-            ->where('modelname', $currentModel)
-            ->get();
+    public function checkContentWithModelname($contents){
+        if(is_array( $contents)){
+            foreach ($contents as $key => $content) {
+                # code...
+                $currentModel = (\method_exists($this, 'getModelname')) ? $this->getModelname() : 'unknown';
+                $masterContent = MasterManualInstruction::select(['content', 'modelname'])
+                ->where('modelname', $currentModel)
+                ->get();
+                
+                throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
+                    'qrcode' => $content,
+                    'current_modelname' => $currentModel,
+                    'manual_code_content_should_be' => $masterContent
+                ]);
+            }
+        } else {
+            # code...
+            $currentModel = (\method_exists($this, 'getModelname')) ? $this->getModelname() : 'unknown';
+            $masterContent = MasterManualInstruction::select(['content', 'modelname'])
+                ->where('modelname', $currentModel)
+                ->get();
 
-        throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
-            'qrcode' => $content,
-            'current_modelname' => $currentModel,
-            'manual_code_content_should_be' => $masterContent
-        ]);
+            throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
+                'qrcode' => $content,
+                'current_modelname' => $currentModel,
+                'manual_code_content_should_be' => $masterContent
+            ]);
+        }
+        
     }
 }

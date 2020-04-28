@@ -40943,6 +40943,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
+//
 
 var axios = __webpack_require__(17);
 
@@ -40969,7 +40972,7 @@ var axios = __webpack_require__(17);
                 critical_parts: [], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
                 locations: [],
                 isRework: false, //default value
-                manual_content: null, //default value
+                manual_content: [], //null, //default value
                 carton: null,
                 serial_number: null,
                 fifoMode: false //ini refer ke config;
@@ -40979,6 +40982,8 @@ var axios = __webpack_require__(17);
             options: [],
             isJoin: false,
             showManualInstruction: false,
+            manualInstructionQty: 1, //ini nanti diubah based on modelname
+
             showCarton: false,
             showSerialNumberField: false,
 
@@ -41568,7 +41573,7 @@ var axios = __webpack_require__(17);
                 this.isNG = false;
             }
             if (this.config.isManualInstruction) {
-                this.form.manual_content = null;
+                this.form.manual_content = [];
             }
             if (this.config.isScanCarton) {
                 this.form.carton = null;
@@ -66817,36 +66822,40 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       },
       expression: "showManualInstruction"
     }
-  })], 1)]) : _vm._e(), _vm._v(" "), ((_vm.config.isManualInstruction && _vm.includeIn) || _vm.showManualInstruction) ? _c('div', {
-    staticClass: "form-group"
-  }, [_c('label', {
-    staticClass: "col-md-4 control-label"
-  }, [_vm._v("Manual Intruction")]), _vm._v(" "), _c('div', {
-    staticClass: "col-md-6"
-  }, [_c('input', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.form.manual_content),
-      expression: "form.manual_content"
-    }],
-    ref: "manual_content",
-    staticClass: "form-control",
-    attrs: {
-      "placeholder": "Scan Manual Intruction",
-      "name": "manual_content",
-      "required": ""
-    },
-    domProps: {
-      "value": (_vm.form.manual_content)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.$set(_vm.form, "manual_content", $event.target.value)
+  })], 1)]) : _vm._e(), _vm._v(" "), ((_vm.config.isManualInstruction && _vm.includeIn) || _vm.showManualInstruction) ? _c('div', _vm._l((_vm.manualInstructionQty), function(i) {
+    return _c('div', {
+      key: i,
+      staticClass: "form-group"
+    }, [_c('label', {
+      staticClass: "col-md-4 control-label"
+    }, [_vm._v("Manual Intruction " + _vm._s(i))]), _vm._v(" "), _c('div', {
+      staticClass: "col-md-6"
+    }, [_c('input', {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: (_vm.form.manual_content[i - 1]),
+        expression: "form.manual_content[i-1]"
+      }],
+      ref: "manual_content",
+      refInFor: true,
+      staticClass: "form-control",
+      attrs: {
+        "placeholder": 'Scan Manual Intruction ' + i,
+        "name": "manual_content",
+        "required": ""
+      },
+      domProps: {
+        "value": (_vm.form.manual_content[i - 1])
+      },
+      on: {
+        "input": function($event) {
+          if ($event.target.composing) { return; }
+          _vm.$set(_vm.form.manual_content, i - 1, $event.target.value)
+        }
       }
-    }
-  })])]) : _vm._e(), _vm._v(" "), (_vm.config.isScanCarton) ? _c('div', {
+    })])])
+  })) : _vm._e(), _vm._v(" "), (_vm.config.isScanCarton) ? _c('div', {
     staticClass: "form-group"
   }, [_c('label', {
     staticClass: "col-md-offset-4 col-md-6"

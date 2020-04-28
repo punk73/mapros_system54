@@ -65,10 +65,13 @@
                                 <label class="col-md-offset-4 col-md-6"> Show Instruction QR textfield : <toggle-button v-model="showManualInstruction" :color="'#2ab27b'" :labels="true" /></label>
                             </div>
 
-                            <div class="form-group" v-if="(config.isManualInstruction && includeIn) || showManualInstruction " >
-                                <label class="col-md-4 control-label">Manual Intruction</label>
-                                <div class="col-md-6">
-                                    <input placeholder="Scan Manual Intruction" ref='manual_content' v-model="form.manual_content" class="form-control" name="manual_content"  required>
+                            <div v-if="(config.isManualInstruction && includeIn) || showManualInstruction " >
+                                <div class="form-group" :key="i" v-for="i in manualInstructionQty">
+                                    <label class="col-md-4 control-label">Manual Intruction {{i}}</label>
+                                    <!-- jumlah input based on jumlah manual instruction qty -->
+                                    <div class="col-md-6">
+                                        <input :placeholder="'Scan Manual Intruction '+i" ref='manual_content' v-model="form.manual_content[i-1]" class="form-control" name="manual_content"  required>
+                                    </div>
                                 </div>
                             </div>
 
@@ -273,7 +276,7 @@
                     critical_parts:[], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
                     locations:[],
                     isRework : false, //default value
-                    manual_content : null, //default value
+                    manual_content : [], //null, //default value
                     carton : null,
                     serial_number: null,
                     fifoMode: false, //ini refer ke config;
@@ -283,6 +286,8 @@
                 options : [], 
                 isJoin : false,
                 showManualInstruction: false,
+                manualInstructionQty:1, //ini nanti diubah based on modelname
+
                 showCarton:false,
                 showSerialNumberField:false,
 
@@ -887,7 +892,7 @@
                 }
                 /*kalau config showNgOption itu false, baru jalankan*/
                 if (!this.config.showNgoption) { this.isNG = false; }
-                if(this.config.isManualInstruction){this.form.manual_content = null }
+                if(this.config.isManualInstruction){this.form.manual_content = [] }
                 if(this.config.isScanCarton ){this.form.carton = null }
                 if(this.config.isScanSN ) {
                     this.showSerialNumberField = false; //tutup serial no field
