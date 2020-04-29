@@ -43,18 +43,46 @@ trait ManualInstructionTrait {
         return true;
     }
 
+    // we need to repair CompareModelname method
+    /* 
+        1. get contents of array.
+        2. get mastermodel with specific modelname
+        3. compare that with contents.
+        4. make sure each mastermodel has the same content
+    */
+
+    public function CompareModelArray($contents, $modelname = null) {
+        if ($modelname == null && method_exists($this, 'getModelname')) {
+            $modelname = $this->getModelname();
+        }
+
+        $contentHashMap = [];
+        foreach ($contents as $key => $content) {
+            $contentHashMap[$content] = $content;
+        }
+
+        $masters = MasterManualInstruction::where('modelname', $modelname )->get();
+
+        foreach ($masters as $key => $master) {
+            # code...
+            $masterContent = $master->content;
+            $found = isset($contentHashMap[$masterContent]);
+            if($found) {
+                // remove masterContent from $contentHashMap to checklist that content;
+                unset($contentHashMap[$masterContent]);
+            }else{
+                return false;
+            }
+        }
+
+        return true;
+    }
+ 
     public function CompareModelname($contents, $modelname = null ) {
         /* check if getmodelname exists */
         if(is_array($contents)){ 
             # how to handle two manual instruction that scan the same content;
-            foreach ($contents as $key => $content) {
-                # semuanya harus bener
-                if( $this->checkModelname($content, $modelname) == false ) {
-                    return false;
-                };
-            }
-
-            return true;
+            return $this->CompareModelArray($contents, $modelname);
         }else {
             return $this->checkModelname($contents, $modelname);
         }
