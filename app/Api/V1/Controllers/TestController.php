@@ -84,6 +84,15 @@ class TestController extends Controller
 	}
 
 	public function store(Request $request){
+
+		$node = new Node($request->all());
+
+		return [
+			'checkInstructionManual' => $node->checkInstructionManual(),
+			'check_instruction_manual' => setting('admin.check_instruction_manual'),
+			'hasInstructionManual' => $node->hasInstructionManual()
+		];
+
 		/* test method getData dari modelBased */
 		$manualInstruction = (new LineprocessManualInstruction());
 		$manualInstruction->name = 'rangga';

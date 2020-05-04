@@ -17,16 +17,79 @@ trait ManualInstructionTrait {
             return null; // ??
         }
 
-        $manualInstruction = new ManualInstruction();
-        $manualInstruction->guid_master = $guidMaster;
-        $manualInstruction->content = $content;
-        
-        return $manualInstruction->save();
+        // diseragamkan saja, semuanya jadi array instead of string;
+        if(!is_array($content)) {
+            // swap the value
+            $temp = [];
+            $temp[] = $content;
+            $content = $temp;
+        }
+
+        foreach ($content as $key => $contentValue ) {
+            if($contentValue == null || $contentValue == "") {
+                continue;
+            }
+            
+            $manualInstruction = new ManualInstruction();
+            $manualInstruction->guid_master = $guidMaster;
+            $manualInstruction->content = $contentValue;
+            $result = $manualInstruction->save();
+
+            if(!$result){
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    public function CompareModelname($content, $modelname = null ) {
+    // we need to repair CompareModelname method
+    /* 
+        1. get contents of array.
+        2. get mastermodel with specific modelname
+        3. compare that with contents.
+        4. make sure each mastermodel has the same content
+    */
+
+    public function CompareModelArray($contents, $modelname = null) {
+        if ($modelname == null && method_exists($this, 'getModelname')) {
+            $modelname = $this->getModelname();
+        }
+
+        $contentHashMap = [];
+        foreach ($contents as $key => $content) {
+            $contentHashMap[$content] = $content;
+        }
+
+        $masters = MasterManualInstruction::where('modelname', $modelname )->get();
+
+        foreach ($masters as $key => $master) {
+            # code...
+            $masterContent = $master->content;
+            $found = isset($contentHashMap[$masterContent]);
+            if($found) {
+                // remove masterContent from $contentHashMap to checklist that content;
+                unset($contentHashMap[$masterContent]);
+            }else{
+                return false;
+            }
+        }
+
+        return true;
+    }
+ 
+    public function CompareModelname($contents, $modelname = null ) {
         /* check if getmodelname exists */
-        if($modelname == null && method_exists($this, 'getModelname') ) {
+        if(is_array($contents)){ 
+            # how to handle two manual instruction that scan the same content;
+            return $this->CompareModelArray($contents, $modelname);
+        }else {
+            return $this->checkModelname($contents, $modelname);
+        }
+    }
+
+    public function checkModelname($content, $modelname = null) {
+        if ($modelname == null && method_exists($this, 'getModelname')) {
             $modelname = $this->getModelname();
         }
 
@@ -56,6 +119,12 @@ trait ManualInstructionTrait {
 
         if( isset($parameter[$key]) ) {
             if($parameter[$key] !== null ) {
+                if(is_array($parameter[$key])) {
+                    return count($parameter[$key]) > 0;
+                    // jika array ada isinya, tapi empty string, maka haruskah return false ??
+
+                }
+
                 return true;
             }
         }
@@ -84,6 +153,37 @@ trait ManualInstructionTrait {
             }
         } catch ( QueryException $th) {
             return false;
+        }
+        
+    }
+
+    public function checkContentWithModelname($contents){
+        if(is_array( $contents)){
+            foreach ($contents as $key => $content) {
+                # code...
+                $currentModel = (\method_exists($this, 'getModelname')) ? $this->getModelname() : 'unknown';
+                $masterContent = MasterManualInstruction::select(['content', 'modelname'])
+                ->where('modelname', $currentModel)
+                ->get();
+                
+                throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
+                    'qrcode' => $content,
+                    'current_modelname' => $currentModel,
+                    'manual_code_content_should_be' => $masterContent->toArray()
+                ]);
+            }
+        } else {
+            # code...
+            $currentModel = (\method_exists($this, 'getModelname')) ? $this->getModelname() : 'unknown';
+            $masterContent = MasterManualInstruction::select(['content', 'modelname'])
+                ->where('modelname', $currentModel)
+                ->get();
+
+            throw new StoreResourceFailedException("TOLONG PASTIKAN MANUAL INSTRUCTION SESUAI MODELNYA. CLICK SEE DETAILS", [
+                'qrcode' => $content,
+                'current_modelname' => $currentModel,
+                'manual_code_content_should_be' => $masterContent->toArray()
+            ]);
         }
         
     }

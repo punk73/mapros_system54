@@ -164,3 +164,12 @@ need the previous history
 
 ## kita juga harus membuat tampilan untuk mana yang rework mana yang engga.
   - buat new view
+
+## todos regarding manual instructions ## 
+- memastikan current testing working
+- membuat manual_instructions dari frontend array:
+    - cari tahu jumlah manual instructions qty based on modelname
+    - ubah jumlah input based qty tersebut
+    - ubah parameter yang dikirim dari string ke array
+- handle array as inputan
+>>>>>>> multiple_manual_instructions

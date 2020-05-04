@@ -65,10 +65,24 @@
                                 <label class="col-md-offset-4 col-md-6"> Show Instruction QR textfield : <toggle-button v-model="showManualInstruction" :color="'#2ab27b'" :labels="true" /></label>
                             </div>
 
-                            <div class="form-group" v-if="(config.isManualInstruction && includeIn) || showManualInstruction " >
-                                <label class="col-md-4 control-label">Manual Intruction</label>
-                                <div class="col-md-6">
-                                    <input placeholder="Scan Manual Intruction" ref='manual_content' v-model="form.manual_content" class="form-control" name="manual_content"  required>
+                            <div v-if="(config.isManualInstruction && includeIn) || showManualInstruction " >
+                                <div class="form-group">
+                                    <div class="col-md-offset-4 col-md-6">
+                                        <button type="button" class="btn btn-success" @click.prevent="manualInstructionQty++" >Add</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" :key="i" v-for="i in manualInstructionQty">
+                                    <label class="col-md-4 control-label">Manual Intruction {{i}}</label>
+                                    <!-- jumlah input based on jumlah manual instruction qty -->
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <input :placeholder="'Scan Manual Intruction '+i" ref='manual_content' v-model="form.manual_content[i-1]" class="form-control" name="manual_content"  required>
+                                            <span class="input-group-btn">
+                                                 <button type="button" class="btn btn-danger" @click.prevent="manualInstructionQtyDeleteOnClick(i-1)" >x</button>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -273,7 +287,7 @@
                     critical_parts:[], //default value for critical_parts empty array, but when it's there, it's buggy. when it's not, it's useless
                     locations:[],
                     isRework : false, //default value
-                    manual_content : null, //default value
+                    manual_content : [], //null, //default value
                     carton : null,
                     serial_number: null,
                     fifoMode: false, //ini refer ke config;
@@ -283,6 +297,8 @@
                 options : [], 
                 isJoin : false,
                 showManualInstruction: false,
+                manualInstructionQty:1, //ini nanti diubah based on modelname
+
                 showCarton:false,
                 showSerialNumberField:false,
 
@@ -503,6 +519,7 @@
             // console.log('mounted')
             this.getConfig();
             this.getInfo();
+            this.fetchInstructionManualQty();
         },
 
         components: {
@@ -887,7 +904,7 @@
                 }
                 /*kalau config showNgOption itu false, baru jalankan*/
                 if (!this.config.showNgoption) { this.isNG = false; }
-                if(this.config.isManualInstruction){this.form.manual_content = null }
+                if(this.config.isManualInstruction){this.form.manual_content = [] }
                 if(this.config.isScanCarton ){this.form.carton = null }
                 if(this.config.isScanSN ) {
                     this.showSerialNumberField = false; //tutup serial no field
@@ -1198,6 +1215,32 @@
 
             playJoin(){
                 this.playSound('./storage/join.mp3');
+            },
+
+            fetchInstructionManualQty() {
+                let modelname = this.config.model;
+                console.log(modelname)
+                axios.get('api/get_instruction_manual_qty', {
+                    params:{
+                        modelname: modelname
+                    }
+                }).then(res => res.data )
+                .then(data => {
+                    if(data.success){
+                        let jml = data.data;
+                        if(jml < 1){
+                            this.manualInstructionQty = 1;
+                        }else{
+                            this.manualInstructionQty = jml;
+                        }
+                    }
+                })
+                .catch(error => console.log(error));
+            },
+
+            manualInstructionQtyDeleteOnClick(index) {
+                this.manualInstructionQty--;
+                this.form.manual_content.splice(index, 1);
             }
         }
     }
