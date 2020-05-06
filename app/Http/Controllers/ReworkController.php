@@ -16,10 +16,20 @@ class ReworkController extends Controller
         // ->paginate();
 
         $data = DB::table('rework')
-            ->select(['rework.*'])
-            ->leftJoin('masters', DB::raw('masters.serial_no COLLATE utf8_unicode_ci'), '=', DB::raw('rework.barcode COLLATE utf8_unicode_ci'))
+            // ->select(['rework.*'])
+            // ->leftJoin('masters', DB::raw('masters.serial_no COLLATE utf8_unicode_ci'), '=', DB::raw('rework.barcode COLLATE utf8_unicode_ci'))
+            ->orderBy('input_date', 'desc')
+            ->where('modelnew', null )
             ->paginate();
 
+        foreach ($data as $key => $rework) {
+            # code...
+            $finished = Master::where('serial_no', $rework->barcode)->first();
+            $rework->finish = (!$finished) ? 'Not Yet' : 'Finished';
+            $rework->font_color = (!$finished) ? 'red' : 'green';
+        }
+
+        // return $data;
         return view('vendor.voyager.rework.browse', \compact('data') );
     }
 }

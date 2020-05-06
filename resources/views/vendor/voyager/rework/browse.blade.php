@@ -10,11 +10,27 @@
         <div class="col-md-12">
             <div class="panel panel-bordered">
                 <div class="panel-body">
-                    <ul>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                            <th>Barcode</th>
+                            <th>Input User</th>
+                            <th>Input Date</th>
+                            <th>Finish</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         @foreach ($data as $item)
-                            <li>{{$item}}</li>
+                            <tr>
+                            <td>{{$item->barcode}}</td>
+                            <td>{{$item->input_user}}</td>
+                            <td>{{$item->input_date}}</td>
+                            <td style="color: {{$item->font_color}}" >{{$item->finish}}</td>
+                            </tr>
                         @endforeach
-                    </ul>
+                        </tbody>
+                    </table>
+
                     {{$data}}
                 </div>
             </div>
