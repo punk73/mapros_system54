@@ -10,16 +10,28 @@ class ReworkController extends Controller
 {
     public function index(Request $request)
     {
-        // $data = Master::select([
-        //     'guid_master','serial_no'
-        // ])->distinct()
-        // ->paginate();
+        $search = $request;
 
         $data = DB::table('rework')
-            ->select(['rework.*'])
-            ->leftJoin('masters', DB::raw('masters.serial_no COLLATE utf8_unicode_ci'), '=', DB::raw('rework.barcode COLLATE utf8_unicode_ci'))
+            ->where(function($q) use ($request) {
+                if($request->has(['key','filter','s'])) {
+                    $filter = ($request->filter == 'contains') ? 'like' : '=';
+                    $value = ($request->filter == 'contains') ? "%{$request->s}%" : $request->s;
+                    $q->where($request->key, $filter, $value);
+                }
+            })
+            ->orderBy('input_date', 'desc')
+            ->where('modelnew', null )
             ->paginate();
 
-        return view('vendor.voyager.rework.browse', \compact('data') );
+        foreach ($data as $key => $rework) {
+            # code...
+            $finished = Master::where('serial_no', $rework->barcode)->first();
+            $rework->finish = (!$finished) ? 'Not Yet' : 'Finished';
+            $rework->font_color = (!$finished) ? 'red' : 'green';
+        }
+
+        // return $data;
+        return view('vendor.voyager.rework.browse', \compact('data','search') );
     }
 }
