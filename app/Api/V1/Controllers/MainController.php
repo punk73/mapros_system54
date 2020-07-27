@@ -82,6 +82,20 @@ class MainController extends Controller
 
 	public function store(BoardRequest $request ){
 		$parameter = $this->getParameter($request);
+	
+		if( setting("admin.check_serial_number", true ) ){
+			if($request->has('serial_number')) {
+				$regex = setting('admin.serial_number_regex', '/(\w+)? ?(\d+[A-Za-z]\d+)/' );
+				if( preg_match( $regex , $request->serial_number )) {
+					// DO NOTHING
+				} else {
+					throw new StoreResourceFailedException("'{$request->serial_number}' bukan serial number. tolong check ulang.", [
+						"serial_number" => $request->serial_number,
+						'parameter' => $parameter
+					]);
+				}
+			}
+		}
 
 		/*isset($parameter['critical_part'])*/
 		if( strlen($parameter['board_id']) >= 80 ){
