@@ -121,15 +121,24 @@ class QaController extends Controller
             ->where('b.lotno', $request->get('lotno'))
             ->distinct(); */
 
-        $doc = Doc_to::select([
+        $docs = Doc_to::select([
+            'ID_DOC_TO',
             DB::raw("trim(MODEL_NAME) || ' ' || SERIAL_NO_LOW as SERIAL_NO_LOW"),
             DB::raw("trim(MODEL_NAME) || ' ' || SERIAL_NO_UP as SERIAL_NO_UP"),
         ])
             ->where('MODEL_NAME', $request->modelname )
             ->where('PROD_NO', $request->lotno )
-            ->orderBy('ID_DOC_TO','desc')
-            ->first();
+            ->orderBy('ID_DOC_TO','asc')
+            ->get();
         
+        if(count($docs) > 0) {
+            $doc = (object) [];
+            $doc->SERIAL_NO_LOW = $docs[0]->SERIAL_NO_LOW;
+            $doc->SERIAL_NO_UP  = $docs[ count($docs) - 1 ]->SERIAL_NO_UP;
+        }else {
+            $doc = false;
+        }
+
         $serialNumbers = SerialNo::
 			select(['SERIAL_NO_ID'])
 			->where('MODEL_NAME', $request->modelname )
@@ -150,7 +159,7 @@ class QaController extends Controller
 			$serialno[] = trim( $sn->SERIAL_NO_ID);
 		}
 
-		return DB::connection('mysql3')
+		$query = DB::connection('mysql3')
             ->table('masters')
             ->select([
                 DB::raw('right(serial_no,8) as serial_no')
@@ -163,7 +172,15 @@ class QaController extends Controller
             ->where('judge', 'OK')
             ->groupBy('serial_no')
             ->orderBy('serial_no', 'asc')
-			->distinct();
+            ->distinct();
+        
+        // $data = $query->get();
+        // return [
+        //     "count" => count( $data),
+        //     "data" =>$data
+        // ];
+        
+        return $query;
     }
 
     public function download(Request $request) {
