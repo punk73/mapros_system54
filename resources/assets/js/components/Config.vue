@@ -413,10 +413,15 @@
                           }
 
                           if(res.data != undefined) {
-                            // kalau ga ketemu, di hardcode darisini.
-                            this.config.esdUri = res.data.esd_uri || 'http://136.198.117.78/esd/api/esd/index.php';
-                            // kalau check nik false, gausah verify nik dari ESD
-                            this.checkNik = (res.data.check_esd == "1") || false;
+                            // force_setting_esd pengaturan yg relatif baru
+                            if(res.data.force_setting_esd) {
+                                // kalau ga ketemu, di hardcode darisini.
+                                this.config.esdUri = res.data.esd_uri || 'http://136.198.117.78/esd/api/esd/index.php';
+                                this.config.checkEsd = (res.data.check_esd == "1") || false;
+                                // kalau check nik false, gausah verify nik dari ESD
+                                this.checkNik = (res.data.check_esd == "1") || false;
+                            }
+
                             if(res.data.esd_uri != undefined) {
                                 this.formErrorMsg = 'validating NIK from server to '+ res.data.esd_uri
                             }else {
