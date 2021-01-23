@@ -10,7 +10,16 @@ use Dingo\Blueprint\Annotation\Request;
 class ConfigLogController extends Controller
 {
     public function index(Request $request) {
-        return setting('admin');
+        $setting = setting('admin');
+        // return dd($setting);
+        $res = [];
+        foreach ($setting as $key => $value) {
+            # code...
+            // return $value;
+            $res[$key] = \is_numeric($value) ? (int) $value : $value;
+        }
+
+        return $res;
     }
 
     public function store(ConfiglogRequest $request) {
