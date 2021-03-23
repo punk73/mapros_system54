@@ -91,6 +91,7 @@ class MainController extends Controller
 				} else {
 					throw new StoreResourceFailedException("'{$request->serial_number}' bukan serial number. tolong check ulang.", [
 						"serial_number" => $request->serial_number,
+						"regex" => $regex,
 						'parameter' => $parameter
 					]);
 				}
