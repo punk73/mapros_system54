@@ -133,11 +133,16 @@ class QaController extends Controller
         
         if(count($docs) > 0) {
             $doc = (object) [];
-            $doc->SERIAL_NO_LOW = $docs[0]->SERIAL_NO_LOW;
-            $doc->SERIAL_NO_UP  = $docs[ count($docs) - 1 ]->SERIAL_NO_UP;
+            $lastIndex = count($docs) - 1;
+            $min = $docs[0]->SERIAL_NO_LOW < $docs[$lastIndex]->SERIAL_NO_LOW ? $docs[0]->SERIAL_NO_LOW : $docs[$lastIndex]->SERIAL_NO_LOW;
+            $doc->SERIAL_NO_LOW = $min;
+            $max = $docs[ $lastIndex ]->SERIAL_NO_UP > $docs[0]->SERIAL_NO_UP ? $docs[$lastIndex]->SERIAL_NO_UP : $docs[0]->SERIAL_NO_UP;
+            $doc->SERIAL_NO_UP  = $max;
         }else {
             $doc = false;
         }
+
+        // return (array) $doc;
 
         $serialNumbers = SerialNo::
 			select(['SERIAL_NO_ID'])

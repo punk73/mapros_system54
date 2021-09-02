@@ -39,7 +39,11 @@ class TestController extends Controller
 	public function index(Request $request) {
 
 		$c = new QaController;
-		return $c->getMainQuery($request);
+		
+
+		return $c->getMainQuery($request)
+		;
+		// ->get();
 
 		$node = new Node(null, true);
 		$guid = "95A25DE7-EF5C-4D6F-95D7-9B7A2ABCDE30";

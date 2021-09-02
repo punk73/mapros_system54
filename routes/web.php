@@ -27,6 +27,8 @@ Route::group(['prefix' => 'join'], function($route){
 	$route->post('/', 'JoinController@post' );
 });
 
+Route::get('qa/download', 'QaController@download');
+
 Route::group([
 	'prefix' => 'admin',
 	'middleware' => 'auth'
