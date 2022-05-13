@@ -80,12 +80,14 @@
 
 		methods : {
 			onSubmit(){
+				let boardid = this.form.board_id;
+				this.form.board_id = boardid.toUpperCase();
 				let form = {
 					'nik': this.form.nik,
 					'ip': this.form.ip,
 					'guid': this.errors['guid'][0],
 					'modelname' : this.form.modelname,
-					'board_id': this.form.board_id ,
+					'board_id': this.form.board_id,
 				}
 				
 				this.toggleLoading();

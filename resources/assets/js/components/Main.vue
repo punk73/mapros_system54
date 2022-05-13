@@ -708,7 +708,9 @@
                     let el = document.querySelector( ':focus' );
                     if( el ) el.blur();
                     this.toggleModal('Information', 'HASIL SCAN MENGANDUNG "&" TOLONG ULANGI!')
-                }
+										return;
+								}
+								this.form.board_id = board_id.toUpperCase();
             },
 
             onSearch(search, loading ){
