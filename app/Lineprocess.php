@@ -18,7 +18,7 @@ class Lineprocess extends Model implements LogsActivityInterface
     	'name','type','std_time',
     ];
 
-    use LogsActivity; //use Logs traits
+    // use LogsActivity; //use Logs traits
 
     public function getActivityDescriptionForEvent($eventName)
 	{

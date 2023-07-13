@@ -8,7 +8,7 @@ use Spatie\Activitylog\LogsActivity;
 
 class Department extends Model implements LogsActivityInterface
 {
-    use LogsActivity;
+    // use LogsActivity;
 
     protected $table = 'departments';
 

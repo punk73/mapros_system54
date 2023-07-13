@@ -10,7 +10,7 @@ class BaseModel extends Model implements LogsActivityInterface
 {
 	//  protected $table need to be define in children class
 
-    use LogsActivity; //use Logs traits
+    // use LogsActivity; //use Logs traits
 
     public function getActivityDescriptionForEvent($eventName)
 	{
