@@ -43,7 +43,23 @@ class AoiController extends Controller
 			'userjudgment'
 		])->where('barcode', $changeToMother);
 
-		if (!$aoi_convert->first()) {
+		if ($aoi_convert->first()) {
+			return [
+				'success' => true,
+				'data' => $aoi_convert->first(),
+				'status' => 'OUT',
+				'judge' => ($aoi_convert->exists()) ? 'OK' : 'NG'
+			];
+		} 
+
+		$changeToSideA = $this->changeToSideA($boardid);
+		$aoi_sideA = AOI::select([
+			'barcode',
+			'userjudgment'
+		])->where('barcode', $changeToSideA);
+
+
+		if (!$aoi_sideA->first()) {
 			// "Data '{$request->board_id}' NG atau tidak ditemukan di SMT!!"
 			throw new StoreResourceFailedException("Board '{$request->board_id}' belum inspect AOI atau NG AOI. Silahkan confirm SMT ", [
 				'message' => 'data tidak ditemukan pada table AOI!'
@@ -52,9 +68,9 @@ class AoiController extends Controller
 
 		return [
 			'success' => true,
-			'data' => $aoi_convert->first(),
+			'data' => $aoi_sideA->first(),
 			'status' => 'OUT',
-			'judge' => ($aoi_convert->exists()) ? 'OK' : 'NG'
+			'judge' => ($aoi_sideA->exists()) ? 'OK' : 'NG'
 		];
 
 		// if (!$aoi->first()) {
