@@ -51,8 +51,8 @@ class AoiController extends Controller
 				'judge' => ($aoi_convert->exists()) ? 'OK' : 'NG'
 			];
 		} 
-
-		$changeToSideA = $this->changeToSideA($boardid);
+		
+		$changeToSideA = $this->changeToSideA($changeToMother);
 		$aoi_sideA = AOI::select([
 			'barcode',
 			'userjudgment'
@@ -105,7 +105,7 @@ class AoiController extends Controller
 		// Y-J-5-2-2-4-M-0-1-D-O-_-0-1-A-7-0-1-5-A-0-0-1-3
 		// 0-1-2-3-4-5-6-7-8-9-0-1-2-3-4-5-6-7-8-9-0-1-2-3
 		// $boardid='YJ5224M01DO_01A7015A0013';
-		return substr_replace($boardid, 'A', 14,1);
+		return substr_replace($boardid, 'A', 14,-9);
 	}
 
 	public function checkKeyBoard($boardid)
