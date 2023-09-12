@@ -32,18 +32,21 @@ use App\Api\V1\Interfaces\ColumnSettingInterface;
 use App\Api\V1\Interfaces\CriticalPartInterface;
 use App\Api\V1\Interfaces\RepairableInterface;
 use App\Api\V1\Interfaces\LocationInterface;
+use App\Api\V1\Interfaces\ManualInstructionInterface;
 use App\Api\V1\Interfaces\CheckBoardDupplicationInterface;
+use App\Api\V1\Interfaces\QrPanelInterface;
+use App\Api\V1\Interfaces\CartonInterface;
 use App\Api\V1\Traits\ColumnSettingTrait;
 use App\Api\V1\Traits\CriticalPartTrait;
 use App\Api\V1\Traits\RepairableTrait;
 use App\Api\V1\Traits\LocationTrait;
+use App\Api\V1\Traits\ManualInstructionTrait;
 use App\Api\V1\Traits\CheckBoardDupplicationTrait;
+use App\Api\V1\Traits\QrPanelTrait;
+use App\Api\V1\Traits\CartonTrait;
+use App\Api\V1\Traits\SiriusTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Api\V1\Interfaces\ManualInstructionInterface;
-use App\Api\V1\Traits\ManualInstructionTrait;
-use App\Api\V1\Interfaces\CartonInterface;
-use App\Api\V1\Traits\CartonTrait;
 
 class Node implements
 	ColumnSettingInterface,
@@ -51,6 +54,7 @@ class Node implements
 	RepairableInterface,
 	LocationInterface,
 	ManualInstructionInterface,
+	QrPanelInterface,
 	CartonInterface
 {
 	use ColumnSettingTrait,
@@ -59,6 +63,7 @@ class Node implements
 		LocationTrait,
 		CheckBoardDupplicationTrait,
 		ManualInstructionTrait,
+		QrPanelTrait,
 		CartonTrait;
 
 	protected $model; // App\Board, App\Master , App\Ticket, or App\Part;
@@ -1253,7 +1258,6 @@ class Node implements
 
 		/* check it fifo */
 		$this->checkFifo();
-
 		$isSaveSuccess = $model->save();
 
 		$this->updateGuidSibling(); //move updateGuidSibling after save method;
@@ -1271,6 +1275,12 @@ class Node implements
 		if (isset($this->parameter['manual_content'])) {
 			if (method_exists($this, 'storeManualContent')) {
 				$this->storeManualContent($this->parameter['manual_content']);
+			}
+		}
+		
+		if(isset($this->parameter['qrPanel'])){
+			if (method_exists($this, 'storeQrPanel')) {
+				$this->storeQrPanel($this->parameter['qrPanel']);
 			}
 		}
 

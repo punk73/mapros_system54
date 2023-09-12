@@ -111,6 +111,22 @@
                                 </div>
                             </div>
 
+                            <div class="form-group" v-if="config.isQrPanel" >
+                                <label class="col-md-4 control-label">{{ label.qrPanel }}</label>
+
+                                <div class="col-md-6">
+                                    <input  id="qrPanel" :placeholder="label.qrPanel" ref='qrPanel' v-model="form.qrPanel" type="qrPanel" class="form-control" name="qrPanel"  required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="config.isSirius" >
+                                <label class="col-md-4 control-label">{{ label.sirius }}</label>
+
+                                <div class="col-md-6">
+                                    <input  id="sirius" :placeholder="label.sirius" ref='sirius' v-model="form.sirius" type="sirius" class="form-control" name="sirius"  required>
+                                </div>
+                            </div>
+
                             <div v-if="config.showSolder" class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <!-- <input type="checkbox" id="checkbox" v-model="form.is_solder"> -->
@@ -291,6 +307,8 @@
                     carton : null,
                     serial_number: null,
                     fifoMode: false, //ini refer ke config;
+                    qrPanel: '', // ini tambahan scan inspect7 untuk model DT
+                    sirius: '' // ini tambahan scan inspect7 untuk model DT
                 },
 
                 isNG : false,
@@ -339,7 +357,9 @@
 
                 label : {
                     id : 'Board ID',
-                    serialAutolinezero : 'Serial Set'
+                    serialAutolinezero : 'Serial Set',
+                    qrPanel : 'QR Panel',
+                    sirius : 'Sirius Code ( SXM )'
                 },
 
                 jumlahJoin: 0, //current jumlah join
@@ -372,7 +392,7 @@
                 },
 
                 serialAutolinezero:'', //default value of serial
-
+                
                 responseData: {
                     success: true,
                     message: '',
@@ -806,6 +826,14 @@
                     let serialAutolinezero = document.getElementById('serialAutolinezero');
                     serialAutolinezero.focus();
                 }
+                if(this.config.isGenerateFile && this.config.isQrPanel && this.form.qrPanel == '' ){
+                    let qrPanel = document.getElementById('qrPanel');
+                    qrPanel.focus();
+                }
+                if(this.config.isGenerateFile && this.config.isSirius && this.form.sirius == '' ){
+                    let sirius = document.getElementById('sirius');
+                    sirius.focus();
+                }
 
                 if(this.form.board_id == ''){
                     // let boardInput = document.getElementById('board_id');
@@ -904,6 +932,14 @@
                     // kalau IN jangan dulu dihapus;
                     if(!this.responseData.message.includes('IN')) this.serialAutolinezero = '';
                 }
+                if(this.config.isQrPanel ) {
+                    // kalau IN jangan dulu dihapus;
+                    if(!this.responseData.message.includes('IN')) this.form.qrPanel = '';
+                }
+                if(this.config.isSirius ) {
+                    // kalau IN jangan dulu dihapus;
+                    if(!this.responseData.message.includes('IN')) this.form.sirius = '';
+                }
                 /*kalau config showNgOption itu false, baru jalankan*/
                 if (!this.config.showNgoption) { this.isNG = false; }
                 if(this.config.isManualInstruction){this.form.manual_content = [] }
@@ -918,6 +954,12 @@
             generateFile(resend = false){
                 if ( (typeof this.serialAutolinezero == 'undefined') || this.serialAutolinezero == '' ) {
                     this.serialAutolinezero = 'NA';
+                }
+                if ( (typeof this.form.qrPanel == 'undefined') || this.form.qrPanel == '' ) {
+                    this.form.qrPanel = 'NA';
+                }
+                if ( (typeof this.form.sirius == 'undefined') || this.form.sirius == '' ) {
+                    this.form.sirius = 'NA';
                 }
 
                 var data = '';
@@ -935,7 +977,17 @@
                 }
 
                 var enter = this.config.delimiter; //'';//'\r\n';
-                this.downloadContent = data + enter + this.serialAutolinezero ;
+                this.downloadContent = data;
+                if(this.serialAutolinezero != ''){
+                    this.downloadContent += enter + this.serialAutolinezero;
+                }
+                if(this.form.qrPanel != 'NA'){
+                    this.downloadContent += enter + this.form.qrPanel;
+                }
+                if(this.form.sirius != 'NA'){
+                    this.downloadContent += enter + this.form.sirius;
+                }
+                //  + enter + this.form.qrPanel + enter + this.form.sirius ;
 
                 let filename = this.config.generatedFileName;
                 this.download( this.downloadContent, filename );

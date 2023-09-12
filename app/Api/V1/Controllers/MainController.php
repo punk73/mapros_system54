@@ -37,7 +37,9 @@ class MainController extends Controller
 		'manual_content', // optional
 		'carton',
 		'serial_number', //optional and cannot be null
-		'fifoMode' // true or false;
+		'fifoMode', // true or false;
+		'qrPanel', // add from isQrPanel for Inspect 7
+		'sirius' // add from isSirius for Inspect 7
 	];
 
 	protected $judge; // OK/NG only except from SOLDER;

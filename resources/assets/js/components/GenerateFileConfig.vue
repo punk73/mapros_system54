@@ -16,6 +16,20 @@
                 <label for="isAutolinezero"> Show Serial Set Field  </label>
             </div>
         </div>
+		<div class="form-group">
+            <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                <toggle-button id="isQrPanel" v-model="config.isQrPanel" :sync='true'  :color="'#2ab27b'" :labels="true"/>
+                
+                <label for="isQrPanel"> Show QR Panel Field  </label>
+            </div>
+        </div>
+		<div class="form-group">
+            <div class=" col-md-6 col-md-offset-3 col-xs-12">
+                <toggle-button id="isSirius" v-model="config.isSirius" :sync='true'  :color="'#2ab27b'" :labels="true"/>
+                
+                <label for="isSirius"> Show Sirius ( SXM ) Field  </label>
+            </div>
+        </div>
 
 		<div class="form-group">
             <div class=" col-md-6 col-md-offset-3 col-xs-12">

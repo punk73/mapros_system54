@@ -261,6 +261,8 @@
                     sendAjaxFileData: 'DUMMY',
 					isShowDeleteButton : false,
 					isAutolinezero : false,
+					isQrPanel : false,
+					isSirius : false,
                     isTouchUp : false,
 					generatedFileName : 'something.txt',
 					uri : '',
