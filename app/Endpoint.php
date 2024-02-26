@@ -10,7 +10,7 @@ class Endpoint extends Model implements LogsActivityInterface
 {
     protected $table = 'endpoints';
 
-    use LogsActivity; //use Logs traits
+    // use LogsActivity; //use Logs traits
 
     public function getActivityDescriptionForEvent($eventName)
 	{

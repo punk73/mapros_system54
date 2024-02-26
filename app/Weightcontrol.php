@@ -12,7 +12,7 @@ use Activity;
 
 class Weightcontrol extends Model implements LogsActivityInterface
 {
-	use LogsActivity;
+	// use LogsActivity;
 
 	protected $table = 'WEIGHTCONTROL';
 	

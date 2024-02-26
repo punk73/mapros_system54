@@ -9,7 +9,7 @@ use Spatie\Activitylog\LogsActivity;
 
 class Scanner extends Model implements LogsActivityInterface
 {	
-	use LogsActivity; //use Logs traits
+	// use LogsActivity; //use Logs traits
 
     protected $table = 'scanners';
 

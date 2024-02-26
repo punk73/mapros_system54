@@ -12,7 +12,7 @@ use Activity;
 
 class Quality extends Model
 {
-    use LogsActivity;
+    // use LogsActivity;
 
 	protected $table = 'QUALITY';
 	
